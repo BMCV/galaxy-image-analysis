@@ -1,0 +1,11 @@
+# This file lists acceptable images to allow runing.
+#
+# This allows you, the admin, to create multiple flavours
+# for your users to run. E.g. maybe you need a geosciences flavour,
+# you can create the image based on our default image and add the
+# appropriate `apt-get/pip install` statements.
+---
+-
+    image: bmcv/paraviewweb:latest
+    description: |
+        ParaView is an open-source, multi-platform application designed to visualize data sets of varying sizes from small to very large.
