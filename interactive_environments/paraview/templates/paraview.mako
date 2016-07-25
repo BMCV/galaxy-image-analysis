@@ -19,8 +19,10 @@ else:
 
 DATASET_HID = hda.hid
 
+input_tiff = ie_request.volume(hda.file_name, '/input/input.tiff', how='ro')
+
 # Add all environment variables collected from Galaxy's IE infrastructure
-ie_request.launch(
+ie_request.launch(volumes=[input_tiff],
     image=trans.request.params.get('image_tag', None),
     additional_ids=trans.request.params.get('additional_dataset_ids', None),
     env_override={
