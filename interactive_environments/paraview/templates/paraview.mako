@@ -18,8 +18,9 @@ else:
     PASSWORD = "none"
 
 DATASET_HID = hda.hid
+input_file_name = '/input/'+str(hda.hid)+'.'+ hda.datatype.file_ext
 
-input_tiff = ie_request.volume(hda.file_name, '/input/input.tiff', how='ro')
+input_tiff = ie_request.volume(hda.file_name, input_file_name, how='ro')
 
 # Add all environment variables collected from Galaxy's IE infrastructure
 ie_request.launch(volumes=[input_tiff],
@@ -27,7 +28,7 @@ ie_request.launch(volumes=[input_tiff],
     additional_ids=trans.request.params.get('additional_dataset_ids', None),
     env_override={
         'notebook_password': PASSWORD,
-        'dataset_hid': DATASET_HID,
+	'dataset_hid': input_file_name,
     }
 )
 
@@ -43,7 +44,7 @@ notebook_ws_url = ie_request.url_template('${PROXY_URL}/ws')
 <head>
 ${ ie.load_default_js() }
 </head>
-<body>
+<body style="margin:0px;">
 
 <script type="text/javascript">
 ${ ie.default_javascript_variables() }

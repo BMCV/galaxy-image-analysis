@@ -6,6 +6,6 @@
 # appropriate `apt-get/pip install` statements.
 ---
 -
-    image: bmcv/paraviewweb:latest
+    image: paraviewweb:latest
     description: |
         ParaView is an open-source, multi-platform application designed to visualize data sets of varying sizes from small to very large.
