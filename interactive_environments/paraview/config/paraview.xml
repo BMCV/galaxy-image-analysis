@@ -6,9 +6,7 @@
             <model_class>HistoryDatasetAssociation</model_class>
             <test type="isinstance" test_attr="datatype" result_type="datatype">images.Image</test>
             <test type="isinstance" test_attr="datatype" result_type="datatype">constructive_solid_geometry.STL</test>
-            <test type="isinstance" test_attr="datatype" result_type="datatype">constructive_solid_geometry.Ply</test>
-            <test type="isinstance" test_attr="datatype" result_type="datatype">constructive_solid_geometry.Vtk</test>
-	    <test type="isinstance" test_attr="datatype" result_type="datatype">constructive_solid_geometry.PlyAscii</test>
+			<test type="isinstance" test_attr="datatype" result_type="datatype">constructive_solid_geometry.PlyAscii</test>
             <test type="isinstance" test_attr="datatype" result_type="datatype">constructive_solid_geometry.PlyBinary</test>
             <test type="isinstance" test_attr="datatype" result_type="datatype">constructive_solid_geometry.VtkAscii</test>
             <test type="isinstance" test_attr="datatype" result_type="datatype">constructive_solid_geometry.VtkBinary</test>

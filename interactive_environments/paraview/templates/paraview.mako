@@ -18,7 +18,15 @@ else:
     PASSWORD = "none"
 
 DATASET_HID = hda.hid
-input_file_name = '/input/'+str(hda.hid)+'.'+ hda.datatype.file_ext
+file_ext = hda.datatype.file_ext
+
+if file_ext in ['plybinary', 'plyascii']:
+   file_ext = 'ply'
+elif file_ext in ['vtkbinary', 'vtkascii']:
+   file_ext = 'vtk'
+end 
+
+input_file_name = '/input/'+str(hda.hid)+'.'+file_ext
 
 input_tiff = ie_request.volume(hda.file_name, input_file_name, how='ro')
 
