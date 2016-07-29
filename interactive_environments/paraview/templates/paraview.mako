@@ -26,7 +26,7 @@ elif file_ext in ['vtkbinary', 'vtkascii']:
    file_ext = 'vtk'
 end 
 
-input_file_name = '/input/'+str(hda.hid)+'.'+file_ext
+input_file_name = '/input/%s.%s' % (hda.hid, file_ext)
 
 input_tiff = ie_request.volume(hda.file_name, input_file_name, how='ro')
 
