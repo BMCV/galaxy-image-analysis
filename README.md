@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/BMCV/galaxy-image-analysis.svg?branch=master)](https://travis-ci.org/BMCV/galaxy-image-analysis)
+
 Galaxy Image Analysis Tools
 ========================
 
