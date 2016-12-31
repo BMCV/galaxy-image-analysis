@@ -2,6 +2,7 @@
   <requirements>
     <requirement type="package" version="1.4.3">mahotas</requirement>
     <requirement type="package">mahotas</requirement>
+    <requirement type="package">numpy</requirement>
   </requirements>
   <description>Compute features using mahotas</description>
   <stdio>
