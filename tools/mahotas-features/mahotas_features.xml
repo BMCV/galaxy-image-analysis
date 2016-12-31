@@ -1,4 +1,4 @@
-<tool id="mahotas-features" name="mahotas-features" version="0.1">
+<tool id="mahotas_features" name="mahotas-features" version="0.1">
   <requirements>
     <requirement type="package" version="1.4.3">mahotas</requirement>
     <requirement type="package">mahotas</requirement>
