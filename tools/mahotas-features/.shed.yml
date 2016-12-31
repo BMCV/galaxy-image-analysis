@@ -4,4 +4,5 @@ description: Compute features using mahotas.
 long_description: Compute features using mahotas.
 name: mahotas_features
 owner: imgteam
+homepage_url: https://github.com/luispedro/mahotas
 remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tools/mahotas-features/
