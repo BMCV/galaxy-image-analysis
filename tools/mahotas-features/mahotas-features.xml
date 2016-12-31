@@ -1,0 +1,59 @@
+<tool id="mahotas-features" name="mahotas-features" version="0.1">
+  <requirements>
+    <requirement type="package" version="1.4.3">mahotas</requirement>
+    <requirement type="package">mahotas</requirement>
+  </requirements>
+  <description>Compute features using mahotas</description>
+  <stdio>
+    <exit_code level="fatal" range="1:"/>
+  </stdio>
+  <version_command>python mahotas-features.py --version</version_command>
+  <command interpreter="python"><![CDATA[mahotas-features.py 
+#set repeat_var_1 = '" "'.join([ str($var.positional_1) for $var in $repeat_1 ])
+"$repeat_var_1"
+
+
+#if $output and $output is not None:
+--output $output
+#end if
+$clobber
+
+#if $convert-to-bw and $convert-to-bw is not None:
+--convert-to-bw $convert-to-bw
+#end if
+$no-color
+$haralick
+$lbp
+
+#if $lbp-radius and $lbp-radius is not None:
+--lbp-radius $lbp-radius
+#end if
+
+#if $lbp-points and $lbp-points is not None:
+--lbp-points $lbp-points
+#end if
+> $default]]></command>
+  <inputs>
+    <repeat min="1" name="repeat_1" title="repeat_title">
+      <param area="false" label="Image files names" name="positional_1" type="text"/>
+    </repeat>
+    <param area="false" help="(--output)" label="Output file for feature files" name="output" optional="true" type="text" value="features.tsv"/>
+    <param checked="false" help="(--clobber)" label="Overwrite output file (if it exists)" name="clobber" type="boolean" truevalue="--clobber" falsevalue=""/>
+    <param area="false" help="(--convert-to-bw)" label="Convert color images to greyscale.&#10;Acceptable values:&#10;&#9;no: raises an error (default)&#10;&#9;max: use max projection&#10;&#9;yes: use rgb2gray" name="convert-to-bw" optional="true" type="text" value="no"/>
+    <param checked="false" help="(--no-color)" label="Do not print in color (for error and warning messages)" name="no-color" type="boolean" truevalue="--no-color" falsevalue=""/>
+    <param checked="false" help="(--haralick)" label="Compute Haralick features" name="haralick" type="boolean" truevalue="--haralick" falsevalue=""/>
+    <param checked="false" help="(--lbp)" label="Compute LBP (linear binary patterns) features" name="lbp" type="boolean" truevalue="--lbp" falsevalue=""/>
+    <param help="(--lbp-radius)" label="Radius to use for LBP features" name="lbp-radius" optional="true" type="integer" value="8"/>
+    <param help="(--lbp-points)" label="Nr of points to use for LBP features" name="lbp-points" optional="true" type="integer" value="6"/>
+  </inputs>
+  <outputs>
+    <data format="txt" hidden="false" name="default"/>
+  </outputs>
+  <help>Compute features using mahotas</help>
+  <xml name="citations">
+        <citations>
+            <citation type="doi">10.5334/jors.ac</citation>
+        </citations>
+  </xml>
+</tool>
+
