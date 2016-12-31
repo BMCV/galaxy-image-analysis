@@ -51,10 +51,9 @@ $lbp
     <data format="txt" hidden="false" name="default"/>
   </outputs>
   <help>Compute features using mahotas</help>
-  <xml name="citations">
-        <citations>
-            <citation type="doi">10.5334/jors.ac</citation>
-        </citations>
-  </xml>
+  <tests>
+  </tests>
+  <citations>
+      <citation type="doi">10.5334/jors.ac</citation>
+  </citations>
 </tool>
-
