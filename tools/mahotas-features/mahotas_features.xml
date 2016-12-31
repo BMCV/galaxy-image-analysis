@@ -13,11 +13,7 @@
 #set repeat_var_1 = '" "'.join([ str($var.positional_1) for $var in $repeat_1 ])
 "$repeat_var_1"
 
-
-#if $output and $output is not None:
---output $output
-#end if
-$clobber
+--output $default
 
 #if $convert-to-bw and $convert-to-bw is not None:
 --convert-to-bw $convert-to-bw
@@ -32,14 +28,11 @@ $lbp
 
 #if $lbp-points and $lbp-points is not None:
 --lbp-points $lbp-points
-#end if
-> $default]]></command>
+#end if]]></command>
   <inputs>
     <repeat min="1" name="repeat_1" title="repeat_title">
       <param area="false" label="Image files names" name="positional_1" type="text"/>
     </repeat>
-    <param area="false" help="(--output)" label="Output file for feature files" name="output" optional="true" type="text" value="features.tsv"/>
-    <param checked="false" help="(--clobber)" label="Overwrite output file (if it exists)" name="clobber" type="boolean" truevalue="--clobber" falsevalue=""/>
     <param area="false" help="(--convert-to-bw)" label="Convert color images to greyscale.&#10;Acceptable values:&#10;&#9;no: raises an error (default)&#10;&#9;max: use max projection&#10;&#9;yes: use rgb2gray" name="convert-to-bw" optional="true" type="text" value="no"/>
     <param checked="false" help="(--no-color)" label="Do not print in color (for error and warning messages)" name="no-color" type="boolean" truevalue="--no-color" falsevalue=""/>
     <param checked="false" help="(--haralick)" label="Compute Haralick features" name="haralick" type="boolean" truevalue="--haralick" falsevalue=""/>
@@ -50,7 +43,7 @@ $lbp
   <outputs>
     <data format="txt" hidden="false" name="default"/>
   </outputs>
-  <help>Compute features using mahotas</help>
+  <help>Mahotas is a computer vision and image processing library for Python. This tools computes features using mahotas.</help>
   <tests>
   </tests>
   <citations>
