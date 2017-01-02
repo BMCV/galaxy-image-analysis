@@ -10,7 +10,8 @@
   </stdio>
   <version_command>python mahotas-features.py --version</version_command>
   <command interpreter="python"><![CDATA[mahotas-features.py
-#echo '" "'.join( [ str( $file ) for $file in $inputs ] )#
+#set files = '" "'.join( [ str( $file ) for $file in $inputs ] )
+"${files}"
 
 --output $output
 --convert-to-bw $convert-to-bw
@@ -45,7 +46,7 @@ $lbp
 	    <param name="haralick" value="--haralick" />
 	    <param name="lbp" value="--lbp" />
 	    <param name="convert-to-bw" value="max" />
-	    <output name="output" file="features.tsv"/>
+	    <output name="output" file="features.tsv" ftype="tsv"/>
     </test>
   </tests>
   <help>Mahotas is a computer vision and image processing library for Python. This tools computes features using mahotas.</help>
