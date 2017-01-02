@@ -44,8 +44,6 @@ $lbp
     <data format="txt" hidden="false" name="default"/>
   </outputs>
   <help>Mahotas is a computer vision and image processing library for Python. This tools computes features using mahotas.</help>
-  <tests>
-  </tests>
   <citations>
       <citation type="doi">10.5334/jors.ac</citation>
   </citations>
