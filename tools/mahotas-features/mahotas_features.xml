@@ -10,9 +10,7 @@
   </stdio>
   <version_command>python mahotas-features.py --version</version_command>
   <command interpreter="python"><![CDATA[mahotas-features.py
-#for $filename in $inputs:
-  "${filename}"
-#end for
+#echo '" "'.join( [ str( $file ) for $file in $inputs ] )#
 
 --output $output
 --convert-to-bw $convert-to-bw
@@ -27,7 +25,7 @@ $lbp
 --lbp-points $lbp-points
 #end if]]></command>
   <inputs>
-    <param name="inputs" type="data" multiple="True" label="Image files"/>
+    <param name="inputs" type="data" format="tiff,png,jpg,bmp" multiple="True" label="Image files"/>
     <param name="convert-to-bw" type="select" label="Convert color images to greyscale">
         <option value="no" selected="True">no</option>
         <option value="max">max projection</option>
@@ -39,15 +37,15 @@ $lbp
     <param help="(--lbp-points)" label="Nr of points to use for LBP features" name="lbp-points" optional="true" type="integer" value="6"/>
   </inputs>
   <outputs>
-    <data format="txt" hidden="false" name="output"/>
+    <data format="tsv" hidden="false" name="output"/>
   </outputs>
   <tests>
     <test>
-	    <param name="inputs" value="galaxyIcon_noText.png" />
+	    <param name="inputs" value="galaxyIcon_noText.png" ftype="png"/>
 	    <param name="haralick" value="--haralick" />
 	    <param name="lbp" value="--lbp" />
 	    <param name="convert-to-bw" value="max" />
-	    <output name="output" file="features.tsv" />
+	    <output name="output" file="features.tsv" ftype="tsv"/>
     </test>
   </tests>
   <help>Mahotas is a computer vision and image processing library for Python. This tools computes features using mahotas.</help>
