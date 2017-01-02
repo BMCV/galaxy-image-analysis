@@ -41,11 +41,11 @@ $lbp
   </outputs>
   <tests>
     <test>
-	    <param name="inputs" value="galaxyIcon_noText.png" ftype="png"/>
+	    <param name="inputs" value="galaxyIcon_noText.png"/>
 	    <param name="haralick" value="--haralick" />
 	    <param name="lbp" value="--lbp" />
 	    <param name="convert-to-bw" value="max" />
-	    <output name="output" file="features.tsv" ftype="tsv"/>
+	    <output name="output" file="features.tsv"/>
     </test>
   </tests>
   <help>Mahotas is a computer vision and image processing library for Python. This tools computes features using mahotas.</help>
