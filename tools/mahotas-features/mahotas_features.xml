@@ -10,7 +10,9 @@
   </stdio>
   <version_command>python mahotas-features.py --version</version_command>
   <command interpreter="python"><![CDATA[mahotas-features.py
-#echo ' '.join($inputs)#
+#for $filename in $inputs:
+  "${filename}"
+#end for
 
 --output $output
 --convert-to-bw $convert-to-bw
