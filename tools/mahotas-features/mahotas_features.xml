@@ -1,4 +1,4 @@
-<tool id="mahotas_features" name="mahotas-features" version="0.2">
+<tool id="mahotas_features" name="mahotas-features" version="0.3">
   <requirements>
     <requirement type="package" version="1.4.3">mahotas</requirement>
     <requirement type="package">mahotas</requirement>
@@ -17,7 +17,6 @@
 #if $convert-to-bw and $convert-to-bw is not None:
 --convert-to-bw $convert-to-bw
 #end if
-$no-color
 $haralick
 $lbp
 
@@ -31,7 +30,6 @@ $lbp
   <inputs>
     <param name="inputs" type="data" multiple="True" label="Image files"/>
     <param area="false" help="(--convert-to-bw)" label="Convert color images to greyscale.&#10;Acceptable values:&#10;&#9;no: raises an error (default)&#10;&#9;max: use max projection&#10;&#9;yes: use rgb2gray" name="convert-to-bw" optional="true" type="text" value="no"/>
-    <param checked="false" help="(--no-color)" label="Do not print in color (for error and warning messages)" name="no-color" type="boolean" truevalue="--no-color" falsevalue=""/>
     <param checked="false" help="(--haralick)" label="Compute Haralick features" name="haralick" type="boolean" truevalue="--haralick" falsevalue=""/>
     <param checked="false" help="(--lbp)" label="Compute LBP (linear binary patterns) features" name="lbp" type="boolean" truevalue="--lbp" falsevalue=""/>
     <param help="(--lbp-radius)" label="Radius to use for LBP features" name="lbp-radius" optional="true" type="integer" value="8"/>
