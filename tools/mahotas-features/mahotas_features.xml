@@ -14,9 +14,9 @@
 
 --output $output
 --convert-to-bw $convertbw
-$haralick
-$lbp
-
+$haralick 
+$lbp 
+--clobber
 #if $lbpradius and $lbpradius is not None:
 --lbp-radius $lbpradius
 #end if
