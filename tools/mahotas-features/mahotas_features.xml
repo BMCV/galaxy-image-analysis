@@ -45,7 +45,7 @@ $lbp
 	    <param name="haralick" value="--haralick" />
 	    <param name="lbp" value="--lbp" />
 	    <param name="convertbw" value="max" />
-	    <output name="output" file="features.tsv" ftype="tsv"/>
+	    <output name="output" file="features.tsv" ftype="tsv" lines_diff="1"/>
     </test>
   </tests>
   <help>Mahotas is a computer vision and image processing library for Python. This tools computes features using mahotas.</help>
