@@ -1,4 +1,4 @@
-<tool id="mahotas_features" name="mahotas-features" version="0.4">
+<tool id="mahotas_features" name="mahotas-features" version="0.6">
   <requirements>
     <requirement type="package">mahotas</requirement>
     <requirement type="package">pillow</requirement>
@@ -8,34 +8,33 @@
   <stdio>
     <exit_code level="fatal" range="1:"/>
   </stdio>
-  <version_command>python mahotas-features.py --version</version_command>
-  <command interpreter="python"><![CDATA[mahotas-features.py
+  <command><![CDATA[mahotas-features.py
 #set files = '" "'.join( [ str( $file ) for $file in $inputs ] )
 "${files}"
 
 --output $output
---convert-to-bw $convert-to-bw
+--convert-to-bw $convertbw
 $haralick
 $lbp
 
-#if $lbp-radius and $lbp-radius is not None:
---lbp-radius $lbp-radius
+#if $lbpradius and $lbpradius is not None:
+--lbp-radius $lbpradius
 #end if
 
-#if $lbp-points and $lbp-points is not None:
---lbp-points $lbp-points
+#if $lbppoints and $lbppoints is not None:
+--lbp-points $lbppoints
 #end if]]></command>
   <inputs>
     <param name="inputs" type="data" format="tiff,png,jpg,bmp" multiple="True" label="Image files"/>
-    <param name="convert-to-bw" type="select" label="Convert color images to greyscale">
+    <param name="convertbw" type="select" label="Convert color images to greyscale">
         <option value="no" selected="True">no</option>
         <option value="max">max projection</option>
         <option value="yes">yes</option>
     </param>
-    <param checked="false" help="(--haralick)" label="Compute Haralick features" name="haralick" type="boolean" truevalue="--haralick" falsevalue=""/>
-    <param checked="false" help="(--lbp)" label="Compute LBP (linear binary patterns) features" name="lbp" type="boolean" truevalue="--lbp" falsevalue=""/>
-    <param help="(--lbp-radius)" label="Radius to use for LBP features" name="lbp-radius" optional="true" type="integer" value="8"/>
-    <param help="(--lbp-points)" label="Nr of points to use for LBP features" name="lbp-points" optional="true" type="integer" value="6"/>
+    <param checked="true" help="(--haralick)" label="Compute Haralick features" name="haralick" type="boolean" truevalue="--haralick" falsevalue=""/>
+    <param checked="true" help="(--lbp)" label="Compute LBP (linear binary patterns) features" name="lbp" type="boolean" truevalue="--lbp" falsevalue=""/>
+    <param help="(--lbp-radius)" label="Radius to use for LBP features" name="lbpradius" optional="true" type="integer" value="8"/>
+    <param help="(--lbp-points)" label="Nr of points to use for LBP features" name="lbppoints" optional="true" type="integer" value="6"/>
   </inputs>
   <outputs>
     <data format="tsv" hidden="false" name="output"/>
@@ -45,7 +44,7 @@ $lbp
 	    <param name="inputs" value="galaxyIcon_noText.png"/>
 	    <param name="haralick" value="--haralick" />
 	    <param name="lbp" value="--lbp" />
-	    <param name="convert-to-bw" value="max" />
+	    <param name="convertbw" value="max" />
 	    <output name="output" file="features.tsv" ftype="tsv"/>
     </test>
   </tests>
