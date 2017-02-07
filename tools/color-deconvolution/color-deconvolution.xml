@@ -8,7 +8,7 @@
   <description>Color deconvolution</description>
   <command>
         <![CDATA[
-        python "$__tool_directory__/color_deconvolution.py" '$input $output $convtype'
+        python "$__tool_directory__/color_deconvolution.py" '$input' '$output' '$convtype'
         ]]>
   </command>
   <inputs>
