@@ -6,7 +6,7 @@
     <requirement type="package" version="1.13">numpy</requirement>
   </requirements>
   <description>Color deconvolution</description>
-  <command><![CDATA[python $tool_directory/color_deconvolution.py $input $output $convtype]]></command>
+  <command>python "$tool_directory/color_deconvolution.py" '$input $output $convtype'</command>
   <inputs>
     <param name="inputs" type="data" format="tiff,png,jpg,bmp" label="Image file with 3 channels"/>
     <param name="convtype" type="select" label="Transformation type">
