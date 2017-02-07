@@ -1,11 +1,11 @@
-<tool id="color_deconvolution" name="color-deconvolution" version="0.2">
+<tool id="color_deconvolution" name="Color Deconvolution" version="0.3">
+  <description>Color deconvolution</description>
   <requirements>
     <requirement type="package" version="0.12.3" >scikit-image</requirement>
     <requirement type="package" version="4.0.0">pillow</requirement>
     <requirement type="package" version="0.18.1">scikit-learn</requirement>
     <requirement type="package" version="1.11">numpy</requirement>
   </requirements>
-  <description>Color deconvolution</description>
   <command>
         <![CDATA[
         python "$__tool_directory__/color_deconvolution.py" '$input' '$output' '$convtype'
