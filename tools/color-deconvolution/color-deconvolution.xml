@@ -1,14 +1,14 @@
-<tool id="color_deconvolution" name="color-deconvolution" version="0.1">
+<tool id="color_deconvolution" name="color-deconvolution" version="0.2">
   <requirements>
-    <requirement type="package">skimage</requirement>
-    <requirement type="package">pillow</requirement>
-    <requirement type="package">sklearn</requirement>
-    <requirement type="package">numpy</requirement>
+    <requirement type="package" version="0.12.3" >skimage</requirement>
+    <requirement type="package" version="4.0.0">pillow</requirement>
+    <requirement type="package" version="0.18.1">sklearn</requirement>
+    <requirement type="package" version="1.13">numpy</requirement>
   </requirements>
   <description>Color deconvolution</description>
-  <command><![CDATA[color_deconvolution.py $input $output $convtype]]></command>
+  <command><![CDATA[python $tool_directory/color_deconvolution.py $input $output $convtype]]></command>
   <inputs>
-    <param name="inputs" type="data" format="tiff,png,jpg,bmp"label="Image file with 3 channels"/>
+    <param name="inputs" type="data" format="tiff,png,jpg,bmp" label="Image file with 3 channels"/>
     <param name="convtype" type="select" label="Transformation type">
         <option value="pca" selected="True">pca</option>
         <option value="xyz2rgb">xyz2rgb</option>
@@ -54,11 +54,11 @@
     </param>
   </inputs>
   <outputs>
-    <data format="tiff" hidden="false" name="output"/>
+    <data format="tiff" name="output"/>
   </outputs>
   <tests>
     <test>
-	    <param name="inputs" value="galaxyIcon_noText.png"/>
+	    <param name="inputs" value="galaxyIcon_noText.png" />
 	    <param name="convtype" value="rgb2hsv" />
 	    <output name="output" file="out.tiff" ftype="tiff" />
     </test>
