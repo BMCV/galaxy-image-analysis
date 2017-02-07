@@ -64,7 +64,7 @@
     <test>
 	    <param name="input" value="galaxyIcon_noText.png" />
 	    <param name="convtype" value="rgb2hsv" />
-	    <output name="output" file="out.tiff" ftype="tiff" />
+	    <output name="output" md5="86486EE1188900F10FD12209D3002B60" ftype="tiff" />
     </test>
   </tests>
   <help>This tools performs several color deconvolution techniques.</help>
