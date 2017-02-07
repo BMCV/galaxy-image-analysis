@@ -62,7 +62,7 @@
   </outputs>
   <tests>
     <test>
-	    <param name="input" value="galaxyIcon_noText.png" />
+	    <param name="input" value="galaxyIcon_noText.png" ftype="png" />
 	    <param name="convtype" value="rgb2hsv" />
 	    <output name="output" file="out.tiff" ftype="tiff" />
     </test>
