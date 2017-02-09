@@ -5,7 +5,7 @@ import numpy as np
 import skimage.io
 import skimage.color
 import skimage.util
-from sklearn.decomposition import PCA
+from sklearn.decomposition import PCA, NMF, FastICA, FactorAnalysis
 
 convOptions = {
            'hed2rgb' : lambda img_raw: skimage.color.hed2rgb(img_raw),
@@ -61,6 +61,12 @@ convOptions = {
            'hpx_from_rgb' : lambda img_raw: skimage.color.separate_stains(img_raw, skimage.color.hpx_from_rgb),    
     
            'pca' : lambda img_raw: np.reshape(PCA(n_components=3).fit_transform(np.reshape(img_raw, [-1, img_raw.shape[2]])), 
+                              [img_raw.shape[0],img_raw.shape[1],-1]),    
+           'nmf' : lambda img_raw: np.reshape(NMF(n_components=3, init='nndsvda').fit_transform(np.reshape(img_raw, [-1, img_raw.shape[2]])), 
+                              [img_raw.shape[0],img_raw.shape[1],-1]),
+           'ica' : lambda img_raw: np.reshape(FastICA(n_components=3).fit_transform(np.reshape(img_raw, [-1, img_raw.shape[2]])), 
+                              [img_raw.shape[0],img_raw.shape[1],-1]),
+           'fa' : lambda img_raw: np.reshape(FactorAnalysis(n_components=3).fit_transform(np.reshape(img_raw, [-1, img_raw.shape[2]])), 
                               [img_raw.shape[0],img_raw.shape[1],-1])
 }
 

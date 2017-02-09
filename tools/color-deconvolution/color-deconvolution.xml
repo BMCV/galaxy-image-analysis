@@ -1,4 +1,4 @@
-<tool id="color_deconvolution" name="Color Deconvolution" version="0.3">
+<tool id="color_deconvolution" name="Color Deconvolution" version="0.4">
   <description>Color deconvolution</description>
   <requirements>
     <requirement type="package" version="0.12.3" >scikit-image</requirement>
@@ -14,7 +14,10 @@
   <inputs>
     <param name="input" type="data" format="tiff,png,jpg,bmp" label="Image file with 3 channels"/>
     <param name="convtype" type="select" label="Transformation type">
-        <option value="pca" selected="True">pca</option>
+		<option value="ica" selected="True">ica</option>
+        <option value="pca">pca</option>
+        <option value="nmf">nmf</option>
+        <option value="fa">fa</option>
         <option value="xyz2rgb">xyz2rgb</option>
         <option value="rgb_from_rbd">rgb_from_rbd</option>
         <option value="rgb_from_hdx">rgb_from_hdx</option>
