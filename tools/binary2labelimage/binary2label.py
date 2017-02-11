@@ -4,6 +4,7 @@ import skimage.io
 from skimage.measure import label
 import numpy as np
 import warnings
+from PIL import Image
 
 parser = argparse.ArgumentParser()
 parser.add_argument('input_file', type=argparse.FileType('r'), default=sys.stdin, help='input file')
@@ -12,6 +13,6 @@ args = parser.parse_args()
 
 img_in = skimage.io.imread(args.input_file.name) > 0
 res = label(img_in).astype(np.int32)
-with warnings.catch_warnings():
-	warnings.simplefilter("ignore")
-	skimage.io.imsave(args.out_file.name, res)
+
+res = Image.fromarray(res)
+res.save(args.out_file.name, "tiff")
