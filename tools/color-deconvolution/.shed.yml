@@ -1,7 +1,7 @@
 categories:
   - Imaging
 description: Color-deconvolution methods
-long_description: This tools does color space transformation using preset transformation matrices or pca.
+long_description: This tools does color space transformation using preset transformation matrices or color space decomposition.
 name: color_deconvolution
 owner: thomaswollmann
 homepage_url: https://github.com/bmcv
