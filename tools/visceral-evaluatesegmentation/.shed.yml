@@ -1,0 +1,8 @@
+categories:
+  - Imaging
+description: Visceral Project - Evaluate Segmentation Tool
+long_description: This tools calculates several measures to evaluate image segmentations.
+name: visceral_evaluatesegmentation
+owner: thomaswollmann
+homepage_url: https://github.com/bmcv
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tools/visceral-evaluatesegmentation
