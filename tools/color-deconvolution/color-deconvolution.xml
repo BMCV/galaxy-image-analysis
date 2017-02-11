@@ -1,10 +1,10 @@
-<tool id="color_deconvolution" name="Color Deconvolution" version="0.4">
+<tool id="color_deconvolution" name="Color Deconvolution" version="0.5">
   <description>Color deconvolution</description>
   <requirements>
     <requirement type="package" version="0.12.3" >scikit-image</requirement>
     <requirement type="package" version="4.0.0">pillow</requirement>
     <requirement type="package" version="0.18.1">scikit-learn</requirement>
-    <requirement type="package" version="1.11">numpy</requirement>
+    <requirement type="package" version="1.12">numpy</requirement>
   </requirements>
   <command>
         <![CDATA[
