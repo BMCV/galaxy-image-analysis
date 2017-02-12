@@ -1,13 +1,11 @@
-<tool id="binary2labelimage" name="Binary 2 Label" version="0.1">
+<tool id="binary2labelimage" name="Binary 2 Label" version="0.2">
   <description>Converts Binary to Label Image</description>
   <requirements>
     <requirement type="package" version="0.12.3" >scikit-image</requirement>
-    <requirement type="package" version="4.0.0">pillow</requirement>
-    <requirement type="package" version="1.12">numpy</requirement>
   </requirements>
   <command>
         <![CDATA[
-        python "$__tool_directory__/binary2label.py" '$input' '$output'
+        python '$__tool_directory__/binary2label.py' '$input' '$output'
         ]]>
   </command>
   <inputs>
@@ -18,8 +16,8 @@
   </outputs>
   <tests>
     <test>
-	    <param name="input" value="galaxyIcon_noText.tif" />
-	    <output name="output" value="label.tif" ftype="tiff" />
+        <param name="input" value="galaxyIcon_noText.tif" />
+        <output name="output" value="label.tif" ftype="tiff" />
     </test>
   </tests>
   <help>This tool assigns every object an own grey value.</help>
