@@ -10,11 +10,11 @@
     <ADJRIND name="Adjusted Rand Index" symbol="ADJRIND" type="similarity" value="1.000000"/>
     <ICCORR name="Interclass Correlation" symbol="ICCORR" type="similarity" value="1.000000"/>
     <VOLSMTY name="Volumetric Similarity Coefficient" symbol="VOLSMTY" type="similarity" value="1.000000"/>
-    <MUTINF name="Mutual Information" symbol="MUTINF" type="similarity" value="0.865557"/>
-    <HDRFDST name="Hausdorff Distance" symbol="HDRFDST" type="distance" value="0.000000" executiontime="5"/>
-    <AVGDIST name="Average Hausdorff Distance" symbol="AVGDIST" type="distance" value="0.000000" executiontime="3"/>
+    <MUTINF name="Mutual Information" symbol="MUTINF" type="similarity" value="0.984545"/>
+    <HDRFDST name="Hausdorff Distance" symbol="HDRFDST" type="distance" value="0.000000" executiontime="10"/>
+    <AVGDIST name="Average Hausdorff Distance" symbol="AVGDIST" type="distance" value="0.000000" executiontime="10"/>
     <MAHLNBS name="Mahanabolis Distance" symbol="MAHLNBS" type="distance" value="0.000000"/>
-    <VARINFO name="Variation of Information" symbol="VARINFO" type="distance" value="0.000000"/>
+    <VARINFO name="Variation of Information" symbol="VARINFO" type="distance" value="-0.000000"/>
     <GCOERR name="Global Consistency Error" symbol="GCOERR" type="distance" value="0.000000"/>
     <PROBDST name="Probabilistic Distance" symbol="PROBDST" type="distance" value="0.000000"/>
     <SNSVTY name="Sensitivity (Recall, true positive rate)" symbol="SNSVTY" type="similarity" value="1.000000"/>
@@ -24,6 +24,6 @@
     <ACURCY name="Accuracy" symbol="ACURCY" type="similarity" value="1.000000"/>
     <FALLOUT name="Fallout (false positive rate)" symbol="FALLOUT" type="distance" value="0.000000"/>
   </metrics>
-  <time total-executiontime="27"/>
+  <time total-executiontime="80"/>
   <dimention max_x="328" max_y="264" max_z="0"/>
 </measurement>
