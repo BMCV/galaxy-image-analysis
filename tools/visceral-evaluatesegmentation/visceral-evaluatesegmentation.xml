@@ -1,4 +1,4 @@
-<tool id="visceral_evaluatesegmentation" name="Visceral - Evaluate Segmentation" version="0.2">
+<tool id="visceral_evaluatesegmentation" name="Visceral - Evaluate Segmentation" version="0.3">
   <description>Evaluate Segmentation</description>
   <requirements>
     <requirement type="package">visceral-evaluatesegmentation</requirement>
@@ -17,8 +17,8 @@
   </outputs>
   <tests>
     <test>
-	    <param name="gt_path" value="sample.tif" />
-	    <param name="seg_path" value="sample.tif" />
+	    <param name="gt_path" value="sample.png" />
+	    <param name="seg_path" value="sample.png" />
 	    <output name="output" value="out.xml" ftype="xml" lines_diff="5" />
     </test>
   </tests>
