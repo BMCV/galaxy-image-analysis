@@ -19,7 +19,7 @@
     <test>
 	    <param name="gt_path" value="sample.tif" />
 	    <param name="seg_path" value="sample.tif" />
-	    <output name="output" value="out.xml" ftype="xml" lines_diff="1" />
+	    <output name="output" value="out.xml" ftype="xml" lines_diff="5" />
     </test>
   </tests>
   <help>Calculates Metrics for Evaluating Image Segmentation</help>
