@@ -1,8 +1,8 @@
 <tool id="mahotas_features" name="Mahotas-features" version="0.7">
   <requirements>
-    <requirement type="package">mahotas</requirement>
-    <requirement type="package">pillow</requirement>
-    <requirement type="package">numpy</requirement>
+    <requirement type="package" version="1.4.3">mahotas</requirement>
+    <requirement type="package" version="4.0.0">pillow</requirement>
+    <requirement type="package" version="1.12">numpy</requirement>
   </requirements>
   <description>Compute features using mahotas</description>
   <stdio>
