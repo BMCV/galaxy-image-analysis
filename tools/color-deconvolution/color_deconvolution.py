@@ -84,4 +84,4 @@ res[res>1]=1
 with warnings.catch_warnings():
 	warnings.simplefilter("ignore")
 	res = skimage.util.img_as_uint(res) #Attention: precision loss
-skimage.io.imsave(args.out_file.name, res, plugin='tifffile')
+	skimage.io.imsave(args.out_file.name, res, plugin='tifffile')
