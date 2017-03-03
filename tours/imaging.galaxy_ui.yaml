@@ -42,9 +42,9 @@ steps:
         - ".upload-button"
 
     - title: "Insert URLs"
-      element: "textarea#text-content"
+      element: ".upload-text-content:first"
       intro: "URLs separated by a line break are automatically downloaded by Galaxy."
-      position: "top"
+      position: "bottom"
       textinsert: |
         https://upload.wikimedia.org/wikipedia/en/2/24/Lenna.png
 
