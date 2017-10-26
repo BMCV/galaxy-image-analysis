@@ -6,6 +6,8 @@ Galaxy Image Analysis Tools
 
 Galaxy Image Analysis Tools developed within the [Biomedical Computer Vision (BMCV)](http://www.bioquant.uni-heidelberg.de/research/groups/biomedical_computer_vision.html) Group Heidelberg.
 
+How to cite: https://doi.org/10.1016/j.jbiotec.2017.07.019
+
 Acknowledgment
 ========================
 This work was supported by the BMBF-funded Heidelberg Center for Human Bioinformatics (HD-HuB) within the German Network for Bioinformatics Infrastructure (de.NBI) #031A537C.
