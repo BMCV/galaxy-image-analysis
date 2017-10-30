@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<tool name="Overlay Segmentation Mask" id="ip_overlay_segmentation" version="0.0.6">
+   <description>Overlay Segmentation Mask</description>
+   <requirements>
+     <requirement type="package">matplotlib</requirement>
+     <requirement type="package">pillow</requirement>
+     <requirement type="package">tifffile</requirement>
+     <requirement type="package">scikit-image</requirement>
+   </requirements>
+   <stdio>
+     <exit_code level="fatal" range="1:"/>
+   </stdio>
+   <command interpreter="python"><![CDATA[overlay_segmentation_mask.py
+       --thickness $thickness
+       --stroke_color '$stroke_color'
+       #if $label_option['label'] == '--label'
+         --label --label_color '$label_option['label_color']'
+       #end if
+       $greyscale $input_image $input_mask $output]]></command>
+   <inputs>
+	    <param name="input_image" type="data" label="Image Source File" />
+        <param name="input_mask" type="data" label="Mask Source File" />
+        <param name="greyscale" type="boolean" checked='true' truevalue='--grey' falsevalue='' label="Image Is Greyscale" />
+	    <param name="thickness" size="4" type="float" value="0.3" label="Thickness" />
+	    <param name="stroke_color" type="color" value="#ff0000" label="Stroke Color"/>
+        <conditional name="label_option">
+          <param name="label" type="boolean" checked='false' truevalue='--label' falsevalue='' label="Plot Labels" />
+          <when value=""> </when>
+          <when value="--label">
+      	    <param name="label_color" type="color" value="#ffff00" label="Label Color"/>
+          </when>
+        </conditional>
+   </inputs>
+   <outputs>
+        <data format="png" name="output" />
+   </outputs>
+   <help>
+This tool overlays a segmentation mask over an image.
+   </help>
+   <citations>
+      <citation type="doi">10.7717/peerj.453</citation>
+   </citations>
+</tool>

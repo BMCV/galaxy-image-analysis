@@ -1,0 +1,2 @@
+WARNING: The code in roi2binaryimage.py is not very general and relies heavily on folder architecture. It will be modified soon to create a more useful & general approach.
+Also, there are some dependencies that need to be checked.
