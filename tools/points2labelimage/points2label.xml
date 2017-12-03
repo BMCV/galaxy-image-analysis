@@ -1,0 +1,26 @@
+<tool id="points2labelimage" name="Binary 2 Points" version="0.1">
+    <description>Converts Points to Label Image</description>
+    <requirements>
+        <requirement type="package" version="0.12.3" >scikit-image</requirement>
+        <requirement type="package" version="0.21.0" >pandas</requirement>
+    </requirements>
+    <command>
+        <![CDATA[
+        python '$__tool_directory__/binaryimage2points.py' $is_tsv $label_file $output $org_file 
+        ]]>
+    </command>
+    <inputs>
+        <param name="label_file" type="data" format="csv" label="CSV file with with points"/>
+        <param name="org_file" type="data" format="tiff" label="original label image file"/>
+        <param name="is_tsv" type="boolean" checked="false" falsevalue="" truevalue="--is_tsv"/>
+    </inputs>
+    <outputs>
+        <data format="tiff" name="output"/>
+    </outputs>
+    <tests>
+    </tests>
+    <help>This tool converts points to a label image.</help>
+    <citations>
+        <citation type="doi">10.7717/peerj.453</citation>
+    </citations>
+</tool>

@@ -1,0 +1,28 @@
+<tool id="labelimage2points/" name="Label 2 Points" version="0.1">
+    <description>Converts Label Image to Points</description>
+    <requirements>
+        <requirement type="package" version="0.12.3" >scikit-image</requirement>
+        <requirement type="package" version="0.21.0" >pandas</requirement>
+    </requirements>
+    <command>
+        <![CDATA[
+        python '$__tool_directory__/labelimage2points.py' '$input' '$output'
+        ]]>
+    </command>
+    <inputs>
+        <param name="input" type="data" format="tiff" label="Label image file"/>
+    </inputs>
+    <outputs>
+        <data format="csv" name="output"/>
+    </outputs>
+    <tests>
+        <test>
+            <param name="input" value="label.tif" />
+            <output name="output" value="points.csv" ftype="csv" />
+        </test>
+    </tests>
+    <help>This tool converts a label image to points.</help>
+    <citations>
+        <citation type="doi">10.7717/peerj.453</citation>
+    </citations>
+</tool>

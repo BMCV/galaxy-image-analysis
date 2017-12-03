@@ -1,0 +1,34 @@
+<tool id="binaryimage2points" name="Binary 2 Points" version="0.1">
+    <description>Converts Binary Image to Points</description>
+    <requirements>
+        <requirement type="package" version="0.12.3" >scikit-image</requirement>
+        <requirement type="package" version="0.21.0" >pandas</requirement>
+    </requirements>
+    <command>
+        <![CDATA[
+        python '$__tool_directory__/binaryimage2points.py' $has_header $invert_xy $input $output $shapex $shapey
+        ]]>
+    </command>
+    <inputs>
+        <param name="input" type="data" format="csv" label="CSV file with with points"/>
+        <param name="has_header" type="boolean" checked="false" falsevalue="" truevalue="--has_header"/>
+        <param name="invert_xy" type="boolean" checked="false" falsevalue="" truevalue="--invert_xy"/>
+        <param name="shapex" type="integer" value="500" label="Stroke thickness"/>
+        <param name="shapey" type="integer" value="500" label="Circle radius"/>
+    </inputs>
+    <outputs>
+        <data format="tiff,png,jpg,bmp" name="output"/>
+    </outputs>
+    <tests>
+        <test>
+            <param name="input" value="points.csv" />
+            <param name="shapex" value="20" />
+            <param name="shapey" value="20" />
+            <output name="output" value="out.tif" ftype="tiff" />
+        </test>
+    </tests>
+    <help>This tool converts an image to points.</help>
+    <citations>
+        <citation type="doi">10.7717/peerj.453</citation>
+    </citations>
+</tool>
