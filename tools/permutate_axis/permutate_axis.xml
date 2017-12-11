@@ -1,0 +1,29 @@
+<tool id="permutate_axis" name="Permutate Axis" version="0.1">
+    <description>Permutate axis</description>
+    <requirements>
+        <requirement type="package" version="0.12.3" >scikit-image</requirement>
+    </requirements>
+    <command>
+        <![CDATA[
+        python '$__tool_directory__/permutate_axis.py' --axis $axis $input $output $permutate
+        ]]>
+    </command>
+    <inputs>
+        <param name="input" type="data" format="tiff,png,jpg,bmp" label="Binary Image File"/>
+        <param name="permutate" type="text" default="[0,1,2]" label="new channel order"/>
+        <param name="axis" type="integer" value="0" label="concatenation axis"/>
+    </inputs>
+    <outputs>
+        <data format="tiff" name="output"/>
+    </outputs>
+    <tests>
+        <test>
+            <param name="input" value="galaxyIcon_noText.png" />
+            <output name="output" value="out.tif" ftype="tiff" />
+        </test>
+    </tests>
+    <help>This tool permutates axes.</help>
+    <citations>
+        <citation type="doi">10.7717/peerj.453</citation>
+    </citations>
+</tool>
