@@ -1,4 +1,4 @@
-<tool id="points2labelimage" name="Binary 2 Points" version="0.1">
+<tool id="points2labelimage" name="Points 2 Label" version="0.1">
     <description>Converts Points to Label Image</description>
     <requirements>
         <requirement type="package" version="0.12.3" >scikit-image</requirement>
@@ -6,7 +6,7 @@
     </requirements>
     <command>
         <![CDATA[
-        python '$__tool_directory__/binaryimage2points.py' $is_tsv $label_file $output $org_file 
+        python '$__tool_directory__/binaryimage2points.py' '$is_tsv' '$label_file' '$output' '$org_file'
         ]]>
     </command>
     <inputs>

@@ -1,11 +1,11 @@
-<tool id="detection_viz" name="Binary 2 Points" version="0.1">
+<tool id="detection_viz" name="Detection Viz" version="0.1">
     <description>Detection visualization</description>
     <requirements>
         <requirement type="package" version="0.12.3" >scikit-image</requirement>
     </requirements>
     <command>
         <![CDATA[
-        python '$__tool_directory__/detection_viz.py' $input $output --stroke_size $thickness --circle_radius $circle_radius $tp $fn $fp
+        python '$__tool_directory__/detection_viz.py' '$input' '$output' --stroke_size $thickness --circle_radius $circle_radius $tp $fn $fp
         ]]>
     </command>
     <inputs>

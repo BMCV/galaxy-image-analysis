@@ -6,7 +6,7 @@
     </requirements>
     <command>
         <![CDATA[
-        python '$__tool_directory__/binaryimage2points.py' $has_header $invert_xy $input $output $shapex $shapey
+        python '$__tool_directory__/binaryimage2points.py' '$has_header' '$invert_xy' '$input' '$output' '$shapex' '$shapey'
         ]]>
     </command>
     <inputs>
