@@ -1,0 +1,418 @@
+{
+    "a_galaxy_workflow": "true",
+    "annotation": "",
+    "format-version": "0.1",
+    "name": "Cell Counting",
+    "steps": {
+        "0": {
+            "annotation": "",
+            "content_id": null,
+            "errors": null,
+            "id": 0,
+            "input_connections": {},
+            "inputs": [
+                {
+                    "description": "",
+                    "name": "Input Dataset"
+                }
+            ],
+            "label": null,
+            "name": "Input dataset",
+            "outputs": [],
+            "position": {
+                "left": 200,
+                "top": 350.5
+            },
+            "tool_id": null,
+            "tool_state": "{\"name\": \"Input Dataset\"}",
+            "tool_version": null,
+            "type": "data_input",
+            "uuid": "f93db2c4-895d-4b5b-8ca3-95146ecf89b8",
+            "workflow_outputs": [
+                {
+                    "label": null,
+                    "output_name": "output",
+                    "uuid": "e80a62ad-2aee-4a83-a304-30414d4fb6b6"
+                }
+            ]
+        },
+        "1": {
+            "annotation": "",
+            "content_id": "testtoolshed.g2.bx.psu.edu/repos/iuc/imagej2_noise/imagej2_noise/1.0.0",
+            "errors": null,
+            "id": 1,
+            "input_connections": {
+                "input": {
+                    "id": 0,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool Add or remove noise",
+                    "name": "input"
+                }
+            ],
+            "label": null,
+            "name": "Add or remove noise",
+            "outputs": [
+                {
+                    "name": "output",
+                    "type": "input"
+                }
+            ],
+            "position": {
+                "left": 428,
+                "top": 350.5
+            },
+            "post_job_actions": {
+                "HideDatasetActionoutput": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "output"
+                }
+            },
+            "tool_id": "testtoolshed.g2.bx.psu.edu/repos/iuc/imagej2_noise/imagej2_noise/1.0.0",
+            "tool_shed_repository": {
+                "changeset_revision": "fd2cbe35e919",
+                "name": "imagej2_noise",
+                "owner": "iuc",
+                "tool_shed": "testtoolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"noise_cond\": \"{\\\"threshold\\\": \\\"50.0\\\", \\\"which_outliers\\\": \\\"bright\\\", \\\"noise\\\": \\\"remove_outliers\\\", \\\"radius\\\": \\\"2.0\\\", \\\"__current_case__\\\": 4}\", \"__page__\": 0}",
+            "tool_version": "1.0.0",
+            "type": "tool",
+            "uuid": "58d3569a-d81f-466b-a39c-44db2a3f2579",
+            "workflow_outputs": []
+        },
+        "2": {
+            "annotation": "",
+            "content_id": "ip_io_metadata_from_filename",
+            "errors": null,
+            "id": 2,
+            "input_connections": {
+                "input": {
+                    "id": 0,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool Extract Metadata From Dataset Name",
+                    "name": "input"
+                }
+            ],
+            "label": null,
+            "name": "Extract Metadata From Dataset Name",
+            "outputs": [
+                {
+                    "name": "metadata",
+                    "type": "tabular"
+                }
+            ],
+            "position": {
+                "left": 518.5,
+                "top": 200
+            },
+            "post_job_actions": {
+                "HideDatasetActionmetadata": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "metadata"
+                }
+            },
+            "tool_id": "ip_io_metadata_from_filename",
+            "tool_state": "{\"input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"__page__\": 0}",
+            "tool_version": "0.0.7",
+            "type": "tool",
+            "uuid": "625ff155-d706-4bd4-aa37-62ee7d798891",
+            "workflow_outputs": []
+        },
+        "3": {
+            "annotation": "",
+            "content_id": "ip_threshold",
+            "errors": null,
+            "id": 3,
+            "input_connections": {
+                "input": {
+                    "id": 1,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool Auto Threshold",
+                    "name": "input"
+                }
+            ],
+            "label": null,
+            "name": "Auto Threshold",
+            "outputs": [
+                {
+                    "name": "output",
+                    "type": "tiff"
+                }
+            ],
+            "position": {
+                "left": 649,
+                "top": 402.5
+            },
+            "post_job_actions": {
+                "HideDatasetActionoutput": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "output"
+                }
+            },
+            "tool_id": "ip_threshold",
+            "tool_state": "{\"input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"thresh_type\": \"\\\"otsu\\\"\", \"dark_background\": \"\\\"true\\\"\", \"__rerun_remap_job_id__\": null, \"__page__\": null}",
+            "tool_version": "0.0.2",
+            "type": "tool",
+            "uuid": "7bd24834-2ace-48f1-b241-25a15cde57bf",
+            "workflow_outputs": []
+        },
+        "4": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/jmsong/transpose/transpose/1.0.0",
+            "errors": null,
+            "id": 4,
+            "input_connections": {
+                "input": {
+                    "id": 2,
+                    "output_name": "metadata"
+                }
+            },
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool Transpose",
+                    "name": "input"
+                }
+            ],
+            "label": null,
+            "name": "Transpose",
+            "outputs": [
+                {
+                    "name": "out_file",
+                    "type": "input"
+                }
+            ],
+            "position": {
+                "left": 893.5,
+                "top": 202
+            },
+            "post_job_actions": {
+                "HideDatasetActionout_file": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "out_file"
+                }
+            },
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/jmsong/transpose/transpose/1.0.0",
+            "tool_shed_repository": {
+                "changeset_revision": "5d5bdc4c409b",
+                "name": "transpose",
+                "owner": "jmsong",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"__page__\": 0}",
+            "tool_version": "1.0.0",
+            "type": "tool",
+            "uuid": "6e09bd9e-a733-4b85-a919-a0b68645187f",
+            "workflow_outputs": []
+        },
+        "5": {
+            "annotation": "",
+            "content_id": "testtoolshed.g2.bx.psu.edu/repos/iuc/imagej2_watershed_binary/imagej2_watershed_binary/1.0.0",
+            "errors": null,
+            "id": 5,
+            "input_connections": {
+                "input": {
+                    "id": 3,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool Watershed segmentation",
+                    "name": "input"
+                }
+            ],
+            "label": null,
+            "name": "Watershed segmentation",
+            "outputs": [
+                {
+                    "name": "output",
+                    "type": "input"
+                }
+            ],
+            "position": {
+                "left": 698,
+                "top": 559.5
+            },
+            "post_job_actions": {
+                "HideDatasetActionoutput": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "output"
+                }
+            },
+            "tool_id": "testtoolshed.g2.bx.psu.edu/repos/iuc/imagej2_watershed_binary/imagej2_watershed_binary/1.0.0",
+            "tool_shed_repository": {
+                "changeset_revision": "7507cbee7554",
+                "name": "imagej2_watershed_binary",
+                "owner": "iuc",
+                "tool_shed": "testtoolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"black_background\": \"\\\"yes\\\"\", \"input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"__page__\": null}",
+            "tool_version": "1.0.0",
+            "type": "tool",
+            "uuid": "ca9a0e0a-e5cc-4d44-a0bb-b01ef3cb2bd0",
+            "workflow_outputs": []
+        },
+        "6": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/thomaswollmann/binary2labelimage/binary2labelimage/0.2",
+            "errors": null,
+            "id": 6,
+            "input_connections": {
+                "input": {
+                    "id": 5,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "Binary 2 Label",
+            "outputs": [
+                {
+                    "name": "output",
+                    "type": "tiff"
+                }
+            ],
+            "position": {
+                "left": 917,
+                "top": 456.5
+            },
+            "post_job_actions": {
+                "HideDatasetActionoutput": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "output"
+                }
+            },
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/thomaswollmann/binary2labelimage/binary2labelimage/0.2",
+            "tool_shed_repository": {
+                "changeset_revision": "f772af27a6de",
+                "name": "binary2labelimage",
+                "owner": "thomaswollmann",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"input\": \"{\\\"values\\\": [{\\\"src\\\": \\\"hda\\\", \\\"id\\\": 2}]}\", \"__rerun_remap_job_id__\": null, \"__page__\": null}",
+            "tool_version": "0.2",
+            "type": "tool",
+            "uuid": "6783f71e-5bf0-4a4d-a006-f1c7722496a1",
+            "workflow_outputs": []
+        },
+        "7": {
+            "annotation": "",
+            "content_id": "ip_count_objects",
+            "errors": null,
+            "id": 7,
+            "input_connections": {
+                "input": {
+                    "id": 6,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool Count Objects",
+                    "name": "input"
+                }
+            ],
+            "label": null,
+            "name": "Count Objects",
+            "outputs": [
+                {
+                    "name": "output",
+                    "type": "tabular"
+                }
+            ],
+            "position": {
+                "left": 1023,
+                "top": 322
+            },
+            "post_job_actions": {
+                "HideDatasetActionoutput": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "output"
+                }
+            },
+            "tool_id": "ip_count_objects",
+            "tool_state": "{\"input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"__page__\": null}",
+            "tool_version": "0.0.3",
+            "type": "tool",
+            "uuid": "8f63f704-5e3d-413f-9163-9342fe68d15c",
+            "workflow_outputs": []
+        },
+        "8": {
+            "annotation": "",
+            "content_id": "Paste1",
+            "errors": null,
+            "id": 8,
+            "input_connections": {
+                "input1": {
+                    "id": 4,
+                    "output_name": "out_file"
+                },
+                "input2": {
+                    "id": 7,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool Paste",
+                    "name": "input2"
+                },
+                {
+                    "description": "runtime parameter for tool Paste",
+                    "name": "input1"
+                }
+            ],
+            "label": null,
+            "name": "Paste",
+            "outputs": [
+                {
+                    "name": "out_file1",
+                    "type": "input"
+                }
+            ],
+            "position": {
+                "left": 1265.5,
+                "top": 268
+            },
+            "post_job_actions": {
+                "DeleteIntermediatesActionout_file1": {
+                    "action_arguments": {},
+                    "action_type": "DeleteIntermediatesAction",
+                    "output_name": "out_file1"
+                }
+            },
+            "tool_id": "Paste1",
+            "tool_state": "{\"input2\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__page__\": 0, \"delimiter\": \"\\\"T\\\"\", \"input1\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null}",
+            "tool_version": "1.0.0",
+            "type": "tool",
+            "uuid": "f7f18c75-c0b0-4fb4-ab3e-47e8993174d5",
+            "workflow_outputs": [
+                {
+                    "label": null,
+                    "output_name": "out_file1",
+                    "uuid": "20a9d5e6-eed4-4393-9b56-7d70db9081b6"
+                }
+            ]
+        }
+    },
+    "uuid": "2864f232-f9e9-49b3-b883-6a421beb7183"
+}
