@@ -23,11 +23,11 @@
   <tests>
     <test>
 	<param name="input" value="points.csv">
-	<param name="shapex" value="300">
+	<param name="shapex" value="300"> <!-- play around with those parameters for the tests-->
 	<param name="shapey" value="300">
 	<param name="has_header" value="false">
 	<param name="invert_xy" value="false">
-	<output name="output" ftype="tiff" file="out.tif">
+	<output name="output" ftype="tiff" file="out.tif"> <!-- checks if output file is the same aus out.tif -->
     </test>
   </tests>
   <help>Converts CSV point file to binary image.</help>
