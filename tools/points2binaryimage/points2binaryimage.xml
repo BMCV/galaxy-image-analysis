@@ -22,12 +22,12 @@
   </outputs>
   <tests>
     <test>
-	<param name="input" value="">
+	<param name="input" value="points.csv">
 	<param name="shapex" value="300">
 	<param name="shapey" value="300">
 	<param name="has_header" value="false">
 	<param name="invert_xy" value="false">
-	<output name="output" ftype="tiff">
+	<output name="output" ftype="tiff" file="out.tif">
     </test>
   </tests>
   <help>Converts CSV point file to binary image.</help>
