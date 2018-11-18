@@ -1,12 +1,13 @@
 <tool id="points2binaryimage" name="Points to Binary Image" version="0.1"> 
   <description>Converts points to a binary image</description>
   <requirements> 
-    <requirement type="package" version="" >scikit-image</requirement>
-    <requirement type="package" version="" >pandas</requirement>
+    <requirement type="package" version="0.20.0" >scikit-image</requirement>
+    <requirement type="package" version="1.15.4"> numpy</requirement>
+    <requirement type="package" version="0.23.2" >pandas</requirement>
   </requirements>
   <command> 
         <![CDATA[
-        python "$__tool_directory__/points2binaryimage.py" '$input' $shape $has_header $invert_xy > '$output'
+        python "$__tool_directory__/points2binaryimage.py" '$input' '$output' $shape $has_header $invert_xy 
         ]]>
   </command>
   <inputs> 
