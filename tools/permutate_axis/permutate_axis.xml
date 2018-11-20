@@ -1,0 +1,30 @@
+<tool id="permutate_axis" name="Permutate Axes" version="0.1">
+  <description> Permutates image along axis <description/>
+  <requirements>
+    <requirement type="package" version="0.20.0" >scikit-image</requirement>
+    <requirement type="package" version="1.15.4">numpy</requirement>
+  <requirements/>
+  <command>
+    <![CDATA[
+    python "$__tool_directory__/permutate_axis.py" '$input' '$output' --axis $axis $permutate
+    ]]>
+  </command>
+  <inputs>
+    <param name="input" type="data" format="tiff,png,jpg,bmp" label="Binary Image File"/>
+    <param name="permutate" type="text" default="[0,1,2]" label="new channel order"/>
+    <param name="axis" type="integer" value="0" label="concatenation axis" help="Concatenation axis (0-4)" /><!-- why not have a selection from 0 to 4?-->
+  <inputs/>
+  <outputs>
+    <data format="tiff" name="output"/>
+  <outputs/>
+  <tests>
+    <test>
+      <param name="input" value="galaxyIcon_noText.png" />
+      <output name="output" value="out.tif" ftype="tiff" />
+    </test>
+  </tests>
+  <help>Permutates the image along a specified axis.</help>
+  <citations>
+      <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation> 
+</citations>
+</tool>
