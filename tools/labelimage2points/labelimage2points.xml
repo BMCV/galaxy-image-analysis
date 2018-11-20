@@ -1,4 +1,4 @@
-<tool id="labelimage2points/" name="Label 2 Points" version="0.1">
+<tool id="labelimage2points" name="Label 2 Points" version="0.1">
     <description>Calculates the center of mass for all differently colored regions in the image</description>
     <requirements>
         <requirement type="package" version="0.12.3" >scikit-image</requirement>
