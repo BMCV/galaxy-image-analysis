@@ -3,9 +3,10 @@
 <tool id="anisotropic_diffusion" name="Anisotropic Diffusion" version="0.1"> # Version: Choose yourself and increment for later versions
   <description>Edge-preserving, Anisotropic diffusion</description>
   <requirements> # dependencies, e.g. required python packages (that are not installed by default), find out the current version of those
-    <requirement type="package" version="0.12.3" >scikit-image</requirement>
-    <requirement type="package" version="0.2.2">medpy</requirement>
-    <requirement type="package" version="1.12">numpy</requirement>
+    <requirement type="package" version="0.20.0" >scikit-image</requirement>
+    <requirement type="package" version="0.23.2" >pandas</requirement>
+    <requirement type="package" version="0.3.0">medpy</requirement>
+    <requirement type="package" version="1.15.4">numpy</requirement>
   </requirements>
   <command> # this is what the function needs to call in terminal; -o output
         <![CDATA[
