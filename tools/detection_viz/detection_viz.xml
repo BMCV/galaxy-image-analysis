@@ -1,5 +1,5 @@
 <tool id="detection_viz" name="Detection Visualization" version="0.1">
-    <description>Draws circles of different colors around detected true positives, false negatives and false positives.</description>
+    <description>Detection Visualization</description>
     <requirements>
       <requirement type="package" version="0.12.3" >scikit-image</requirement>
     </requirements>
@@ -25,7 +25,7 @@
             <output name="output" value="out.png" ftype="png" />
         </test>
     </tests>
-    <help>This tool visualizes detection.</help>
+    <help>Draws circles of different colors around detected true positives, false negatives and false positives.</help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
     </citations>
