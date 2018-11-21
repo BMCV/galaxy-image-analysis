@@ -1,5 +1,5 @@
-<tool id="points2labelimage" name="Points to Label Image" version="0.1">
-  <description> Converts Points to Label Image </description>
+<tool id="points2labelimage" name="Points 2 Label" version="0.1">
+  <description> Points to Label Image </description>
   <requirements>
     <requirement type="package" version="1.15.4">numpy</requirement>
     <requirement type="package" version="0.20.0" >scikit-image</requirement>
@@ -22,7 +22,7 @@
     <test>
     </test>
   </tests>
-    <help> This tool converts points to a label image </help>
+    <help> This tool converts points to a label image. </help>
   <citations>
     <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation> 
   </citations>
