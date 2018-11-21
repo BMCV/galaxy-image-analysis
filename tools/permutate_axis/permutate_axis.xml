@@ -1,5 +1,5 @@
-<tool id="permutate_axis" name="Permutate Axes" version="0.1">
-  <description> Permutates image along axis <description/>
+<tool id="permutate_axis" name="Permutate Axis" version="0.1">
+  <description> Permutates axes <description/>
   <requirements>
     <requirement type="package" version="0.20.0" >scikit-image</requirement>
     <requirement type="package" version="1.15.4">numpy</requirement>
