@@ -1,6 +1,6 @@
 categories:
   - Imaging
-description: detection visualization
+description: Detection Visualization
 long_description: This tool visualizes detection.
 name: detection_viz
 owner: thomaswollmann
