@@ -1,3 +1,6 @@
 Vagrantfile 
 .vagrant
-testfile.txt
+tooltest.py
+*.docx
+template.xml
+template_shed.yml
