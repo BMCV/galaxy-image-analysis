@@ -4,3 +4,4 @@ tooltest.py
 *.docx
 template.xml
 template_shed.yml
+*.py
