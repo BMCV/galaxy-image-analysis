@@ -2,18 +2,18 @@
   <description>Converts points to a binary image</description>
   <requirements> 
     <requirement type="package" version="0.20.0" >scikit-image</requirement>
-    <requirement type="package" version="1.15.4"> numpy</requirement>
-    <requirement type="package" version="0.23.2" >pandas</requirement>
+    <requirement type="package" version="1.15.4">numpy</requirement>
+    <requirement type="package" version="0.23.2">pandas</requirement>
   </requirements>
   <command> 
         <![CDATA[
-        python "$__tool_directory__/points2binaryimage.py" '$input' '$output' $shape $has_header $invert_xy 
+        python '$__tool_directory__/points2binaryimage.py' '$input' '$output' $shape $has_header $invert_xy 
         ]]>
   </command>
   <inputs> 
     <param name="input" type="data" format="csv" label="CSV point file"/> 
-    <param name="shapex" type="int" value="500" optional="true" min="1" max="50000" label="Width of output image" />
-    <param name="shapey" type="int" value="500" optional="true" min="1" max="50000" label="Height of output image" />
+    <param name="shapex" type="int" value="500" optional="true" min="1" max="2000" label="Width of output image" />
+    <param name="shapey" type="int" value="500" optional="true" min="1" max="2000" label="Height of output image" />
     <param name="has_header" type="boolean" checked="false" truevalue="--has_header" falsevalue="" optional="true" label="Does point file contain header?" /> 
     <param name="invert_xy" type="boolean" checked="false" falsevalue="" truevalue="--invert_xy" optional="true" label="Inverts x and y in CSV point file" />
   </inputs>
@@ -22,12 +22,12 @@
   </outputs>
   <tests>
     <test>
-	<param name="input" value="points.csv">
-	<param name="shapex" value="300"> <!-- play around with those parameters for the tests-->
-	<param name="shapey" value="300">
-	<param name="has_header" value="false">
-	<param name="invert_xy" value="false">
-	<output name="output" ftype="tiff" file="out.tif"> <!-- checks if output file is the same aus out.tif -->
+      <param name="input" value="points.csv">
+      <param name="shapex" value="20"> 
+      <param name="shapey" value="30">
+      <param name="has_header" value="false">
+      <param name="invert_xy" value="true">
+      <output name="output" ftype="tiff" file="out.tif"> <!-- checks if output file is the same aus out.tif -->
     </test>
   </tests>
   <help>Converts CSV point file to binary image.</help>
