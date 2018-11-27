@@ -32,9 +32,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('input_file', type=argparse.FileType('r'), help='input file')
     parser.add_argument('out_file', type=argparse.FileType('w'), help='out file (TIFF)')
-    parser.add_argument('permutate', help='new channel order', default='[0,1,2]', type=str)
+    parser.add_argument('permutate', help='new channel order', default='0,1,2', type=str)
     parser.add_argument('--axis', dest='axis', type=int, default=0, help='concatenation axis')
     args = parser.parse_args()
 
-    permutate = [int(item) for item in args.permutate.replace('[', '').replace(']', '').split(',')]
+    permutate = [int(item) for item in args.permutate.split(',')]
     permutate_axis(args.input_file, args.out_file.name, args.axis, permutate)
