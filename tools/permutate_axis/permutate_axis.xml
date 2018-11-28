@@ -12,7 +12,7 @@
   <inputs>
     <param name="input" type="data" format="tiff,png,jpg,bmp" label="Binary Image File"/>
     <param name="permutate" type="text" default="0,1,2" label="new channel order">
-      <validator type="regex" message="Input has to be a sequence of axis, separated by commas">([0-4],)+[0-4]</validator>>
+      <validator type="regex" message="Input has to be a sequence of axis, separated by commas">([0-4],)+[0-4]</validator>
     </param>
     <param name="axis" type="integer" value="0" label="concatenation axis" help="Concatenation axis (0-4)" /><!-- why not have a selection from 0 to 4?-->
   <inputs/>
