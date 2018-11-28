@@ -12,8 +12,8 @@
   </command>
   <inputs> 
     <param name="input" type="data" format="csv" label="CSV point file"/> 
-    <param name="shapex" type="int" value="500" optional="true" min="1" max="2000" label="Width of output image" />
-    <param name="shapey" type="int" value="500" optional="true" min="1" max="2000" label="Height of output image" />
+    <param name="shapex" type="integer" value="500" optional="true" min="1" max="2000" label="Width of output image" />
+    <param name="shapey" type="integer" value="500" optional="true" min="1" max="2000" label="Height of output image" />
     <param name="has_header" type="boolean" checked="false" truevalue="--has_header" falsevalue="" optional="true" label="Does point file contain header?" /> 
     <param name="invert_xy" type="boolean" checked="false" falsevalue="" truevalue="--invert_xy" optional="true" label="Inverts x and y in CSV point file" />
   </inputs>
