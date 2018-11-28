@@ -28,5 +28,5 @@
   <help>Permutates the image along a specified axis.</help>
   <citations>
       <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation> 
-</citations>
+  </citations>
 </tool>
