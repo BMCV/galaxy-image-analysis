@@ -1,9 +1,9 @@
 <tool id="permutate_axis" name="Permutate Axis" version="0.1">
-  <description> Permutates axes <description/>
+  <description> Permutates axes </description>
   <requirements>
-    <requirement type="package" version="0.20.0" >scikit-image</requirement>
+    <requirement type="package" version="0.20.0">scikit-image</requirement>
     <requirement type="package" version="1.15.4">numpy</requirement>
-  <requirements/>
+  </requirements>
   <command>
     <![CDATA[
     python '$__tool_directory__/permutate_axis.py' '$input' '$output' --axis $axis $permutate
@@ -15,10 +15,10 @@
       <validator type="regex" message="Input has to be a sequence of axis, separated by commas">([0-4],)+[0-4]</validator>
     </param>
     <param name="axis" type="integer" value="0" label="concatenation axis" help="Concatenation axis (0-4)" /><!-- why not have a selection from 0 to 4?-->
-  <inputs/>
+  </inputs>
   <outputs>
     <data format="tiff" name="output"/>
-  <outputs/>
+  </outputs>
   <tests>
     <test>
       <param name="input" value="galaxyIcon_noText.png" />
