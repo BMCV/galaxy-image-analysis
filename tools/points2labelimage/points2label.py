@@ -14,7 +14,6 @@ def points2label(labels, shape, output_file=None, is_TSV=False):
 
     for i in range(0, len(df)):
         a_row = df.iloc[i]
-        print(df.iloc[i])
         labelimg[a_row[0], a_row[1]] = i+1
 
     if output_file is not None:
