@@ -2,7 +2,7 @@
   <description>Edge-preserving, Anisotropic diffusion</description>
   <requirements>
     <requirement type="package" version="0.12.3" >scikit-image</requirement>
-    <requirement type="package" version="0.2.2">medpy</requirement>
+    <requirement type="package" version="0.3.0">medpy</requirement>
     <requirement type="package" version="1.12">numpy</requirement>
   </requirements>
   <command>
