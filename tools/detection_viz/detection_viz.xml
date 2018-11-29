@@ -1,0 +1,32 @@
+<tool id="detection_viz" name="Detection Visualization" version="0.1">
+    <description>Detection Visualization</description>
+    <requirements>
+      <requirement type="package" version="0.12.3" >scikit-image</requirement>
+    </requirements>
+    <command>
+        <![CDATA[
+        python '$__tool_directory__/detection_viz.py' '$input' '$output' --stroke_size $thickness --circle_radius $circle_radius $tp $fn $fp
+]]>
+    </command>
+    <inputs>
+        <param name="input" type="data" format="tiff,png,jpg,bmp" label="Binary Image File"/>
+        <param name="tp" type="boolean" checked="false" falsevalue="" truevalue="--tp"/>
+        <param name="fn" type="boolean" checked="false" falsevalue="" truevalue="--fn"/>
+        <param name="fp" type="boolean" checked="false" falsevalue="" truevalue="--fp"/>
+        <param name="thickness" type="integer" value="3" label="Stroke thickness"/>
+        <param name="circle_radius" type="integer" value="50" label="Circle radius"/>
+    </inputs>
+    <outputs>
+        <data format="png" name="output"/>
+    </outputs>
+    <tests>
+        <test>
+            <param name="input" value="sample.png" />
+            <output name="output" value="out.png" ftype="png" />
+        </test>
+    </tests>
+    <help>Draws circles of different colors around detected true positives, false negatives and false positives.</help>
+    <citations>
+        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
+    </citations>
+</tool> 
