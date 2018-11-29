@@ -5,3 +5,4 @@ tooltest.py
 template.xml
 template_shed.yml
 *.py
+.vscode
