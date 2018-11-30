@@ -6,3 +6,4 @@ template_shed.yml
 *.sh
 *.docx
 *.py
+*/__pycache__
