@@ -1,7 +1,7 @@
 <tool id="points2binaryimage" name="Points to Binary Image" version="0.1"> 
   <description>Converts points to a binary image</description>
   <requirements> 
-    <requirement type="package" version="0.20.0" >scikit-image</requirement>
+    <requirement type="package" version="0.20.1" >scikit-image</requirement>
     <requirement type="package" version="1.15.4">numpy</requirement>
     <requirement type="package" version="0.23.2">pandas</requirement>
   </requirements>
