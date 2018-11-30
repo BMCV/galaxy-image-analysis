@@ -20,9 +20,9 @@
         <data format="png" name="output"/>
     </outputs>
     <tests>
-        <test>
+        <test><!--out.png is different to output of function call with sample.png-->
             <param name="input" value="sample.png" />
-            <output name="output" value="out.png" ftype="png" />
+            <output name="output" value="out2.png" ftype="png" />
         </test>
     </tests>
     <help>Draws circles of different colors around detected true positives, false negatives and false positives.</help>
