@@ -3,17 +3,17 @@
     <requirements>
         <requirement type="package" version="0.12.3" >scikit-image</requirement>
     </requirements>
-    <command>
+    <command><!--input line seems to be the problem (probably "sample1.png,sample2.png" is processed as if it were only one input according to the error; not sure how to address this problem though)-->
         <![CDATA[
         python '$__tool_directory__/concat_channels.py' 
-        #for $input in $inputs
+        #for $input in '$inputs' 
             '$input' 
         #end for
         -o '$output' --axis '$axis'
         ]]>
     </command>
     <inputs>
-        <param name="inputs" type="data" multiple="true" format="tiff,png,jpg,bmp" label="Binary Image File"/>
+        <param name="inputs" type="data" multiple="true" format="tiff,png,jpg,bmp" label="Binary Image Files" help="one or multiple binary image fiels"/>
         <param name="axis" type="select" label="Concatenation Axis">
             <option value="0">0</option>
             <option value="2">2</option>
@@ -24,7 +24,7 @@
     </outputs>
     <tests>
         <test>
-            <param name="inputs" value="sample1.png,sample2.png" />
+            <param name="inputs" value="sample1.png, sample2.png" />
             <output name="output" value="out.tiff" ftype="tiff" />
         </test>
     </tests>
