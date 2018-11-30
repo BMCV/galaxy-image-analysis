@@ -2,7 +2,7 @@
   <description>Points to Label Image</description>
   <requirements>
     <requirement type="package" version="1.15.4">numpy</requirement>
-    <requirement type="package" version="0.20.0">scikit-image</requirement>
+    <requirement type="package" version="0.20.1">scikit-image</requirement>
     <requirement type="package" version="0.23.2">pandas</requirement>
   </requirements>
   <command>
