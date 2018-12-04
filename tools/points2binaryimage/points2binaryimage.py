@@ -22,13 +22,13 @@ def points2binaryimage(point_file, out_file, shape=[500, 500], has_header=False,
                 raise IndexError("Point {},{} is out of image with bounds {},{}.".format(int(a_row[0]), int(a_row[1]), shape[0], shape[1]))
 
             if invert_xy:
-                if img.shape[0]<=int(a_row[1]) or img.shape[1]<=int(a_row[0]):
-                    raise IndexError("Point {},{} is out of image with bounds {},{}.".format(int(a_row[1]), int(a_row[0]), shape[0], shape[1]))
+                if img.shape[0]<=int(a_row[0]) or img.shape[1]<=int(a_row[1]):
+                    raise IndexError("Point {},{} is out of image with bounds {},{}.".format(int(a_row[0]), int(a_row[1]), shape[0], shape[1]))
                 else:
                     img[int(a_row[1]), int(a_row[0])] = 32767
             else:
-                if img.shape[0]<=int(a_row[0]) or img.shape[1]<=int(a_row[1]):
-                    raise IndexError("Point {},{} is out of image with bounds {},{}.".format(int(a_row[0]), int(a_row[1]), shape[0], shape[1]))
+                if img.shape[0]<=int(a_row[1]) or img.shape[1]<=int(a_row[0]):
+                    raise IndexError("Point {},{} is out of image with bounds {},{}.".format(int(a_row[1]), int(a_row[0]), shape[0], shape[1]))
                 else:
                     img[int(a_row[0]), int(a_row[1])] = 32767
     else:
