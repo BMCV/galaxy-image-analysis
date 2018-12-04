@@ -30,7 +30,7 @@
       <param name="kappa" value="50" />
 	    <param name="gamma" value="0.1" />
 	    <param name="eqoption" value="1" />
-	    <output name="output" file="res.tif" ftype="tiff" />
+	    <output name="output" file="res.tif" ftype="tiff" delta="100" compare="sim_size"/>
     </test>
   </tests>
   <help>Edge-preserving, Anisotropic image diffusion.</help>
