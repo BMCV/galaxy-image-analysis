@@ -1,4 +1,3 @@
-tools/anisotropic_diffusion
 tools/concat_channels
 tools/detection_viz
 tools/points2binaryimage
