@@ -1,9 +1,9 @@
 <tool id="anisotropic_diffusion" name="Anisotropic Diffusion" version="0.1">
   <description>Edge-preserving, Anisotropic diffusion</description>
   <requirements>
-    <requirement type="package" version="0.12.3" >scikit-image</requirement>
+    <requirement type="package" version="0.14.1" >scikit-image</requirement>
     <requirement type="package" version="0.3.0">medpy</requirement>
-    <requirement type="package" version="1.12">numpy</requirement>
+    <requirement type="package" version="1.15.4">numpy</requirement>
   </requirements>
   <command>
         <![CDATA[
