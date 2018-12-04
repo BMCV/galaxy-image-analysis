@@ -27,7 +27,7 @@
     <test>
 	    <param name="input" value="galaxyIcon_noText.png" />
 	    <param name="niter" value="100" />
-            <param name="kappa" value="50" />
+      <param name="kappa" value="50" />
 	    <param name="gamma" value="0.1" />
 	    <param name="eqoption" value="1" />
 	    <output name="output" file="res.tif" ftype="tiff" />
