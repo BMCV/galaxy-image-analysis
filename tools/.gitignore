@@ -3,7 +3,5 @@ Vagrantfile
 template.xml
 template_shed.yml
 .vscode
-*.sh
 *.docx
-*.py
 */__pycache__
