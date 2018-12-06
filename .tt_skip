@@ -1,3 +1,4 @@
+tools/anisotropic_diffusion
 tools/concat_channels
 tools/points2binaryimage
 tools/binaryimage2points
