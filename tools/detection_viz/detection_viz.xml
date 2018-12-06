@@ -1,7 +1,8 @@
 <tool id="detection_viz" name="Detection Visualization" version="0.1">
     <description>Detection Visualization</description>
     <requirements>
-      <requirement type="package" version="0.12.3" >scikit-image</requirement>
+      <requirement type="package" version="0.14.1" >scikit-image</requirement>
+      <requirement type="package" version="3.0.2" >matplotlib</requirement>
     </requirements>
     <command>
         <![CDATA[
@@ -13,16 +14,16 @@
         <param name="tp" type="boolean" checked="false" falsevalue="" truevalue="--tp"/>
         <param name="fn" type="boolean" checked="false" falsevalue="" truevalue="--fn"/>
         <param name="fp" type="boolean" checked="false" falsevalue="" truevalue="--fp"/>
-        <param name="thickness" type="integer" value="3" label="Stroke thickness"/>
-        <param name="circle_radius" type="integer" value="50" label="Circle radius"/>
+        <param name="thickness" type="float" value="3.0" label="Stroke thickness"/>
+        <param name="circle_radius" type="float" value="50.0" label="Circle radius"/>
     </inputs>
     <outputs>
         <data format="png" name="output"/>
     </outputs>
     <tests>
-        <test><!--out.png is different to output of function call with sample.png-->
-            <param name="input" value="sample.png" />
-            <output name="output" value="out2.png" ftype="png" />
+        <test>
+            <param name="input" value="sample.png"/>
+            <output name="output" value="out.png" ftype="png"/>
         </test>
     </tests>
     <help>Draws circles of different colors around detected true positives, false negatives and false positives.</help>

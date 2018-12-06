@@ -38,7 +38,8 @@ def detection_viz(input_file, output_file, tp=None, fn=None, fp=None, stroke_siz
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('input_file', type=argparse.FileType('r'), help='original file')
-    parser.add_argument('out_file', type=argparse.FileType('w'), help='out file (PNG)')
+    # output file should not be of type argparse.FileType('w') sine it is created immediately in this case which leads to an error in renaming
+    parser.add_argument('out_file_str', type=str, help='string of output file name') 
     parser.add_argument('--tp', dest='input_tp_file', type=argparse.FileType('r'), help='input TP file')
     parser.add_argument('--fn', dest='input_fn_file', type=argparse.FileType('r'), help='input FN file')
     parser.add_argument('--fp', dest='input_fp_file', type=argparse.FileType('r'), help='input FP file')
@@ -55,4 +56,5 @@ if __name__ == "__main__":
     fp=None
     if args.input_fp_file:
         fp=args.input_fp_file.name
-    detection_viz(args.input_file.name, args.out_file.name, tp=tp, fn=fn, fp=fp, stroke_size=args.thickness, circle_radius=args.circle_radius)
+
+    detection_viz(args.input_file.name, args.out_file_str, tp=tp, fn=fn, fp=fp, stroke_size=args.thickness, circle_radius=args.circle_radius)
