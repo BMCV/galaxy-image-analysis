@@ -1,5 +1,4 @@
 tools/concat_channels
-tools/detection_viz
 tools/points2binaryimage
 tools/binaryimage2points
 tools/permutate_axis
