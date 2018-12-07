@@ -1,0 +1,29 @@
+<tool id="points2labelimage" name="Points 2 Label" version="0.1">
+  <description>Points to Label Image</description>
+  <requirements>
+    <requirement type="package" version="1.15.4">numpy</requirement>
+    <requirement type="package" version="0.20.1">scikit-image</requirement>
+    <requirement type="package" version="0.23.2">pandas</requirement>
+  </requirements>
+  <command>
+    <![CDATA[
+        python '$__tool_directory__/points2labelimage.py' '$input' '$output' '$org_file' $is_tsv
+    ]]>
+  </command>
+  <inputs>
+    <param name="input" type="data" format="csv" label="Point CSV file"/>
+    <param name="org_file" type="data" format="tiff" label="Original label image file"/>
+    <param name="is_tsv" optional="true" type="boolean" checked="false" truevalue="--is_tsv" falsevalue="" help="tab separated input file"/>
+  </inputs>
+  <outputs>
+    <data name="output" format="tiff"/>
+  </outputs>
+  <tests>
+    <test>
+    </test>
+  </tests>
+    <help> This tool converts points to a label image. </help>
+  <citations>
+    <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation> 
+  </citations>
+</tool>

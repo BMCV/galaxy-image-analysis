@@ -5,4 +5,4 @@ long_description: This tools does color space transformation using preset transf
 name: color_deconvolution
 owner: thomaswollmann
 homepage_url: https://github.com/bmcv
-remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tools/color-deconvolution
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tools/color-deconvolution/

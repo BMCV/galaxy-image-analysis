@@ -1,9 +1,9 @@
 <tool id="anisotropic_diffusion" name="Anisotropic Diffusion" version="0.1">
   <description>Edge-preserving, Anisotropic diffusion</description>
   <requirements>
-    <requirement type="package" version="0.12.3" >scikit-image</requirement>
-    <requirement type="package" version="0.2.2">medpy</requirement>
-    <requirement type="package" version="1.12">numpy</requirement>
+    <requirement type="package" version="0.14.1" >scikit-image</requirement>
+    <requirement type="package" version="0.3.0">medpy</requirement>
+    <requirement type="package" version="1.15.4">numpy</requirement>
   </requirements>
   <command>
         <![CDATA[
@@ -27,14 +27,14 @@
     <test>
 	    <param name="input" value="galaxyIcon_noText.png" />
 	    <param name="niter" value="100" />
-            <param name="kappa" value="50" />
+      <param name="kappa" value="50" />
 	    <param name="gamma" value="0.1" />
 	    <param name="eqoption" value="1" />
-	    <output name="output" ftype="tiff" />
+	    <output name="output" file="res.tif" ftype="tiff" />
     </test>
   </tests>
   <help>Edge-preserving, Anisotropic image diffusion.</help>
   <citations>
-      <citation type="doi">10.1109/34.56205</citation>
+      <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
   </citations>
 </tool>

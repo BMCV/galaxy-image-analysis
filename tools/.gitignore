@@ -1,0 +1,7 @@
+Vagrantfile 
+.vagrant
+template.xml
+template_shed.yml
+.vscode
+*.docx
+*/__pycache__

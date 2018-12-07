@@ -16,7 +16,7 @@ parser.add_argument('eqoption', type=int, choices=[1,2], help='Perona Malik diff
 args = parser.parse_args()
 
 img_in = skimage.io.imread(args.input_file.name)
-res = anisotropic_diffusion(img_raw, niter=args.niter, kappa=args.kappa, gamma=args.gamma, option=args.eqoption)
+res = anisotropic_diffusion(img_in, niter=args.niter, kappa=args.kappa, gamma=args.gamma, option=args.eqoption)
 res[res<-1]=-1
 res[res>1]=1
 

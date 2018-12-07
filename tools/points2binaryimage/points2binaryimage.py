@@ -18,24 +18,21 @@ def points2binaryimage(point_file, out_file, shape=[500, 500], has_header=False,
 
         for i in range(0, len(df)):
             a_row = df.iloc[i]
-            oob = False
             if int(a_row[0]) < 0 or int(a_row[1]) < 0:
-                oob = True
+                raise IndexError("Point {},{} is out of image with bounds {},{}.".format(int(a_row[0]), int(a_row[1]), shape[0], shape[1]))
 
             if invert_xy:
                 if img.shape[0]<=int(a_row[0]) or img.shape[1]<=int(a_row[1]):
-                    oob = True
-                else:
-                    img[int(a_row[0]), int(a_row[1])] = 32767
-            else:
-                if img.shape[0]<=int(a_row[1]) or img.shape[1]<=int(a_row[0]):
-                    oob = True
+                    raise IndexError("Point {},{} is out of image with bounds {},{}.".format(int(a_row[0]), int(a_row[1]), shape[0], shape[1]))
                 else:
                     img[int(a_row[1]), int(a_row[0])] = 32767
-            if oob:
-                print "[!] point %d:%d is out of image bounds %d:%d" % (int(a_row[0]), int(a_row[1]), shape[0], shape[1])
+            else:
+                if img.shape[0]<=int(a_row[1]) or img.shape[1]<=int(a_row[0]):
+                    raise IndexError("Point {},{} is out of image with bounds {},{}.".format(int(a_row[1]), int(a_row[0]), shape[0], shape[1]))
+                else:
+                    img[int(a_row[0]), int(a_row[1])] = 32767
     else:
-        print "[!] %s is empty or does not exist" % point_file
+        raise Exception("{} is empty or does not exist.".format(point_file)) # appropriate built-in error?
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")

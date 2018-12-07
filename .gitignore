@@ -1,0 +1,6 @@
+Vagrantfile 
+.vagrant
+*.docx
+template.xml
+template_shed.yml
+.vscode

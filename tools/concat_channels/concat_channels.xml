@@ -1,0 +1,35 @@
+<tool id="concat_channels" name="Concat Channels" version="0.1">
+    <description>Concatenate images</description>
+    <requirements>
+        <requirement type="package" version="0.12.3" >scikit-image</requirement>
+    </requirements>
+    <command><!--input line seems to be the problem (probably "sample1.png,sample2.png" is processed as if it were only one input according to the error; not sure how to address this problem though)-->
+        <![CDATA[
+        python '$__tool_directory__/concat_channels.py' 
+        #for $input in '$inputs' 
+            '$input' 
+        #end for
+        -o '$output' --axis '$axis'
+        ]]>
+    </command>
+    <inputs>
+        <param name="inputs" type="data" multiple="true" format="tiff,png,jpg,bmp" label="Binary Image Files" help="one or multiple binary image fiels"/>
+        <param name="axis" type="select" label="Concatenation Axis">
+            <option value="0">0</option>
+            <option value="2">2</option>
+        </param>
+    </inputs>
+    <outputs>
+        <data format="tiff" name="output"/>
+    </outputs>
+    <tests>
+        <test>
+            <param name="inputs" value="sample1.png, sample2.png" />
+            <output name="output" value="out.tiff" ftype="tiff" />
+        </test>
+    </tests>
+    <help>This tool concatenates images.</help>
+    <citations>
+        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
+    </citations>
+</tool>
