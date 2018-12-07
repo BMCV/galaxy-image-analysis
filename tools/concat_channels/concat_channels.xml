@@ -1,12 +1,13 @@
 <tool id="concat_channels" name="Concat Channels" version="0.1">
     <description>Concatenate images</description>
     <requirements>
-        <requirement type="package" version="0.12.3" >scikit-image</requirement>
+        <requirement type="package" version="0.14.1" >scikit-image</requirement>
+        <requirement type="package" version="1.15.4">numpy</requirement>
     </requirements>
     <command><!--input line seems to be the problem (probably "sample1.png,sample2.png" is processed as if it were only one input according to the error; not sure how to address this problem though)-->
         <![CDATA[
         python '$__tool_directory__/concat_channels.py' 
-        #for $input in '$inputs' 
+        #for $input in $inputs
             '$input' 
         #end for
         -o '$output' --axis '$axis'
@@ -24,8 +25,9 @@
     </outputs>
     <tests>
         <test>
-            <param name="inputs" value="sample1.png, sample2.png" />
-            <output name="output" value="out.tiff" ftype="tiff" />
+            <param name="inputs" value="sample1.png,sample2.png"/>
+            <param name="axis" value="0"/>
+            <output name="output" value="res.tiff" ftype="tiff"/>
         </test>
     </tests>
     <help>This tool concatenates images.</help>
