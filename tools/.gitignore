@@ -5,3 +5,6 @@ template_shed.yml
 .vscode
 *.docx
 */__pycache__
+*/*.html
+*/*.json
+*/*.log
