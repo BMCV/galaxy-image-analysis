@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<tool name="Overlay" id="viz_overlay_moving_and_fixed_image" version="0.0.1">
+    <description>Overlay moving and fixed image</description>
+    <requirements>
+        <requirement type="package" version="0.14.1">scikit-image</requirement>
+        <requirement type="package" version="0.23.4">pandas</requirement>
+        <requirement type="package" version="1.15.2">numpy</requirement>
+        <requirement type="package" version="1.1.0">scipy</requirement>
+      	<requirement type="package" version="5.3.0">pillow</requirement>
+    </requirements>
+    <command><![CDATA[
+         python '$__tool_directory__/overlay_moving_and_fixed_image.py'
+             '$fixed_image'
+             '$moving_image'
+             '$warp_matrix'
+             '$overlay_out'
+             --factor $factor
+             $inverse_transform
+    ]]></command>
+    <inputs>
+        <param name="fixed_image" type= "data" format="png" label="Fixed image" />
+        <param name="moving_image" type= "data" format="png" label="Moving image" />
+        <param name="warp_matrix" type= "data" format="csv" label="Warp Matrix" />
+        <param name="factor" type="float" value="0.5" label="Factor by which images are blended. 1.0 returns a copy of the fixed image, 0.0 returns a copy of the moving image."/>
+        <param name="inverse_transform" type="boolean" checked="false" truevalue="--inverse_transform" falsevalue=""
+            label="Set to Yes if inverse transformation should be displayed" />
+    </inputs>
+    <outputs>
+       <data format="png" name="overlay_out" />
+    </outputs>
+    <help>
+This tool performs an overlay of two images of which one was transformed to match the other.
+    </help>
+    <citations>
+        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
+    </citations>
+</tool>
