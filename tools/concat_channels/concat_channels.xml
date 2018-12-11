@@ -27,7 +27,7 @@
         <test>
             <param name="inputs" value="sample1.png,sample2.png"/>
             <param name="axis" value="0"/>
-            <output name="output" value="res.tiff" ftype="tiff"/>
+            <output name="output" value="res.tiff" ftype="tiff" compare="sim_size"/>
         </test>
     </tests>
     <help>This tool concatenates images.</help>
