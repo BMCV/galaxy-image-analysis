@@ -5,11 +5,15 @@ import skimage.io
 from skimage.measure import label
 from skimage.data import checkerboard
 import numpy as np
+import warnings 
 
 
 
 def binaryimage2points(input_file):
-    img_in = skimage.io.imread(input_file) 
+    # ignore warnings that arise when importing a package that was compiled against an older version of numpy than installed; https://github.com/numpy/numpy/pull/432
+    warnings.filterwarnings("ignore") 
+
+    img_in = skimage.io.imread(input_file, plugin='tifffile') 
     
     #make label image
     label = skimage.measure.label(img_in)
