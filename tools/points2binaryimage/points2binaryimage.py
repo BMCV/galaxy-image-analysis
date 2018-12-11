@@ -36,26 +36,18 @@ def points2binaryimage(point_file, out_file, shape=[500, 500], has_header=False,
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        skimage.io.imsave(out_file, img)
-
+        skimage.io.imsave(out_file, img, plugin='tifffile') # otherwise we get problems with the .dat extension
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('point_file', help='label file')
-    parser.add_argument('out_file', help='out file (TIFF)')
+    parser.add_argument('point_file', type=argparse.FileType('r'), help='label file')
+    parser.add_argument('out_file', type=str, help='out file (TIFF)')
     parser.add_argument('shapex', type=int, help='shapex')
     parser.add_argument('shapey', type=int, help='shapey')
     parser.add_argument('--has_header', dest='has_header', default=False, help='set True if CSV has header')
     parser.add_argument('--invert_xy', dest='invert_xy', default=False, help='invert x and y in CSV')
 
-    args        = parser.parse_args()
-    point_file  = args.point_file
-    out_file    = args.out_file
-    shapex      = args.shapex
-    shapey      = args.shapey
-    invert_xy   = args.invert_xy
-    has_header  = args.has_header
-
+    args = parser.parse_args()
 
     #TOOL
-    points2binaryimage(point_file, out_file, [shapey, shapex], has_header=has_header, invert_xy=invert_xy)
+    points2binaryimage(args.point_file.name, args.out_file, [args.shapey, args.shapex], has_header=args.has_header, invert_xy=args.invert_xy)

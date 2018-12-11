@@ -1,9 +1,11 @@
 <tool id="points2binaryimage" name="Points to Binary Image" version="0.1"> 
   <description>Converts points to a binary image</description>
   <requirements> 
-    <requirement type="package" version="0.20.1" >scikit-image</requirement>
+    <requirement type="package" version="0.14.1" >scikit-image</requirement>
     <requirement type="package" version="1.15.4">numpy</requirement>
-    <requirement type="package" version="0.23.2">pandas</requirement>
+    <requirement type="package" version="0.23.4">pandas</requirement>
+    <requirement type="package" version="2018.7">pytz</requirement><!--pandas seems to have additional requirements that are not automatically installed-->
+    <requirement type="package" version="2.4.1">dateutil</requirement>
   </requirements>
   <command> 
         <![CDATA[
@@ -14,8 +16,8 @@
     <param name="input" type="data" format="csv" label="CSV point file"/> 
     <param name="shapex" type="integer" value="500" optional="true" min="1" max="2000" label="Width of output image" />
     <param name="shapey" type="integer" value="500" optional="true" min="1" max="2000" label="Height of output image" />
-    <param name="has_header" type="boolean" checked="false" truevalue="--has_header" falsevalue="" optional="true" label="Does point file contain header?" /> 
-    <param name="invert_xy" type="boolean" checked="false" falsevalue="" truevalue="--invert_xy" optional="true" label="Inverts x and y in CSV point file" />
+    <param name="has_header" type="boolean" checked="false" truevalue="--has_header True" falsevalue="" optional="true" label="Does point file contain header?" /> 
+    <param name="invert_xy" type="boolean" checked="false" falsevalue="" truevalue="--invert_xy True" optional="true" label="Inverts x and y in CSV point file" />
   </inputs>
   <outputs>
     <data name="output" format="tiff" />
@@ -27,7 +29,7 @@
       <param name="shapey" value="30" />
       <param name="has_header" value="false" />
       <param name="invert_xy" value="true" />
-      <output name="output" ftype="tiff" file="out.tif" /> <!-- checks if output file is the same aus out.tif -->
+      <output name="output" ftype="tiff" file="out.tiff"  compare="sim_size"/> 
     </test>
   </tests>
   <help>Converts CSV point file to binary image.</help>
