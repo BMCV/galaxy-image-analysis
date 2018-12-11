@@ -1,16 +1,16 @@
 <tool id="permutate_axis" name="Permutate Axis" version="0.1">
   <description> Permutates axes </description>
   <requirements>
-    <requirement type="package" version="0.20.0">scikit-image</requirement>
+    <requirement type="package" version="0.14.0">scikit-image</requirement>
     <requirement type="package" version="1.15.4">numpy</requirement>
   </requirements>
   <command>
     <![CDATA[
-    python '$__tool_directory__/permutate_axis.py' '$input' '$output' --axis $axis $permutate
+    python '$__tool_directory__/permutate_axis.py' '$input' '$output' $permutate --axis $axis
     ]]>
   </command>
   <inputs>
-    <param name="input" type="data" format="tiff,png,jpg,bmp" label="Binary Image File"/>
+    <param name="input" type="data" format="tiff" label="Binary Image File"/>
     <param name="permutate" type="text" value="0,1,2" label="new channel order">
       <validator type="regex" message="Input has to be a sequence of axis, separated by commas">([0-4],)+[0-4]</validator>
     </param>
@@ -21,8 +21,8 @@
   </outputs>
   <tests>
     <test>
-      <param name="input" value="galaxyIcon_noText.png" />
-      <output name="output" file="out.tif" ftype="tiff" />
+      <param name="input" value="galaxyIcon_noText.tif"/>
+      <output name="output" file="res.tif" ftype="tiff" compare="sim_size"/>
     </test>
   </tests>
   <help>Permutates the image along a specified axis.</help>
