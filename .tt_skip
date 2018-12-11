@@ -1,5 +1,3 @@
-tools/points2binaryimage
-tools/points2labelimage
 tools/projective_transformation
 tools/projective_transformation_points
 tools/overlay_moving_and_fixed_image
