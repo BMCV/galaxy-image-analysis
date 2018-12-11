@@ -3,6 +3,5 @@ tools/projective_transformation_points
 tools/overlay_moving_and_fixed_image
 tools/scale_image
 tools/curl_post
-tools/anisotropic_diffusion
 tools/concat_channels
 tools/permutate_axis
