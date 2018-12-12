@@ -28,4 +28,6 @@ if __name__ == "__main__":
     parser.add_argument('--axis', dest='axis', type=int, default=0, choices=[0,2], help='concatenation axis')
     args = parser.parse_args()
 
-    concat_channels(args.input_files, args.out_file, args.axis)
+    # print([x.name for x in args.input_files], args.out_file.name, args.axis)
+    concat_channels([x.name for x in args.input_files], args.out_file.name, args.axis)
+    # concat_channels(args.input_files, args.out_file, args.axis)

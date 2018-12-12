@@ -1,8 +1,9 @@
 <tool id="binaryimage2points" name="Binary To Points" version="0.1">
     <description>Converts Binary Image to Points</description>
     <requirements>
-        <requirement type="package" version="0.12.3" >scikit-image</requirement>
-        <requirement type="package" version="0.21.0" >pandas</requirement>
+        <requirement type="package" version="1.15.4">numpy</requirement><!--https://github.com/numpy/numpy/pull/432 -->
+        <requirement type="package" version="0.14.0" >scikit-image</requirement>
+        <requirement type="package" version="0.23.4" >pandas</requirement>
     </requirements>
     <command>
         <![CDATA[
@@ -10,7 +11,7 @@
         ]]>
     </command>
     <inputs>
-        <param name="input" type="data" format="tiff,png,jpg,bmp" label="Binary Image File"/>
+        <param name="input" type="data" format="tiff" label="Binary Image File"/>
     </inputs>
     <outputs>
         <data format="csv" name="output"/>

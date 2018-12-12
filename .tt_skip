@@ -1,6 +1,5 @@
-tools/anisotropic_diffusion
-tools/concat_channels
-tools/points2binaryimage
-tools/binaryimage2points
-tools/permutate_axis
-tools/points2labelimage
+tools/projective_transformation
+tools/projective_transformation_points
+tools/overlay_moving_and_fixed_image
+tools/scale_image
+tools/curl_post

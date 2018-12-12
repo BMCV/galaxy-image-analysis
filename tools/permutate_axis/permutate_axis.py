@@ -7,7 +7,7 @@ import skimage.util
 
 def permutate_axis(input_image_path, output_image_path, axis, permutate):
     images = []
-    raw_image = skimage.io.imread(input_image_path)
+    raw_image = skimage.io.imread(input_image_path, plugin='tifffile')
     for i in permutate:
         # TODO generalise
         if axis == 0:
@@ -37,4 +37,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     permutate = [int(item) for item in args.permutate.split(',')]
-    permutate_axis(args.input_file, args.out_file.name, args.axis, permutate)
+    permutate_axis(args.input_file.name, args.out_file.name, args.axis, permutate)

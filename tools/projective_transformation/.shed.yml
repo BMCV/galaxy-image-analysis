@@ -1,0 +1,8 @@
+categories:
+  - Imaging
+description: Projective transformation
+long_description: This tool performs a projective transformation of the input (moving) image so that it fits the fixed image..
+name: projective_transformation
+owner: thomaswollmann
+homepage_url: https://github.com/bmcv
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tools/projective_transformation/

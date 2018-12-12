@@ -2,7 +2,7 @@
 categories:
   - Imaging
 description: Binary Image to Points
-long_description: This tool converts an image to points.
+long_description: This tool calculates the center of mass of a binary image.
 name: binaryimage2points
 owner: thomaswollmann
 homepage_url: https://github.com/bmcv

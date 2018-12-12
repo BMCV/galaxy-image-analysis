@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<tool name="cURL POST" id="curl_post" version="0.0.1">
+   <description>send cURL POST</description>
+   <requirements>
+     <requirement type="package" version="7.62.0">curl</requirement>
+   </requirements>
+   <command><![CDATA[curl -X POST '$url' --data-binary $input > $output ]]></command>
+   <inputs>
+        <param name="url" size="30" type="text" value="" label="URL" />
+        <param name="input" type="data" format="data" label="Source file" />
+    </inputs>
+    <outputs>
+       <data format="txt" name="output" />
+    </outputs>
+    <help>Uses cURL to send a file via POST.</help>
+    <citations>
+        <citation type="doi">10.7717/peerj.453</citation>
+    </citations>
+</tool>

@@ -1,0 +1,8 @@
+categories:
+  - Imaging
+description: Split Labelmaps
+long_description: Separates different labels in the same image by creating a new image
+name: split_labelmap
+owner: thomaswollmann
+homepage_url: https://github.com/bmcv
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tools/split_labelmaps/
