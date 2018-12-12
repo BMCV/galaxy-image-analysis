@@ -1,4 +1,4 @@
-<tool id="points2labelimage" name="Points 2 Label" version="0.1">
+<tool id="points2labelimage" name="Points 2 Label" version="0.2">
   <description>Points to Label Image</description>
   <requirements>
     <requirement type="package" version="1.15.4">numpy</requirement>
