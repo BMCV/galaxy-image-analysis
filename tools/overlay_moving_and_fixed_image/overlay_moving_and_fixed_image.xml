@@ -2,9 +2,9 @@
 <tool name="Overlay" id="viz_overlay_moving_and_fixed_image" version="0.0.1">
     <description>Overlay moving and fixed image</description>
     <requirements>
-        <requirement type="package" version="0.14.1">scikit-image</requirement>
+        <requirement type="package" version="0.14.0">scikit-image</requirement>
         <requirement type="package" version="0.23.4">pandas</requirement>
-        <requirement type="package" version="1.15.2">numpy</requirement>
+        <requirement type="package" version="1.15.4">numpy</requirement>
         <requirement type="package" version="1.1.0">scipy</requirement>
       	<requirement type="package" version="5.3.0">pillow</requirement>
     </requirements>
@@ -28,6 +28,15 @@
     <outputs>
        <data format="png" name="overlay_out" />
     </outputs>
+    <tests>
+      <test>
+        <param name="fixed_image" value="sample1.png" />
+        <param name="moving_image" value="sample2.png" />
+        <param name="warp_matrix" value="warp_matrix.csv" />
+        <param name="factor" value="0.75" />
+        <output name="overlay_out" value="out.png" ftype="png" compare="sim_size" />
+      </test>
+    </tests>
     <help>
 This tool performs an overlay of two images of which one was transformed to match the other.
     </help>
