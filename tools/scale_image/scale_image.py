@@ -21,7 +21,8 @@ def scale_image(input_file, output_file, scale, order=1):
             interp = 'bicubic'
 
         if ',' in scale:
-            scale = scale.replace('[','').replace(']','').split(',').reverse()
+            scale = scale[1:-1].split(',')
+            scale.reverse()
             scale = [int(i) for i in scale]
         elif '.' in scale:
             scale = float(scale)
@@ -29,16 +30,16 @@ def scale_image(input_file, output_file, scale, order=1):
             scale = int(scale)
 
         res = scipy.misc.imresize(img_in, scale, interp=interp)
-        skimage.io.imsave("tmp.png", res)
-        os.rename("tmp.png", output_file)
+        png_file = output_file.replace('.dat', '.png')# otherwise we get problems with the .dat extension of galaxy
+        skimage.io.imsave(png_file, res)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('input_file', type=argparse.FileType('r'), default=sys.stdin, help='input file')
-    parser.add_argument('out_file', type=argparse.FileType('w'), default=sys.stdin, help='out file (PNG)')
-    parser.add_argument('scale', help='fraction scaling factor(float), percentage scaling factor(int), output size(tuple(height,width))')
-    parser.add_argument('order', type=float, default=1, help='interpolation method')
+    parser.add_argument('out_file', type=argparse.FileType('w'), default=sys.stdin, help='out file (PNG)') 
+    parser.add_argument('scale', type=str, help='fraction scaling factor(float), percentage scaling factor(int), output size(tuple(height,width))') # integer option not implemented in galaxy wrapper
+    parser.add_argument('order', type=int, default=1, help='interpolation method')
     args = parser.parse_args()
 
     scale_image(args.input_file.name, args.out_file.name, args.scale, args.order)
