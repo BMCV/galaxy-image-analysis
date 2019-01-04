@@ -8,3 +8,4 @@ template_shed.yml
 */*.html
 */*.json
 */*.log
+tools_missing.txt
