@@ -4,8 +4,13 @@ template.xml
 template_shed.yml
 .vscode
 *.docx
+__pycache__
 */__pycache__
 */*.html
 */*.json
 */*.log
 tools_missing.txt
+bootstrap.sh
+get-pip.py
+helper.py
+ubuntu-cosmic-18.10-cloudimg-console.log
