@@ -32,8 +32,7 @@ def detection_viz(input_file, output_file, tp=None, fn=None, fp=None, stroke_siz
     if fp is not None:
         plot_circles(fp, ax, 'darkorange', stroke_size, circle_radius)
 
-    fig.canvas.print_png("tmp.png", dpi=1800)
-    os.rename("tmp.png", output_file)
+    fig.canvas.print_png(output_file, dpi=1800)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
