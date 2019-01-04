@@ -30,8 +30,7 @@ def scale_image(input_file, output_file, scale, order=1):
             scale = int(scale)
 
         res = scipy.misc.imresize(img_in, scale, interp=interp)
-        png_file = output_file.replace('.dat', '.png')# otherwise we get problems with the .dat extension of galaxy
-        skimage.io.imsave(png_file, res)
+        skimage.io.imsave(output_file, res)
 
 
 if __name__ == "__main__":

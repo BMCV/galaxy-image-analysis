@@ -6,13 +6,16 @@
   </requirements>
   <command>
         <![CDATA[
-        python '$__tool_directory__/scale_image.py' '$input' '$output'
+        python '$__tool_directory__/scale_image.py' '$input' ./out.png
         #if $use_scale_option.use_scale == 'true'
           $use_scale_option.scale
         #else if $use_scale_option.use_scale == 'false'
           '[$use_scale_option.scale_x, $use_scale_option.scale_y]'
         #end if
         $order
+
+        &&
+        mv ./out.png '$output'
         ]]>
   </command>
   <inputs>
@@ -46,7 +49,7 @@
         <param name="use_scale_option.scale_x" value="200"/>
         <param name="use_scale_option.scale_y" value="150"/>
         <param name="order" value="0"/>
-        <output name="output" value="out.png" ftype="png" compare="sim_size"/>
+        <output name="output" value="out2.png" ftype="png" compare="sim_size"/>
       </test>
     </tests>  
   <help>This tool scales an image using the scaling factor.</help>
