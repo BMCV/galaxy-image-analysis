@@ -38,6 +38,4 @@ else:
     plt.imshow(img)
 plt.contour(label, linewidths=args.thickness, colors=args.stroke_color)
 
-fig.canvas.print_png("tmp.png")
-os.rename("tmp.png", args.out_file)
-# png_name = args.out_file.replace('.dat', '.png')
+fig.canvas.print_png(args.out_file)

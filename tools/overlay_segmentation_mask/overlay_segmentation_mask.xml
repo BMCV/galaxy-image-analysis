@@ -17,7 +17,9 @@
        #end if
        --thickness $thickness
        --stroke_color '$stroke_color'
-       '$input_image' '$input_mask' '$output']]>
+       '$input_image' '$input_mask' ./tmp.png 
+       && mv ./tmp.png '$output'
+       ]]>
    </command>
    <inputs>
 	    <param name="input_image" type="data" label="Image Source File" format="tif,bmp,jpg,png"/>
