@@ -13,7 +13,8 @@
          '$fixed_image'
          '$moving_image'
          '$warp_matrix'
-         '$out'
+         ./out.png
+         && mv ./out.png '$out'
     ]]>
     </command>
     <inputs>
