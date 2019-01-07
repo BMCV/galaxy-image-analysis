@@ -6,7 +6,9 @@
     </requirements>
     <command>
         <![CDATA[
-        python '$__tool_directory__/detection_viz.py' '$input' '$output' --stroke_size $thickness --circle_radius $circle_radius $tp $fn $fp
+        python '$__tool_directory__/detection_viz.py' '$input' ./tmp.png 
+        --stroke_size $thickness --circle_radius $circle_radius $tp $fn $fp
+        && mv ./tmp.png '$output'
         ]]>
     </command>
     <inputs>

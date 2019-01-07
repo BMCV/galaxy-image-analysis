@@ -1,24 +1,33 @@
 <?xml version="1.0"?>
-<tool id="ip_projective_transformation_points" name="Projective Transformation Points" version="0.0.1">
+<tool id="ip_projective_transformation_points" name="Projective Transformation Points" version="0.0.2">
     <description>Projective Transformation for Points</description>
     <requirements>
-        <requirement type="package" version="0.14.1">scikit-image</requirement>
+        <requirement type="package" version="0.14.0">scikit-image</requirement>
         <requirement type="package" version="0.23.4">pandas</requirement>
-        <requirement type="package" version="1.15.2">numpy</requirement>
+        <requirement type="package" version="1.15.2">numpy</requirement><!--conflict of 1.15.4 with mkl_fft!?-->
     </requirements>
-    <command><![CDATA[
-        python '$__tool_directory__/projective_transformation_points.py
-            $moving_points
-            $warp_matrix
-            $out
-    ]]></command>
+    <command>
+    <![CDATA[
+        python '$__tool_directory__/projective_transformation_points.py'
+            '$moving_points'
+            '$warp_matrix'
+            '$out'
+    ]]>
+    </command>
     <inputs>
-        <param name="moving_points" type="data" format="tabular" label="Moving Points" />
+        <param name="moving_points" type="data" format="csv" label="Moving Points" />
         <param name="warp_matrix" type= "data" format="csv" label="Warp Matrix" />
     </inputs>
     <outputs>
-       <data format="tabular" name="out" />
+       <data format="csv" name="out" />
     </outputs>
+    <tests>
+      <test>
+        <param name="moving_points" value="points_tsv.csv" />
+        <param name="warp_matrix" value="warp_matrix.csv" />
+        <output name="out" value="out.csv" ftype="csv" />
+      </test>
+    </tests>
     <help>
 This tool performs a projective transformation of the input (moving) points.
     </help>

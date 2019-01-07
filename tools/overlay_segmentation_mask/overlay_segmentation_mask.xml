@@ -2,38 +2,56 @@
 <tool name="Overlay Segmentation Mask" id="ip_overlay_segmentation" version="0.0.6">
    <description>Overlay Segmentation Mask</description>
    <requirements>
-     <requirement type="package">matplotlib</requirement>
-     <requirement type="package">pillow</requirement>
-     <requirement type="package">tifffile</requirement>
-     <requirement type="package">scikit-image</requirement>
+     <requirement type="package" version="0.14.0">scikit-image</requirement>
+     <requirement type="package" version="3.0.2">matplotlib</requirement>
+     <requirement type="package" version="5.3.0">pillow</requirement>
+     <requirement type="package" version="0.10.0">tifffile</requirement>
    </requirements>
    <stdio>
      <exit_code level="fatal" range="1:"/>
    </stdio>
    <command interpreter="python"><![CDATA[overlay_segmentation_mask.py
+       $greyscale 
+       #if str($label_option.label) == '--label'
+         --label --label_color '$label_option.label_color'
+       #end if
        --thickness $thickness
        --stroke_color '$stroke_color'
-       #if $label_option['label'] == '--label'
-         --label --label_color '$label_option['label_color']'
-       #end if
-       $greyscale $input_image $input_mask $output]]></command>
+       '$input_image' '$input_mask' ./tmp.png 
+       && mv ./tmp.png '$output'
+       ]]>
+   </command>
    <inputs>
-	    <param name="input_image" type="data" label="Image Source File" />
-        <param name="input_mask" type="data" label="Mask Source File" />
-        <param name="greyscale" type="boolean" checked='true' truevalue='--grey' falsevalue='' label="Image Is Greyscale" />
+	    <param name="input_image" type="data" label="Image Source File" format="tif,bmp,jpg,png"/>
+      <param name="input_mask" type="data" label="Mask Source File" format="tif,bmp,jpg,png"/>
+      <param name="greyscale" type="boolean" checked='true' truevalue='--grey' falsevalue='' label="Image Is Greyscale" />
 	    <param name="thickness" size="4" type="float" value="0.3" label="Thickness" />
 	    <param name="stroke_color" type="color" value="#ff0000" label="Stroke Color"/>
-        <conditional name="label_option">
-          <param name="label" type="boolean" checked='false' truevalue='--label' falsevalue='' label="Plot Labels" />
+      <conditional name="label_option">
+        <param name="label" type="boolean" checked='false' truevalue='--label' falsevalue='' label="Plot Labels" />
           <when value=""> </when>
           <when value="--label">
       	    <param name="label_color" type="color" value="#ffff00" label="Label Color"/>
           </when>
-        </conditional>
+      </conditional>
    </inputs>
    <outputs>
         <data format="png" name="output" />
    </outputs>
+   <tests>
+   <test> 
+    <conditional name="label_option">
+      <param name="label" value="--label"/>
+      <param name="label_color" value="#ffff00"/>
+    </conditional>
+      <param name="stroke_color" value="#ffaa00"/>
+      <param name="label_option['label']" value="--label"/>
+      <param name="input_image" value="sample.tif"/>
+      <param name="input_mask" value="sample_seg.tif"/>
+      <param name="greyscale" value="--grey"/> 
+      <output name="output" value="outt.png" ftype="png" compare="sim_size"/>
+    </test>
+   </tests>
    <help>
 This tool overlays a segmentation mask over an image.
    </help>

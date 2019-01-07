@@ -1,7 +1,7 @@
 categories:
   - Imaging
 description: Projective transformation
-long_description: This tool performs a projective transformation of the input (moving) image so that it fits the fixed image..
+long_description: This tool performs a projective transformation of the input (moving) image so that it fits the fixed image. Returns the projected image.
 name: projective_transformation
 owner: thomaswollmann
 homepage_url: https://github.com/bmcv

@@ -48,8 +48,7 @@ def transform(moving_image, fixed_image, warp_matrix, out):
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        skimage.io.imsave("tmp.png", t)
-        shutil.move("tmp.png", out)
+        skimage.io.imsave(out, t)
 
 
 if __name__ == "__main__":

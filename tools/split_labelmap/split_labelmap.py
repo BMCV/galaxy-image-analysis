@@ -1,4 +1,4 @@
-from scipy import misc
+from imageio import imread as io_imread
 from skimage.measure import regionprops
 import numpy as np
 #import matplotlib.pyplot as plt
@@ -8,6 +8,7 @@ import skimage.draw
 from tifffile import imsave
 import os
 import argparse
+import warnings
 
 # split_label_image takes a label image and outputs a similar file with the given name where the labeled
 # parts of the image that touch (or overlap) are separated by at least 1 pixel (at most 2).
@@ -16,7 +17,7 @@ import argparse
 def split_labelmap(labelmap,outputfile):
 
     # Information from the label map.
-    label_img = misc.imread(labelmap)
+    label_img = io_imread(labelmap)
     xtot, ytot = label_img.shape
     props = regionprops(label_img)
     N = len(props)
@@ -55,8 +56,9 @@ def split_labelmap(labelmap,outputfile):
     result = skimage.util.img_as_ubyte(background)
 
     # Save image
-    outputfile_name = os.path.splitext(outputfile)[0]  # In case given outputfile contains extension.
-    imsave(os.path.join((outputfile_name + '.tif')), result)
+    with warnings.catch_warnings(): 
+        warnings.simplefilter("ignore")
+        skimage.io.imsave(outputfile, result, plugin="tifffile")
 
     return None
 
