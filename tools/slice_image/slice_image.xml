@@ -1,0 +1,89 @@
+<tool id="slice_image" name="Slice Image" version="0.1"> 
+  <description>Slice image</description>
+  <requirements> 
+    <requirement type="package" version="0.14.0">scikit-image</requirement>
+    <requirement type="package" version="1.15.4">numpy</requirement>
+    <requirement type="package" version="1.1.0">scipy</requirement>
+  </requirements>
+  <command> 
+        <![CDATA[
+        mkdir ./out_dir &&
+
+        python "$__tool_directory__/slice_image.py" 
+        '$input_file' ./out_dir
+        --stride $stride --window_size $patch_size --bg_thresh $bg_thresh 
+        --limit_slices $limit_slices.bool 
+        #if $limit_slices.bool == "true":
+          --n_thresh $limit_slices.n_tresh
+        #end if
+        #if $control_rng.bool == "true":
+          --seed $control_rng.seed
+        #end if
+        ]]> 
+  </command>
+  <inputs> <!--inputs as seen in the interface-->
+    <param name="input_file" type="data" format="tiff,png,jpg,bmp" label="Input image"/> 
+    <!--<param name="out_folder" type="text" label="Output folder for image slices"/> 
+    <param name="label_file" type="data" format="tiff,png,jpg,bmp" label="Auxiliary label file to split in the same way"/>--> 
+    <param name="stride" type="integer" optional="true" value="16"/>
+    <param name="patch_size" type="integer" optional="true" value="64" label="Size of resulting (quadratic-shaped) slices"/>
+    <param name="bg_thresh" type="float" optional="true" value="0" label="Threshold to not be considered background"/>
+    <conditional name="limit_slices">
+          <param name="bool" type="boolean" checked="false" truevalue="true" label="Should the number of slices be limited?"/>
+          <when value="true">
+            <param name="n_thresh" type="integer" value="500" label="Maximum amount of slices"/>
+          </when>
+          <when value="false">
+          </when>
+    </conditional>
+    <conditional name="control_rng" label="Should the random number generator be manipulated?">
+      <param name="bool" type="boolean" checked="false" truevalue="true" label="Boolean that decides if random number generator should be manipulated."/>
+      <when value="true">
+        <param name="seed" type="integer" value="1" label="Seed chosen for the random number generator of the random choice of limited slices"/>
+      </when>
+      <when value="false">
+      </when>
+    </conditional>
+  </inputs>
+  <outputs>
+    <collection name="slices" type="list" label="Slices obtained from input">
+      <discover_datasets directory="out_dir" format="tiff"/>
+      <!-- <discover_datasets directory="out_dir" visible="false" format="tiff" pattern="__name__"/> -->
+    </collection>
+  </outputs>
+  <tests>
+    <test>
+    <param name="input_file" value="input.tiff"/>
+    <param name="limit_slices.bool" value="true"/>
+    <param name="limit_slices.n_thresh" value="10"/>
+    <param name="control_rng.bool" value="true"/>
+    <param name="control_rng.seed" value="17"/>
+    <output_collection name="slices" type="list">
+      <!-- <element name="input_22.tiff" file="input_22.tiff" ftype="tiff" compare="sim_size"/>
+      <element name="input_37.tiff" file="input_37.tiff" ftype="tiff" compare="sim_size"/>
+      <element name="input_38.tiff" file="input_38.tiff" ftype="tiff" compare="sim_size"/>
+      <element name="input_46.tiff" file="input_46.tiff" ftype="tiff" compare="sim_size"/>
+      <element name="input_53.tiff" file="input_53.tiff" ftype="tiff" compare="sim_size"/>
+      <element name="input_66.tiff" file="input_66.tiff" ftype="tiff" compare="sim_size"/>
+      <element name="input_69.tiff" file="input_69.tiff" ftype="tiff" compare="sim_size"/>
+      <element name="input_90.tiff" file="input_90.tiff" ftype="tiff" compare="sim_size"/>
+      <element name="input_98.tiff" file="input_98.tiff" ftype="tiff" compare="sim_size"/>
+      <element name="input_103.tiff" file="input_103.tiff" ftype="tiff" compare="sim_size"/> -->
+      <element name="1.tiff" file="input_22.tiff" ftype="tiff" compare="sim_size"/>
+      <element name="2.tiff" file="input_37.tiff" ftype="tiff" compare="sim_size"/>
+      <element name="3.tiff" file="input_38.tiff" ftype="tiff" compare="sim_size"/>
+      <element name="4.tiff" file="input_46.tiff" ftype="tiff" compare="sim_size"/>
+      <element name="5.tiff" file="input_53.tiff" ftype="tiff" compare="sim_size"/>
+      <element name="6.tiff" file="input_66.tiff" ftype="tiff" compare="sim_size"/>
+      <element name="7.tiff" file="input_69.tiff" ftype="tiff" compare="sim_size"/>
+      <element name="8.tiff" file="input_90.tiff" ftype="tiff" compare="sim_size"/>
+      <element name="9.tiff" file="input_98.tiff" ftype="tiff" compare="sim_size"/>
+      <element name="10.tiff" file="input_103.tiff" ftype="tiff" compare="sim_size"/>
+    </output_collection>
+    </test>
+  </tests>
+  <help>Slices image into multiple smaller patches.</help>
+  <citations>
+      <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation> 
+  </citations>
+</tool>
