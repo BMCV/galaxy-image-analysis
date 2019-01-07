@@ -1,0 +1,30 @@
+<tool id="wsi_extract_top_view" name="Extract Top View from WSI" version="0.1"> 
+  <description>Extracts top view from WSI</description>
+  <requirements> 
+    <requirement type="package" version="0.14.0" >scikit-image</requirement>
+    <requirement type="package" version="1.15.4">numpy</requirement>
+    <requirement type="package" version="1.1.1">openslide-python</requirement>
+    <requirement type="package" version="0.5">glob2</requirement>
+  </requirements>
+  <command> 
+        <![CDATA[
+        python "$__tool_directory__/wsi_extract_top_view.py" '$input' '$output'
+        ]]>
+  </command>
+  <inputs> 
+    <param name="input" type="data" format="svs,tif,ndpi,vms,vmu,scn,mrxs,tiff,svslide,bif" label="Whole Slice Image"/><!--formats taken as listed on https://openslide.org/api/python/-->
+  </inputs>
+  <outputs>
+    <data name="output" format="tiff"/>
+  </outputs>
+  <tests>
+    <test>
+	    <param name="input" value="CMU-1-Small-Region.svs"/>
+      <output name="output" value="out.tif" ftype="tiff" compare="sim_size"/>
+    </test>
+  </tests>
+  <help>Extracts the top view from a whole-slice image, also known as virtual slide, which are high-resolution images used in digital pathology.</help>
+  <citations>
+      <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
+  </citations>
+</tool>
