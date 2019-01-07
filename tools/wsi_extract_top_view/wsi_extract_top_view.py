@@ -10,7 +10,7 @@ def wsi_extract_top_view(input_path, out_path):
     top_size = img_raw.level_dimensions[len(img_raw.level_dimensions)-1]
     img_area = img_raw.read_region((0,0), len(img_raw.level_dimensions)-1, top_size)
     img_area = np.asarray(img_area, dtype=np.uint8)
-    skimage.io.imsave(out_path, img_area)
+    skimage.io.imsave(out_path, img_area, plugin="tifffile")
 
 
 if __name__ == "__main__":
