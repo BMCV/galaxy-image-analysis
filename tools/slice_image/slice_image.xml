@@ -3,21 +3,21 @@
   <requirements> 
     <requirement type="package" version="0.14.0">scikit-image</requirement>
     <requirement type="package" version="1.15.4">numpy</requirement>
-    <requirement type="package" version="1.1.0">scipy</requirement>
+    <!-- <requirement type="package" version="1.1.0">scipy</requirement> -->
   </requirements>
   <command> 
         <![CDATA[
         mkdir ./out_dir &&
 
-        python "$__tool_directory__/slice_image.py" 
+        python '$__tool_directory__/slice_image.py'
         '$input_file' ./out_dir
         --stride $stride --window_size $patch_size --bg_thresh $bg_thresh 
-        --limit_slices $limit_slices.bool 
-        #if $limit_slices.bool == "true":
-          --n_thresh $limit_slices.n_tresh
+        --limit_slices $limit_slices 
+        #if $limit_slices:
+          --n_thresh $n_thresh
         #end if
-        #if $control_rng.bool == "true":
-          --seed $control_rng.seed
+        #if $control_rng:
+          --seed $seed
         #end if
         ]]> 
   </command>
@@ -28,22 +28,10 @@
     <param name="stride" type="integer" optional="true" value="16"/>
     <param name="patch_size" type="integer" optional="true" value="64" label="Size of resulting (quadratic-shaped) slices"/>
     <param name="bg_thresh" type="float" optional="true" value="0" label="Threshold to not be considered background"/>
-    <conditional name="limit_slices">
-          <param name="bool" type="boolean" checked="false" truevalue="true" label="Should the number of slices be limited?"/>
-          <when value="true">
-            <param name="n_thresh" type="integer" value="500" label="Maximum amount of slices"/>
-          </when>
-          <when value="false">
-          </when>
-    </conditional>
-    <conditional name="control_rng" label="Should the random number generator be manipulated?">
-      <param name="bool" type="boolean" checked="false" truevalue="true" label="Boolean that decides if random number generator should be manipulated."/>
-      <when value="true">
-        <param name="seed" type="integer" value="1" label="Seed chosen for the random number generator of the random choice of limited slices"/>
-      </when>
-      <when value="false">
-      </when>
-    </conditional>
+    <param name="limit_slices" type="boolean" checked="true" label="Should the number of slices be limited?"/>
+    <param name="n_thresh" type="integer" optional="true" label="Maximum amount of slices; only needed if limit_slices is selected"/>  
+    <param name="control_rng" type="boolean" checked="false" label="Boolean that controls if a certain seed should be selected for the random number generator"/>
+    <param name="seed" type="integer" value="1" label="Seed chosen for the random number generator of the random choice of limited slices. Only required if cotrol_rng is selected"/>
   </inputs>
   <outputs>
     <collection name="slices" type="list" label="Slices obtained from input">
@@ -54,10 +42,10 @@
   <tests>
     <test>
     <param name="input_file" value="input.tiff"/>
-    <param name="limit_slices.bool" value="true"/>
-    <param name="limit_slices.n_thresh" value="10"/>
-    <param name="control_rng.bool" value="true"/>
-    <param name="control_rng.seed" value="17"/>
+    <param name="limit_slices" value="true"/>
+    <param name="n_thresh" value="10"/>
+    <param name="control_rng" value="true"/>
+    <param name="seed" value="17"/>
     <output_collection name="slices" type="list">
       <!-- <element name="input_22.tiff" file="input_22.tiff" ftype="tiff" compare="sim_size"/>
       <element name="input_37.tiff" file="input_37.tiff" ftype="tiff" compare="sim_size"/>
