@@ -1,6 +1,6 @@
 categories:
   - Imaging
-description: Overlay moving and fixed image
+description: Overly moving and fixed image
 long_description: This tool generates an overlay of two images of which one was transformed to match the other.
 name: overlay_moving_and_fixed_image
 owner: thomaswollmann
