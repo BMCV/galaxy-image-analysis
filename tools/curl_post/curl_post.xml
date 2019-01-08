@@ -6,7 +6,7 @@
    </requirements>
    <command><![CDATA[curl -X POST -s '$url' --data-binary '$input' > '$output' ]]></command>
    <inputs>
-        <param name="url" size="30" type="text" value="" label="URL"/>
+        <param name="url" type="text" value="" label="URL"/>
         <param name="input" type="data" format="data" label="Source file"/>
     </inputs>
     <outputs>
