@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<tool name="Colocalization" id="ip_colocalization" version="0.0.5">
+  <requirements>
+    <requirement type="package">numpy</requirement>
+    <requirement type="package">pillow</requirement>
+    <requirement type="package">tifffile</requirement>
+    <requirement type="package">scikit-image</requirement>
+  </requirements>
+   <description>Colocalization</description>
+   <command interpreter="python">colocalization_viz.py ${input_mask1} ${input_mask2} ${output}</command>
+   <inputs>
+        <param name="input_mask1" type="data" format="tiff" label="Mask1 Source File" />
+	    <param name="input_mask2" type="data" format="tiff" label="Mask2 Source File" />
+   </inputs>
+   <outputs>
+        <data format="png" name="output" />
+   </outputs>
+   <help>
+This tool overlays two segmentation maps and displays the colocalization results.
+   </help>
+   <citations>
+     <citation type="doi">10.7717/peerj.453</citation>
+ </citations>
+</tool>

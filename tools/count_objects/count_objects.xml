@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<tool name="Count Objects" id="ip_count_objects" version="0.0.3">
+  <description>Count Objects</description>
+  <requirements>
+    <requirement type="package">numpy</requirement>
+    <requirement type="package">pillow</requirement>
+    <requirement type="package">tifffile</requirement>
+    <requirement type="package">scikit-image</requirement>
+  </requirements>
+  <command interpreter="python"><![CDATA[count_objects.py $input $output]]></command>
+  <inputs>
+        <param name="input" type="data" format="tiff" label="Source file" />
+  </inputs>
+  <outputs>
+       <data format="tabular" name="output" />
+  </outputs>
+    <help>
+**What it does**
+
+<![CDATA[
+This tool counts objects in an labeled image.
+]]>
+    </help>
+    <citations>
+        <citation type="doi">10.7717/peerj.453</citation>
+    </citations>
+</tool>

@@ -1,0 +1,23 @@
+<tool id="mergeneighboursinlabelimage" name="Merge Neighbours in Label" version="0.1">
+  <description>Merge Neighbours in Label Image</description>
+  <requirements>
+    <requirement type="package" version="0.12.3" >scikit-image</requirement>
+    <requirement type="package">numpy</requirement>
+    <requirement type="package">scipy</requirement>
+  </requirements>
+  <command>
+        <![CDATA[
+        python '$__tool_directory__/mergeneighboursinlabelimage.py '$input' '$output' -c $c
+        ]]>
+  </command>
+  <inputs>
+    <param name="input" type="data" format="tiff,png,jpg,bmp" label="Label Image File"/>
+    <param  label="Distance in pixel of objects which are merged" name="c" type="integer" value="50"/>
+  </inputs>
+  <outputs>
+    <data format="tiff" name="output"/>
+  </outputs><help>This tools merges nearby objects in a label image using the minimum pixel distance.</help>
+  <citations>
+      <citation type="doi">10.7717/peerj.453</citation>
+  </citations>
+</tool>

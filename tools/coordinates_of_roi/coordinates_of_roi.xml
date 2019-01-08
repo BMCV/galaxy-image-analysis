@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<tool name="Coordinates of ROI" id="ia_coordinates_of_roi" version="0.0.2">
+    <description>Coordinates of ROI</description>
+    <requirements>
+        <requirement type="package" version="0.14.1">scikit-image</requirement>
+        <requirement type="package" version="0.23.4">pandas</requirement>
+    </requirements>
+    <command><![CDATA[
+        python '$__tool_directory__/coordinates_of_roi.py'
+        '$im'
+        '$pixel_table'
+        $white_obj
+        --threshold $threshold
+    ]]></command>
+    <inputs>
+	<param name="im" type="data" format="png" label="Source file" />
+	<param name="white_obj" type="boolean" truevalue="--white_obj" falsevalue="" checked="false" label="Set to Yes if object is white and background black, otherwise set to No" />
+	<param name="threshold" type="float" value="0.5" label="Threshold value" />
+    </inputs>
+    <outputs>
+       <data format="tabular" name="pixel_table" />
+    </outputs>
+    <help>
+This tool creates a table containing the pixelcoordinates of the Region of Interest (ROI).
+    </help>
+    <citations>
+        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
+    </citations>
+</tool>

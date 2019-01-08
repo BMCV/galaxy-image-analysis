@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<tool name="2D Feature Extraction" id="ip_2d_feature_extraction" version="0.0.7">
+  <description>Feature Extraction</description>
+  <requirements>
+    <requirement type="package">numpy</requirement>
+    <requirement type="package">pillow</requirement>
+    <requirement type="package">tifffile</requirement>
+    <requirement type="package">scikit-image</requirement>
+    <requirement type="package">pandas</requirement>
+  </requirements>
+  <command interpreter="python"><![CDATA[2d_feature_extraction.py
+    #if $feature_options['features'] == 'all'
+      --all
+    #else if $feature_options['features'] == 'select'
+      ${' '.join(str( $feature_options['selected_features'] ).split(','))}
+    #end if
+    #if $use_raw_option['use_raw'] == 'raw_image'
+      --raw $input_raw
+    #end if
+    $input_label $output]]></command>
+  <inputs>
+        <param name="input_label" type="data" format="tiff" label="Label file" />
+        <conditional name="use_raw_option">
+          <param label="Use original image to compute additional features" name="use_raw" type="select">
+            <option selected="True" value="no_original">No original image</option>
+            <option value="raw_image">Use original image</option>
+          </param>
+          <when value="no_original"> </when>
+          <when value="raw_image">
+            <param name="input_raw" type="data" format="tiff" label="Original image file" />
+          </when>
+        </conditional>
+        <conditional name="feature_options">
+            <param label="Select features to compute" name="features" type="select">
+              <option selected="True" value="all">All features</option>
+              <option value="select">Select features</option>
+            </param>
+            <when value="all"> </when>
+            <when value="select">
+              <param name="selected_features" type="select" label="Available features" multiple="true" display="checkboxes">
+                <option value="--label">Add label id of label image</option>
+                <option value="--patches">Patches (requires original image)</option>
+                <option value="--max_intensity">Max Intensity (requires original image)</option>
+                <option value="--mean_intensity">Mean Intensity (requires original image)</option>
+                <option value="--min_intensity">Minimum Intensity (requires original image)</option>
+                <option value="--moments_hu">Moments Hu</option>
+                <option value="--centroid">Centroid</option>
+                <option value="--bbox">Bounding Box</option>
+                <option value="--area">Area</option>
+                <option value="--filled_area">Filled Area</option>
+                <option value="--convex_area">Convex Area</option>
+                <option value="--perimeter">Perimeter</option>
+                <option value="--extent">Extent</option>
+                <option value="--eccentricity">Eccentricity</option>
+                <option value="--equivalent_diameter">Equivalent Diameter</option>
+                <option value="--euler_number">Euler Number</option>
+                <option value="--inertia_tensor_eigvals">Inertia Tensor Eigenvalues</option>
+                <option value="--major_axis_length">Major Axis Length</option>
+                <option value="--minor_axis_length">Minor Axis Length</option>
+                <option value="--orientation">Orientation</option>
+                <option value="--solidity">Solidity</option>
+                <option value="--moments">Moments</option>
+                <option value="--convexity">Convexity</option>
+              </param>
+            </when>
+        </conditional>
+  </inputs>
+  <outputs>
+       <data format="tabular" name="output" />
+  </outputs>
+    <help>
+**What it does**
+
+<![CDATA[
+This tool computes several features of a 2D label image and optional more features using the original image
+]]>
+    </help>
+    <citations>
+        <citation type="doi">10.7717/peerj.453</citation>
+    </citations>
+</tool>
