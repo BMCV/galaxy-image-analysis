@@ -1,27 +1,31 @@
 <?xml version="1.0"?>
-<tool name="Count Objects" id="ip_count_objects" version="0.0.3">
+<tool name="Count Objects" id="ip_count_objects" version="0.0.4">
   <description>Count Objects</description>
   <requirements>
-    <requirement type="package">numpy</requirement>
-    <requirement type="package">pillow</requirement>
-    <requirement type="package">tifffile</requirement>
-    <requirement type="package">scikit-image</requirement>
+    <requirement type="package" version="0.14.0">scikit-image</requirement>
+    <requirement type="package" version="1.15.4">numpy</requirement>
   </requirements>
-  <command interpreter="python"><![CDATA[count_objects.py $input $output]]></command>
+  <command>
+  <![CDATA[
+  python '$__tool_directory__/count_objects.py' '$input' '$output'
+  ]]>
+  </command>
   <inputs>
         <param name="input" type="data" format="tiff" label="Source file" />
   </inputs>
   <outputs>
        <data format="tabular" name="output" />
   </outputs>
+  <tests>
+    <test>
+    <param name="input" value="input.tiff"/>
+    <output name="output" value="table.csv" ftype="tabular"/>
+    </test>
+  </tests>
     <help>
-**What it does**
-
-<![CDATA[
-This tool counts objects in an labeled image.
-]]>
+    This tool counts objects in a labeled image.
     </help>
     <citations>
-        <citation type="doi">10.7717/peerj.453</citation>
+        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
     </citations>
 </tool>
