@@ -1,0 +1,8 @@
+categories:
+  - Imaging
+description: Colocalization Visualization
+long_description: Visualizes colocalization
+name: colocalization_viz
+owner: thomaswollmann
+homepage_url: https://github.com/bmcv
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tools/colocalization_viz/
