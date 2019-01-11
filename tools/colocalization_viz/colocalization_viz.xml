@@ -1,24 +1,34 @@
 <?xml version="1.0"?>
-<tool name="Colocalization" id="ip_colocalization" version="0.0.5">
+<tool name="Colocalization" id="ip_colocalization" version="0.0.6">
+   <description>Colocalization of two segmentation maps</description>
   <requirements>
-    <requirement type="package">numpy</requirement>
-    <requirement type="package">pillow</requirement>
-    <requirement type="package">tifffile</requirement>
-    <requirement type="package">scikit-image</requirement>
+    <requirement type="package" version="0.14.0">scikit-image</requirement>
+    <requirement type="package" version="1.15.4">numpy</requirement>
   </requirements>
-   <description>Colocalization</description>
-   <command interpreter="python">colocalization_viz.py ${input_mask1} ${input_mask2} ${output}</command>
+   <command>
+   <![CDATA[
+    python '$__tool_directory__/colocalization_viz.py' '$input_mask1' '$input_mask2' ./tmp.png
+    && mv ./tmp.png '$output'
+   ]]>
+   </command>
    <inputs>
-        <param name="input_mask1" type="data" format="tiff" label="Mask1 Source File" />
+      <param name="input_mask1" type="data" format="tiff" label="Mask1 Source File" />
 	    <param name="input_mask2" type="data" format="tiff" label="Mask2 Source File" />
    </inputs>
    <outputs>
         <data format="png" name="output" />
    </outputs>
+   <tests>
+    <test>
+      <param name="input_mask1" value="sample1.tiff"/>
+      <param name="input_mask2" value="sample2.tiff"/>
+      <output name="output" value="out.png" ftype="png" compare="sim_size"/>
+    </test>
+   </tests>
    <help>
-This tool overlays two segmentation maps and displays the colocalization results.
+      This tool overlays two segmentation maps and displays the colocalization results.
    </help>
    <citations>
-     <citation type="doi">10.7717/peerj.453</citation>
+     <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
  </citations>
 </tool>
