@@ -1,23 +1,26 @@
 <?xml version="1.0"?>
-<tool name="2D Feature Extraction" id="ip_2d_feature_extraction" version="0.0.7">
+<tool name="2D Feature Extraction" id="ip_2d_feature_extraction" version="0.0.8">
   <description>Feature Extraction</description>
   <requirements>
-    <requirement type="package">numpy</requirement>
-    <requirement type="package">pillow</requirement>
-    <requirement type="package">tifffile</requirement>
-    <requirement type="package">scikit-image</requirement>
-    <requirement type="package">pandas</requirement>
+    <requirement type="package" version="0.23.4">pandas</requirement>
+    <requirement type="package" version="0.14.0">scikit-image</requirement>
+    <requirement type="package" version="1.15.4">numpy</requirement>
+    <requirement type="package" version="0.15.1">tifffile</requirement>
   </requirements>
-  <command interpreter="python"><![CDATA[2d_feature_extraction.py
+  <command>
+  <![CDATA[
+    python '$__tool_directory__/2d_feature_extraction.py'
     #if $feature_options['features'] == 'all'
       --all
     #else if $feature_options['features'] == 'select'
       ${' '.join(str( $feature_options['selected_features'] ).split(','))}
     #end if
     #if $use_raw_option['use_raw'] == 'raw_image'
-      --raw $input_raw
+      --raw '$input_raw'
     #end if
-    $input_label $output]]></command>
+    '$input_label' '$output'
+    ]]>
+  </command>
   <inputs>
         <param name="input_label" type="data" format="tiff" label="Label file" />
         <conditional name="use_raw_option">
@@ -68,14 +71,18 @@
   <outputs>
        <data format="tabular" name="output" />
   </outputs>
-    <help>
-**What it does**
-
-<![CDATA[
-This tool computes several features of a 2D label image and optional more features using the original image
-]]>
-    </help>
-    <citations>
-        <citation type="doi">10.7717/peerj.453</citation>
-    </citations>
+  <tests>
+    <test>
+      <param name="input_label" value="input.tiff"/>
+      <param name="features" value="select"/>
+      <param name="selected_features" value="--area"/>
+      <output name="output" ftype="tabular" value="out.csv"/>
+    </test>
+  </tests>
+  <help>
+    This tool computes several features of a 2D label image and optionally more features using the original image.
+  </help>
+  <citations>
+      <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
+  </citations>
 </tool>
