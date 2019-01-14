@@ -1,13 +1,13 @@
-<tool id="mergeneighboursinlabelimage" name="Merge Neighbours in Label" version="0.1">
+<tool id="mergeneighboursinlabelimage" name="Merge Neighbours in Label" version="0.2">
   <description>Merge Neighbours in Label Image</description>
   <requirements>
-    <requirement type="package" version="0.12.3" >scikit-image</requirement>
-    <requirement type="package">numpy</requirement>
-    <requirement type="package">scipy</requirement>
+    <requirement type="package" version="0.14.0">scikit-image</requirement>
+    <requirement type="package" version="1.15.4">numpy</requirement>
   </requirements>
   <command>
         <![CDATA[
-        python '$__tool_directory__/mergeneighboursinlabelimage.py '$input' '$output' -c $c
+        python '$__tool_directory__/mergeneighboursinlabelimage.py' '$input' ./tmp.tiff -c $c
+        && mv ./tmp.tiff '$output'
         ]]>
   </command>
   <inputs>
@@ -16,8 +16,16 @@
   </inputs>
   <outputs>
     <data format="tiff" name="output"/>
-  </outputs><help>This tools merges nearby objects in a label image using the minimum pixel distance.</help>
+  </outputs>
+  <tests>
+    <test>
+      <param name="input" value="galaxyIcon_noText.tif"/>
+      <param name="c" value="10"/>
+      <output name="output" file="out.tiff" ftype="tiff" compare="sim_size"/>
+    </test>
+  </tests>
+  <help>This tools merges nearby objects in a label image using the minimum pixel distance.</help>
   <citations>
-      <citation type="doi">10.7717/peerj.453</citation>
+      <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
   </citations>
 </tool>
