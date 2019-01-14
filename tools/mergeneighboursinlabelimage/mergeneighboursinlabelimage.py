@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import argparse
 import sys
 import skimage.io
@@ -46,6 +44,5 @@ if __name__ == "__main__":
     label_image = merge_n(label_image, args.cluster_merge)
     with warnings.catch_warnings():
     	warnings.simplefilter("ignore")
-    	res = skimage.util.img_as_uint(res)
-    	skimage.io.imsave("tmp.tiff", res)
-    os.rename("tmp.tiff", args.output_file.name)
+    	res = skimage.util.img_as_uint(label_image)
+    	skimage.io.imsave(args.out_file.name, res, plugin="tifffile")
