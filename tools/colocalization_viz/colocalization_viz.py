@@ -22,5 +22,4 @@ res = np.concatenate((im1, im2, np.zeros_like(im1)), axis=2) * 1.0
 
 with warnings.catch_warnings():
 	warnings.simplefilter("ignore")
-	skimage.io.imsave("tmp.png", res)
-os.rename("tmp.png", args[3])
+	skimage.io.imsave(args[3], res)
