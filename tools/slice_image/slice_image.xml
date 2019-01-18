@@ -1,4 +1,4 @@
-<tool id="slice_image" name="Slice Image" version="0.1"> 
+<tool id="slice_image" name="Slice Image" version="0.2"> 
   <description>Slice image</description>
   <requirements> 
     <requirement type="package" version="0.14.0">scikit-image</requirement>
@@ -7,10 +7,10 @@
   </requirements>
   <command> 
         <![CDATA[
-        mkdir ./out_dir &&
+        mkdir ./out &&
 
         python '$__tool_directory__/slice_image.py'
-        '$input_file' ./out_dir
+        '$input_file' ./out
         --stride $stride --window_size $patch_size --bg_thresh $bg_thresh 
         --limit_slices $limit_slices 
         #if $limit_slices:
@@ -19,9 +19,10 @@
         #if $control_rng:
           --seed $seed
         #end if
+        && ls -l ./out 
         ]]> 
   </command>
-  <inputs> <!--inputs as seen in the interface-->
+  <inputs>
     <param name="input_file" type="data" format="tiff,png,jpg,bmp" label="Input image"/> 
     <!--<param name="out_folder" type="text" label="Output folder for image slices"/> 
     <param name="label_file" type="data" format="tiff,png,jpg,bmp" label="Auxiliary label file to split in the same way"/>--> 
@@ -35,7 +36,8 @@
   </inputs>
   <outputs>
     <collection name="slices" type="list" label="Slices obtained from input">
-      <discover_datasets directory="out_dir" format="tiff"/>
+      <!-- <discover_datasets directory="out" format="tiff" /> -->
+      <discover_datasets directory="out" format="tiff" pattern="__name__"/>
       <!-- <discover_datasets directory="out_dir" visible="false" format="tiff" pattern="__name__"/> -->
     </collection>
   </outputs>
@@ -43,30 +45,15 @@
     <test>
     <param name="input_file" value="input.tiff"/>
     <param name="limit_slices" value="true"/>
-    <param name="n_thresh" value="10"/>
+    <param name="n_thresh" value="5"/>
     <param name="control_rng" value="true"/>
     <param name="seed" value="17"/>
     <output_collection name="slices" type="list">
-      <!-- <element name="input_22.tiff" file="input_22.tiff" ftype="tiff" compare="sim_size"/>
-      <element name="input_37.tiff" file="input_37.tiff" ftype="tiff" compare="sim_size"/>
-      <element name="input_38.tiff" file="input_38.tiff" ftype="tiff" compare="sim_size"/>
-      <element name="input_46.tiff" file="input_46.tiff" ftype="tiff" compare="sim_size"/>
-      <element name="input_53.tiff" file="input_53.tiff" ftype="tiff" compare="sim_size"/>
-      <element name="input_66.tiff" file="input_66.tiff" ftype="tiff" compare="sim_size"/>
-      <element name="input_69.tiff" file="input_69.tiff" ftype="tiff" compare="sim_size"/>
-      <element name="input_90.tiff" file="input_90.tiff" ftype="tiff" compare="sim_size"/>
-      <element name="input_98.tiff" file="input_98.tiff" ftype="tiff" compare="sim_size"/>
-      <element name="input_103.tiff" file="input_103.tiff" ftype="tiff" compare="sim_size"/> -->
-      <element name="1.tiff" file="input_22.tiff" ftype="tiff" compare="sim_size"/>
-      <element name="2.tiff" file="input_37.tiff" ftype="tiff" compare="sim_size"/>
-      <element name="3.tiff" file="input_38.tiff" ftype="tiff" compare="sim_size"/>
-      <element name="4.tiff" file="input_46.tiff" ftype="tiff" compare="sim_size"/>
-      <element name="5.tiff" file="input_53.tiff" ftype="tiff" compare="sim_size"/>
-      <element name="6.tiff" file="input_66.tiff" ftype="tiff" compare="sim_size"/>
-      <element name="7.tiff" file="input_69.tiff" ftype="tiff" compare="sim_size"/>
-      <element name="8.tiff" file="input_90.tiff" ftype="tiff" compare="sim_size"/>
-      <element name="9.tiff" file="input_98.tiff" ftype="tiff" compare="sim_size"/>
-      <element name="10.tiff" file="input_103.tiff" ftype="tiff" compare="sim_size"/>
+      <element name="dataset_1_148.tiff" file="input_148.tiff" ftype="tiff" compare="sim_size"/>
+      <element name="dataset_1_155.tiff" file="input_155.tiff" ftype="tiff" compare="sim_size"/>
+      <element name="dataset_1_187.tiff" file="input_187.tiff" ftype="tiff" compare="sim_size"/>
+      <element name="dataset_1_212.tiff" file="input_212.tiff" ftype="tiff" compare="sim_size"/>
+      <element name="dataset_1_267.tiff" file="input_267.tiff" ftype="tiff" compare="sim_size"/>
     </output_collection>
     </test>
   </tests>
