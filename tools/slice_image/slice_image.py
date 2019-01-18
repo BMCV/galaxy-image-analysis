@@ -28,7 +28,7 @@ def slice_image(input_file, out_folder, label=None, label_out_folder=None, windo
         patches_raw = patches_raw.reshape([-1, window_size, window_size, img_raw.shape[2]])
 
         filename = os.path.splitext(os.path.basename(input_file))[0]
-        new_path = out_folder+"/"+filename+"_%d.tiff" # does the backslash work for every os?
+        new_path = os.path.join(out_folder, filename+"_%d.tiff") 
         
         #samples for thresholding the amount of slices
         sample = random.sample(range(patches_raw.shape[0]), n_thresh)
@@ -43,16 +43,15 @@ def slice_image(input_file, out_folder, label=None, label_out_folder=None, windo
                 g = skimage.feature.greycomatrix(sum_image, [1,2], [0, np.pi/2], nnormed=True, symmetric=True)
                 hom = np.var(skimage.feature.greycoprops(g, prop='homogeneity'))
                 if hom > bg_thresh: #0.0005
-	                continue
-            
+                    continue
+        
             if limit_slices == True:
                 if i in sample:
                     res = skimage.util.img_as_uint(patches_raw[i]) #Attention: precision loss
                     skimage.io.imsave(new_path % i, res, plugin='tifffile')
             else:
                 res = skimage.util.img_as_uint(patches_raw[i]) #Attention: precision loss
-                skimage.io.imsave(new_path % i, res, plugin='tifffile')
-                    
+                skimage.io.imsave(new_path % i, res, plugin='tifffile') 
                     
 
 if __name__ == "__main__":
