@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<tool name="Filter Image" id="ip_filter_standard" version="0.0.1">
+   <description>Filter Image</description>
+   <requirements>
+     <requirement type="package">numpy</requirement>
+     <requirement type="package">pillow</requirement>
+     <requirement type="package">tifffile</requirement>
+     <requirement type="package">scikit-image</requirement>
+     <requirement type="package">scipy</requirement>
+   </requirements>
+   <stdio>
+     <exit_code level="fatal" range="1:"/>
+   </stdio>
+    <command interpreter="python">filter_image.py ${input} ${output} ${filter_type} ${radius}</command>
+    <inputs>
+        <param name="filter_type" type="select" label="Image type">
+          <option value="median" selected="True">Median</option>
+          <option value="gaussian">Gaussian Blur</option>
+          <option value="prewitt">Prewitt</option>
+          <option value="sobel">Sobel</option>
+          <option value="scharr">Scharr</option>
+        </param>
+        <param name="radius" size="4" type="integer" value="3" label="Radius/Sigma" />
+        <param name="input" type="data" format="tiff" label="Source file" />
+    </inputs>
+    <outputs>
+       <data format="tiff" name="output" />
+    </outputs>
+    <help>
+Applies a standard filter to an image.
+    </help>
+    <citations>
+       <citation type="doi">10.7717/peerj.453</citation>
+   </citations>
+</tool>
