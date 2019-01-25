@@ -1,20 +1,24 @@
 <?xml version="1.0"?>
-<tool name="Auto Threshold" id="ip_threshold" version="0.0.2">
+<tool name="Auto Threshold" id="ip_threshold" version="0.0.3">
    <description>Auto Threshold</description>
    <requirements>
-     <requirement type="package">numpy</requirement>
-     <requirement type="package">pillow</requirement>
-     <requirement type="package">tifffile</requirement>
-     <requirement type="package">scikit-image</requirement>
+        <requirement type="package" version="0.14.0">scikit-image</requirement>
+        <requirement type="package" version="1.15.4">numpy</requirement>
+        <requirement type="package" version="5.3.0">pillow</requirement>
+        <requirement type="package" version="0.15.1">tifffile</requirement>
    </requirements>
-   <command interpreter="python"><![CDATA[auto_threshold.py $input $output $thresh_type $dark_background]]></command>
+   <command detect_errors="aggressive">
+   <![CDATA[
+   python "$__tool_directory__/auto_threshold.py" "$input" "$output" $thresh_type $dark_background
+   ]]>
+   </command>
    <inputs>
         <param name="thresh_type" type="select" label="Threshold Algorithm">
           <option value="otsu" selected="True">Otsu</option>
           <option value="li">Li’s Minimum Cross Entropy</option>
           <option value="isodata">Isodata</option>
-          <option value="adaptive">Adaptive (Gauss)</option>
-          <option value="adaptive">Adaptive (Mean)</option>
+          <option value="gaussian_adaptive">Adaptive (Gauss)</option>
+          <option value="mean_adaptive">Adaptive (Mean)</option>
           <option value="yen">Yen</option>
         </param>
         <param name="dark_background" type="boolean" checked="true" truevalue="True" falsevalue="False" label="Dark Background" />
@@ -23,10 +27,24 @@
     <outputs>
        <data format="tiff" name="output" />
     </outputs>
+    <tests>
+        <test>
+            <param name="input" value="sample.tif"/>
+            <output name="output" value="out.tif" ftype="tiff" compare="sim_size"/>
+            <param name="thresh_type" value="gaussian_adaptive"/>
+            <param name="dark_backgroud" value="True"/>
+        </test>
+        <test>
+            <param name="input" value="sample.tif"/>
+            <output name="output" value="out2.tif" ftype="tiff" compare="sim_size"/>
+            <param name="thresh_type" value="otsu"/>
+            <param name="dark_backgroud" value="True"/>
+        </test>
+    </tests>
     <help>
-Applies a standard threshold algorithm to an image.
+        Applies a standard threshold algorithm to an image.
     </help>
     <citations>
-        <citation type="doi">10.7717/peerj.453</citation>
+        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
     </citations>
 </tool>
