@@ -14,3 +14,4 @@ bootstrap.sh
 get-pip.py
 helper.py
 ubuntu-cosmic-18.10-cloudimg-console.log
+/test.py
