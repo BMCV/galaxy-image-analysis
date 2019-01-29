@@ -6,14 +6,10 @@
         <requirement type="package" version="1.15.4">numpy</requirement>
         <requirement type="package" version="5.3.0">pillow</requirement>
         <requirement type="package" version="0.15.1">tifffile</requirement>
-        <!-- <requirement type="package" version="1.1.0">scipy</requirement> -->
    </requirements>
-   <stdio>
-     <exit_code level="fatal" range="1:"/>
-   </stdio>
-    <command> 
+    <command detect_errors="aggressive"> 
       <![CDATA[
-        python "$__tool_directory__/filter_image.py" "$input" "$output" $filter_type $radius
+        python '$__tool_directory__/filter_image.py' '$input' '$output' $filter_type $radius
       ]]>
     </command>
     <inputs>
