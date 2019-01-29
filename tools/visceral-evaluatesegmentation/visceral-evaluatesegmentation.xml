@@ -1,7 +1,7 @@
 <tool id="visceral_evaluatesegmentation" name="Visceral - Evaluate Segmentation" version="0.5">
   <description>Evaluate Segmentation</description>
   <requirements>
-    <requirement type="package">visceral-evaluatesegmentation</requirement>
+    <requirement type="package" version="v2015.07.02">visceral-evaluatesegmentation</requirement>
   </requirements>
   <stdio>
      <exit_code level="fatal" range="1:"/>
