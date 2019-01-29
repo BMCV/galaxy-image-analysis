@@ -2,7 +2,6 @@
   <description>Scales image</description>
   <requirements>
     <requirement type="package" version="0.14.0">scikit-image</requirement>
-    <requirement type="package" version="1.1.0">scipy</requirement>
   </requirements>
   <command>
         <![CDATA[
@@ -26,11 +25,11 @@
               <option value="false">Individual scales</option>
           </param>
           <when value="true">
-            <param name="scale" size="4" type="float" value="1.0" label="Scaling factor" />
+            <param name="scale" type="float" value="1.0" label="Scaling factor" />
           </when>
           <when value="false">
-            <param name="scale_x" size="4" type="integer" value="100" label="New height of the image in pixels" />
-            <param name="scale_y" size="4" type="integer" value="100" label="New width of the image in pixels" />
+            <param name="scale_x" type="integer" value="100" label="New height of the image in pixels" />
+            <param name="scale_y" type="integer" value="100" label="New width of the image in pixels" />
           </when>
     </conditional>
     <param name="order" type="select" label="Interpolation method">
