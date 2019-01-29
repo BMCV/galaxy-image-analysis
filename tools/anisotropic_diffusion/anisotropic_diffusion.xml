@@ -7,7 +7,7 @@
   </requirements>
   <command>
         <![CDATA[
-        python "$__tool_directory__/anisotropic_diffusion.py" '$input' '$output' '$niter' '$kappa' '$gamma' '$eqoption'
+        python '$__tool_directory__/anisotropic_diffusion.py' '$input' '$output' '$niter' '$kappa' '$gamma' '$eqoption'
         ]]>
   </command>
   <inputs>

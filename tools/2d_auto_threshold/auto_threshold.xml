@@ -9,10 +9,11 @@
    </requirements>
    <command detect_errors="aggressive">
    <![CDATA[
-   python "$__tool_directory__/auto_threshold.py" "$input" "$output" $thresh_type $dark_background
+   python '$__tool_directory__/auto_threshold.py' '$input' '$output' $thresh_type $dark_background
    ]]>
    </command>
    <inputs>
+        <param name="input" type="data" format="tiff" label="Source file" />
         <param name="thresh_type" type="select" label="Threshold Algorithm">
           <option value="otsu" selected="True">Otsu</option>
           <option value="li">Li’s Minimum Cross Entropy</option>
@@ -22,7 +23,6 @@
           <option value="yen">Yen</option>
         </param>
         <param name="dark_background" type="boolean" checked="true" truevalue="True" falsevalue="False" label="Dark Background" />
-        <param name="input" type="data" format="tiff" label="Source file" />
     </inputs>
     <outputs>
        <data format="tiff" name="output" />

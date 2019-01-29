@@ -7,7 +7,7 @@
   </requirements>
   <command> 
         <![CDATA[
-        python "$__tool_directory__/split_labelmap.py" '$input' '$output'
+        python '$__tool_directory__/split_labelmap.py' '$input' '$output'
         ]]>
   </command>
   <inputs> 
