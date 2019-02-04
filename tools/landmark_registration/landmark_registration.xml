@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<tool name="Landmark Registration" id="ir_landmark_registration" version="0.0.1">
+    <description>Landmark Registration</description>
+    <requirements>
+        <requirement type="package" version="0.14.1">scikit-image</requirement>
+        <requirement type="package" version="0.23.4">pandas</requirement>
+        <requirement type="package" version="1.15.2">numpy</requirement>
+    </requirements>
+    <command><![CDATA[
+         python '$__tool_directory__/landmark_registration.py'
+         --residual_threshold=$residual_threshold
+         --max_trials=$max_trials
+         '$points_file1'
+         '$points_file2'
+         '$warp_matrix'
+]]></command>
+    <inputs>
+	<param name="points_file1" type="data" format="tabular" label="Path to src points" />
+	<param name="points_file2" type="data" format="tabular" label="Path to dst points" />
+	<param name="residual_threshold" type="float" value="2" label="Maximum distance for a data point to be classified as an inlier." />
+	<param name="max_trials" type="integer" value="100" label="Maximum number of iterations for random sample selection." />
+    </inputs>
+    <outputs>
+       <data format="tabular" name="warp_matrix" />
+    </outputs>
+    <help>
+This tool estimates the transformation matrix between two sets of 2d points
+    </help>
+    <citations>
+        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
+    </citations>
+</tool>
