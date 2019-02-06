@@ -22,7 +22,7 @@
     <test>
 	    <param name="gt_path" value="sample.png" />
 	    <param name="seg_path" value="sample.png" />
-	    <output name="output" value="out.xml" ftype="xml" lines_diff="10" />
+	    <output name="output" value="out.xml" ftype="xml" lines_diff="15" />
     </test>
   </tests>
   <help>Calculates Metrics for Evaluating Image Segmentation</help>
