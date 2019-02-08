@@ -15,10 +15,10 @@
          '$warp_matrix'
 ]]></command>
     <inputs>
-	<param name="points_file1" type="data" format="tabular" label="Path to tab-separated file with src points" />
-	<param name="points_file2" type="data" format="tabular" label="Path to tab-separated file with dst points" />
-	<param name="residual_threshold" type="float" value="2" label="Maximum distance for a data point to be classified as an inlier." />
-    <param name="max_trials" type="integer" value="100" label="Maximum number of iterations for random sample selection." />
+	      <param name="points_file1" type="data" format="tabular" label="Path to tab-separated file with src points" />
+	      <param name="points_file2" type="data" format="tabular" label="Path to tab-separated file with dst points" />
+	      <param name="residual_threshold" type="float" value="2" label="Maximum distance for a data point to be classified as an inlier." />
+        <param name="max_trials" type="integer" value="100" label="Maximum number of iterations for random sample selection." />
     </inputs>
     <outputs>
        <data format="tabular" name="warp_matrix" />
