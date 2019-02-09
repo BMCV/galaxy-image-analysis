@@ -1,14 +1,13 @@
-<?xml version="1.0"?>
-<tool name="2D Feature Extraction" id="ip_2d_feature_extraction" version="0.0.8">
-  <description>Feature Extraction</description>
-  <requirements>
-    <requirement type="package" version="0.23.4">pandas</requirement>
-    <requirement type="package" version="0.14.0">scikit-image</requirement>
-    <requirement type="package" version="1.15.4">numpy</requirement>
-    <requirement type="package" version="0.15.1">tifffile</requirement>
-  </requirements>
-  <command>
-  <![CDATA[
+<tool id="ip_2d_feature_extraction" name="2D Feature Extraction" version="0.0.8">
+    <description>Feature Extraction</description>
+    <requirements>
+        <requirement type="package" version="0.23.4">pandas</requirement>
+        <requirement type="package" version="0.14.2">scikit-image</requirement>
+        <requirement type="package" version="1.15.4">numpy</requirement>
+        <requirement type="package" version="0.15.1">tifffile</requirement>
+    </requirements>
+    <command>
+    <![CDATA[
     python '$__tool_directory__/2d_feature_extraction.py'
     #if $feature_options['features'] == 'all'
       --all
@@ -20,69 +19,71 @@
     #end if
     '$input_label' '$output'
     ]]>
-  </command>
-  <inputs>
+    </command>
+    <inputs>
         <param name="input_label" type="data" format="tiff" label="Label file" />
         <conditional name="use_raw_option">
-          <param label="Use original image to compute additional features" name="use_raw" type="select">
-            <option selected="True" value="no_original">No original image</option>
-            <option value="raw_image">Use original image</option>
-          </param>
-          <when value="no_original"> </when>
-          <when value="raw_image">
-            <param name="input_raw" type="data" format="tiff" label="Original image file" />
-          </when>
+            <param label="Use original image to compute additional features" name="use_raw" type="select">
+                <option selected="True" value="no_original">No original image</option>
+                <option value="raw_image">Use original image</option>
+            </param>
+            <when value="no_original"></when>
+            <when value="raw_image">
+                <param name="input_raw" type="data" format="tiff" label="Original image file" />
+            </when>
         </conditional>
         <conditional name="feature_options">
             <param label="Select features to compute" name="features" type="select">
-              <option selected="True" value="all">All features</option>
-              <option value="select">Select features</option>
+                <option selected="True" value="all">All features</option>
+                <option value="select">Select features</option>
             </param>
             <when value="all"> </when>
             <when value="select">
-              <param name="selected_features" type="select" label="Available features" multiple="true" display="checkboxes">
-                <option value="--label">Add label id of label image</option>
-                <option value="--patches">Patches (requires original image)</option>
-                <option value="--max_intensity">Max Intensity (requires original image)</option>
-                <option value="--mean_intensity">Mean Intensity (requires original image)</option>
-                <option value="--min_intensity">Minimum Intensity (requires original image)</option>
-                <option value="--moments_hu">Moments Hu</option>
-                <option value="--centroid">Centroid</option>
-                <option value="--bbox">Bounding Box</option>
-                <option value="--area">Area</option>
-                <option value="--filled_area">Filled Area</option>
-                <option value="--convex_area">Convex Area</option>
-                <option value="--perimeter">Perimeter</option>
-                <option value="--extent">Extent</option>
-                <option value="--eccentricity">Eccentricity</option>
-                <option value="--equivalent_diameter">Equivalent Diameter</option>
-                <option value="--euler_number">Euler Number</option>
-                <option value="--inertia_tensor_eigvals">Inertia Tensor Eigenvalues</option>
-                <option value="--major_axis_length">Major Axis Length</option>
-                <option value="--minor_axis_length">Minor Axis Length</option>
-                <option value="--orientation">Orientation</option>
-                <option value="--solidity">Solidity</option>
-                <option value="--moments">Moments</option>
-                <option value="--convexity">Convexity</option>
-              </param>
+                <param name="selected_features" type="select" label="Available features" multiple="true" display="checkboxes">
+                    <option value="--label">Add label id of label image</option>
+                    <option value="--patches">Patches (requires original image)</option>
+                    <option value="--max_intensity">Max Intensity (requires original image)</option>
+                    <option value="--mean_intensity">Mean Intensity (requires original image)</option>
+                    <option value="--min_intensity">Minimum Intensity (requires original image)</option>
+                    <option value="--moments_hu">Moments Hu</option>
+                    <option value="--centroid">Centroid</option>
+                    <option value="--bbox">Bounding Box</option>
+                    <option value="--area">Area</option>
+                    <option value="--filled_area">Filled Area</option>
+                    <option value="--convex_area">Convex Area</option>
+                    <option value="--perimeter">Perimeter</option>
+                    <option value="--extent">Extent</option>
+                    <option value="--eccentricity">Eccentricity</option>
+                    <option value="--equivalent_diameter">Equivalent Diameter</option>
+                    <option value="--euler_number">Euler Number</option>
+                    <option value="--inertia_tensor_eigvals">Inertia Tensor Eigenvalues</option>
+                    <option value="--major_axis_length">Major Axis Length</option>
+                    <option value="--minor_axis_length">Minor Axis Length</option>
+                    <option value="--orientation">Orientation</option>
+                    <option value="--solidity">Solidity</option>
+                    <option value="--moments">Moments</option>
+                    <option value="--convexity">Convexity</option>
+                </param>
             </when>
         </conditional>
-  </inputs>
-  <outputs>
+    </inputs>
+    <outputs>
        <data format="tabular" name="output" />
-  </outputs>
-  <tests>
-    <test>
-      <param name="input_label" value="input.tiff"/>
-      <param name="features" value="select"/>
-      <param name="selected_features" value="--area"/>
-      <output name="output" ftype="tabular" value="out.csv"/>
-    </test>
-  </tests>
-  <help>
+    </outputs>
+    <tests>
+        <test>
+            <param name="input_label" value="input.tiff"/>
+            <param name="features" value="select"/>
+            <param name="selected_features" value="--area"/>
+            <output name="output" ftype="tabular" value="out.tsv"/>
+        </test>
+    </tests>
+    <help>
+    **What it does**
+
     This tool computes several features of a 2D label image and optionally more features using the original image.
-  </help>
-  <citations>
-      <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
-  </citations>
+    </help>
+    <citations>
+        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
+    </citations>
 </tool>

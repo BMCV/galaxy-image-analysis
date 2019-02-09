@@ -1,8 +1,7 @@
-<?xml version="1.0"?>
-<tool name="Projective Transformation" id="ip_projective_transformation" version="0.0.4">
+<tool id="ip_projective_transformation" name="Projective Transformation" version="0.0.4">
     <description>Projective Transformation</description>
     <requirements>
-        <requirement type="package" version="0.14.0">scikit-image</requirement>
+        <requirement type="package" version="0.14.2">scikit-image</requirement>
         <requirement type="package" version="0.23.4">pandas</requirement>
         <requirement type="package" version="1.15.4">numpy</requirement>
         <!--<requirement type="package" version="1.1.0">scipy</requirement>-->
@@ -14,27 +13,28 @@
          '$moving_image'
          '$warp_matrix'
          ./out.png
-         && mv ./out.png '$out'
     ]]>
     </command>
     <inputs>
-	<param name="moving_image" type="data" format="png" label="Moving Image" />
-	<param name="fixed_image" type="data" format="png" label="Fixed Image" />
-	<param name="warp_matrix" type= "data" format="csv" label="Warp Matrix" />
+        <param name="moving_image" type="data" format="png" label="Moving Image" />
+        <param name="fixed_image" type="data" format="png" label="Fixed Image" />
+        <param name="warp_matrix" type= "data" format="tabular" label="Warp Matrix" />
     </inputs>
     <outputs>
-       <data format="png" name="out" />
+       <data format="png" name="out" from_work_dir="out.png" />
     </outputs>
     <tests>
       <test>
         <param name="fixed_image" value="sample1.png"/>
         <param name="moving_image" value="sample2.png"/>
-        <param name="warp_matrix" value="warp_matrix.csv"/>
+        <param name="warp_matrix" value="warp_matrix.tsv"/>
         <output name="out" value="yam.png" ftype="png" compare="sim_size"/>
       </test>
     </tests>
     <help>
-        This tool performs a projective transformation of the input (moving) image so that it fits the fixed image.
+    **What it does**
+
+    This tool performs a projective transformation of the input (moving) image so that it fits the fixed image.
     </help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>

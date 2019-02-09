@@ -1,9 +1,9 @@
-<tool id="binaryimage2points" name="Binary To Points" version="0.1">
+<tool id="ip_binaryimage_to_points" name="Binary To Points" version="0.1">
     <description>Converts Binary Image to Points</description>
     <requirements>
         <requirement type="package" version="1.15.4">numpy</requirement><!--https://github.com/numpy/numpy/pull/432 -->
-        <requirement type="package" version="0.14.0" >scikit-image</requirement>
-        <requirement type="package" version="0.23.4" >pandas</requirement>
+        <requirement type="package" version="0.14.2">scikit-image</requirement>
+        <requirement type="package" version="0.23.4">pandas</requirement>
     </requirements>
     <command>
         <![CDATA[
@@ -14,15 +14,18 @@
         <param name="input" type="data" format="tiff" label="Binary Image File"/>
     </inputs>
     <outputs>
-        <data format="csv" name="output"/>
+        <data format="tabular" name="output"/>
     </outputs>
     <tests>
         <test>
             <param name="input" value="galaxyIcon_noText.tif" />
-            <output name="output" value="points.csv" ftype="csv" />
+            <output name="output" value="points.tsv" ftype="tabular" />
         </test>
     </tests>
-    <help>This tool converts an image to points.</help>
+    <help>
+    **What it does**
+
+    This tool converts an image to points.</help>
     <citations>
         <citation type="doi">10.7717/peerj.453</citation>
     </citations>

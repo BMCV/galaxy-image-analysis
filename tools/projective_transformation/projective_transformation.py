@@ -39,7 +39,7 @@ def warp_coords_batch(coord_map, shape, dtype=np.float64, batch_size=1000000):
 def transform(moving_image, fixed_image, warp_matrix, out):
     moving_image = skimage.io.imread(moving_image)
     fixed_image = skimage.io.imread(fixed_image)
-    warp_matrix = pd.read_csv(warp_matrix, delimiter=",", header=None)
+    warp_matrix = pd.read_csv(warp_matrix, delimiter="\t", header=None)
     warp_matrix = np.array(warp_matrix)
 
     trans = ProjectiveTransform(matrix=warp_matrix)

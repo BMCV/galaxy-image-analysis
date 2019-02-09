@@ -1,29 +1,34 @@
-<tool id="split_labelmap" name="Split Labelmap" version="0.1"> 
-  <description>Split Labelmap</description>
-  <requirements> 
-    <requirement type="package" version="0.14.1" >scikit-image</requirement>
-    <requirement type="package" version="1.15.4">numpy</requirement>
-    <requirement type="package" version="0.15.1">tifffile</requirement> <!--not sure if this is required-->
-  </requirements>
-  <command> 
+<tool id="ip_split_labelmap" name="Split Labelmap" version="0.1">
+    <description></description>
+    <requirements> 
+        <requirement type="package" version="0.14.2">scikit-image</requirement>
+        <requirement type="package" version="1.15.4">numpy</requirement>
+        <requirement type="package" version="0.15.1">tifffile</requirement> <!--not sure if this is required-->
+    </requirements>
+    <command> 
         <![CDATA[
         python '$__tool_directory__/split_labelmap.py' '$input' '$output'
         ]]>
-  </command>
-  <inputs> 
-    <param name="input" type="data" format="tiff,png,jpg,bmp" label="Image containing labels"/> 
-  </inputs>
-  <outputs>
-    <data name="output" format="tiff"/>
-  </outputs>
-  <tests>
-    <test>
-	    <param name="input" value="sample_seg.tif"/>
-	    <output name="output" value="out.tif" ftype="tiff" compare="sim_size"/>
-    </test>
-  </tests>
-  <help>Takes a label image and outputs a similar file with the given name where the labeled parts of the image that touch (or overlap) are separated by at least 1 pixel (at most 2).</help>
-  <citations>
-      <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
-  </citations>
+    </command>
+    <inputs> 
+        <param name="input" type="data" format="tiff,png,jpg,bmp" label="Image containing labels"/> 
+    </inputs>
+    <outputs>
+        <data name="output" format="tiff"/>
+    </outputs>
+    <tests>
+        <test>
+            <param name="input" value="sample_seg.tif"/>
+            <output name="output" value="out.tif" ftype="tiff" compare="sim_size"/>
+        </test>
+    </tests>
+    <help>
+    **What it does**
+
+    Takes a labeled image and outputs a similar file where the labeled parts
+    of the image that touch (or overlap) are separated by at least 1 pixel (at most 2).
+    </help>
+    <citations>
+        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
+    </citations>
 </tool>

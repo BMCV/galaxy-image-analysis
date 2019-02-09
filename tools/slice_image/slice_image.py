@@ -27,8 +27,7 @@ def slice_image(input_file, out_folder, label=None, label_out_folder=None, windo
         patches_raw = skimage.util.view_as_windows(img_raw, (window_size, window_size, img_raw.shape[2]), step=stride)
         patches_raw = patches_raw.reshape([-1, window_size, window_size, img_raw.shape[2]])
 
-        filename = os.path.splitext(os.path.basename(input_file))[0]
-        new_path = os.path.join(out_folder, filename+"_%d.tiff") 
+        new_path = os.path.join(out_folder, "%d.tiff") 
         
         #samples for thresholding the amount of slices
         sample = random.sample(range(patches_raw.shape[0]), n_thresh)

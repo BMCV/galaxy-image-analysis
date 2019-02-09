@@ -1,39 +1,43 @@
-<tool id="points2binaryimage" name="Points to Binary Image" version="0.1"> 
-  <description>Converts points to a binary image</description>
-  <requirements> 
-    <requirement type="package" version="0.14.1" >scikit-image</requirement>
-    <requirement type="package" version="1.15.4">numpy</requirement>
-    <requirement type="package" version="0.23.4">pandas</requirement>
-    <requirement type="package" version="2018.7">pytz</requirement><!--pandas seems to have additional requirements that are not automatically installed-->
-    <requirement type="package" version="2.4.1">dateutil</requirement>
-  </requirements>
-  <command> 
+<tool id="ip_points_to_binaryimage" name="Points to Binary Image" version="0.1">
+    <description>Converts points to a binary image</description>
+    <requirements> 
+        <requirement type="package" version="0.14.2">scikit-image</requirement>
+        <requirement type="package" version="1.15.4">numpy</requirement>
+        <requirement type="package" version="0.23.4">pandas</requirement>
+        <requirement type="package" version="2018.7">pytz</requirement><!--pandas seems to have additional requirements that are not automatically installed-->
+        <requirement type="package" version="2.4.1">dateutil</requirement>
+    </requirements>
+    <command>
         <![CDATA[
-        python '$__tool_directory__/points2binaryimage.py' '$input' '$output' $shapex $shapey $has_header $invert_xy 
+        python '$__tool_directory__/points2binaryimage.py' '$input' '$output' $shapex $shapey $has_header $invert_xy
         ]]>
-  </command>
-  <inputs> 
-    <param name="input" type="data" format="csv" label="CSV point file"/> 
-    <param name="shapex" type="integer" value="500" optional="true" min="1" max="2000" label="Width of output image" />
-    <param name="shapey" type="integer" value="500" optional="true" min="1" max="2000" label="Height of output image" />
-    <param name="has_header" type="boolean" checked="false" truevalue="--has_header True" falsevalue="" optional="true" label="Does point file contain header?" /> 
-    <param name="invert_xy" type="boolean" checked="false" falsevalue="" truevalue="--invert_xy True" optional="true" label="Inverts x and y in CSV point file" />
-  </inputs>
-  <outputs>
-    <data name="output" format="tiff" />
-  </outputs>
-  <tests>
-    <test>
-      <param name="input" value="points.csv" />
-      <param name="shapex" value="20" /> 
-      <param name="shapey" value="30" />
-      <param name="has_header" value="false" />
-      <param name="invert_xy" value="true" />
-      <output name="output" ftype="tiff" file="out.tiff"  compare="sim_size"/> 
-    </test>
-  </tests>
-  <help>Converts CSV point file to binary image.</help>
-  <citations>
-      <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation> 
-  </citations>
+    </command>
+    <inputs> 
+        <param name="input" type="data" format="tabular" label="CSV point file"/> 
+        <param name="shapex" type="integer" value="500" optional="true" min="1" max="2000" label="Width of output image" />
+        <param name="shapey" type="integer" value="500" optional="true" min="1" max="2000" label="Height of output image" />
+        <param name="has_header" type="boolean" checked="false" truevalue="--has_header True" falsevalue="" optional="true" label="Does point file contain header?" /> 
+        <param name="invert_xy" type="boolean" checked="false" falsevalue="" truevalue="--invert_xy True" optional="true" label="Inverts x and y in CSV point file" />
+    </inputs>
+    <outputs>
+        <data name="output" format="tiff" />
+    </outputs>
+    <tests>
+        <test>
+            <param name="input" value="points.tsv" />
+            <param name="shapex" value="20" /> 
+            <param name="shapey" value="30" />
+            <param name="has_header" value="false" />
+            <param name="invert_xy" value="true" />
+            <output name="output" ftype="tiff" file="out.tiff" compare="sim_size"/> 
+        </test>
+    </tests>
+    <help>
+    **What it does**
+
+    Converts CSV point file to binary image.
+    </help>
+    <citations>
+        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation> 
+    </citations>
 </tool>

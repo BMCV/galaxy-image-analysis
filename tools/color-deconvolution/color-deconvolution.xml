@@ -1,79 +1,82 @@
-<tool id="color_deconvolution" name="Color Deconvolution" version="0.7">
-  <description>Color deconvolution</description>
-  <requirements>
-    <requirement type="package" version="0.12.3" >scikit-image</requirement>
-    <requirement type="package" version="4.0.0">pillow</requirement>
-    <requirement type="package" version="0.18.1">scikit-learn</requirement>
-    <requirement type="package" version="1.12">numpy</requirement>
-  </requirements>
-  <command>
+<tool id="ip_color_deconvolution" name="Color Deconvolution" version="0.7">
+    <description>Color deconvolution</description>
+    <requirements>
+        <requirement type="package" version="0.14.2">scikit-image</requirement>
+        <requirement type="package" version="4.0.0">pillow</requirement>
+        <requirement type="package" version="0.18.1">scikit-learn</requirement>
+        <requirement type="package" version="1.12">numpy</requirement>
+    </requirements>
+    <command>
         <![CDATA[
         python '$__tool_directory__/color_deconvolution.py' '$input' '$output' '$convtype'
         ]]>
-  </command>
-  <inputs>
-    <param name="input" type="data" format="tiff,png,jpg,bmp" label="Image file with 3 channels"/>
-    <param name="convtype" type="select" label="Transformation type">
-		<option value="ica" selected="True">ica</option>
-        <option value="pca">pca</option>
-        <option value="nmf">nmf</option>
-        <option value="fa">fa</option>
-        <option value="xyz2rgb">xyz2rgb</option>
-        <option value="rgb_from_rbd">rgb_from_rbd</option>
-        <option value="rgb_from_hdx">rgb_from_hdx</option>
-        <option value="rgb2hsv">rgb2hsv</option>
-        <option value="rgb_from_bro">rgb_from_bro</option>
-        <option value="bpx_from_rgb">bpx_from_rgb</option>
-        <option value="hed_from_rgb">hed_from_rgb</option>		
-        <option value="rgbcie2rgb">rgbcie2rgb</option>
-        <option value="hdx_from_rgb">hdx_from_rgb</option>
-        <option value="xyz2luv">xyz2luv</option>
-        <option value="rgb2lab">rgb2lab</option>		
-        <option value="hpx_from_rgb">hpx_from_rgb</option>
-        <option value="rgb_from_fgx">rgb_from_fgx</option>
-        <option value="rgb_from_gdx">rgb_from_gdx</option>
-        <option value="lab2xyz">lab2xyz</option>		
-        <option value="rgb_from_hpx">rgb_from_hpx</option>
-        <option value="lab2rgb">lab2rgb</option>
-        <option value="rgb2rgbcie">rgb2rgbcie</option>
-        <option value="bex_from_rgb">bex_from_rgb</option>		
-        <option value="xyz2lab">xyz2lab</option>
-        <option value="rgb_from_bex">rgb_from_bex</option>
-        <option value="fgx_from_rgb">fgx_from_rgb</option>		
-        <option value="rbd_from_rgb">rbd_from_rgb</option>
-        <option value="rgb2hed">rgb2hed</option>
-        <option value="hed2rgb">hed2rgb</option>		
-        <option value="luv2rgb">luv2rgb</option>
-        <option value="luv2xyz">luv2xyz</option>
-        <option value="lch2lab">lch2lab</option>		
-        <option value="rgb2luv">rgb2luv</option>
-        <option value="ahx_from_rgb">ahx_from_rgb</option>
-        <option value="rgb_from_hax">rgb_from_hax</option>
-        <option value="hax_from_rgb">hax_from_rgb</option>		
-        <option value="rgb_from_bpx">rgb_from_bpx</option>
-        <option value="rgb2xyz">rgb2xyz</option>
-        <option value="gdx_from_rgb">gdx_from_rgb</option>
-        <option value="rgb_from_ahx">rgb_from_ahx</option>
-        <option value="lab2lch">lab2lch</option>
-        <option value="rgb_from_hed">rgb_from_hed</option>
-        <option value="bro_from_rgb">bro_from_rgb</option>
-        <option value="hsv2rgb">hsv2rgb</option>		
-    </param>
-  </inputs>
-  <outputs>
-    <data format="tiff" name="output"/>
-  </outputs>
-  <tests>
-    <test>
-	    <param name="input" value="galaxyIcon_noText.png" />
-	    <param name="convtype" value="rgb2hsv" />
-	    <output name="output" ftype="tiff" />
-    </test>
-  </tests>
-  <help>This tools performs several color deconvolution techniques.</help>
-  <citations>
+    </command>
+    <inputs>
+        <param name="input" type="data" format="tiff,png,jpg,bmp" label="Image file with 3 channels"/>
+        <param name="convtype" type="select" label="Transformation type">
+            <option value="ica" selected="True">ica</option>
+            <option value="pca">pca</option>
+            <option value="nmf">nmf</option>
+            <option value="fa">fa</option>
+            <option value="xyz2rgb">xyz2rgb</option>
+            <option value="rgb_from_rbd">rgb_from_rbd</option>
+            <option value="rgb_from_hdx">rgb_from_hdx</option>
+            <option value="rgb2hsv">rgb2hsv</option>
+            <option value="rgb_from_bro">rgb_from_bro</option>
+            <option value="bpx_from_rgb">bpx_from_rgb</option>
+            <option value="hed_from_rgb">hed_from_rgb</option>
+            <option value="rgbcie2rgb">rgbcie2rgb</option>
+            <option value="hdx_from_rgb">hdx_from_rgb</option>
+            <option value="xyz2luv">xyz2luv</option>
+            <option value="rgb2lab">rgb2lab</option>
+            <option value="hpx_from_rgb">hpx_from_rgb</option>
+            <option value="rgb_from_fgx">rgb_from_fgx</option>
+            <option value="rgb_from_gdx">rgb_from_gdx</option>
+            <option value="lab2xyz">lab2xyz</option>
+            <option value="rgb_from_hpx">rgb_from_hpx</option>
+            <option value="lab2rgb">lab2rgb</option>
+            <option value="rgb2rgbcie">rgb2rgbcie</option>
+            <option value="bex_from_rgb">bex_from_rgb</option>
+            <option value="xyz2lab">xyz2lab</option>
+            <option value="rgb_from_bex">rgb_from_bex</option>
+            <option value="fgx_from_rgb">fgx_from_rgb</option>
+            <option value="rbd_from_rgb">rbd_from_rgb</option>
+            <option value="rgb2hed">rgb2hed</option>
+            <option value="hed2rgb">hed2rgb</option>
+            <option value="luv2rgb">luv2rgb</option>
+            <option value="luv2xyz">luv2xyz</option>
+            <option value="lch2lab">lch2lab</option>
+            <option value="rgb2luv">rgb2luv</option>
+            <option value="ahx_from_rgb">ahx_from_rgb</option>
+            <option value="rgb_from_hax">rgb_from_hax</option>
+            <option value="hax_from_rgb">hax_from_rgb</option>
+            <option value="rgb_from_bpx">rgb_from_bpx</option>
+            <option value="rgb2xyz">rgb2xyz</option>
+            <option value="gdx_from_rgb">gdx_from_rgb</option>
+            <option value="rgb_from_ahx">rgb_from_ahx</option>
+            <option value="lab2lch">lab2lch</option>
+            <option value="rgb_from_hed">rgb_from_hed</option>
+            <option value="bro_from_rgb">bro_from_rgb</option>
+            <option value="hsv2rgb">hsv2rgb</option>
+        </param>
+    </inputs>
+    <outputs>
+        <data format="tiff" name="output"/>
+    </outputs>
+    <tests>
+        <test>
+            <param name="input" value="galaxyIcon_noText.png" />
+            <param name="convtype" value="rgb2hsv" />
+            <output name="output" ftype="tiff" />
+        </test>
+    </tests>
+    <help>
+    **What it does**
+
+    This tools performs several color deconvolution techniques.</help>
+    <citations>
       <citation type="doi">10.7717/peerj.453</citation>
-	  <citation type="bibtex">@inproceedings{sklearn_api,
+      <citation type="bibtex">@inproceedings{sklearn_api,
   author    = {Lars Buitinck and Gilles Louppe and Mathieu Blondel and
                Fabian Pedregosa and Andreas Mueller and Olivier Grisel and
                Vlad Niculae and Peter Prettenhofer and Alexandre Gramfort
@@ -85,5 +88,5 @@
   year      = {2013},
   pages = {108--122},
 }</citation>
-  </citations>
+    </citations>
 </tool>
