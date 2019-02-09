@@ -12,9 +12,9 @@ def points2binaryimage(point_file, out_file, shape=[500, 500], has_header=False,
     img = np.zeros(shape, dtype=np.int16)
     if os.path.exists(point_file) and os.path.getsize(point_file) > 0:
         if has_header:
-            df = pd.read_csv(point_file, skiprows=1, header=None)
+            df = pd.read_csv(point_file, skiprows=1, header=None, delimiter="\t")
         else:
-            df = pd.read_csv(point_file, header=None)
+            df = pd.read_csv(point_file, header=None, delimiter="\t")
 
         for i in range(0, len(df)):
             a_row = df.iloc[i]

@@ -13,7 +13,7 @@ def landmark_registration(points_file1, points_file2, out_file, residual_thresho
 
     model = AffineTransform()
     model_robust, inliers = ransac((src, dst), AffineTransform, min_samples=3,
-                                   residual_threshold=2, max_trials=max_trials)
+                                   residual_threshold=residual_threshold, max_trials=max_trials)
     pd.DataFrame(model_robust.params).to_csv(out_file, header = None, index = False)
 
 if __name__ == "__main__":

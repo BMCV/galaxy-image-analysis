@@ -1,6 +1,6 @@
 <measurement>
-  <fixed-image filename="sample.tif" nonzeropoints="0" intersection="86495"/>
-  <moving-image filename="sample.tif" nonzeropoints="0" intersection="86495"/>
+  <fixed-image filename="/tmp/tmpjybJID/files/000/dataset_1.dat" nonzeropoints="0" intersection="50477"/>
+  <moving-image filename="/tmp/tmpjybJID/files/000/dataset_1.dat" nonzeropoints="0" intersection="50477"/>
   <metrics>
     <DICE name="Dice Coefficient (F1-Measure)" symbol="DICE" type="similarity" value="1.000000"/>
     <JACRD name="Jaccard Coefficient" symbol="JACRD" type="similarity" value="1.000000"/>
@@ -11,8 +11,8 @@
     <ICCORR name="Interclass Correlation" symbol="ICCORR" type="similarity" value="1.000000"/>
     <VOLSMTY name="Volumetric Similarity Coefficient" symbol="VOLSMTY" type="similarity" value="1.000000"/>
     <MUTINF name="Mutual Information" symbol="MUTINF" type="similarity" value="0.984545"/>
-    <HDRFDST name="Hausdorff Distance" symbol="HDRFDST" type="distance" value="0.000000" executiontime="10"/>
-    <AVGDIST name="Average Hausdorff Distance" symbol="AVGDIST" type="distance" value="0.000000" executiontime="10"/>
+    <HDRFDST name="Hausdorff Distance" symbol="HDRFDST" type="distance" value="0.000000" executiontime="16" unit="voxel"/>
+    <AVGDIST name="Average Hausdorff Distance" symbol="AVGDIST" type="distance" value="0.000000" executiontime="5" unit="voxel"/>
     <MAHLNBS name="Mahanabolis Distance" symbol="MAHLNBS" type="distance" value="0.000000"/>
     <VARINFO name="Variation of Information" symbol="VARINFO" type="distance" value="-0.000000"/>
     <GCOERR name="Global Consistency Error" symbol="GCOERR" type="distance" value="0.000000"/>
@@ -23,7 +23,13 @@
     <FMEASR name="F-Measure" symbol="FMEASR" type="similarity" value="1.000000"/>
     <ACURCY name="Accuracy" symbol="ACURCY" type="similarity" value="1.000000"/>
     <FALLOUT name="Fallout (false positive rate)" symbol="FALLOUT" type="distance" value="0.000000"/>
+    <TP name="true positive" symbol="TP" type="similarity" value="49962" unit="voxel"/>
+    <FP name="false positive" symbol="FP" type="similarity" value="0" unit="voxel"/>
+    <TN name="true negative" symbol="TN" type="similarity" value="37223" unit="voxel"/>
+    <FN name="false negative" symbol="FN" type="similarity" value="0" unit="voxel"/>
+    <REFVOL name="reference volume" symbol="REFVOL" type="similarity" value="49962" unit="voxel"/>
+    <SEGVOL name="segmented volume" symbol="SEGVOL" type="similarity" value="49962" unit="voxel"/>
   </metrics>
-  <time total-executiontime="80"/>
-  <dimention max_x="328" max_y="264" max_z="0"/>
+  <time total-executiontime="51"/>
+  <dimention max_x="328" max_y="264" max_z="0" voxelspacing_x="1.000000" voxelspacing_y="1.000000" voxelspacing_z="1.000000"/>
 </measurement>

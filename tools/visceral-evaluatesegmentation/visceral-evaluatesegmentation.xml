@@ -1,40 +1,34 @@
-<tool id="visceral_evaluatesegmentation" name="Visceral - Evaluate Segmentation" version="0.5">
-  <description>Evaluate Segmentation</description>
-  <requirements>
-    <requirement type="package">visceral-evaluatesegmentation</requirement>
-  </requirements>
-  <stdio>
-     <exit_code level="fatal" range="1:"/>
-  </stdio>
-  <command>
+<tool id="ip_visceral_evaluatesegmentation" name="Visceral" version="0.5">
+    <description>Evaluate Segmentation</description>
+    <requirements>
+        <!--requirement type="package" version="9c">jpeg</requirement-->
+        <!--requirement type="package" version="4.13.0">libitk</requirement-->
+        <requirement type="package" version="2015.07.03">visceral-evaluatesegmentation</requirement>
+    </requirements>
+    <command>
         <![CDATA[
-		EvaluateSegmentation '$gt_path' '$seg_path' -xml '$output'
+        EvaluateSegmentation '$gt_path' '$seg_path' -xml '$output'
         ]]>
-  </command>
-  <inputs>
-    <param name="gt_path" type="data" format="tiff,png,jpg,bmp" label="Ground Truth Image"/>
-    <param name="seg_path" type="data" format="tiff,png,jpg,bmp" label="Segmented Image"/>
-  </inputs>
-  <outputs>
-    <data format="xml" name="output"/>
-  </outputs>
-  <tests>
-    <test>
-	    <param name="gt_path" value="sample.png" />
-	    <param name="seg_path" value="sample.png" />
-	    <output name="output" value="out.xml" ftype="xml" lines_diff="10" />
-    </test>
-  </tests>
-  <help>Calculates Metrics for Evaluating Image Segmentation</help>
-  <citations>
-	  <citation type="bibtex">@article{TA2015,
-    author = {Abdel Aziz Taha and Allan Hanbury},
-    title = {Metrics for Evaluating 3{D} Medical Image Segmentation: analysis, selection, and tool},
-    journal = {BMC Medical Imaging},
-    year = {2015},
-    volume = {15},
-    pages = {29},
-    month = {August},
-}</citation>
-  </citations>
+    </command>
+    <inputs>
+        <param name="gt_path" type="data" format="tiff,png,jpg,bmp" label="Ground Truth Image"/>
+        <param name="seg_path" type="data" format="tiff,png,jpg,bmp" label="Segmented Image"/>
+    </inputs>
+    <outputs>
+        <data format="xml" name="output"/>
+    </outputs>
+    <tests>
+        <test>
+            <param name="gt_path" value="sample.png" />
+            <param name="seg_path" value="sample.png" />
+            <output name="output" value="out.xml" ftype="xml" lines_diff="15" />
+        </test>
+    </tests>
+    <help>
+    **What it does**
+
+    Calculates Metrics for Evaluating Image Segmentation</help>
+    <citations>
+        <citation type="doi">10.1186/s12880-015-0068-x</citation>
+    </citations>
 </tool>

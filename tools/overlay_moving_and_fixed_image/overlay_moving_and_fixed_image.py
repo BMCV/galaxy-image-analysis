@@ -62,7 +62,7 @@ if __name__=="__main__":
     fixed_image = skimage.io.imread(args.fixed_image)
     moving_image = skimage.io.imread(args.moving_image)
 
-    warp_matrix = pd.read_csv(args.warp_matrix, delimiter=",", header=None)
+    warp_matrix = pd.read_csv(args.warp_matrix, delimiter="\t", header=None)
     warp_matrix = np.array(warp_matrix)
     if args.inverse_transform:
         fixed_image = transform(fixed_image, moving_image, warp_matrix)

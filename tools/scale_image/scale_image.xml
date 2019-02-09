@@ -1,10 +1,10 @@
-<tool id="scale_image" name="Scale Image" version="0.2">
-  <description>Scales image</description>
-  <requirements>
-    <requirement type="package" version="0.14.0">scikit-image</requirement>
-    <requirement type="package" version="1.1.0">scipy</requirement>
-  </requirements>
-  <command>
+<tool id="ip_scale_image" name="Scale Image" version="0.2">
+    <description>Scales image</description>
+    <requirements>
+        <requirement type="package" version="0.14.2">scikit-image</requirement>
+        <requirement type="package" version="1.15.4">numpy</requirement>
+    </requirements>
+    <command>
         <![CDATA[
         python '$__tool_directory__/scale_image.py' '$input' ./out.png
         #if $use_scale_option.use_scale == 'true'
@@ -14,46 +14,48 @@
         #end if
         $order
 
-        &&
-        mv ./out.png '$output'
         ]]>
-  </command>
-  <inputs>
-    <param name="input" type="data" format="png" label="Image file"/>
-    <conditional name="use_scale_option"><!--a third option (using one integer as percentage scaling) could still be implemented-->
-          <param label="Lock scaling between image dimensions" name="use_scale" type="select">
-              <option selected="true" value="true">Lock</option>
-              <option value="false">Individual scales</option>
-          </param>
-          <when value="true">
-            <param name="scale" size="4" type="float" value="1.0" label="Scaling factor" />
-          </when>
-          <when value="false">
-            <param name="scale_x" size="4" type="integer" value="100" label="New height of the image in pixels" />
-            <param name="scale_y" size="4" type="integer" value="100" label="New width of the image in pixels" />
-          </when>
-    </conditional>
-    <param name="order" type="select" label="Interpolation method">
-      <option value="0">Nearest-neighbor</option>
-      <option value="1" selected="true">Bi-linear</option>
-      <option value="2">Bi-cubic</option>
-    </param>
-  </inputs>
-  <outputs>
-    <data format="png" name="output"/>
-  </outputs>
+    </command>
+    <inputs>
+        <param name="input" type="data" format="png" label="Image file"/>
+        <conditional name="use_scale_option"><!--a third option (using one integer as percentage scaling) could still be implemented-->
+            <param label="Lock scaling between image dimensions" name="use_scale" type="select">
+                <option selected="true" value="true">Lock</option>
+                <option value="false">Individual scales</option>
+            </param>
+            <when value="true">
+                <param name="scale" type="float" value="1.0" label="Scaling factor" />
+            </when>
+            <when value="false">
+                <param name="scale_x" type="integer" value="100" label="New height of the image in pixels" />
+                <param name="scale_y" type="integer" value="100" label="New width of the image in pixels" />
+            </when>
+        </conditional>
+        <param name="order" type="select" label="Interpolation method">
+            <option value="0">Nearest-neighbor</option>
+            <option value="1" selected="true">Bi-linear</option>
+            <option value="2">Bi-cubic</option>
+        </param>
+    </inputs>
+    <outputs>
+        <data format="png" name="output" from_work_dir="out.png"/>
+    </outputs>
     <tests>
-      <test>
-        <param name="input" value="sample1.png"/> <!--continue here-->
-        <param name="use_scale_option.use_scale" value="false"/>
-        <param name="use_scale_option.scale_x" value="200"/>
-        <param name="use_scale_option.scale_y" value="150"/>
-        <param name="order" value="0"/>
-        <output name="output" value="out2.png" ftype="png" compare="sim_size"/>
-      </test>
-    </tests>  
-  <help>This tool scales an image using the scaling factor.</help>
-  <citations>
-      <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
-  </citations>
+        <test>
+            <param name="input" value="sample1.png"/> <!--continue here-->
+            <param name="use_scale_option.use_scale" value="false"/>
+            <param name="use_scale_option.scale_x" value="200"/>
+            <param name="use_scale_option.scale_y" value="150"/>
+            <param name="order" value="0"/>
+            <output name="output" value="out2.png" ftype="png" compare="sim_size"/>
+        </test>
+    </tests>
+    <help>
+    **What it does**
+
+    This tool scales an image using the scaling factor.
+    </help>
+    <citations>
+        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
+    </citations>
 </tool>

@@ -1,33 +1,36 @@
-<tool id="points2labelimage" name="Points 2 Label" version="0.2">
-  <description>Points to Label Image</description>
-  <requirements>
-    <requirement type="package" version="1.15.4">numpy</requirement>
-    <requirement type="package" version="0.14.0">scikit-image</requirement>
-    <requirement type="package" version="0.23.4">pandas</requirement>
-  </requirements>
-  <command>
+<tool id="ip_points_to_labe" name="Points to Label" version="0.2">
+    <description>Points to Label Image</description>
+    <requirements>
+        <requirement type="package" version="1.15.4">numpy</requirement>
+        <requirement type="package" version="0.14.2">scikit-image</requirement>
+        <requirement type="package" version="0.23.4">pandas</requirement>
+    </requirements>
+    <command>
     <![CDATA[
-        python '$__tool_directory__/points2label.py' '$input' '$output' '$org_file' $has_header $is_tsv
+        python '$__tool_directory__/points2label.py' '$input' '$output' '$org_file' $has_header
     ]]>
-  </command>
-  <inputs>
-    <param name="input" type="data" format="csv" label="Point CSV file"/>
-    <param name="org_file" type="data" format="tiff" label="Original label image file"/>
-    <param name="has_header" type="boolean" checked="false" truevalue="--has_header True" falsevalue="" optional="true" label="Does point file contain header?" /> 
-    <param name="is_tsv" optional="true" type="boolean" checked="false" truevalue="--is_tsv True" falsevalue="" help="tab separated input file"/>
-  </inputs>
-  <outputs>
-    <data name="output" format="tiff"/>
-  </outputs>
-  <tests>
-    <test>
-      <param name="input" value="points.csv"/>
-      <param name="org_file" value="galaxyIcon_noText.tif"/>
-      <output name="output" file="out.tif" ftype="tiff" compare="sim_size"/><!--to allow a change in e.g. date-->
-    </test>
-  </tests>
-    <help> This tool converts points to a label image. </help>
-  <citations>
-    <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation> 
-  </citations>
+    </command>
+    <inputs>
+        <param name="input" type="data" format="tabular" label="Point CSV file"/>
+        <param name="org_file" type="data" format="tiff" label="Original label image file"/>
+        <param name="has_header" type="boolean" checked="false" truevalue="--has_header True" falsevalue="" optional="true" label="Does point file contain header?" /> 
+    </inputs>
+    <outputs>
+        <data name="output" format="tiff"/>
+    </outputs>
+    <tests>
+        <test>
+            <param name="input" value="points.tsv"/>
+            <param name="org_file" value="galaxyIcon_noText.tif"/>
+            <output name="output" file="out.tif" ftype="tiff" compare="sim_size"/>
+        </test>
+    </tests>
+    <help>
+    **What it does**
+
+    This tool converts points to a label image.
+    </help>
+    <citations>
+        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation> 
+    </citations>
 </tool>

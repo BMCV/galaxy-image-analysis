@@ -4,6 +4,6 @@ categories:
 description: Send file via cURL POST
 long_description: This tool uses cURL to send a file via POST.
 name: curl_post
-owner: thomaswollmann
+owner: imgteam
 homepage_url: https://github.com/bmcv
 remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tools/curl_post

@@ -1,40 +1,44 @@
-<tool id="anisotropic_diffusion" name="Anisotropic Diffusion" version="0.1">
-  <description>Edge-preserving, Anisotropic diffusion</description>
-  <requirements>
-    <requirement type="package" version="0.14.0" >scikit-image</requirement>
-    <requirement type="package" version="0.3.0">medpy</requirement>
-    <requirement type="package" version="1.15.4">numpy</requirement>
-  </requirements>
-  <command>
+<tool id="ip_anisotropic_diffusion" name="Anisotropic Diffusion" version="0.1">
+    <description>Edge-preserving, Anisotropic diffusion</description>
+    <requirements>
+        <requirement type="package" version="0.14.2">scikit-image</requirement>
+        <requirement type="package" version="0.3.0">medpy</requirement>
+        <requirement type="package" version="1.15.4">numpy</requirement>
+    </requirements>
+    <command>
         <![CDATA[
-        python "$__tool_directory__/anisotropic_diffusion.py" '$input' '$output' '$niter' '$kappa' '$gamma' '$eqoption'
+        python '$__tool_directory__/anisotropic_diffusion.py' '$input' '$output' '$niter' '$kappa' '$gamma' '$eqoption'
         ]]>
-  </command>
-  <inputs>
-    <param name="input" type="data" format="tiff" label="Image file"/>
-    <param label="Number of iterations" name="niter" optional="true" type="integer" value="50"/>
-    <param label="Conduction coefficient" name="kappa" optional="true" type="integer" value="50"/>
-    <param label="Speed of diffusion" name="gamma" optional="true" type="float" value="0.1"/>
-    <param name="eqoption" type="select" label="Diffusion Feature" help="Perona Malik diffusion equation">
-        <option value="1" selected="True">Favour high contrast edges</option>
-        <option value="2">Favour wide regions</option>
-    </param>
-  </inputs>
-  <outputs>
-    <data format="tiff" name="output"/>
-  </outputs>
-  <tests>
-    <test>
-	    <param name="input" value="galaxyIcon_noText.tif" />
-	    <param name="niter" value="100" />
-      <param name="kappa" value="50" />
-	    <param name="gamma" value="0.1" />
-	    <param name="eqoption" value="1" />
-	    <output name="output" file="res.tif" ftype="tiff" compare="sim_size"/>
-    </test>
-  </tests>
-  <help>Edge-preserving, Anisotropic image diffusion.</help>
-  <citations>
-      <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
-  </citations>
+    </command>
+    <inputs>
+        <param name="input" type="data" format="tiff" label="Image file"/>
+        <param label="Number of iterations" name="niter" optional="true" type="integer" value="50"/>
+        <param label="Conduction coefficient" name="kappa" optional="true" type="integer" value="50"/>
+        <param label="Speed of diffusion" name="gamma" optional="true" type="float" value="0.1"/>
+        <param name="eqoption" type="select" label="Diffusion Feature" help="Perona Malik diffusion equation">
+            <option value="1" selected="True">Favour high contrast edges</option>
+            <option value="2">Favour wide regions</option>
+        </param>
+    </inputs>
+    <outputs>
+        <data format="tiff" name="output"/>
+    </outputs>
+    <tests>
+        <test>
+            <param name="input" value="galaxyIcon_noText.tif" />
+            <param name="niter" value="100" />
+            <param name="kappa" value="50" />
+            <param name="gamma" value="0.1" />
+            <param name="eqoption" value="1" />
+            <output name="output" file="res.tif" ftype="tiff" compare="sim_size"/>
+        </test>
+    </tests>
+    <help>
+    **What it does**
+
+    Edge-preserving, Anisotropic image diffusion
+    </help>
+    <citations>
+        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
+    </citations>
 </tool>

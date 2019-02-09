@@ -1,8 +1,7 @@
-<?xml version="1.0"?>
-<tool name="Coordinates of ROI" id="ia_coordinates_of_roi" version="0.0.3">
-    <description>Coordinates of ROI</description>
+<tool id="ip_coordinates_of_roi" name="Coordinates of ROI" version="0.0.3">
+    <description></description>
     <requirements>
-        <requirement type="package" version="0.14.0">scikit-image</requirement>
+        <requirement type="package" version="0.14.2">scikit-image</requirement>
         <requirement type="package" version="0.23.4">pandas</requirement>
     </requirements>
     <command detect_errors="aggressive">
@@ -16,11 +15,12 @@
         ]]>
     </command>
     <inputs>
-	<param name="im" type="data" format="png" label="Source file" />
-	<param name="white_obj" type="boolean" truevalue="--white_obj" falsevalue="" checked="false" label="Set to Yes if object is white and background black, otherwise set to No" />
-	<param name="threshold" type="float" value="0.5" label="Threshold value" />
-	<param name="offset_x" type="integer" value="0" label="Added offset in x direction (=width direction)" />
-	<param name="offset_y" type="integer" value="0" label="Added offset in y direction (=height direction)" />
+        <param name="im" type="data" format="png" label="Source file" />
+        <param name="white_obj" type="boolean" truevalue="--white_obj" falsevalue="" checked="false"
+            label="Set to Yes if object is white and background black, otherwise set to No" />
+        <param name="threshold" type="float" value="0.5" label="Threshold value" />
+        <param name="offset_x" type="integer" value="0" label="Added offset in x direction (=width direction)" />
+        <param name="offset_y" type="integer" value="0" label="Added offset in y direction (=height direction)" />
     </inputs>
     <outputs>
        <data format="tabular" name="pixel_table" />
@@ -29,18 +29,20 @@
         <test>
             <param name="im" value="test.png"/>
             <param name="white_obj" value="true"/>
-            <output name="pixel_table" value="table.csv" ftype="tabular"/>
+            <output name="pixel_table" value="table.tsv" ftype="tabular"/>
         </test>
         <test>
             <param name="im" value="test.png"/>
             <param name="white_obj" value="true"/>
             <param name="offset_x" value="1"/>
             <param name="offset_y" value="2"/>
-            <output name="pixel_table" value="table2.csv" ftype="tabular"/>
+            <output name="pixel_table" value="table2.tsv" ftype="tabular"/>
         </test>
-  </tests>
+    </tests>
     <help>
-        This tool creates a table containing the pixelcoordinates of the Region of Interest (ROI).
+    **What it does**
+
+    This tool creates a table containing the pixelcoordinates of the Region of Interest (ROI).
     </help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>

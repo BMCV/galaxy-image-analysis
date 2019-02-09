@@ -5,7 +5,7 @@ import skimage.io
 import pandas as pd
 import warnings
 
-def points2label(labels, shape, output_file=None, has_header=False, is_TSV=False):
+def points2label(labels, shape, output_file=None, has_header=False, is_TSV=True):
     labelimg = np.zeros([shape[0], shape[1]], dtype=np.int32)
 
     if is_TSV:
@@ -36,7 +36,7 @@ if __name__ == "__main__":
     parser.add_argument('out_file', type=argparse.FileType('w'), default=sys.stdin, help='out file')
     parser.add_argument('org_file', type=argparse.FileType('r'), default=sys.stdin, help='input original file')
     parser.add_argument('--has_header', dest='has_header', type=bool, default=False, help='label file has header')
-    parser.add_argument('--is_tsv', dest='is_tsv', type=bool, default=False, help='label file is TSV')
+    parser.add_argument('--is_tsv', dest='is_tsv', type=bool, default=True, help='label file is TSV')
     args = parser.parse_args()
 
     original_shape = skimage.io.imread(args.org_file.name, plugin='tifffile').shape

@@ -36,13 +36,11 @@ def binaryimage2points(input_file):
     #return
     return(out_dataFrame)
 
-    
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('input_file', help='input file')
-    parser.add_argument('out_file', help='out file (CSV)')
+    parser.add_argument('out_file', help='out file (TSV)')
     
     args        = parser.parse_args()
     input_file  = args.input_file
@@ -52,4 +50,4 @@ if __name__ == "__main__":
     out_dataFrame = binaryimage2points(input_file)
     
     #Print to csv file
-    out_dataFrame.to_csv(out_file,index=False,header=False)
+    out_dataFrame.to_csv(out_file, index=False, header=False, sep="\t")

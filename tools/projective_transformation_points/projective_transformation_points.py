@@ -15,7 +15,7 @@ def warp_coords_batch(coord_map, coords, dtype=np.float64, batch_size=1000000):
 
 def transform(coords, warp_matrix, out):
     indices = np.array(pd.read_csv(coords, delimiter="\t"))
-    a_matrix = np.array(pd.read_csv(warp_matrix, delimiter=",", header=None))
+    a_matrix = np.array(pd.read_csv(warp_matrix, delimiter="\t", header=None))
     
     trans = ProjectiveTransform(matrix=a_matrix)
     warped_coords = warp_coords_batch(trans, indices)
