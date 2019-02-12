@@ -1,0 +1,9 @@
+categories:
+  - Imaging
+description: Landmark Registration
+long_description: |
+  This tool estimates the transformation matrix between two sets of 2d points.
+name: landmark_registration
+owner: imgteam
+homepage_url: https://github.com/bmcv
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tools/landmark_registration/
