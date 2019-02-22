@@ -10,15 +10,17 @@ def get_pixel_values(im, pixel_table, white_obj, threshold, offset=[0,0]):
         data = skimage.color.rgb2grey(data)
     x = []
     y = []
-    for i in range(data.shape[0]):
-        for j in range(data.shape[1]):
+    img_height = data.shape[0]
+    img_width = data.shape[1]
+    for j in range(img_width):
+        for i in range(img_height):
             if white_obj == False:
                 if data[i,j] <= threshold:
                     x.append(j + offset[0])
-                    y.append(i + offset[1])
+                    y.append(height-(i+1) + offset[1])
             elif data[i,j] >= threshold:
                     x.append(j + offset[0])
-                    y.append(i + offset[1])
+                    y.append(height-(i+1) + offset[1])
                     
     df = pd.DataFrame()
     df['x'] = x
