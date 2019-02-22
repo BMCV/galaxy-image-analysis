@@ -14,7 +14,7 @@ def landmark_registration(points_file1, points_file2, out_file, residual_thresho
     model = AffineTransform()
     model_robust, inliers = ransac((src, dst), AffineTransform, min_samples=3,
                                    residual_threshold=residual_threshold, max_trials=max_trials)
-    pd.DataFrame(model_robust.params).to_csv(out_file, header = None, index = False)
+    pd.DataFrame(model_robust.params).to_csv(out_file, header=None, index=False, sep="\t")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Estimate transformation from points")
