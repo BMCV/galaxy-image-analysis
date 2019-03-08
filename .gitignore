@@ -4,3 +4,4 @@ Vagrantfile
 template.xml
 template_shed.yml
 .vscode
+/create_csvs.py
