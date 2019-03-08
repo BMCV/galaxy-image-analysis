@@ -16,11 +16,11 @@ def get_pixel_values(im, pixel_table, white_obj, threshold, offset=[0,0]):
         for i in range(img_height):
             if white_obj == False:
                 if data[i,j] <= threshold:
-                    x.append(j + offset[0])
-                    y.append(img_height-(i+1) + offset[1])
+                    x.append(i + offset[0])
+                    y.append(j + offset[1])
             elif data[i,j] >= threshold:
-                    x.append(j + offset[0])
-                    y.append(img_height-(i+1) + offset[1])
+                    x.append(i + offset[0])
+                    y.append(j + offset[1])
                     
     df = pd.DataFrame()
     df['x'] = x
