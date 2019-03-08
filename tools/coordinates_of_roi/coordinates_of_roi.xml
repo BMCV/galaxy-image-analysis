@@ -1,4 +1,4 @@
-<tool id="ip_coordinates_of_roi" name="Coordinates of ROI" version="0.0.3">
+<tool id="ip_coordinates_of_roi" name="Coordinates of ROI" version="0.0.4">
     <description></description>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
