@@ -1,0 +1,8 @@
+categories:
+  - Imaging
+description: Flip coordinate axes
+long_description: Makes x the horizontal axis (left to right) and y the vertical axis (bottom to top), like in a coordinate system
+name: imagecoordinates_flipaxis
+owner: imgteam
+homepage_url: https://github.com/bmcv
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tools/imagecoordinates_flipaxis/
