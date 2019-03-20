@@ -1,4 +1,4 @@
-<tool id="ip_coordinates_of_roi" name="Coordinates of ROI" version="0.0.3">
+<tool id="ip_coordinates_of_roi" name="Coordinates of ROI" version="0.0.4">
     <description></description>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
@@ -29,14 +29,14 @@
         <test>
             <param name="im" value="test.png"/>
             <param name="white_obj" value="true"/>
-            <output name="pixel_table" value="table.tsv" ftype="tabular"/>
+            <output name="pixel_table" value="newtable.tsv" ftype="tabular"/>
         </test>
         <test>
             <param name="im" value="test.png"/>
             <param name="white_obj" value="true"/>
             <param name="offset_x" value="1"/>
             <param name="offset_y" value="2"/>
-            <output name="pixel_table" value="table2.tsv" ftype="tabular"/>
+            <output name="pixel_table" value="newtable2.tsv" ftype="tabular"/>
         </test>
     </tests>
     <help>

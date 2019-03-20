@@ -1,0 +1,30 @@
+<tool id="imagecoordinates_flipaxis" name="Switch axis coordinates" version="0.1"> 
+  <description>Switches the axes of an image and flips the y axis.</description>
+  <requirements> 
+    <requirement type="package" version="0.23.4" >pandas</requirement>
+  </requirements>
+  <command detect_errors="aggressive"> 
+        <![CDATA[
+        python "$__tool_directory__/imagecoordinates_flipaxis.py" '$input' '$output' $img_height
+        ]]> 
+  </command>
+  <inputs> 
+    <param name="input" type="data" format="tabular" label="File with image coordinates"/> 
+    <param name="img_height" type="integer" value="100" label="Height of the corresponding image"/>
+  </inputs>
+  <outputs>
+    <data name="output" format="tabular"/>
+  </outputs>
+  <tests>
+    <test>
+	    <param name="input" value="table.tsv" />
+      <param name="img_height" value="500"/>
+      <output name="output" value="out2.tsv" ftype="tabular" />
+    </test>
+  </tests>
+  <help>Makes x the horizontal axis (left to right) and y the vertical axis (bottom to top), 
+  like in a coordinate system.</help>
+  <citations>
+      <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
+  </citations>
+</tool>
