@@ -19,7 +19,5 @@ if __name__ == "__main__":
     # parser.add_argument('image_height', help='height of image')
     parser.add_argument('image_height', type=int, help='height of image')
     args = parser.parse_args()
-    print(args.image_height)
-    print(type(args.image_height))
     imagecoordinates_flipyaxis(args.input_file.name, args.out_file_str, args.image_height)
     # imagecoordinates_flipyaxis(args.input_file.name, args.out_file_str, int(args.image_height))
