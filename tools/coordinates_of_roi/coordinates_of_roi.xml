@@ -9,7 +9,6 @@
             python '$__tool_directory__/coordinates_of_roi.py'
             '$im'
             '$pixel_table'
-            $offset_x $offset_y
             $white_obj
             --threshold $threshold
         ]]>
@@ -19,8 +18,6 @@
         <param name="white_obj" type="boolean" truevalue="--white_obj" falsevalue="" checked="false"
             label="Set to Yes if object is white and background black, otherwise set to No" />
         <param name="threshold" type="float" value="0.5" label="Threshold value" />
-        <param name="offset_x" type="integer" value="0" label="Added offset in x direction (=width direction)" />
-        <param name="offset_y" type="integer" value="0" label="Added offset in y direction (=height direction)" />
     </inputs>
     <outputs>
        <data format="tabular" name="pixel_table" />
@@ -30,13 +27,6 @@
             <param name="im" value="test.png"/>
             <param name="white_obj" value="true"/>
             <output name="pixel_table" value="newtable.tsv" ftype="tabular"/>
-        </test>
-        <test>
-            <param name="im" value="test.png"/>
-            <param name="white_obj" value="true"/>
-            <param name="offset_x" value="1"/>
-            <param name="offset_y" value="2"/>
-            <output name="pixel_table" value="newtable2.tsv" ftype="tabular"/>
         </test>
     </tests>
     <help>
