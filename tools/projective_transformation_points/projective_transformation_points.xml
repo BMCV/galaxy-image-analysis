@@ -1,4 +1,4 @@
-<tool id="ip_projective_transformation_points" name="Projective Transformation" version="0.0.2">
+<tool id="ip_projective_transformation_points" name="Projective Transformation" version="0.0.3">
     <description>of input points</description>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>

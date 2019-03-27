@@ -5,12 +5,12 @@ import argparse
 
 
 def warp_coords_batch(coord_map, coords, dtype=np.float64, batch_size=1000000):
-    tf_coords = coords.astype(np.float32)
+    tf_coords = coords.astype(np.float32)[:, ::-1]
 
-    for i in range(0, (tf_coords.shape[0]//batch_size+1)):
+    for i in range(0, (tf_coords.shape[0]//batch_size)+1):
         tf_coords[batch_size*i:batch_size*(i+1)] = coord_map(tf_coords[batch_size*i:batch_size*(i+1)])
 
-    return np.unique(np.round(tf_coords).astype(coords.dtype),axis=0)
+    return np.unique(np.round(tf_coords).astype(coords.dtype),axis=0)[:, ::-1]
 
 
 def transform(coords, warp_matrix, out):
