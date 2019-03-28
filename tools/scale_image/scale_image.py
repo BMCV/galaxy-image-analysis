@@ -22,7 +22,6 @@ def scale_image(input_file, output_file, scale, order=1):
 
         if ',' in scale:
             scale = scale[1:-1].split(',')
-            scale.reverse()
             scale = [int(i) for i in scale]
         elif '.' in scale:
             scale = float(scale)
