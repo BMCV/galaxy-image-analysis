@@ -118,7 +118,9 @@ if args.solidity or args.all_features:
 if args.moments or args.all_features:
     df['moments'] = df['it'].map(lambda ait: regions[ait].moments)
 if args.convexity or args.all_features:
-    df['convexity'] = df.area/(df.perimeter*df.perimeter)
+    perimeter = df['it'].map(lambda ait: regions[ait].perimeter)
+    area = df['it'].map(lambda ait: regions[ait].area)
+    df['convexity'] = area/(perimeter*perimeter)
 
 del df['it']
 df.to_csv(out_file, sep='\t', line_terminator='\n', index=False)

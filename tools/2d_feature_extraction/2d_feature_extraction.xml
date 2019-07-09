@@ -1,4 +1,4 @@
-<tool id="ip_2d_feature_extraction" name="2D Feature Extraction" version="0.0.8">
+<tool id="ip_2d_feature_extraction" name="2D Feature Extraction" version="0.0.9">
     <description>Feature Extraction</description>
     <requirements>
         <requirement type="package" version="0.23.4">pandas</requirement>
