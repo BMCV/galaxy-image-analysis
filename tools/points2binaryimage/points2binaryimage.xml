@@ -1,4 +1,4 @@
-<tool id="ip_points_to_binaryimage" name="Points to Binary Image" version="0.1">
+<tool id="ip_points_to_binaryimage" name="Points to Binary Image" version="0.2">
     <description>Converts points to a binary image</description>
     <requirements> 
         <requirement type="package" version="0.14.2">scikit-image</requirement>
@@ -7,7 +7,7 @@
         <requirement type="package" version="2018.7">pytz</requirement><!--pandas seems to have additional requirements that are not automatically installed-->
         <requirement type="package" version="2.4.1">dateutil</requirement>
     </requirements>
-    <command>
+    <command detect_errors="aggressive">
         <![CDATA[
         python '$__tool_directory__/points2binaryimage.py' '$input' '$output' $shapex $shapey $has_header $invert_xy
         ]]>

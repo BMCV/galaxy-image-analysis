@@ -1,11 +1,11 @@
-<tool id="ip_points_to_labe" name="Points to Label" version="0.2">
+<tool id="ip_points_to_label" name="Points to Label" version="0.3">
     <description>Points to Label Image</description>
     <requirements>
         <requirement type="package" version="1.15.4">numpy</requirement>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
         <requirement type="package" version="0.23.4">pandas</requirement>
     </requirements>
-    <command>
+    <command detect_errors="aggressive">
     <![CDATA[
         python '$__tool_directory__/points2label.py' '$input' '$output' '$org_file' $has_header
     ]]>

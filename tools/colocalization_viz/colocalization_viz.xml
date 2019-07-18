@@ -1,4 +1,4 @@
-<tool id="ip_colocalization" name="Colocalization" version="0.0.6">
+<tool id="ip_colocalization" name="Colocalization" version="0.0.7">
     <description>of two segmentation maps</description>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>

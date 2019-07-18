@@ -1,10 +1,10 @@
-<tool id="ip_detection_viz" name="Detection Visualization" version="0.1">
+<tool id="ip_detection_viz" name="Detection Visualization" version="0.2">
     <description>Detection Visualization</description>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
       <requirement type="package" version="3.0.2">matplotlib</requirement>
     </requirements>
-    <command>
+    <command detect_errors="aggressive">
         <![CDATA[
         python '$__tool_directory__/detection_viz.py' '$input' '$output' 
         --stroke_size $thickness --circle_radius $circle_radius $tp $fn $fp

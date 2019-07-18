@@ -1,4 +1,4 @@
-<tool id="ip_2d_feature_extraction" name="2D Feature Extraction" version="0.0.9">
+<tool id="ip_2d_feature_extraction" name="2D Feature Extraction" version="0.1.0">
     <description>Feature Extraction</description>
     <requirements>
         <requirement type="package" version="0.23.4">pandas</requirement>
@@ -6,7 +6,7 @@
         <requirement type="package" version="1.15.4">numpy</requirement>
         <requirement type="package" version="0.15.1">tifffile</requirement>
     </requirements>
-    <command>
+    <command detect_errors="aggressive">
     <![CDATA[
     python '$__tool_directory__/2d_feature_extraction.py'
     #if $feature_options['features'] == 'all'

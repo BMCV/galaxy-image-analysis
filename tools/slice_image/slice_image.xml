@@ -1,11 +1,11 @@
-<tool id="ip_slice_image" name="Slice Image" version="0.2">
+<tool id="ip_slice_image" name="Slice Image" version="0.3">
     <description>into smaller patches</description>
     <requirements> 
         <requirement type="package" version="0.14.2">scikit-image</requirement>
         <requirement type="package" version="1.15.4">numpy</requirement>
         <!-- <requirement type="package" version="1.1.0">scipy</requirement> -->
     </requirements>
-    <command> 
+    <command detect_errors="aggressive"> 
         <![CDATA[
         mkdir ./out &&
         python '$__tool_directory__/slice_image.py'

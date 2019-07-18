@@ -1,10 +1,10 @@
-<tool id="ip_concat_channels" name="Concatenate images" version="0.1">
+<tool id="ip_concat_channels" name="Concatenate images" version="0.2">
     <description></description>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
         <requirement type="package" version="1.15.4">numpy</requirement>
     </requirements>
-    <command>
+    <command detect_errors="aggressive">
     <![CDATA[
         python '$__tool_directory__/concat_channels.py' 
         #for $input in $inputs

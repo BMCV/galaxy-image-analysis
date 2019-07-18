@@ -1,4 +1,4 @@
-<tool id="ip_viz_overlay_moving_and_fixed_image" name="Overlay" version="0.0.1">
+<tool id="ip_viz_overlay_moving_and_fixed_image" name="Overlay" version="0.0.2">
     <description>moving and fixed image</description>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
@@ -7,7 +7,7 @@
         <requirement type="package" version="1.1.0">scipy</requirement>
         <requirement type="package" version="5.3.0">pillow</requirement>
     </requirements>
-    <command><![CDATA[
+    <command detect_errors="aggressive"><![CDATA[
          python '$__tool_directory__/overlay_moving_and_fixed_image.py'
              '$fixed_image'
              '$moving_image'

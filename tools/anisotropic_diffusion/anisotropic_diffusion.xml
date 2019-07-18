@@ -1,11 +1,11 @@
-<tool id="ip_anisotropic_diffusion" name="Anisotropic Diffusion" version="0.1">
+<tool id="ip_anisotropic_diffusion" name="Anisotropic Diffusion" version="0.2">
     <description>Edge-preserving, Anisotropic diffusion</description>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
         <requirement type="package" version="0.3.0">medpy</requirement>
         <requirement type="package" version="1.15.4">numpy</requirement>
     </requirements>
-    <command>
+    <command detect_errors="aggressive">
         <![CDATA[
         python '$__tool_directory__/anisotropic_diffusion.py' '$input' '$output' '$niter' '$kappa' '$gamma' '$eqoption'
         ]]>
