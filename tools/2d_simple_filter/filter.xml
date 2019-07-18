@@ -1,4 +1,4 @@
-<tool id="ip_filter_standard" name="Filter Image" version="0.0.2">
+<tool id="ip_filter_standard" name="Filter Image" version="0.0.3">
     <description>applies a standard filter to an image</description>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>

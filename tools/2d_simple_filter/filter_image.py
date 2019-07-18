@@ -6,6 +6,7 @@ import skimage.io
 import skimage.filters
 import skimage.util
 from skimage.morphology import disk
+from skimage import img_as_uint
 
 filterOptions = {
     'median' : lambda img_raw, radius: skimage.filters.median(img_raw, disk(radius)),
@@ -24,11 +25,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     img_in = skimage.io.imread(args.input_file.name)
-    res = filterOptions[args.filter_type](img_in, args.radius)
-    res[res<-1]=-1
-    res[res>1]=1
-
-    with warnings.catch_warnings():
-    	warnings.simplefilter("ignore")
-    	res = skimage.util.img_as_uint(res) #Attention: precision loss
-    	skimage.io.imsave(args.out_file.name, res, plugin='tifffile')
+    res = img_as_uint(filterOptions[args.filter_type](img_in, args.radius))
+    skimage.io.imsave(args.out_file.name, res, plugin='tifffile')
