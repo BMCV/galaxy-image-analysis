@@ -18,7 +18,7 @@
           <option value="median">Median</option>
           <option value="mean">Mean</option>
         </param>        
-        <param name="block_size" type="float" value="5" label="Odd size of pixel neighborhood which is used to calculate the threshold value" />
+        <param name="block_size" type="integer" value="5" label="Odd size of pixel neighborhood which is used to calculate the threshold value" />
         <param name="dark_background" type="boolean" checked="true" truevalue="True" falsevalue="False" label="Dark Background" />
     </inputs>
     <outputs>
