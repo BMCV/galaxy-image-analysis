@@ -18,7 +18,7 @@
           <option value="median">Median</option>
           <option value="mean">Mean</option>
         </param>        
-        <param name="block_size" type="float" default=5 label="Odd size of pixel neighborhood which is used to calculate the threshold value" />
+        <param name="block_size" type="float" default="5" label="Odd size of pixel neighborhood which is used to calculate the threshold value" />
         <param name="dark_background" type="boolean" checked="true" truevalue="True" falsevalue="False" label="Dark Background" />
     </inputs>
     <outputs>
@@ -29,7 +29,7 @@
             <param name="input" value="sample.tif"/>
             <output name="output" value="out.tif" ftype="tiff" compare="sim_size"/>
             <param name="thresh_type" value="gaussian"/>
-            <param name="block_size" value=429/>
+            <param name="block_size" value="429"/>
             <param name="dark_backgroud" value="True"/>
         </test>
     </tests>
