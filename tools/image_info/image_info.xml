@@ -16,7 +16,7 @@
   </outputs>
   <tests>
         <test>
-            <param name="input" value="input.tiff" />
+            <param name="input_file" value="input.tiff" />
             <output name="output" value="res.txt" ftype="txt" />
         </test>
   </tests>    
