@@ -1,0 +1,51 @@
+Checking file format [Tagged Image File Format]
+Initializing reader
+TiffDelegateReader initializing input.tiff
+Reading IFDs
+Populating metadata
+Checking comment style
+Populating OME metadata
+Initialization took 0.068s
+
+Reading core metadata
+filename = input.tiff
+Series count = 1
+Series #0 :
+	Image count = 1
+	RGB = true (4) 
+	Interleaved = false
+	Indexed = false (false color)
+	Width = 265
+	Height = 530
+	SizeZ = 1
+	SizeT = 1
+	SizeC = 4 (effectively 1)
+	Thumbnail size = 64 x 128
+	Endianness = intel (little)
+	Dimension order = XYCZT (certain)
+	Pixel type = uint16
+	Valid bits per pixel = 16
+	Metadata complete = true
+	Thumbnail series = false
+	-----
+	Plane #0 <=> Z 0, C 0, T 0
+
+
+Reading global metadata
+BitsPerSample: 16
+Compression: Uncompressed
+DateTime: 2018:12:06 12:57:33
+ExtraSamples: 1
+ImageLength: 530
+ImageWidth: 265
+MetaDataPhotometricInterpretation: RGB
+MetaMorph: no
+NewSubfileType: 0
+NumberOfChannels: 4
+PhotometricInterpretation: RGB
+PlanarConfiguration: Chunky
+SampleFormat: unsigned integer
+SamplesPerPixel: 4
+Software: tifffile.py
+
+Reading metadata

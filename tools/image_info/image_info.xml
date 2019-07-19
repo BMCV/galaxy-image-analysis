@@ -1,0 +1,31 @@
+<tool id="ip_imageinfo" name="Image Info" version="0.1">
+  <description>Show Image Info</description>
+  <requirements>
+        <requirement type="package" version="5.7.1">bftools</requirement>
+  </requirements>
+  <command>
+        <![CDATA[
+        showinf '$input_file' -no-upgrade -minmax -nopix > '$output'
+        ]]>
+  </command>
+  <inputs>
+    <param label="Input Image" name="input_file" type="data" format="tiff,png,jpeg,"/>
+  </inputs>
+  <outputs>
+     <data format="txt" name="output"/>
+  </outputs>
+  <tests>
+        <test>
+            <param name="input" value="input.tiff" />
+            <output name="output" value="res.txt" ftype="txt" />
+        </test>
+  </tests>    
+  <help>
+    **What it does**
+
+    Extracts metadata from an image.
+    </help>
+    <citations>
+        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
+    </citations>
+</tool>
