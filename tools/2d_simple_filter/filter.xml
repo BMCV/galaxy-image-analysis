@@ -24,7 +24,7 @@
     </inputs>
     <outputs>
        <data format="tiff" name="output" />
-    </outputs>
+    </outputs> 
     <tests>
       <test>
         <param name="input" value="sample.tif" />

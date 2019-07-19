@@ -8,7 +8,7 @@
     <![CDATA[
         python '$__tool_directory__/concat_channels.py' 
         #for $input in $inputs
-            '$input'
+            '$input' 
         #end for
         -o '$output' --axis '$axis'
     ]]>

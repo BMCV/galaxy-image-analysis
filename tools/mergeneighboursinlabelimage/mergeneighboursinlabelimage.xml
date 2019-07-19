@@ -21,7 +21,7 @@
           <param name="input" value="galaxyIcon_noText.tif"/>
           <param name="c" value="10"/>
           <output name="output" file="out.tiff" ftype="tiff" compare="sim_size"/>
-        </test>
+        </test> 
     </tests>
     <help>
     **What it does**

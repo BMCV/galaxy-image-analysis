@@ -4,7 +4,7 @@
         <requirement type="package" version="6.1.0">pillow</requirement>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
         <requirement type="package" version="1.15.4">numpy</requirement>
-    </requirements>
+    </requirements> 
     <command detect_errors="aggressive">
         <![CDATA[
         python '$__tool_directory__/scale_image.py' '$input' ./out.png

@@ -11,7 +11,7 @@ def warp_coords_batch(coord_map, coords, dtype=np.float64, batch_size=1000000):
         tf_coords[batch_size*i:batch_size*(i+1)] = coord_map(tf_coords[batch_size*i:batch_size*(i+1)])
 
     return np.unique(np.round(tf_coords).astype(coords.dtype),axis=0)[:, ::-1]
-
+ 
 
 def transform(coords, warp_matrix, out):
     indices = np.array(pd.read_csv(coords, delimiter="\t"))

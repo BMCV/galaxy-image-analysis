@@ -8,7 +8,7 @@
     <![CDATA[
     python '$__tool_directory__/permutate_axis.py' '$input' '$output' $permutate --axis $axis
     ]]>
-    </command>
+    </command> 
     <inputs>
         <param name="input" type="data" format="tiff" label="Binary Image File"/>
         <param name="permutate" type="text" value="0,1,2" label="new channel order">

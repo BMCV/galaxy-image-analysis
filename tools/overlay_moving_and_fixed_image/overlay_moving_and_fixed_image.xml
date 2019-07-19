@@ -10,7 +10,7 @@
     <command detect_errors="aggressive"><![CDATA[
          python '$__tool_directory__/overlay_moving_and_fixed_image.py'
              '$fixed_image'
-             '$moving_image'
+             '$moving_image' 
              '$warp_matrix'
              '$overlay_out'
              --factor $factor

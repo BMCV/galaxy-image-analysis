@@ -2,7 +2,7 @@ import argparse
 import pandas as pd
 
 
-def imagecoordinates_flipyaxis(input_file, output_file, image_height, offset=[0,0]):
+def imagecoordinates_flipyaxis(input_file, output_file, image_height, offset=[0,0]): 
     df = pd.read_csv(input_file, sep='\t')
 
     x = df.copy().y # create copy instead of view

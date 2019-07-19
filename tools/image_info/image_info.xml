@@ -3,7 +3,7 @@
   <requirements>
         <requirement type="package" version="5.7.1">bftools</requirement>
   </requirements>
-  <command>
+  <command> 
         <![CDATA[
         showinf '$input_file' -no-upgrade -minmax -nopix > '$output'
         ]]>

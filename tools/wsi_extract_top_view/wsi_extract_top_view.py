@@ -4,7 +4,7 @@ import os
 import fnmatch
 import skimage.io
 import numpy as np
-
+ 
 def wsi_extract_top_view(input_path, out_path):
     img_raw = openslide.OpenSlide(input_path)
     top_size = img_raw.level_dimensions[len(img_raw.level_dimensions)-1]

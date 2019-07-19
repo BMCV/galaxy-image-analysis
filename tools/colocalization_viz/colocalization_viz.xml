@@ -7,7 +7,7 @@
     <command detect_errors="aggressive">
     <![CDATA[
         python '$__tool_directory__/colocalization_viz.py' '$input_mask1' '$input_mask2' ./out.png
-    ]]>
+    ]]> 
     </command>
     <inputs>
         <param name="input_mask1" type="data" format="tiff" label="Mask1 Source File" />

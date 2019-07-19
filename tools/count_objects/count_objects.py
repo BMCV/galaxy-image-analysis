@@ -4,7 +4,7 @@ import argparse
 import numpy as np
 import os
 import skimage.io
-from skimage.measure import regionprops
+from skimage.measure import regionprops 
 
 parser = argparse.ArgumentParser(description='Count Objects')
 parser.add_argument('input_file', type=argparse.FileType('r'),

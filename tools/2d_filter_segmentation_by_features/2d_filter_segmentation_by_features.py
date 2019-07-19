@@ -1,6 +1,6 @@
 import argparse
 import sys
-import skimage.io
+import skimage.io 
 import skimage.util
 import pandas as pd
 

@@ -9,7 +9,7 @@
         python '$__tool_directory__/count_objects.py' '$input' '$output'
     ]]>
     </command>
-    <inputs>
+    <inputs> 
         <param name="input" type="data" format="tiff" label="Source file" />
     </inputs>
     <outputs>

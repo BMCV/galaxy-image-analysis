@@ -4,7 +4,7 @@
         <requirement type="package" version="1.15.4">numpy</requirement>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
         <requirement type="package" version="0.23.4">pandas</requirement>
-    </requirements>
+    </requirements> 
     <command detect_errors="aggressive">
     <![CDATA[
         python '$__tool_directory__/points2label.py' '$input' '$output' '$org_file' $has_header

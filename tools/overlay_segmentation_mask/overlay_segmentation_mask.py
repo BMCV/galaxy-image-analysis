@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 #TODO make importable by python script
 
 import skimage.io
-import skimage.measure
+import skimage.measure 
 
 parser = argparse.ArgumentParser()
 parser.add_argument('input_file', type=argparse.FileType('r'), help='input file')

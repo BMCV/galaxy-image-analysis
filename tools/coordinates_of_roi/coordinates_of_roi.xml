@@ -8,7 +8,7 @@
         <![CDATA[
             python '$__tool_directory__/coordinates_of_roi.py'
             '$im'
-            '$pixel_table'
+            '$pixel_table' 
             $white_obj
             --threshold $threshold
         ]]>

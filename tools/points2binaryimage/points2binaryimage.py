@@ -5,7 +5,7 @@ import skimage.io
 import pandas as pd
 import os
 import warnings
-
+ 
 
 def points2binaryimage(point_file, out_file, shape=[500, 500], has_header=False, invert_xy=False):
 

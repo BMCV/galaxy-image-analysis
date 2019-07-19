@@ -5,7 +5,7 @@ import skimage.util
 from skimage.measure import regionprops
 import scipy.spatial.distance
 import numpy as np
-import warnings
+import warnings 
 
 def merge_n(img, dist=50):
     props = regionprops(img)

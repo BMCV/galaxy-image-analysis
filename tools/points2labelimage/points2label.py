@@ -2,7 +2,7 @@ import argparse
 import sys
 import numpy as np
 import skimage.io
-import pandas as pd
+import pandas as pd 
 import warnings
 
 def points2label(labels, shape, output_file=None, has_header=False, is_TSV=True):

@@ -14,7 +14,7 @@
     <param name="img_height" type="integer" value="100" label="Height of the corresponding image"/>
     <param name="offset_x" type="integer" value="0" label="Added offset in x direction (=width direction)" />
     <param name="offset_y" type="integer" value="0" label="Added offset in y direction (=height direction)" />
-    </inputs>
+    </inputs> 
   <outputs>
     <data name="output" format="tabular"/>
   </outputs>

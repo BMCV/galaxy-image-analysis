@@ -10,7 +10,7 @@ def get_pixel_values(im, pixel_table, white_obj, threshold, offset=[0,0]):
         data = skimage.color.rgb2grey(data)
     x = []
     y = []
-    img_height = data.shape[0]
+    img_height = data.shape[0] 
     img_width = data.shape[1]
     for j in range(img_width):
         for i in range(img_height):

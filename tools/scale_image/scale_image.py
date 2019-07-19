@@ -7,7 +7,7 @@ import warnings
 import os
 from PIL import Image
 
-
+ 
 def scale_image(input_file, output_file, scale, order=1):
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")

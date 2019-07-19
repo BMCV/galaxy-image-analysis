@@ -11,7 +11,7 @@ def concat_channels(input_image_paths, output_image_path, axis):
         raw_image = skimage.io.imread(image_path)
         if len(raw_image.shape) == 2:
             if axis == 0:
-                raw_image = [raw_image]
+                raw_image = [raw_image] 
             else:
                 raw_image = np.expand_dims(raw_image, 2)
         images.append(raw_image)

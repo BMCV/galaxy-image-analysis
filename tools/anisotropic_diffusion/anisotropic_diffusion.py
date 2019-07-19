@@ -14,7 +14,7 @@ parser.add_argument('kappa', type=int, help='Conduction coefficient', default=50
 parser.add_argument('gamma', type=float, help='Speed of diffusion', default=0.1)
 parser.add_argument('eqoption', type=int, choices=[1,2], help='Perona Malik diffusion equation', default=1)
 args = parser.parse_args()
-
+ 
 with warnings.catch_warnings():
 	warnings.simplefilter("ignore") #to ignore FutureWarning as well 
 

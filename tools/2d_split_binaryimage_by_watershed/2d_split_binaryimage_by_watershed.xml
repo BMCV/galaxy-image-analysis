@@ -10,7 +10,7 @@
    <command detect_errors="aggressive">
    <![CDATA[
    python '$__tool_directory__/2d_split_binaryimage_by_watershed.py' '$input' '$output' $min_distance
-   ]]>
+   ]]> 
    </command>
    <inputs>
         <param name="input" type="data" format="tiff" label="Source file" /> 

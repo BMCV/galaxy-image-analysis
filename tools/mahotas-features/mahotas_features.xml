@@ -4,7 +4,7 @@
         <requirement type="package" version="1.4.3">mahotas</requirement>
         <requirement type="package" version="4.0.0">pillow</requirement>
         <requirement type="package" version="1.12">numpy</requirement>
-    </requirements>
+    </requirements> 
     <command detect_errors="aggressive"><![CDATA[mahotas-features.py
 #set files = '" "'.join( [ str( $file ) for $file in $inputs ] )
 "${files}"

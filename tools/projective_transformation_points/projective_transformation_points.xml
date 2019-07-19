@@ -19,7 +19,7 @@
     </inputs>
     <outputs>
        <data format="tabular" name="out" />
-    </outputs>
+    </outputs> 
     <tests>
       <test>
         <param name="moving_points" value="points_tsv.tsv" />

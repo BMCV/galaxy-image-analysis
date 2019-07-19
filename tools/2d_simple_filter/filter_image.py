@@ -15,7 +15,7 @@ filterOptions = {
     'sobel' : lambda img_raw, radius: skimage.filters.sobel(img_raw),
     'scharr' : lambda img_raw, radius: skimage.filters.scharr(img_raw),
 }
-
+ 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('input_file', type=argparse.FileType('r'), default=sys.stdin, help='input file')

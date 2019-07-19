@@ -7,7 +7,7 @@
         <requirement type="package" version="1.12">numpy</requirement>
     </requirements>
     <command detect_errors="aggressive">
-        <![CDATA[
+        <![CDATA[ 
         python '$__tool_directory__/color_deconvolution.py' '$input' '$output' '$convtype'
         ]]>
     </command>
