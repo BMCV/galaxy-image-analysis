@@ -1,4 +1,4 @@
-<tool id="ip_detection_viz" name="Detection Visualization" version="0.2">
+<tool id="ip_detection_viz" name="Detection Visualization" version="0.2"> 
     <description>Detection Visualization</description>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>

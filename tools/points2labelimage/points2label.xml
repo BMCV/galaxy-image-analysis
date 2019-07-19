@@ -1,4 +1,4 @@
-<tool id="ip_points_to_label" name="Points to Label" version="0.3">
+<tool id="ip_points_to_label" name="Points to Label" version="0.3"> 
     <description>Points to Label Image</description>
     <requirements>
         <requirement type="package" version="1.15.4">numpy</requirement>

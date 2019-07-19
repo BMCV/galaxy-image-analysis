@@ -1,4 +1,4 @@
-<tool id="ip_points_to_binaryimage" name="Points to Binary Image" version="0.2">
+<tool id="ip_points_to_binaryimage" name="Points to Binary Image" version="0.2"> 
     <description>Converts points to a binary image</description>
     <requirements> 
         <requirement type="package" version="0.14.2">scikit-image</requirement> 
