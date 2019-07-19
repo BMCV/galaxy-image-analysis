@@ -6,7 +6,7 @@ import numpy as np
 import argparse
 import sys
 
- 
+
 # TODO make importable by python script
 def readImg(path):
     img = skimage.io.imread(path)
