@@ -6,6 +6,7 @@
         <requirement type="package" version="0.23.4">pandas</requirement>
         <requirement type="package" version="2018.7">pytz</requirement><!--pandas seems to have additional requirements that are not automatically installed-->
         <requirement type="package" version="2.4.1">dateutil</requirement>
+        <requirement type="package" version="0.15.1">tifffile</requirement>
     </requirements>
     <command detect_errors="aggressive">
         <![CDATA[

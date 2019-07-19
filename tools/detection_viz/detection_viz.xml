@@ -2,7 +2,8 @@
     <description>Detection Visualization</description>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
-      <requirement type="package" version="3.0.2">matplotlib</requirement>
+        <requirement type="package" version="3.0.2">matplotlib</requirement>
+        <requirement type="package" version="0.15.1">tifffile</requirement>
     </requirements>
     <command detect_errors="aggressive">
         <![CDATA[

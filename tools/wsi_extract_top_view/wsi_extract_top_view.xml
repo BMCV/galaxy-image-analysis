@@ -5,6 +5,7 @@
         <requirement type="package" version="1.15.4">numpy</requirement>
         <requirement type="package" version="1.1.1">openslide-python</requirement>
         <requirement type="package" version="0.5">glob2</requirement>
+        <requirement type="package" version="0.15.1">tifffile</requirement>
     </requirements>
     <command detect_errors="aggressive"> 
         <![CDATA[

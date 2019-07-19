@@ -5,6 +5,7 @@
         <requirement type="package" version="4.0.0">pillow</requirement>
         <requirement type="package" version="0.18.1">scikit-learn</requirement>
         <requirement type="package" version="1.12">numpy</requirement>
+        <requirement type="package" version="0.15.1">tifffile</requirement>
     </requirements>
     <command detect_errors="aggressive">
         <![CDATA[ 

@@ -1,7 +1,7 @@
 <tool id="imagecoordinates_flipaxis" name="Switch axis coordinates" version="0.1"> 
   <description>Switches the axes of an image and flips the y axis.</description>
   <requirements> 
-    <requirement type="package" version="0.23.4" >pandas</requirement>
+        <requirement type="package" version="0.23.4" >pandas</requirement>
   </requirements>
   <command detect_errors="aggressive"> 
         <![CDATA[

@@ -2,6 +2,7 @@
     <description>Converts Binary to Label Image</description>
     <requirements>
         <requirement type="package" version="0.12.3">scikit-image</requirement> 
+        <requirement type="package" version="0.15.1">tifffile</requirement>
     </requirements>
     <command detect_errors="aggressive">
         <![CDATA[
