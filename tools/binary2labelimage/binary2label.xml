@@ -1,7 +1,8 @@
-<tool id="ip_binary_to_labelimage" name="Binary 2 Label" version="0.3">
+<tool id="ip_binary_to_labelimage" name="Binary 2 Label" version="0.4">
     <description>Converts Binary to Label Image</description>
     <requirements>
-        <requirement type="package" version="0.12.3">scikit-image</requirement>
+        <requirement type="package" version="0.12.3">scikit-image</requirement> 
+        <requirement type="package" version="0.15.1">tifffile</requirement>
     </requirements>
     <command detect_errors="aggressive">
         <![CDATA[
@@ -17,7 +18,7 @@
     <tests>
         <test>
             <param name="input" value="galaxyIcon_noText.tif" />
-            <output name="output" value="label.tif" ftype="tiff" />
+            <output name="output" value="label.tif" ftype="tiff" compare="sim_size"/>
         </test>
     </tests>
     <help>

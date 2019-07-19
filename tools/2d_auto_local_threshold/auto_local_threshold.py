@@ -2,7 +2,7 @@ import argparse
 import sys
 import skimage.io
 import skimage.filters
-import skimage.util
+import skimage.util 
 
 threshOptions = {
     'gaussian': lambda img_raw, bz: skimage.filters.threshold_local(img_raw, bz, method='gaussian'),

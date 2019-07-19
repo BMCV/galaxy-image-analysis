@@ -8,7 +8,7 @@
     <command>
         <![CDATA[
         EvaluateSegmentation '$gt_path' '$seg_path' -xml '$output'
-        ]]>
+        ]]> 
     </command>
     <inputs>
         <param name="gt_path" type="data" format="tiff,png,jpg,bmp" label="Ground Truth Image"/>

@@ -4,8 +4,9 @@
         <requirement type="package" version="0.14.2">scikit-image</requirement>
         <requirement type="package" version="0.23.4">pandas</requirement>
         <requirement type="package" version="1.15.4">numpy</requirement>
+        <requirement type="package" version="0.15.1">tifffile</requirement>
     </requirements>
-    <command><![CDATA[
+    <command><![CDATA[ 
          python '$__tool_directory__/landmark_registration.py'
          --residual_threshold $residual_threshold
          --max_trials $max_trials

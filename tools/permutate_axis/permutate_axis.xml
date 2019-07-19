@@ -3,12 +3,13 @@
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
         <requirement type="package" version="1.15.4">numpy</requirement>
+        <requirement type="package" version="0.15.1">tifffile</requirement>
     </requirements>
     <command detect_errors="aggressive">
     <![CDATA[
     python '$__tool_directory__/permutate_axis.py' '$input' '$output' $permutate --axis $axis
     ]]>
-    </command>
+    </command> 
     <inputs>
         <param name="input" type="data" format="tiff" label="Binary Image File"/>
         <param name="permutate" type="text" value="0,1,2" label="new channel order">

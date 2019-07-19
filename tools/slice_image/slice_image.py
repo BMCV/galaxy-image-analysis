@@ -8,7 +8,7 @@ import skimage.io
 import skimage.util
 import skimage.feature
 from scipy.stats import entropy as scipy_entropy
-
+ 
 def slice_image(input_file, out_folder, label=None, label_out_folder=None, window_size=64, 
                 stride=1, bg_thresh=1, limit_slices=False, n_thresh=5000, seed=None):
     #TODO NOT Implemented:process labels

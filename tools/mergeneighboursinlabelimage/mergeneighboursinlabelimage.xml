@@ -3,6 +3,7 @@
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
         <requirement type="package" version="1.15.4">numpy</requirement>
+        <requirement type="package" version="0.15.1">tifffile</requirement>
     </requirements>
     <command detect_errors="aggressive">
         <![CDATA[
@@ -21,7 +22,7 @@
           <param name="input" value="galaxyIcon_noText.tif"/>
           <param name="c" value="10"/>
           <output name="output" file="out.tiff" ftype="tiff" compare="sim_size"/>
-        </test>
+        </test> 
     </tests>
     <help>
     **What it does**

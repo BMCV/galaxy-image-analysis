@@ -1,0 +1,37 @@
+<tool id="ip_2d_filter_segmentation_by_features" name="Filter segmentation" version="0.0.1">
+   <description>Filter segmentation by rules</description>
+   <requirements>
+        <requirement type="package" version="0.14.2">scikit-image</requirement> 
+        <requirement type="package" version="5.3.0">pillow</requirement>
+        <requirement type="package" version="0.23.4">pandas</requirement>
+        <requirement type="package" version="0.15.1">tifffile</requirement>
+   </requirements>
+   <command detect_errors="aggressive">
+   <![CDATA[
+   python '$__tool_directory__/2d_filter_segmentation_by_features.py' '$input' '$output' '$feature_file' '$rule_file'
+   ]]>
+   </command>
+   <inputs>
+        <param name="input" type="data" format="tiff" label="Source file" /> 
+        <param name="feature_file" type="data" format="tabular" label="Feature file" /> 
+        <param name="rule_file" type="data" format="tabular" label="Rules file" /> 
+    </inputs>
+    <outputs>
+       <data format="tiff" name="output" />
+    </outputs>
+    <tests>
+        <test>
+            <param name="input" value="in.tif"/>
+            <param name="feature_file" value="features.tabular"/>
+            <param name="rule_file" value="rules.tabular"/>
+            <output name="output" value="out.tif" ftype="tiff" compare="sim_size"/>
+        </test>
+    </tests>
+    <help>
+        Filter label image by rules (e.g., remove large or deformed objects).
+        Rules file has a specific format (cols: ,f1,2, rows: feature_name, min, max). The features have to be also profived in a specific format (cols: label, f1, f2).
+    </help>
+    <citations>
+        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
+    </citations>
+</tool>

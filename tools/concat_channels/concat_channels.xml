@@ -3,12 +3,13 @@
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
         <requirement type="package" version="1.15.4">numpy</requirement>
+        <requirement type="package" version="0.15.1">tifffile</requirement>
     </requirements>
     <command detect_errors="aggressive">
     <![CDATA[
         python '$__tool_directory__/concat_channels.py' 
         #for $input in $inputs
-            '$input'
+            '$input' 
         #end for
         -o '$output' --axis '$axis'
     ]]>

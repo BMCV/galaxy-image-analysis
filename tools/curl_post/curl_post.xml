@@ -2,7 +2,7 @@
     <description>send cURL POST requests</description>
     <requirements>
         <requirement type="package" version="7.62.0">curl</requirement>
-    </requirements>
+    </requirements> 
     <command><![CDATA[curl -X POST -s '$url' --data-binary '$input' > '$output' ]]></command>
     <inputs>
         <param name="url" type="text" value="" label="URL"/>

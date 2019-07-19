@@ -3,11 +3,12 @@
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
         <requirement type="package" version="0.21.0">pandas</requirement>
+        <requirement type="package" version="0.15.1">tifffile</requirement>
     </requirements>
     <command detect_errors="aggressive">
         <![CDATA[
         python '$__tool_directory__/labelimage2points.py' '$input' '$output'
-        ]]>
+        ]]> 
     </command>
     <inputs>
         <param name="input" type="data" format="tiff,png,jpg,bmp" label="Label image file"/>

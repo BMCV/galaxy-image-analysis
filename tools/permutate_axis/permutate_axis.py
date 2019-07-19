@@ -9,7 +9,7 @@ def permutate_axis(input_image_path, output_image_path, axis, permutate):
     images = []
     raw_image = skimage.io.imread(input_image_path, plugin='tifffile')
     for i in permutate:
-        # TODO generalise
+        # TODO generalise 
         if axis == 0:
             a_slice = raw_image[i]
         elif axis == 1:

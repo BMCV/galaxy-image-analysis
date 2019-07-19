@@ -6,7 +6,7 @@ from skimage.measure import label
 from skimage.data import checkerboard
 import numpy as np
 
-
+ 
 
 def labelimage2points(input_file):
     img_in = skimage.io.imread(input_file) 

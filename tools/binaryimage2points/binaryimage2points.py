@@ -36,7 +36,7 @@ def binaryimage2points(input_file):
     #return
     return(out_dataFrame)
 
-
+ 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('input_file', help='input file')

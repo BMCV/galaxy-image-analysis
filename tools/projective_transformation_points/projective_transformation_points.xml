@@ -4,6 +4,7 @@
         <requirement type="package" version="0.14.2">scikit-image</requirement>
         <requirement type="package" version="0.23.4">pandas</requirement>
         <requirement type="package" version="1.15.2">numpy</requirement><!--conflict of 1.15.4 with mkl_fft!?-->
+        <requirement type="package" version="0.15.1">tifffile</requirement>
     </requirements>
     <command>
     <![CDATA[
@@ -19,7 +20,7 @@
     </inputs>
     <outputs>
        <data format="tabular" name="out" />
-    </outputs>
+    </outputs> 
     <tests>
       <test>
         <param name="moving_points" value="points_tsv.tsv" />

@@ -4,7 +4,8 @@
         <requirement type="package" version="0.14.2">scikit-image</requirement>
         <requirement type="package" version="0.3.0">medpy</requirement>
         <requirement type="package" version="1.15.4">numpy</requirement>
-    </requirements>
+        <requirement type="package" version="0.15.1">tifffile</requirement>
+    </requirements> 
     <command detect_errors="aggressive">
         <![CDATA[
         python '$__tool_directory__/anisotropic_diffusion.py' '$input' '$output' '$niter' '$kappa' '$gamma' '$eqoption'

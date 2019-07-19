@@ -7,7 +7,7 @@ import skimage.io
 import skimage.draw
 from tifffile import imsave
 import os
-import argparse
+import argparse 
 import warnings
 
 # split_label_image takes a label image and outputs a similar file with the given name where the labeled

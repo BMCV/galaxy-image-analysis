@@ -1,7 +1,6 @@
 import argparse
 import numpy as np
 import pandas as pd
-import tifffile
 import skimage.io
 import skimage.measure
 import skimage.feature
@@ -20,7 +19,7 @@ features.add_argument('--patches', dest='add_roi_patches', action='store_true')
 features.add_argument('--max_intensity', dest='max_intensity', action='store_true')
 features.add_argument('--mean_intensity', dest='mean_intensity', action='store_true')
 features.add_argument('--min_intensity', dest='min_intensity', action='store_true')
-features.add_argument('--moments_hu', dest='moments_hu', action='store_true')
+features.add_argument('--moments_hu', dest='moments_hu', action='store_true') 
 features.add_argument('--centroid', dest='centroid', action='store_true')
 features.add_argument('--bbox', dest='bbox', action='store_true')
 features.add_argument('--area', dest='area', action='store_true')

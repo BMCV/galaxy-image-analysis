@@ -47,7 +47,7 @@ def overlay(moving_image, fixed_image, factor, overlay_out_path):
     fixed_image = Image.fromarray(fixed_image).convert("RGBA")
     overlay_out = Image.blend(moving_image, fixed_image, factor)
     overlay_out.save(overlay_out_path, "PNG")
-
+ 
 
 if __name__=="__main__":
     parser = argparse.ArgumentParser(description = "Overlay two images")

@@ -10,7 +10,7 @@ import scipy.ndimage
 import shutil
 from tifffile import imsave
 from scipy import misc
-
+ 
 # ROI2binaryimage transforms given .roi files into binary images containing the cells as
 # described by the .roi files.
 # Input 'input_folder' should be the folder in which you have your .roi files.
