@@ -9,7 +9,7 @@
         ]]>
   </command>
   <inputs>
-    <param label="Input Image" name="input_file" type="data" format="tiff,png,jpeg,"/>
+    <param label="Input Image" name="input_file" type="data" format="tiff,tif,png,jpeg,bmp"/>
   </inputs>
   <outputs>
      <data format="txt" name="output"/>
@@ -17,7 +17,7 @@
   <tests>
         <test>
             <param name="input_file" value="input.tiff" />
-            <output name="output" value="res.txt" ftype="txt" />
+            <output name="output" value="res.txt" ftype="txt" compare="diff" lines_diff="6"/>
         </test>
   </tests>    
   <help>
