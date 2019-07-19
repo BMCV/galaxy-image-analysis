@@ -1,4 +1,4 @@
-<tool id="ip_2d_split_binaryimage_by_watershed" name="Split objects" version="0.0.1">
+<tool id="ip_2d_split_binaryimage_by_watershed" name="Split objects" version="0.0.1"> 
    <description>Split binary image by using watershed</description>
    <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>

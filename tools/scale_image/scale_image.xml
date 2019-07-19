@@ -1,4 +1,4 @@
-<tool id="ip_scale_image" name="Scale Image" version="0.4">
+<tool id="ip_scale_image" name="Scale Image" version="0.4"> 
     <description>Scales image</description>
     <requirements>
         <requirement type="package" version="6.1.0">pillow</requirement>

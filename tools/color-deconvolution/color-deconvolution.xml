@@ -1,4 +1,4 @@
-<tool id="ip_color_deconvolution" name="Color Deconvolution" version="0.8">
+<tool id="ip_color_deconvolution" name="Color Deconvolution" version="0.8"> 
     <description>Color deconvolution</description>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
