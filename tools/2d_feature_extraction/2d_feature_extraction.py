@@ -1,7 +1,6 @@
 import argparse
 import numpy as np
 import pandas as pd
-import tifffile
 import skimage.io
 import skimage.measure
 import skimage.feature
