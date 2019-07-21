@@ -1,4 +1,4 @@
-<tool id="ip_merge_neighbours_in_label" name="Merge Neighbours in Label" version="0.3"> 
+<tool id="ip_merge_neighbours_in_label" name="Merge Neighbours in Label" version="0.3">
     <description>Merge Neighbours in Label Image</description>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>

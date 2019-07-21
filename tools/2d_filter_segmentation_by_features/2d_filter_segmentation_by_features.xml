@@ -1,4 +1,4 @@
-<tool id="ip_2d_filter_segmentation_by_features" name="Filter segmentation" version="0.0.1"> 
+<tool id="ip_2d_filter_segmentation_by_features" name="Filter segmentation" version="0.0.1">
    <description>Filter segmentation by rules</description>
    <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement> 

@@ -1,4 +1,4 @@
-<tool id="ip_anisotropic_diffusion" name="Anisotropic Diffusion" version="0.2"> 
+<tool id="ip_anisotropic_diffusion" name="Anisotropic Diffusion" version="0.2">
     <description>Edge-preserving, Anisotropic diffusion</description>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>

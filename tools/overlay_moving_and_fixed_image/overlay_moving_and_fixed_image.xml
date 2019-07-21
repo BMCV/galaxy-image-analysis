@@ -1,4 +1,4 @@
-<tool id="ip_viz_overlay_moving_and_fixed_image" name="Overlay" version="0.0.2"> 
+<tool id="ip_viz_overlay_moving_and_fixed_image" name="Overlay" version="0.0.2">
     <description>moving and fixed image</description>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>

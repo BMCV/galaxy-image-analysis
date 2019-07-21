@@ -1,4 +1,4 @@
-<tool id="ip_concat_channels" name="Concatenate images" version="0.2"> 
+<tool id="ip_concat_channels" name="Concatenate images" version="0.2">
     <description></description>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
