@@ -2,6 +2,7 @@ import skimage.io
 import skimage.color
 from skimage import img_as_uint
 from skimage.exposure import equalize_adapthist
+from PIL import Image
 import numpy as np
 import argparse
 import sys
@@ -9,7 +10,8 @@ import sys
 
 # TODO make importable by python script
 def readImg(path):
-    img = skimage.io.imread(path)
+    img = Image.open(open(path, 'rb'))
+
     if len(img.shape) > 2:
         img = skimage.color.rgb2gray(img)
     img = equalize_adapthist(img, clip_limit=0.03)
