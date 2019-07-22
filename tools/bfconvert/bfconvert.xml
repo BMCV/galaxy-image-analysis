@@ -4,15 +4,100 @@
         <requirement type="package" version="5.7.1">bftools</requirement>
   </requirements>
   <command> 
-        <![CDATA[
-        bfconvert '$input_file' ./res.tiff
+        <![CDATA[  
+        bfconvert  
+        #if $series_options['extract'] == 'True'
+        -series $series
+        #end if
+        #if $timepoint_options['extract'] == 'True'
+        -timepoint $timepoint
+        #end if
+        #if $channel_options['extract'] == 'True'
+        -channel $channel
+        #end if
+        #if $z_options['extract'] == 'True'
+        -z $z
+        #end if
+        #if $range_options['extract'] == 'True'
+        -range $range_lower $range_upper
+        #end if
+        #if $crop_options['extract'] == 'True'
+        -crop $crop_x $crop_y $crop_width $crop_height
+        #end if
+        '$input_file' ./res.tiff        
         ]]>
   </command>
   <inputs>
     <param label="Input Image" name="input_file" type="data" format="atsf,scn,ali,labels,ffr,jpeg,ndpi,tf8,pty,fff,mnc,vms,mng,xml,pcx,img,pct,ims,bip,ome.xml,bin,flex,his,hdr,mov,psd,spi,ipl,dv,aiix,j2kr,pst,mod,ome.tif,tif,obf,dib,dic,im3,tga,pbm,c01,crw,mrcs,l2d,seq,mdb,cfg,htm,mvd2,arf,vsi,companion.ome,htd,aim,fts,ndpis,r3d.log,nef,res,jpx,ics,rec,nd2,cr2,dcm,mea,ome,lei,lms,j2k,oib,mtb,ima,ets,wlz,pict,sm3,sm2,nrrd,xdce,acff,al3d,zvi,1sc,xys,tiff,pgm,pcoraw,ppm,ipm,set,cxd,ipw,apl,fake,tnb,txt,xv,tf2,ps,log,zip,epsi,j2ki,dicom,top,msr,frm,hed,gif,dm2,dm3,dm4,zpo,wav,wat,2fl,sdt,liff,hx,pic,ome.btf,am,bmp,pnl,r3d_d3d,jpf,png,tfr,dti,nii.gz,cif,fdf,grey,df3,stk,fli,hdf,btf,stp,ch5,v,sld,ids,dv.log,jpk,mrw,r3d,xlog,ano,jpe,sxm,jpg,vws,raw,czi,spl,avi,ome.tf8,inf,spc,ome.tf2,spe,lsm,afm,lif,naf,afi,inr,lim,nd,tim,html,sif,env,tif,csv,map,nii,gel,ome.tiff,oif,par,amiramesh,pr3,fits,lut,jp2,oir,dat,aisf,zfr,zfp,xqd,eps,xqf,st,nhdr,i2i,thm,exp,svs,mrc"/>
+
+    <conditional name="series_options">
+      <param label="Extract series" name="extract" type="select">
+          <option selected="True" value="False">All series</option>
+          <option value="True">Extract series</option>
+      </param>
+      <when value="False"> </when>
+      <when value="True">
+        <param name="series" type="integer" value="0" label="Series id" />
+      </when>
+    </conditional>
+    <conditional name="timepoint_options">
+      <param label="Extract timepoint" name="extract" type="select">
+          <option selected="True" value="False">All timepoints</option>
+          <option value="True">Extract timepoint</option>
+      </param>
+      <when value="False"> </when>
+      <when value="True">
+        <param name="timepoint" type="integer" value="0" label="Timepoint id" />
+      </when>
+    </conditional>
+    <conditional name="channel_options">
+      <param label="Extract channel" name="extract" type="select">
+          <option selected="True" value="False">All channels</option>
+          <option value="True">Extract channel</option>
+      </param>
+      <when value="False"> </when>
+      <when value="True">
+        <param name="channel" type="integer" value="0" label="Channel id" />
+      </when>
+    </conditional>
+    <conditional name="z_options">
+      <param label="Extract z-slice" name="extract" type="select">
+          <option selected="True" value="False">All z-slices</option>
+          <option value="True">Extract z-slice</option>
+      </param>
+      <when value="False"> </when>
+      <when value="True">
+        <param name="z" type="integer" value="0" label="Z-slice id" />
+      </when>
+    </conditional>
+    <conditional name="range_options">
+      <param label="Extract range" name="extract" type="select">
+          <option selected="True" value="False">All images</option>
+          <option value="True">Extract range by indicess (inclusive)</option>
+      </param>
+      <when value="False"> </when>
+      <when value="True">
+        <param name="range_lower" type="integer" value="0" label="Lower image id" />
+        <param name="range_upper" type="integer" value="1" label="Upper image id" />
+      </when>
+    </conditional>
+    <conditional name="crop_options">
+      <param label="Extract crop" name="extract" type="select">
+          <option selected="True" value="False">Full image</option>
+          <option value="True">Extract crop</option>
+      </param>
+      <when value="False"> </when>
+      <when value="True">
+        <param name="crop_x" type="integer" value="0" label="X" />
+        <param name="crop_y" type="integer" value="0" label="Y" />
+        <param name="crop_width" type="integer" value="512" label="Width" />
+        <param name="crop_height" type="integer" value="512" label="height" />
+      </when>
+    </conditional>
+
   </inputs>
   <outputs>
-     <data format="tiff" name="output" from_work_dir="res.tiff"/>
+    <data format="tiff" name="output" from_work_dir="res.tiff"/>
   </outputs>
   <tests>
         <test>
