@@ -10,7 +10,7 @@ import sys
 
 # TODO make importable by python script
 def readImg(path):
-    img = Image.open(open(path, 'rb'))
+    img = Image.open(open(str(path), 'rb'))
 
     if len(img.shape) > 2:
         img = skimage.color.rgb2gray(img)
