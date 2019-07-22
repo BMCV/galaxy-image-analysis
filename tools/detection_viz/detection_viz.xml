@@ -1,4 +1,4 @@
-<tool id="ip_detection_viz" name="Detection Visualization" version="0.2"> 
+<tool id="ip_detection_viz" name="Detection Visualization" version="0.3"> 
     <description>Detection Visualization</description>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
@@ -8,14 +8,50 @@
     <command detect_errors="aggressive">
         <![CDATA[
         python '$__tool_directory__/detection_viz.py' '$input' '$output' 
-        --stroke_size $thickness --circle_radius $circle_radius $tp $fn $fp
+        --stroke_size $thickness --circle_radius $circle_radius 
+        #if $tp_option['display'] == 'true'
+        --tp '$tp'
+        #end if
+        #if $fn_option['display'] == 'true'
+        --fn '$fn'
+        #end if
+        #if $fp_option['display'] == 'true'
+        --fp '$fp'
+        #end if
         ]]> 
     </command>
     <inputs>
         <param name="input" type="data" format="tiff,png,jpg,bmp" label="Binary Image File"/>
-        <param argument="--tp" type="boolean" checked="false" falsevalue="" truevalue="--tp"/>
-        <param argument="--fn" type="boolean" checked="false" falsevalue="" truevalue="--fn"/>
-        <param argument="--fp" type="boolean" checked="false" falsevalue="" truevalue="--fp"/>
+        <conditional name="tp_option">
+            <param label="Display true positives" name="display" type="select">
+                <option selected="True" value="false">No</option>
+                <option value="true">Yes</option>
+            </param>
+            <when value="false"></when>
+            <when value="true">
+                <param name="tp" type="data" format="tabular" label="True positives file" />
+            </when>
+        </conditional>
+        <conditional name="fn_option">
+            <param label="Display false negatives" name="display" type="select">
+                <option selected="True" value="false">No</option>
+                <option value="true">Yes</option>
+            </param>
+            <when value="false"></when>
+            <when value="true">
+                <param name="fn" type="data" format="tabular" label="False negatives file" />
+            </when>
+        </conditional>
+        <conditional name="fp_option">
+            <param label="Display false positives" name="display" type="select">
+                <option selected="True" value="false">No</option>
+                <option value="true">Yes</option>
+            </param>
+            <when value="false"></when>
+            <when value="true">
+                <param name="fp" type="data" format="tabular" label="False positives file" />
+            </when>
+        </conditional>
         <param name="thickness" type="float" value="3.0" label="Stroke thickness"/>
         <param name="circle_radius" type="float" value="50.0" label="Circle radius"/>
     </inputs>
@@ -25,6 +61,9 @@
     <tests>
         <test>
             <param name="input" value="sample.png"/>
+            <param name="tp_option.display" value="false"/>
+            <param name="fn_option.display" value="false"/>
+            <param name="fp_option.display" value="false"/>
             <output name="output" value="out.png" ftype="png"/>
         </test>
     </tests>
