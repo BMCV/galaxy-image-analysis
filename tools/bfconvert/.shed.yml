@@ -1,5 +1,6 @@
 categories:
   - Imaging
+  - Convert Formats
 description: Convert image
 long_description: Convert image using biotools
 name: bfconvert
