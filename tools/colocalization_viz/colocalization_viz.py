@@ -2,7 +2,6 @@ import skimage.io
 import skimage.color
 from skimage import img_as_uint
 from skimage.exposure import equalize_adapthist
-from PIL import Image
 import numpy as np
 import argparse
 import sys
@@ -10,7 +9,7 @@ import sys
 
 # TODO make importable by python script
 def readImg(path):
-    img = Image.open(open(str(path), 'rb'))
+    img = skimage.io.imread(path)
 
     if len(img.shape) > 2:
         img = skimage.color.rgb2gray(img)
@@ -26,7 +25,7 @@ parser.add_argument('input_file2', type=argparse.FileType('r'), default=sys.stdi
 parser.add_argument('out_file', type=argparse.FileType('w'), default=sys.stdin, help='out file (TIFF)')
 args = parser.parse_args()
 
-im1 = readImg(args.input_file1)
-im2 = readImg(args.input_file2)
+im1 = readImg(args.input_file1.name)
+im2 = readImg(args.input_file2.name)
 res = np.concatenate((im1, im2, np.zeros_like(im1)), axis=-1)
 skimage.io.imsave(args.out_file, res)
