@@ -1,4 +1,4 @@
-<tool id="ip_overlay_segmentation" name="Overlay Segmentation Mask" version="0.0.6">
+<tool id="ip_overlay_segmentation" name="Overlay Segmentation Mask" version="0.0.6"> 
     <description>Overlay Segmentation Mask</description>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement> 
