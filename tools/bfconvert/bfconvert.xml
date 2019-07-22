@@ -1,4 +1,4 @@
-<tool id="ip_convertimage" name="Convert image" version="0.1">
+<tool id="ip_convertimage" name="Convert image" version="0.2">
   <description>Convert image</description>
   <requirements>
         <requirement type="package" version="5.7.1">bftools</requirement>
@@ -23,6 +23,9 @@
         #end if
         #if $crop_options['extract'] == 'True'
         -crop $crop_x $crop_y $crop_width $crop_height
+        #end if
+        #if $tile_options['extract'] == 'True'
+        -tilex $tile_x -tiley $tile_y
         #end if
         '$input_file' ./res.tiff        
         ]]>
@@ -94,7 +97,17 @@
         <param name="crop_height" type="integer" value="512" label="height" />
       </when>
     </conditional>
-
+    <conditional name="tile_options">
+      <param label="Tile image" name="extract" type="select">
+          <option selected="True" value="False">No tiling</option>
+          <option value="True">Tile image</option>
+      </param>
+      <when value="False"> </when>
+      <when value="True">
+        <param name="tile_x" type="integer" value="512 " label="Tile width" />
+        <param name="tile_y" type="integer" value="512 " label="Tile height" />
+      </when>
+    </conditional>
   </inputs>
   <outputs>
     <data format="tiff" name="output" from_work_dir="res.tiff"/>
