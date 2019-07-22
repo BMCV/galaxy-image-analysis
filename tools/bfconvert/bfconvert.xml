@@ -1,4 +1,4 @@
-<tool id="ip_convertimage" name="Convert image" version="0.1">
+<tool id="ip_convertimage" name="Convert image" version="0.3"> 
   <description>Convert image</description>
   <requirements>
         <requirement type="package" version="5.7.1">bftools</requirement>
@@ -24,11 +24,23 @@
         #if $crop_options['extract'] == 'True'
         -crop $crop_x $crop_y $crop_width $crop_height
         #end if
-        '$input_file' ./res.tiff        
+        #if $tile_options['extract'] == 'True'
+        -tilex $tile_x -tiley $tile_y
+        #end if
+        '$input_file' ./res.$out_format        
         ]]>
   </command>
   <inputs>
     <param label="Input Image" name="input_file" type="data" format="atsf,scn,ali,labels,ffr,jpeg,ndpi,tf8,pty,fff,mnc,vms,mng,xml,pcx,img,pct,ims,bip,ome.xml,bin,flex,his,hdr,mov,psd,spi,ipl,dv,aiix,j2kr,pst,mod,ome.tif,tif,obf,dib,dic,im3,tga,pbm,c01,crw,mrcs,l2d,seq,mdb,cfg,htm,mvd2,arf,vsi,companion.ome,htd,aim,fts,ndpis,r3d.log,nef,res,jpx,ics,rec,nd2,cr2,dcm,mea,ome,lei,lms,j2k,oib,mtb,ima,ets,wlz,pict,sm3,sm2,nrrd,xdce,acff,al3d,zvi,1sc,xys,tiff,pgm,pcoraw,ppm,ipm,set,cxd,ipw,apl,fake,tnb,txt,xv,tf2,ps,log,zip,epsi,j2ki,dicom,top,msr,frm,hed,gif,dm2,dm3,dm4,zpo,wav,wat,2fl,sdt,liff,hx,pic,ome.btf,am,bmp,pnl,r3d_d3d,jpf,png,tfr,dti,nii.gz,cif,fdf,grey,df3,stk,fli,hdf,btf,stp,ch5,v,sld,ids,dv.log,jpk,mrw,r3d,xlog,ano,jpe,sxm,jpg,vws,raw,czi,spl,avi,ome.tf8,inf,spc,ome.tf2,spe,lsm,afm,lif,naf,afi,inr,lim,nd,tim,html,sif,env,tif,csv,map,nii,gel,ome.tiff,oif,par,amiramesh,pr3,fits,lut,jp2,oir,dat,aisf,zfr,zfp,xqd,eps,xqf,st,nhdr,i2i,thm,exp,svs,mrc"/>
+    <param name="out_format" type="select" label="Output data type">
+      <option value="tiff" selected="True">TIFF</option>
+      <option value="png">PNG</option>
+      <option value="jpg">JPEG</option>
+      <option value="ome.tiff">OME TIFF</option>
+      <option value="jp2">JPEG 2000</option>
+      <option value="eps">EPS</option>
+      <option value="avi">AVI</option>
+    </param>
 
     <conditional name="series_options">
       <param label="Extract series" name="extract" type="select">
@@ -94,14 +106,35 @@
         <param name="crop_height" type="integer" value="512" label="height" />
       </when>
     </conditional>
-
+    <conditional name="tile_options">
+      <param label="Tile image" name="extract" type="select">
+          <option selected="True" value="False">No tiling</option>
+          <option value="True">Tile image</option>
+      </param>
+      <when value="False"> </when>
+      <when value="True">
+        <param name="tile_x" type="integer" value="512 " label="Tile width" />
+        <param name="tile_y" type="integer" value="512 " label="Tile height" />
+      </when>
+    </conditional>
   </inputs>
   <outputs>
-    <data format="tiff" name="output" from_work_dir="res.tiff"/>
+    <data format="tiff" name="output" from_work_dir="res.tiff">
+        <change_format>
+            <when input="out_format" value="tiff" format="tiff" />
+            <when input="out_format" value="png" format="png" />
+            <when input="out_format" value="jpg" format="jpg" />
+            <when input="out_format" value="ome.tiff" format="tiff" />
+            <when input="out_format" value="jp2" format="jpg" />
+            <when input="out_format" value="eps" format="eps" />
+            <when input="out_format" value="avi" format="avi" />
+        </change_format>
+    </data>
   </outputs>
   <tests>
         <test>
             <param name="input_file" value="input.png" />
+            <param name="out_format" value="tiff" />            
             <output name="output" value="res.tiff" ftype="tiff" compare="sim_size"/>
         </test>
   </tests>    
