@@ -1,4 +1,4 @@
-<tool id="ip_localthreshold" name="Local Threshold" version="0.0.1">
+<tool id="ip_localthreshold" name="Local Threshold" version="0.0.2">
    <description>applies a local threshold algorithm to an image</description> 
    <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>

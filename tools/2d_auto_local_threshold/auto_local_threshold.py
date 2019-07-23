@@ -2,7 +2,8 @@ import argparse
 import sys
 import skimage.io
 import skimage.filters
-import skimage.util 
+import skimage.util
+import numpy as np
 
 threshOptions = {
     'gaussian': lambda img_raw, bz: skimage.filters.threshold_local(img_raw, bz, method='gaussian'),
@@ -20,6 +21,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     img_in = skimage.io.imread(args.input_file.name)
+    img_in = np.reshape(img_in, [img_in.shape[0], img_in.shape[1]])
     thresh = threshOptions[args.thresh_type](img_in, args.block_size)
 
     if args.dark_background:
