@@ -1,19 +1,17 @@
 import argparse
 import numpy as np
-import os
 import sys 
-import warnings
 import skimage.io
 import skimage.filters
 import skimage.util
 
 threshOptions = {
-    'otsu' : lambda img_raw: skimage.filters.threshold_otsu(img_raw),
-    'gaussian_adaptive' : lambda img_raw: skimage.filters.threshold_local(img_raw, 3, method='gaussian')
-    'mean_adaptive' : lambda img_raw: skimage.filters.threshold_local(img_raw, 3, method='mean')
-    'isodata' : lambda img_raw: skimage.filters.threshold_isodata(img_raw),
-    'li' : lambda img_raw: skimage.filters.threshold_li(img_raw),
-    'yen' : lambda img_raw: skimage.filters.threshold_yen(img_raw),
+    'otsu': lambda img_raw: skimage.filters.threshold_otsu(img_raw),
+    'gaussian_adaptive': lambda img_raw: skimage.filters.threshold_local(img_raw, 3, method='gaussian'),
+    'mean_adaptive': lambda img_raw: skimage.filters.threshold_local(img_raw, 3, method='mean'),
+    'isodata': lambda img_raw: skimage.filters.threshold_isodata(img_raw),
+    'li': lambda img_raw: skimage.filters.threshold_li(img_raw),
+    'yen': lambda img_raw: skimage.filters.threshold_yen(img_raw),
 }
 
 if __name__ == "__main__":
@@ -33,7 +31,5 @@ if __name__ == "__main__":
     else:
         res = img_in <= thresh
 
-    with warnings.catch_warnings():
-    	warnings.simplefilter("ignore")
-    	res = skimage.util.img_as_uint(res)
-    	skimage.io.imsave(args.out_file.name, res, plugin="tifffile")
+    res = skimage.util.img_as_uint(res)
+    skimage.io.imsave(args.out_file.name, res, plugin="tifffile")
