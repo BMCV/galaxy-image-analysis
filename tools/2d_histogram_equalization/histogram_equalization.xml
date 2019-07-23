@@ -26,6 +26,7 @@
             <param name="input" value="sample.tif"/>
             <output name="output" value="out.tif" ftype="tiff" compare="sim_size"/>
             <param name="h_type" value="default"/>
+        </test>
     </tests>
     <help>
         Applies histogram equalization to an image.
