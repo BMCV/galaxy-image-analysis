@@ -6,6 +6,7 @@
   </requirements>
   <command> 
         <![CDATA[  
+        mkdir ./out &&
         #if $input_file.is_of_type("zip"):
         unzip "$input_file"
         #if $extract_options['extract_all'] == 'False'
