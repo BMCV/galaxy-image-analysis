@@ -1,0 +1,50 @@
+<tool id="unzip" name="Unzip" version="0.1"> 
+  <description>Unzip file</description>
+  <requirements>
+        <requirement type="package" version="6.0">unzip</requirement>
+        <requirement type="package" version="1.32">tar</requirement>
+  </requirements>
+  <command> 
+        <![CDATA[  
+        #if $input_file.is_of_type("zip"):
+        unzip $input_file -d ./out
+        #end if
+        #if $input_file.is_of_type("tar"):
+        tar -xzf $input_file -C ./out
+        #end if
+        ]]>
+  </command>
+  <inputs>
+    <param label="input_file" name="input_file" type="data" format="zip,tar"/>
+  </inputs>
+  <outputs>
+        <collection name="unzipped" type="list" label="Content of zipped file">
+            <discover_datasets directory="out" recurse='true' pattern='__designation__' />
+        </collection>
+  </outputs>
+  <tests>
+        <test>
+            <param name="input_file" value="input.zip" ftype="zip"/>
+            <output_collection name="unzipped" type="list">
+                <element name="input.png" file="input.png" ftype="png" compare="sim_size"/>
+                <element name="res.tiff" file="res.tiff" ftype="tiff" compare="sim_size"/>
+            </output_collection>
+        </test>
+        <test>
+            <param name="input_file" value="input.tar" ftype="tar"/>
+            <output_collection name="unzipped" type="list">
+                <element name="input.png" file="input.png" ftype="png" compare="sim_size"/>
+                <element name="res.tiff" file="res.tiff" ftype="tiff" compare="sim_size"/>
+            </output_collection>
+        </test>
+  </tests>   
+  <help>
+    **What it does**
+
+  Unzip folder to collection.
+  </help>
+  <citations>
+    <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
+  </citations>
+</tool>
+
