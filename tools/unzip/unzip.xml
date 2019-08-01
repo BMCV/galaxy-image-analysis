@@ -1,0 +1,92 @@
+<tool id="unzip" name="Unzip" version="0.1"> 
+  <description>Unzip file</description>
+  <requirements>
+        <requirement type="package">unzip</requirement>
+        <requirement type="package">tar</requirement>
+  </requirements>
+  <command> 
+        <![CDATA[  
+        mkdir ./out &&
+        #if $input_file.is_of_type("zip"):
+        unzip "$input_file"
+        #if $extract_options['extract_all'] == 'False'
+        "$extract_options['pathtofile']"
+        #end if
+        -d out/
+        #end if
+        #if $input_file.is_of_type("tar"):
+        tar -xf "$input_file"
+        #if $extract_options['extract_all'] == 'False'
+        "$extract_options['pathtofile']"
+        #end if
+        -C ./out/
+        #end if
+        ]]>
+  </command>
+  <inputs>
+    <param label="input_file" name="input_file" type="data" format="zip,tar"/>
+
+    <conditional name="extract_options">
+      <param label="Extract single file" name="extract_all" type="select">
+          <option selected="True" value="True">All files</option>
+          <option value="False">Single file</option>
+      </param>
+      <when value="True"></when>
+      <when value="False">
+        <param name="pathtofile" type="text" value="" label="Filepath">
+        <sanitizer invalid_char="">
+          <valid initial="string.ascii_letters,string.digits">
+              <add value="_" />
+              <add value="/" />
+              <add value="." />
+              <add value="/../" />
+          </valid>
+        </sanitizer>
+        </param>
+      </when>
+    </conditional>
+  </inputs>
+  <outputs>
+        <data name="unzipped_single">
+          <discover_datasets pattern="__name__" directory="out" visible="true" ext="data" assign_primary_output="true" />
+          <filter>extract_options['extract_all'] == 'False'</filter>
+        </data>
+        <collection name="unzipped" type="list" label="${tool.name} on ${on_string}">
+          <discover_datasets pattern="__name__" ext="data" directory="out" visible="false"/>
+          <filter>extract_options['extract_all'] == 'True'</filter>
+        </collection>
+  </outputs>
+  <tests>
+        <test>
+            <param name="input_file" value="input.zip" ftype="zip"/>
+            <param name="extract_all" value="False"/>
+            <param name="pathtofile" value="input.png"/>
+            <output name="unzipped_single" file="input.png" ftype="data" compare="sim_size" />
+        </test>
+        <test>
+            <param name="input_file" value="input.zip" ftype="zip"/>
+            <param name="extract_all" value="True"/>
+            <output_collection name="unzipped" type="list">
+                <element name="input.png" file="input.png" ftype="data" compare="sim_size"/>
+                <element name="res.tiff" file="res.tiff" ftype="data" compare="sim_size"/>
+            </output_collection>
+        </test>
+        <test>
+            <param name="input_file" value="input.tar" ftype="tar"/>
+            <param name="extract_all" value="True"/>
+            <output_collection name="unzipped" type="list">
+                <element name="input.png" file="input.png" ftype="data" compare="sim_size"/>
+                <element name="res.tiff" file="res.tiff" ftype="data" compare="sim_size"/>
+            </output_collection>
+        </test>
+  </tests>   
+  <help>
+    **What it does**
+
+  Unzip folder to collection.
+  </help>
+  <citations>
+    <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
+  </citations>
+</tool>
+
