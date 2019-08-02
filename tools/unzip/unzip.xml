@@ -8,18 +8,20 @@
         <![CDATA[  
         mkdir ./out &&
         #if $input_file.is_of_type("zip"):
-        unzip "$input_file"
-        #if $extract_options['extract_all'] == 'False'
-        "$extract_options['pathtofile']"
-        #end if
-        -d out/
+          unzip
+          #if $extract_options['extract_all'] == 'False'
+            -p "$input_file" "$extract_options['pathtofile']" > out.data
+          #else
+            "$input_file" -d out/
+          #end if
         #end if
         #if $input_file.is_of_type("tar"):
-        tar -xf "$input_file"
-        #if $extract_options['extract_all'] == 'False'
-        "$extract_options['pathtofile']"
-        #end if
-        -C ./out/
+          tar
+          #if $extract_options['extract_all'] == 'False'
+            xfO "$input_file" "$extract_options['pathtofile']" > out.data
+          #else
+            -xf "$input_file" -C ./out/
+          #end if
         #end if
         ]]>
   </command>
@@ -35,15 +37,21 @@
       <when value="False">
         <param name="pathtofile" type="text" value="" label="Filepath">
           <validator type="expression" message="No two dots (..) allowed">'..' not in value</validator>
+          <validator type="expression" message="No comma (,) allowed">',' not in value</validator>
+          <validator type="expression" message="No asterisk (*) allowed">'*' not in value</validator>
         </param>
       </when>
     </conditional>
   </inputs>
   <outputs>
-        <data name="unzipped_single">
-          <discover_datasets pattern="__designation_and_ext__" directory="out" visible="true"/>
+        <data auto_format="true" name="unzipped_single" from_work_dir="out.data">
           <filter>extract_options['extract_all'] == 'False'</filter>
         </data>
+        <!--
+        <data auto_format="true" name="unzipped_single">
+          <discover_datasets pattern="__designation_and_ext__" directory="out" visible="true" format="auto"/>
+          <filter>extract_options['extract_all'] == 'False'</filter>
+        </data>-->
         <collection name="unzipped" type="list" label="${tool.name} on ${on_string}">
           <discover_datasets pattern="__designation_and_ext__" directory="out" visible="false" recurse="true" format="auto" />
           <filter>extract_options['extract_all'] == 'True'</filter>
