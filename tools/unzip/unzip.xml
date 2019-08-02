@@ -1,4 +1,4 @@
-<tool id="unzip" name="Unzip" version="0.1"> 
+<tool id="unzip" name="Unzip" version="0.2"> 
   <description>Unzip file</description>
   <requirements>
         <requirement type="package">unzip</requirement>
@@ -8,18 +8,20 @@
         <![CDATA[  
         mkdir ./out &&
         #if $input_file.is_of_type("zip"):
-        unzip "$input_file"
-        #if $extract_options['extract_all'] == 'False'
-        "$extract_options['pathtofile']"
-        #end if
-        -d out/
+          unzip
+          #if $extract_options['extract_all'] == 'False'
+            -p "$input_file" "$extract_options['pathtofile']" > out.data
+          #else
+            "$input_file" -d out/
+          #end if
         #end if
         #if $input_file.is_of_type("tar"):
-        tar -xf "$input_file"
-        #if $extract_options['extract_all'] == 'False'
-        "$extract_options['pathtofile']"
-        #end if
-        -C ./out/
+          tar
+          #if $extract_options['extract_all'] == 'False'
+            xfO "$input_file" "$extract_options['pathtofile']" > out.data
+          #else
+            -xf "$input_file" -C ./out/
+          #end if
         #end if
         ]]>
   </command>
@@ -34,25 +36,24 @@
       <when value="True"></when>
       <when value="False">
         <param name="pathtofile" type="text" value="" label="Filepath">
-        <sanitizer invalid_char="">
-          <valid initial="string.ascii_letters,string.digits">
-              <add value="_" />
-              <add value="/" />
-              <add value="." />
-              <add value="/../" />
-          </valid>
-        </sanitizer>
+          <validator type="expression" message="No two dots (..) allowed">'..' not in value</validator>
+          <validator type="expression" message="No comma (,) allowed">',' not in value</validator>
+          <validator type="expression" message="No asterisk (*) allowed">'*' not in value</validator>
         </param>
       </when>
     </conditional>
   </inputs>
   <outputs>
-        <data name="unzipped_single">
-          <discover_datasets pattern="__name__" directory="out" visible="true" ext="data" assign_primary_output="true" />
+        <data auto_format="true" name="unzipped_single" from_work_dir="out.data">
           <filter>extract_options['extract_all'] == 'False'</filter>
         </data>
+        <!--
+        <data auto_format="true" name="unzipped_single">
+          <discover_datasets pattern="__designation_and_ext__" directory="out" visible="true" format="auto"/>
+          <filter>extract_options['extract_all'] == 'False'</filter>
+        </data>-->
         <collection name="unzipped" type="list" label="${tool.name} on ${on_string}">
-          <discover_datasets pattern="__name__" ext="data" directory="out" visible="false"/>
+          <discover_datasets pattern="__designation_and_ext__" directory="out" visible="false" recurse="true" format="auto" />
           <filter>extract_options['extract_all'] == 'True'</filter>
         </collection>
   </outputs>
@@ -61,22 +62,22 @@
             <param name="input_file" value="input.zip" ftype="zip"/>
             <param name="extract_all" value="False"/>
             <param name="pathtofile" value="input.png"/>
-            <output name="unzipped_single" file="input.png" ftype="data" compare="sim_size" />
+            <output name="unzipped_single" file="input.png" ftype="png" compare="sim_size" />
         </test>
         <test>
             <param name="input_file" value="input.zip" ftype="zip"/>
             <param name="extract_all" value="True"/>
             <output_collection name="unzipped" type="list">
-                <element name="input.png" file="input.png" ftype="data" compare="sim_size"/>
-                <element name="res.tiff" file="res.tiff" ftype="data" compare="sim_size"/>
+                <element name="input" file="input.png" ftype="png" compare="sim_size"/>
+                <element name="res" file="res.tiff" ftype="tiff" compare="sim_size"/>
             </output_collection>
         </test>
         <test>
             <param name="input_file" value="input.tar" ftype="tar"/>
             <param name="extract_all" value="True"/>
             <output_collection name="unzipped" type="list">
-                <element name="input.png" file="input.png" ftype="data" compare="sim_size"/>
-                <element name="res.tiff" file="res.tiff" ftype="data" compare="sim_size"/>
+                <element name="input" file="input.png" ftype="png" compare="sim_size"/>
+                <element name="res" file="res.tiff" ftype="tiff" compare="sim_size"/>
             </output_collection>
         </test>
   </tests>   
