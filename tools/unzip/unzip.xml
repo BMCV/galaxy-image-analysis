@@ -27,7 +27,6 @@
   </command>
   <inputs>
     <param label="input_file" name="input_file" type="data" format="zip,tar"/>
-
     <conditional name="extract_options">
       <param label="Extract single file" name="extract_all" type="select">
           <option selected="True" value="True">All files</option>
@@ -39,19 +38,15 @@
           <validator type="expression" message="No two dots (..) allowed">'..' not in value</validator>
           <validator type="expression" message="No comma (,) allowed">',' not in value</validator>
           <validator type="expression" message="No asterisk (*) allowed">'*' not in value</validator>
+          <validator type="expression" message="No leading slash (/) allowed">str(value)[0] != '/'</validator>
         </param>
       </when>
     </conditional>
   </inputs>
   <outputs>
-        <data auto_format="true" name="unzipped_single" from_work_dir="out.data">
+        <data auto_format="true" name="unzipped_single" from_work_dir="out.data" format="auto">
           <filter>extract_options['extract_all'] == 'False'</filter>
         </data>
-        <!--
-        <data auto_format="true" name="unzipped_single">
-          <discover_datasets pattern="__designation_and_ext__" directory="out" visible="true" format="auto"/>
-          <filter>extract_options['extract_all'] == 'False'</filter>
-        </data>-->
         <collection name="unzipped" type="list" label="${tool.name} on ${on_string}">
           <discover_datasets pattern="__designation_and_ext__" directory="out" visible="false" recurse="true" format="auto" />
           <filter>extract_options['extract_all'] == 'True'</filter>
