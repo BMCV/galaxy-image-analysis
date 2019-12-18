@@ -21,7 +21,7 @@ def detection_viz(input_file, output_file, tp=None, fn=None, fp=None, stroke_siz
     img = skimage.io.imread(input_file)
 
     fig = plt.figure(figsize=(40, 40))
-    ax = fig.add_axes([0, 0, 1, 1])
+    ax = fig.add_axes([0, 0, 1, 1]) 
     ax.axis('off')
 
     plt.imshow(img)

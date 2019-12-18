@@ -3,7 +3,7 @@ import sys
 import warnings
 import numpy as np
 import skimage.io
-import skimage.util
+import skimage.util 
 
 def permutate_axis(input_image_path, output_image_path, axis, permutate):
     images = []

@@ -28,7 +28,7 @@ if __name__ == "__main__":
 
     if args.dark_background:
         res = img_in > thresh
-    else:
+    else: 
         res = img_in <= thresh
 
     res = skimage.util.img_as_uint(res)

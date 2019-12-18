@@ -3,7 +3,7 @@ import pandas as pd
 
 
 def imagecoordinates_flipyaxis(input_file, output_file, image_height, offset=[0,0]): 
-    df = pd.read_csv(input_file, sep='\t')
+    df = pd.read_csv(input_file, sep='\t') 
 
     x = df.copy().y # create copy instead of view
     df.y = image_height-(df.x + 1) + offset[1] # since maximal y index = height-1 

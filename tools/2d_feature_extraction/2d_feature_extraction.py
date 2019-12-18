@@ -47,7 +47,7 @@ parser.add_argument('label_file', type=argparse.FileType('r'),
 parser.add_argument('output_file', type=argparse.FileType('w'),
                    help='Tabular output file')
 args = parser.parse_args()
-
+ 
 label_file_binary = args.label_file_binary
 label_file = args.label_file.name
 out_file = args.output_file.name

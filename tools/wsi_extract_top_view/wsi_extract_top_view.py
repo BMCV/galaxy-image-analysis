@@ -18,5 +18,5 @@ if __name__ == "__main__":
     parser.add_argument('input_file', type=argparse.FileType('r'), help='input file')
     parser.add_argument('out_file', help='out file')
     args = parser.parse_args()
-
+ 
     wsi_extract_top_view(args.input_file.name, args.out_file)

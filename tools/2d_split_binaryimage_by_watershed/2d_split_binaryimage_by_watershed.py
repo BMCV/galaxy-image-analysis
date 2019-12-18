@@ -3,7 +3,7 @@ import sys
 import skimage.io
 from skimage.morphology import watershed
 from skimage.feature import peak_local_max
-from scipy import ndimage as ndi
+from scipy import ndimage as ndi 
 import skimage.util
  
 if __name__ == "__main__":

@@ -24,7 +24,7 @@ if __name__ == "__main__":
     img_in = np.reshape(img_in, [img_in.shape[0], img_in.shape[1]])
     thresh = threshOptions[args.thresh_type](img_in, args.block_size)
 
-    if args.dark_background:
+    if args.dark_background: 
         res = img_in > thresh
     else:
         res = img_in <= thresh

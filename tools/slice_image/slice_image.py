@@ -11,7 +11,7 @@ from scipy.stats import entropy as scipy_entropy
  
 def slice_image(input_file, out_folder, label=None, label_out_folder=None, window_size=64, 
                 stride=1, bg_thresh=1, limit_slices=False, n_thresh=5000, seed=None):
-    #TODO NOT Implemented:process labels
+    #TODO NOT Implemented:process labels 
     # --> label and label_out_folder useless so far
 
     # primarily for testing purposes:

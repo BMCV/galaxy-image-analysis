@@ -29,7 +29,7 @@ def warp_coords_batch(coord_map, shape, dtype=np.float64, batch_size=1000000):
     tf_coords = tf_coords.T.reshape((-1, cols, rows)).swapaxes(1, 2)
 
     _stackcopy(coords[1, ...], tf_coords[0, ...])
-    _stackcopy(coords[0, ...], tf_coords[1, ...])
+    _stackcopy(coords[0, ...], tf_coords[1, ...]) 
     if len(shape) == 3:
         coords[2, ...] = range(shape[2])
 

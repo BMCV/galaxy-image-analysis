@@ -7,7 +7,7 @@ import argparse
 import sys
 
 
-# TODO make importable by python script
+# TODO make importable by python script 
 def readImg(path):
     img = skimage.io.imread(path)
 
