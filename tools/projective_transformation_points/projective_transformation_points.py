@@ -1,7 +1,36 @@
 from skimage.transform import ProjectiveTransform
+from scipy.ndimage import map_coordinates
 import numpy as np
 import pandas as pd
 import argparse
+
+
+def _stackcopy(a, b):
+    if a.ndim == 3:
+        a[:] = b[:, :, np.newaxis]
+    else:
+        a[:] = b
+
+
+def warp_img_coords_batch(coord_map, shape, dtype=np.float64, batch_size=1000000):
+    rows, cols = shape[0], shape[1]
+    coords_shape = [len(shape), rows, cols]
+    if len(shape) == 3:
+        coords_shape.append(shape[2])
+    coords = np.empty(coords_shape, dtype=dtype)
+
+    tf_coords = np.indices((cols, rows), dtype=dtype).reshape(2, -1).T
+
+    for i in range(0, (tf_coords.shape[0]//batch_size+1)):
+        tf_coords[batch_size*i:batch_size*(i+1)] = coord_map(tf_coords[batch_size*i:batch_size*(i+1)])
+    tf_coords = tf_coords.T.reshape((-1, cols, rows)).swapaxes(1, 2)
+
+    _stackcopy(coords[1, ...], tf_coords[0, ...])
+    _stackcopy(coords[0, ...], tf_coords[1, ...])
+    if len(shape) == 3:
+        coords[2, ...] = range(shape[2])
+
+    return coords
 
 
 def warp_coords_batch(coord_map, coords, dtype=np.float64, batch_size=1000000):
@@ -10,19 +39,31 @@ def warp_coords_batch(coord_map, coords, dtype=np.float64, batch_size=1000000):
     for i in range(0, (tf_coords.shape[0]//batch_size)+1):
         tf_coords[batch_size*i:batch_size*(i+1)] = coord_map(tf_coords[batch_size*i:batch_size*(i+1)])
 
-    return np.unique(np.round(tf_coords).astype(coords.dtype),axis=0)[:, ::-1]
+    return tf_coords[:, ::-1]
  
 
 def transform(coords, warp_matrix, out):
-    indices = np.array(pd.read_csv(coords, delimiter="\t"))
-    a_matrix = np.array(pd.read_csv(warp_matrix, delimiter="\t", header=None))
+    roi_coords = np.array(pd.read_csv(coords, delimiter="\t"))
+    trans_matrix = np.array(pd.read_csv(warp_matrix, delimiter="\t", header=None))
     
-    trans = ProjectiveTransform(matrix=a_matrix)
-    warped_coords = warp_coords_batch(trans, indices)
-
+    tol = 10
+    moving = np.zeros(np.max(roi_coords,axis=0)+tol, dtype=np.int8)
+    idx_roi_coords = (roi_coords[:,0]-1) * moving.shape[1] + roi_coords[:,1] - 1
+    moving.flat[idx_roi_coords] = 1
+    
+    transP = ProjectiveTransform(matrix=trans_matrix)
+    roi_coords_warped_direct = warp_coords_batch(transP, roi_coords)
+    shape_fixed = np.round(np.max(roi_coords_warped_direct,axis=0)).astype(roi_coords.dtype)+tol
+    
+    transI = ProjectiveTransform(matrix=np.linalg.inv(trans_matrix))
+    img_coords_warped = warp_img_coords_batch(transI, shape_fixed)
+    
+    moving_warped = map_coordinates(moving, img_coords_warped, mode='constant', cval=0)
+    idx_roi_coords_warped = np.where(moving_warped==1)
+    
     df = pd.DataFrame()
-    df['x'] = warped_coords[:,0]
-    df['y'] = warped_coords[:,1]
+    df['x'] = idx_roi_coords_warped[0] + 1
+    df['y'] = idx_roi_coords_warped[1] + 1
     df.to_csv(out, index = False, sep="\t")
 
 
