@@ -1,4 +1,4 @@
-<tool id="ip_projective_transformation_points" name="Projective Transformation" version="0.0.4">
+<tool id="ip_projective_transformation_points" name="Projective Transformation" version="0.1.0">
     <description>of input points</description>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
@@ -32,7 +32,7 @@
     <help>
     **What it does**
 
-    This tool performs a projective transformation of the input (moving) points.
+    This tool performs a projective transformation of the input (moving) points (with/without labels).
     </help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
