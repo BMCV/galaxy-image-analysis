@@ -1,0 +1,33 @@
+<tool id="ip_landmark_registration_ls" name="Landmark Registration" version="0.0.1">
+    <description>using least squares</description>
+    <requirements>
+        <requirement type="package" version="1.2.1">scipy</requirement>
+        <requirement type="package" version="0.23.4">pandas</requirement>
+        <requirement type="package" version="1.15.2">numpy</requirement>
+    </requirements>
+    <command><![CDATA[ 
+         python '$__tool_directory__/landmark_registration_ls.py'
+         '$fn_pts1'
+         '$fn_pts2'
+         '$fn_tmat'
+]]></command>
+    <inputs>
+          <param name="fn_pts1" type="data" format="tabular" label="Path to tab-separated file with src points" />
+          <param name="fn_pts2" type="data" format="tabular" label="Path to tab-separated file with dst points" />
+    </inputs>
+    <outputs>
+       <data format="tabular" name="fn_tmat" />
+    </outputs>
+    <tests>
+        <test>
+            <param name="fn_pts1" value="points1.tsv"/>
+            <param name="fn_pts2" value="points2.tsv"/>
+            <output name="fn_tmat" value="tmat.tsv" ftype="tabular" compare="diff" lines_diff="6"/>
+        </test>
+    </tests>
+    <help>
+    **What it does**
+
+    This tool estimates the (affine) transformation matrix using least squares given two sets of 2d coordinates of landmarks.
+    </help>
+</tool>
