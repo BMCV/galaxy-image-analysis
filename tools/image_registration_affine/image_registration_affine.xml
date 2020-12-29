@@ -1,0 +1,37 @@
+<tool id="ip_image_registration" name="Image Registration" version="0.0.1"> 
+    <description>based on intensity information</description>
+    <requirements>
+        <requirement type="package" version="0.14.2">scikit-image</requirement>
+        <requirement type="package" version="1.1.0">scipy</requirement>
+        <requirement type="package" version="0.23.4">pandas</requirement>
+        <requirement type="package" version="1.15.2">numpy</requirement>
+        <requirement type="package" version="0.15.1">tifffile</requirement>
+    </requirements>
+    <command>
+    <![CDATA[
+         python '$__tool_directory__/image_registration_affine.py'
+         '$fn_moving'
+         '$fn_fixed'
+         '$fn_tmat'
+    ]]>
+    </command>
+    <inputs>
+        <param name="fn_moving" type="data" format="png" label="Moving Image" />
+        <param name="fn_fixed"  type="data" format="png" label="Fixed Image" />
+    </inputs>
+    <outputs>
+       <data format="tabular" name="fn_tmat" />
+    </outputs>
+    <tests>
+      <test>
+        <param name="fn_moving" value="moving.png"/>
+        <param name="fn_fixed" value="fixed.png"/>
+        <output name="fn_tmat" value="tmat.tsv" ftype="tabular" compare="diff" lines_diff="6"/>
+      </test>
+    </tests>
+    <help>
+    **What it does**
+
+    This tool estimates the (affine) transformation matrix for registration of two images based on intensity information. 
+    </help>
+</tool>
