@@ -1,0 +1,54 @@
+<tool id="ip_spot_detection_2d" name="Spot Detection" version="0.0.1"> 
+    <description>based on local intensity maxima</description>
+    <requirements>
+        <requirement type="package" version="2.9.0">imageio</requirement>
+        <requirement type="package" version="1.20.2">numpy</requirement>
+        <requirement type="package" version="1.2.4">pandas</requirement>
+        <requirement type="package" version="0.18.1">scikit-image</requirement>
+    </requirements>
+    <command>
+    <![CDATA[
+         python '$__tool_directory__/spot_detection_2d.py'
+         '$fn_in'
+         '$fn_out'
+         '$frame_1st'
+         '$frame_end'
+         '$typ_intens'
+         '$thres'
+         '$ssig'
+         '$bndy'
+    ]]>
+    </command>
+    <inputs>
+        <param name="fn_in" type="data" format="tiff" label="Image sequence (stack)" />
+        <param name="frame_1st" type="integer" value="1" label="Starting time point (1 for the first frame of the stack)" />
+        <param name="frame_end" type="integer" value="0" label="Ending time point (0 for the last frame of the stack)" />
+        <param name="typ_intens" type="select" label="How to measure the intensities">
+            <option value="smoothed" selected="True">Smoothed</option>
+            <option value="robust">Robust</option>
+        </param>
+        <param name="thres" type="float" value="10" label="Percentage of the global maximal intensity as the threshold for candidate spots" />
+        <param name="ssig" type="float" value="1" label="Sigma of the Gaussian filter for noise suppression" />
+        <param name="bndy" type="integer" value="10" label="Number of pixels (Spots within n-pixel image boundaries will be ignored)" />
+    </inputs>
+    <outputs>
+        <data format="tabular" name="fn_out" />
+    </outputs>
+    <tests>
+        <test>
+            <param name="fn_in" value="test_img1.tif"/>
+            <param name="frame_1st" value="1"/>
+            <param name="frame_end" value="0"/>
+            <param name="typ_intens" value="smoothed"/>
+            <param name="thres" value="10"/>
+            <param name="ssig" value="1"/>
+            <param name="bndy" value="10"/>
+            <output name="fn_out" value="spots_detected.tsv" ftype="tabular" compare="diff" lines_diff="0"/>
+        </test>
+    </tests>
+    <help>
+    **What it does**
+
+    This tool detects spots and measures the intensities in a 2D image sequence based on local intensity maxima.
+    </help>
+</tool>
