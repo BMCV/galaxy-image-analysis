@@ -145,7 +145,7 @@ def points_linking(fn_in, fn_out, nbpx=6, th=25, minlen=50):
         if maxv < th * br_max / 100:
             break
 
-    with pd.ExcelWriter(fn_out) as writer:
+    with pd.ExcelWriter(fn_out, engine="openpyxl") as writer:
         for i in range(tracks_all.shape[0]):
             df = pd.DataFrame()
             df['FRAME'] = tracks_all[i, :, 0]
