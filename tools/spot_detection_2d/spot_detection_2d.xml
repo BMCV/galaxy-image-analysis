@@ -43,7 +43,7 @@
             <param name="thres" value="10"/>
             <param name="ssig" value="1"/>
             <param name="bndy" value="10"/>
-            <output name="fn_out" value="spots_detected.tsv" ftype="tabular" compare="diff" lines_diff="0"/>
+            <output name="fn_out" value="spots_detected.tsv" ftype="tabular" />
         </test>
     </tests>
     <help>
