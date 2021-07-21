@@ -1,4 +1,4 @@
-<tool id="ip_spot_detection_2d" name="Spot Detection" version="0.0.1"> 
+<tool id="ip_spot_detection_2d" name="Spot Detection" version="0.0.1" profile="20.05"> 
     <description>based on local intensity maxima</description>
     <requirements>
         <requirement type="package" version="2.9.0">imageio</requirement>
