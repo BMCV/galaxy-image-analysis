@@ -1,0 +1,41 @@
+<tool id="ip_points_association_nn" name="Association of points" version="0.0.1" profile="20.05"> 
+    <description>in consecutive frames (slices) using the nearest neighbor algorithm</description>
+    <requirements>
+        <requirement type="package" version="1.20.2">numpy</requirement>
+        <requirement type="package" version="1.2.4">pandas</requirement>
+        <requirement type="package" version="0.18.1">scikit-image</requirement>
+    </requirements>
+    <command>
+    <![CDATA[
+         python '$__tool_directory__/points_association_nn.py'
+         '$fn_in'
+         '$fn_out'
+         '$nbpx'
+         '$thres'
+         '$minlen'
+    ]]>
+    </command>
+    <inputs>
+        <param name="fn_in" type="data" format="tabular" label="Name of input file (tsv tabular)" />
+        <param name="nbpx" type="integer" value="6" label="Neighborhood size in pixel" />
+        <param name="thres" type="float" value="25" label="Percentage (%) of the global maximal intensity for thresholding some event" />
+        <param name="minlen" type="float" value="50" label="Minimum length of tracks (% of sequence length)" />
+    </inputs>
+    <outputs>
+        <data format="xlsx" name="fn_out" />
+    </outputs>
+    <tests>
+        <test>
+            <param name="fn_in" value="spots_detected.tsv"/>
+            <param name="nbpx" value="6"/>
+            <param name="thres" value="25"/>
+            <param name="minlen" value="50"/>
+            <output name="fn_out" value="spots_linked.xlsx" ftype="xlsx" />
+        </test>
+    </tests>
+    <help>
+    **What it does**
+
+    This tool associates points in consecutive frames (slices) using the nearest neighbor algorithm.
+    </help>
+</tool>
