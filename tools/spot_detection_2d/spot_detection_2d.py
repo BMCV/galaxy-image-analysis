@@ -28,7 +28,7 @@ def getbr(xy, img, nb, firstn):
 
 
 def spot_detection(fn_in, fn_out, frame_1st=1, frame_end=0, typ_br='smoothed', th=10, ssig=1, bd=10):
-    ims_ori = imageio.mimread(fn_in)
+    ims_ori = imageio.mimread(fn_in, format='TIFF')
     ims_smd = np.zeros((len(ims_ori), ims_ori[0].shape[0], ims_ori[0].shape[1]), dtype='float64')
     if frame_end == 0 or frame_end > len(ims_ori):
         frame_end = len(ims_ori)
