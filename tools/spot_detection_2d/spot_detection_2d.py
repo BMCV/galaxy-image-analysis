@@ -7,13 +7,13 @@ See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
 
 """
 
+import argparse
+
 import imageio
 import numpy as np
+import pandas as pd
 from skimage.feature import peak_local_max
 from skimage.filters import gaussian
-
-import argparse
-import pandas as pd
 
 
 def getbr(xy, img, nb, firstn):
