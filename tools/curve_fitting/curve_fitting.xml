@@ -7,12 +7,12 @@
     </requirements>
     <command>
     <![CDATA[
-         python '$__tool_directory__/curve_fitting.py'
-         '$fn_in'
-         '$fn_out'
-         '$degree'
-         '$penalty'
-         '$alpha'
+python '$__tool_directory__/curve_fitting.py'
+    '$fn_in'
+    ./output.xlsx
+    '$degree'
+    '$penalty'
+    '$alpha'
     ]]>
     </command>
     <inputs>
@@ -29,7 +29,7 @@
         <param name="alpha" type="float" value="0.01" label="Significance level for generating assistive curves" />
     </inputs>
     <outputs>
-        <data format="xlsx" name="fn_out" />
+        <data format="xlsx" name="fn_out" from_work_dir="output.xlsx" />
     </outputs>
     <tests>
         <test>
