@@ -30,7 +30,7 @@ python '$__tool_directory__/curve_fitting.py'
         <param name="alpha" type="float" value="0.01" label="Significance level for generating assistive curves" />
     </inputs>
     <outputs>
-        <data format="xlsx" name="fn_out" from_work_dir="output.xlsx" compare="sim_size"/>
+        <data format="xlsx" name="fn_out" from_work_dir="output.xlsx"/>
     </outputs>
     <tests>
         <test>
@@ -38,7 +38,7 @@ python '$__tool_directory__/curve_fitting.py'
             <param name="degree" value="2"/>
             <param name="penalty" value="abs"/>
             <param name="alpha" value="0.01"/>
-            <output name="fn_out" value="curves_fitted.xlsx" ftype="xlsx" />
+            <output name="fn_out" value="curves_fitted.xlsx" ftype="xlsx" compare="sim_size"/>
         </test>
     </tests>
     <help>
