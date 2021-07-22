@@ -10,7 +10,7 @@
     <![CDATA[
          python '$__tool_directory__/points_association_nn.py'
          '$fn_in'
-         '$fn_out'
+         ./output.xlsx
          '$nbpx'
          '$thres'
          '$minlen'
@@ -23,7 +23,7 @@
         <param name="minlen" type="float" value="50" label="Minimum length of tracks (% of sequence length)" />
     </inputs>
     <outputs>
-        <data format="xlsx" name="fn_out" />
+        <data format="xlsx" name="fn_out" from_work_dir="output.xlsx" />
     </outputs>
     <tests>
         <test>
