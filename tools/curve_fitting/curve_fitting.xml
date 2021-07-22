@@ -18,7 +18,7 @@ python '$__tool_directory__/curve_fitting.py'
     </command>
     <inputs>
         <param name="fn_in" type="data" format="xlsx" label="File name of input data points (xlsx)" />
-        <param name="degree" type="integer" label="Degree of the polynomial function">
+        <param name="degree" type="select" label="Degree of the polynomial function">
             <option value="2" selected="True">2nd degree</option>
             <option value="1">1st degree</option>
         </param>
