@@ -3,6 +3,7 @@
     <requirements>
         <requirement type="package" version="1.20.2">numpy</requirement>
         <requirement type="package" version="1.2.4">pandas</requirement>
+        <requirement type="package" version="3.0.7">openpyxl</requirement>
         <requirement type="package" version="0.18.1">scikit-image</requirement>
     </requirements>
     <command>

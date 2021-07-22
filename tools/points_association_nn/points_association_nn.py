@@ -10,6 +10,7 @@ See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
 import argparse
 
 import numpy as np
+import openpyxl  # noqa: F401
 import pandas as pd
 import skimage.util
 
