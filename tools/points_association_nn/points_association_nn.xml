@@ -2,8 +2,8 @@
     <description>in consecutive frames (slices) using the nearest neighbor algorithm</description>
     <requirements>
         <requirement type="package" version="1.20.2">numpy</requirement>
-        <requirement type="package" version="1.2.4">pandas</requirement>
         <requirement type="package" version="3.0.7">openpyxl</requirement>
+        <requirement type="package" version="1.2.4">pandas</requirement>
         <requirement type="package" version="0.18.1">scikit-image</requirement>
     </requirements>
     <command>
@@ -31,7 +31,7 @@
             <param name="nbpx" value="6"/>
             <param name="thres" value="25"/>
             <param name="minlen" value="50"/>
-            <output name="fn_out" value="spots_linked.xlsx" ftype="xlsx" />
+            <output name="fn_out" value="spots_linked.xlsx" ftype="xlsx" compare="sim_size"/>
         </test>
     </tests>
     <help>
