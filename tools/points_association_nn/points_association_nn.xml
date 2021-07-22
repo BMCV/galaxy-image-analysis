@@ -8,7 +8,7 @@
     </requirements>
     <command>
     <![CDATA[
-         python '$__tool_directory__/points_association_nn.py'
+    python '$__tool_directory__/points_association_nn.py'
          '$fn_in'
          ./output.xlsx
          '$nbpx'
