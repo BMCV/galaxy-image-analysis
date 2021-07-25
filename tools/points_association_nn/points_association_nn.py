@@ -10,7 +10,6 @@ See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
 import argparse
 
 import numpy as np
-import openpyxl  # noqa: F401
 import pandas as pd
 import skimage.util
 
@@ -69,7 +68,10 @@ def points_linking(fn_in, fn_out, nbpx=6, th=25, minlen=50):
     for i in range(all_data.shape[0]):
         iyxz = tuple(coords[i, ::-1] - 1)
         stack[iyxz] = 1
-        stack_r[iyxz] = all_data[i, -1]
+        if all_data.shape[1] == 4:
+            stack_r[iyxz] = all_data[i, -1]
+        else:
+            stack_r[iyxz] = 1
 
     tracks_all = np.array([], dtype=float).reshape(0, nSlices, 4)
     maxv = np.max(stack_r)
@@ -137,32 +139,38 @@ def points_linking(fn_in, fn_out, nbpx=6, th=25, minlen=50):
                 stack_r[track[iz, 2].astype(int) - 1, track[iz, 1].astype(int) - 1, iz] = 0
 
         # discard short trajectories
-        if np.count_nonzero(~np.isnan(spot_br)) > minlen * (frame_end - frame_1st) / 100:
+        if np.count_nonzero(~np.isnan(spot_br)) > np.max((1, minlen * (frame_end - frame_1st) / 100)):
             tmp = np.concatenate((track, spot_br), axis=1)
             tracks_all = np.concatenate((tracks_all, tmp.reshape(1, -1, 4)), axis=0)
 
         maxv = np.max(stack_r)
         idx_max = np.argmax(stack_r)
-        if maxv < th * br_max / 100:
+        if maxv < th * br_max / 100 or maxv == 0:
             break
 
-    with pd.ExcelWriter(fn_out, engine="openpyxl") as writer:
-        for i in range(tracks_all.shape[0]):
+    with pd.ExcelWriter(fn_out) as writer:
+        if tracks_all.shape[0] == 0:
             df = pd.DataFrame()
-            df['FRAME'] = tracks_all[i, :, 0]
-            df['POS_X'] = tracks_all[i, :, 1]
-            df['POS_Y'] = tracks_all[i, :, 2]
-            df['INTENSITY'] = tracks_all[i, :, 3]
-            df.to_excel(writer, sheet_name='spot%s' % (i + 1), index=False, float_format='%.2f')
+            df['No tracks found'] = np.NaN
+            df.to_excel(writer, index=False, float_format='%.2f')
+        else:
+            for i in range(tracks_all.shape[0]):
+                df = pd.DataFrame()
+                df['FRAME'] = tracks_all[i, :, 0]
+                df['POS_X'] = tracks_all[i, :, 1]
+                df['POS_Y'] = tracks_all[i, :, 2]
+                if all_data.shape[1] == 4:
+                    df['INTENSITY'] = tracks_all[i, :, 3]
+                df.to_excel(writer, sheet_name='spot%s' % (i + 1), index=False, float_format='%.2f')
         writer.save()
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Association of points in consecutive frames using the nearest neighbor algorithm")
-    parser.add_argument("fn_in", help="Name of input file (tsv tabular)")
+    parser.add_argument("fn_in", help="Coordinates (and intensities) of input points (tsv tabular)")
     parser.add_argument("fn_out", help="Name of output file (xlsx)")
-    parser.add_argument("nbpx", type=int, help="Neighborhood size in pixel")
-    parser.add_argument("thres", type=float, help="Percentage of the global maximal intensity for thresholding some event")
+    parser.add_argument("nbpx", type=int, help="Neighborhood size (in pixel) for associating points")
+    parser.add_argument("thres", type=float, help="Tracks with all intensities lower than certain percentage (%) of the global maximal intensity will be discarded")
     parser.add_argument("minlen", type=float, help="Minimum length of tracks (percentage of senquence length)")
     args = parser.parse_args()
     points_linking(args.fn_in, args.fn_out, args.nbpx, args.thres, args.minlen)

@@ -1,4 +1,4 @@
-<tool id="ip_points_association_nn" name="Association of points" version="0.0.1" profile="20.05"> 
+<tool id="ip_points_association_nn" name="Association of points" version="0.0.2" profile="20.05"> 
     <description>in consecutive frames (slices) using the nearest neighbor algorithm</description>
     <requirements>
         <requirement type="package" version="1.20.2">numpy</requirement>
@@ -17,10 +17,10 @@
     ]]>
     </command>
     <inputs>
-        <param name="fn_in" type="data" format="tabular" label="Name of input file (tsv tabular)" />
-        <param name="nbpx" type="integer" value="6" label="Neighborhood size in pixel" />
-        <param name="thres" type="float" value="25" label="Percentage (%) of the global maximal intensity for thresholding some event" />
-        <param name="minlen" type="float" value="50" label="Minimum length of tracks (% of sequence length)" />
+        <param name="fn_in" type="data" format="tabular" label="Coordinates (and intensities) of input points (tsv tabular)" />
+        <param name="nbpx" type="integer" value="6" optional="true" min="1" max="30" label="Neighborhood size (in pixel) for associating points" />
+        <param name="thres" type="float" value="25" optional="true" min="0.0" max="99.9" label="Tracks with all intensities lower than certain percentage (%) of the global maximal intensity will be discarded" />
+        <param name="minlen" type="float" value="50" optional="true" min="1.0" max="100.0" label="Minimum length of tracks (% of sequence length)" />
     </inputs>
     <outputs>
         <data format="xlsx" name="fn_out" from_work_dir="output.xlsx" />
