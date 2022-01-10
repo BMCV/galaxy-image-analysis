@@ -1,11 +1,11 @@
-<tool id="ip_projective_transformation" name="Projective Transformation" version="0.0.4"> 
-    <description>Projective Transformation</description>
+<tool id="ip_projective_transformation" name="Projective Transformation" version="0.1.0" profile="20.05"> 
+    <description>2D Projective Transformation</description>
     <requirements>
-        <requirement type="package" version="0.14.2">scikit-image</requirement>
-        <requirement type="package" version="0.23.4">pandas</requirement>
-        <requirement type="package" version="1.15.4">numpy</requirement>
-        <requirement type="package" version="1.1.0">scipy</requirement>
-        <requirement type="package" version="0.15.1">tifffile</requirement>
+        <requirement type="package" version="0.18.1">scikit-image</requirement>
+        <requirement type="package" version="1.2.4">pandas</requirement>
+        <requirement type="package" version="1.20.2">numpy</requirement>
+        <requirement type="package" version="1.6.2">scipy</requirement>
+        <requirement type="package" version="2020.10.1">tifffile</requirement>
     </requirements>
     <command detect_errors="aggressive">
     <![CDATA[
@@ -13,16 +13,16 @@
          '$fixed_image'
          '$moving_image'
          '$warp_matrix'
-         ./out.png
+         ./out
     ]]>
     </command>
     <inputs>
-        <param name="moving_image" type="data" format="png" label="Moving Image" />
-        <param name="fixed_image" type="data" format="png" label="Fixed Image" />
-        <param name="warp_matrix" type= "data" format="tabular" label="Warp Matrix" />
+        <param name="moving_image" type="data" format="tiff,png,jpg" label="Moving image (to be transformed)" />
+        <param name="fixed_image" type="data" format="tiff,png,jpg" label="Fixed image (the reference)" />
+        <param name="warp_matrix" type="data" format="tabular" label="Transformation matrix" />
     </inputs>
     <outputs>
-       <data format="png" name="out" from_work_dir="out.png" />
+       <data format_source="moving_image" name="out" metadata_source="moving_image" from_work_dir="out" />
     </outputs>
     <tests>
       <test>
@@ -35,7 +35,7 @@
     <help>
     **What it does**
 
-    This tool performs a projective transformation of the input (moving) image so that it fits the fixed image.
+    This tool performs a projective transformation of the moving image so that it fits the fixed image.
     </help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
