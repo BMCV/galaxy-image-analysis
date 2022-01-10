@@ -52,7 +52,7 @@ def transform(moving_fn, fixed_fn, warp_mat, out):
     moving = skimage.io.imread(moving_fn)
     extension = os.path.splitext(moving_fn)[1]
     nDims = len(moving.shape)
-    assert nDims in [2, 3, 4, 5, 6], 'only support to 6D dimensions'
+    assert nDims in [2, 3, 4, 5, 6], 'this tool only supports up to 6 dimensions'
 
     if moving.shape[-1] in [3, 4] and nDims > 2:
         isRGB = True
