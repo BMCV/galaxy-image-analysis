@@ -13,7 +13,7 @@
          '$fixed_image'
          '$moving_image'
          '$warp_matrix'
-         ./out
+         '$warped_image'
     ]]>
     </command>
     <inputs>
@@ -22,20 +22,21 @@
         <param name="warp_matrix" type="data" format="tabular" label="Transformation matrix" />
     </inputs>
     <outputs>
-       <data format_source="moving_image" name="out" metadata_source="moving_image" from_work_dir="out" />
+       <data format_source="moving_image" name="warped_image" />
     </outputs>
     <tests>
       <test>
         <param name="fixed_image" value="sample1.png"/>
         <param name="moving_image" value="sample2.png"/>
         <param name="warp_matrix" value="warp_matrix.tsv"/>
-        <output name="out" value="yam.png" ftype="png" compare="sim_size"/>
+        <output name="warped_image" value="yam.png" ftype="png" compare="sim_size"/>
       </test>
     </tests>
     <help>
     **What it does**
 
-    This tool performs a projective transformation of the moving image so that it fits the fixed image.
+    This tool performs a projective transformation of the moving image so that it fits the fixed image. 
+    Multi-channel and RGB images are supported.
     </help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
