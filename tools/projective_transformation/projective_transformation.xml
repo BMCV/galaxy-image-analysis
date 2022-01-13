@@ -13,7 +13,7 @@
          '$fixed_image'
          '$moving_image'
          '$warp_matrix'
-         '$warped_image'
+         ./out
     ]]>
     </command>
     <inputs>
@@ -22,14 +22,20 @@
         <param name="warp_matrix" type="data" format="tabular" label="Transformation matrix" />
     </inputs>
     <outputs>
-       <data format_source="moving_image" name="warped_image" />
+        <data format="tiff" name="out" from_work_dir="out">
+            <change_format>
+                <when input="moving_image" format="tiff" format="tiff" />
+                <when input="moving_image" format="png" format="png" />
+                <when input="moving_image" format="jpg" format="jpg" />
+            </change_format>
+        </data>
     </outputs>
     <tests>
       <test>
         <param name="fixed_image" value="sample1.png"/>
         <param name="moving_image" value="sample2.png"/>
         <param name="warp_matrix" value="warp_matrix.tsv"/>
-        <output name="warped_image" value="yam.png" ftype="png" compare="sim_size"/>
+        <output name="out" value="yam.png" ftype="png" compare="sim_size"/>
       </test>
     </tests>
     <help>
