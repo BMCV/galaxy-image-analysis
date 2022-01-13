@@ -24,9 +24,9 @@
     <outputs>
         <data format="tiff" name="out" from_work_dir="out">
             <change_format>
-                <when input="moving_image" format="tiff" format="tiff" />
-                <when input="moving_image" format="png" format="png" />
-                <when input="moving_image" format="jpg" format="jpg" />
+                <when input="moving_image.ext" value="tiff" format="tiff"/>
+                <when input="moving_image.ext" value="png" format="png"/>
+                <when input="moving_image.ext" value="jpg" format="jpg"/>
             </change_format>
         </data>
     </outputs>
