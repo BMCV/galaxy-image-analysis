@@ -5,12 +5,12 @@
         <requirement type="package" version="2020.10.1">tifffile</requirement>
         <requirement type="package" version="0.5.2">umap-learn</requirement>
     </requirements>
-    <command detect_errors="aggressive">
-    <![CDATA[
-         python '$__tool_directory__/3d_tensor_feature_dimension_reduction.py'
-         '$fn_in'
-         '$nCh'
-         ./output.tif
+    <command detect_errors="aggressive"><![CDATA[
+ln -s '$fn_in' ./input.npz &&
+python '$__tool_directory__/3d_tensor_feature_dimension_reduction.py'
+./input.npz
+'$nCh'
+./output.tif
     ]]>
     </command>
     <inputs>
