@@ -1,0 +1,9 @@
+name: 3d_tensor_feature_dimension_reduction
+owner: imgteam
+categories:
+  - Imaging
+description: Dimensionality reduction for features (channels) of 3D tensor data using UMAP
+long_description: |
+  This tool performs dimensionality reduction for features (channels) of 3D tensor data using UMAP. The results are saved as a multi-channel 32-bit TIFF image.
+homepage_url: https://github.com/BMCV/galaxy-image-analysis
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tree/master/tools/3d_tensor_feature_dimension_reduction/

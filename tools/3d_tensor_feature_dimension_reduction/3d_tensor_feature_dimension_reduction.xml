@@ -1,0 +1,35 @@
+<tool id="ip_3d_tensor_feature_dimension_reduction" name="Dimensionality Reduction" version="0.0.1" profile="20.05"> 
+    <description>for features of 3D tensor data using UMAP</description>
+    <requirements>
+        <requirement type="package" version="1.20.2">numpy</requirement>
+        <requirement type="package" version="2020.10.1">tifffile</requirement>
+        <requirement type="package" version="0.5.2">umap-learn</requirement>
+    </requirements>
+    <command>
+    <![CDATA[
+         python '$__tool_directory__/3d_tensor_feature_dimension_reduction.py'
+         '$fn_in'
+         '$nCh'
+         ./output.tif
+    ]]>
+    </command>
+    <inputs>
+        <param name="fn_in" type="data" format="npz" label="3D tensor data (rows x cols x features)" />
+        <param name="nCh" type="integer" value="5" optional="true" min="1" max="10" label="Reduced dimensions of features" />
+    </inputs>
+    <outputs>
+        <data format="tiff" name="fn_out" from_work_dir="output.tif" />
+    </outputs>
+    <tests>
+        <test>
+            <param name="fn_in" value="tensor.npz"/>
+            <param name="nCh" value="5"/>
+            <output name="fn_out" value="tensor_r.tif" ftype="tiff" />
+        </test>
+    </tests>
+    <help>
+    **What it does**
+
+    This tool performs dimensionality reduction for features of 3D tensor data (rows x cols x features) using UMAP. The results will be saved as a multi-channel 32-bit TIFF image (features x rows x cols).
+    </help>
+</tool>
