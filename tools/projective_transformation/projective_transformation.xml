@@ -22,20 +22,14 @@
         <param name="warp_matrix" type="data" format="tabular" label="Transformation matrix" />
     </inputs>
     <outputs>
-        <data format="tiff" name="out" from_work_dir="out">
-            <change_format>
-                <when input="moving_image.ext" value="tiff" format="tiff"/>
-                <when input="moving_image.ext" value="png" format="png"/>
-                <when input="moving_image.ext" value="jpg" format="jpg"/>
-            </change_format>
-        </data>
+        <data format_source="moving_image" name="warped_image" from_work_dir="out" />
     </outputs>
     <tests>
       <test>
         <param name="fixed_image" value="sample1.png"/>
         <param name="moving_image" value="sample2.png"/>
         <param name="warp_matrix" value="warp_matrix.tsv"/>
-        <output name="out" value="yam.png" ftype="png" compare="sim_size"/>
+        <output name="warped_image" value="yam.png" ftype="png" compare="sim_size"/>
       </test>
     </tests>
     <help>

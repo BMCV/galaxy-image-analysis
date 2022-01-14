@@ -7,7 +7,7 @@ See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
 """
 
 import argparse
-import os.path
+import imghdr
 import warnings
 
 import numpy as np
@@ -47,10 +47,10 @@ def warp_coords_batch(coord_map, shape, dtype=np.float64, batch_size=1000000):
     return coords
 
 
-def transform(moving_fn, fixed_fn, warp_mat, out):
+def transform(moving_fn, fixed_fn, warp_mat, output_fn):
 
     moving = skimage.io.imread(moving_fn)
-    extension = os.path.splitext(moving_fn)[1]
+    extension = imghdr.what(moving_fn)
     nDims = len(moving.shape)
     assert nDims in [2, 3, 4, 5, 6], 'this tool only supports up to 6 dimensions'
 
@@ -96,9 +96,9 @@ def transform(moving_fn, fixed_fn, warp_mat, out):
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         if isMulCh:
-            tifffile.imwrite(out + '.tif', warped_moving, imagej=True, metadata={'mode': 'composite'})
+            tifffile.imwrite(output_fn + '.tif', warped_moving, imagej=True, metadata={'mode': 'composite'})
         else:
-            skimage.io.imsave(out + extension, warped_moving)
+            skimage.io.imsave(output_fn + '.' + extension, warped_moving)
 
 
 if __name__ == "__main__":
@@ -106,6 +106,6 @@ if __name__ == "__main__":
     parser.add_argument("fixed_image", help="Path to the fixed image")
     parser.add_argument("moving_image", help="Path to the moving image (to be transformed)")
     parser.add_argument("warp_matrix", help="Path to the transformation matrix")
-    parser.add_argument("out", help="Path to the output (transfirmed moving image)")
+    parser.add_argument("warped_image", help="Path to the output (transfirmed moving image)")
     args = parser.parse_args()
-    transform(args.moving_image, args.fixed_image, args.warp_matrix, args.out)
+    transform(args.moving_image, args.fixed_image, args.warp_matrix, args.warped_image)
