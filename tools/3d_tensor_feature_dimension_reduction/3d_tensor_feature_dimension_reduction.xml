@@ -5,7 +5,7 @@
         <requirement type="package" version="2020.10.1">tifffile</requirement>
         <requirement type="package" version="0.5.2">umap-learn</requirement>
     </requirements>
-    <command>
+    <command detect_errors="aggressive">
     <![CDATA[
          python '$__tool_directory__/3d_tensor_feature_dimension_reduction.py'
          '$fn_in'
@@ -23,7 +23,7 @@
     <tests>
         <test>
             <param name="fn_in" value="tensor.npz"/>
-            <param name="nCh" value="5"/>
+            <param name="nCh" value="3"/>
             <output name="fn_out" value="tensor_r.tif" ftype="tiff" />
         </test>
     </tests>

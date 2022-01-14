@@ -16,8 +16,9 @@ import umap
 
 def feature_dimension_reduction(tensor_fn, tiff_fn, nCh=5):
     npobj = np.load(tensor_fn)
-    ts = npobj[npobj.files[0]]
+    assert isinstance(npobj, np.lib.npyio.NpzFile), 'input must be a npz file'
 
+    ts = npobj[npobj.files[0]]
     assert len(ts.shape) == 3 and ts.shape[-1] > nCh, \
         'the input tensor data must be three-dimensional'
 

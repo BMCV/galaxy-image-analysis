@@ -36,7 +36,7 @@
         <param name="fn_fixed" value="fixed.png"/>
         <param name="sigma" value="3"/>
         <param name="metric" value="lcc"/>
-        <output name="fn_tmat" value="tmat.tsv" ftype="tabular" compare="diff" lines_diff="2"/>
+        <output name="fn_tmat" value="tmat.tsv" ftype="tabular"/>
       </test>
     </tests>
     <help>
