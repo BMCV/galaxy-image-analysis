@@ -2,19 +2,20 @@
     <description>for features of 3D tensor data using UMAP</description>
     <requirements>
         <requirement type="package" version="1.20.2">numpy</requirement>
+        <requirement type="package" version="3.6.0">h5py</requirement>
         <requirement type="package" version="2020.10.1">tifffile</requirement>
         <requirement type="package" version="0.5.2">umap-learn</requirement>
     </requirements>
     <command detect_errors="aggressive"><![CDATA[
-ln -s '$fn_in' ./input.npz &&
-python '$__tool_directory__/3d_tensor_feature_dimension_reduction.py'
-./input.npz
-'$nCh'
-./output.tif
+        ln -s '$fn_in' ./input.h5 &&
+        python '$__tool_directory__/3d_tensor_feature_dimension_reduction.py'
+        ./input.h5
+        '$nCh'
+        ./output.tif
     ]]>
     </command>
     <inputs>
-        <param name="fn_in" type="data" format="npz" label="3D tensor data (rows x cols x features)" />
+        <param name="fn_in" type="data" format="hdf5" label="3D tensor data (rows x cols x features)" />
         <param name="nCh" type="integer" value="5" optional="true" min="1" max="10" label="Reduced dimensions of features" />
     </inputs>
     <outputs>
@@ -22,7 +23,7 @@ python '$__tool_directory__/3d_tensor_feature_dimension_reduction.py'
     </outputs>
     <tests>
         <test>
-            <param name="fn_in" value="tensor.npz"/>
+            <param name="fn_in" value="tensor.h5"/>
             <param name="nCh" value="3"/>
             <output name="fn_out" value="tensor_r.tif" ftype="tiff" />
         </test>
@@ -32,4 +33,6 @@ python '$__tool_directory__/3d_tensor_feature_dimension_reduction.py'
 
     This tool performs dimensionality reduction for features of 3D tensor data (rows x cols x features) using UMAP. The results will be saved as a multi-channel 32-bit TIFF image (features x rows x cols).
     </help>
+    <citations>
+    </citations>
 </tool>

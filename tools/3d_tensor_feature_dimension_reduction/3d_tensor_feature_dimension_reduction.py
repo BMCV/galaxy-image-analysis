@@ -9,16 +9,16 @@ See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
 import argparse
 import warnings
 
+import h5py
 import numpy as np
 import tifffile
 import umap
 
 
 def feature_dimension_reduction(tensor_fn, tiff_fn, nCh=5):
-    npobj = np.load(tensor_fn)
-    assert isinstance(npobj, np.lib.npyio.NpzFile), 'input must be a npz file'
+    with h5py.File(tensor_fn, 'r') as hf:
+        ts = np.array(hf[list(hf.keys())[0]])
 
-    ts = npobj[npobj.files[0]]
     assert len(ts.shape) == 3 and ts.shape[-1] > nCh, \
         'the input tensor data must be three-dimensional'
 
