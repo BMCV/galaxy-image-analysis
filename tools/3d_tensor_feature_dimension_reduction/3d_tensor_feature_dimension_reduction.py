@@ -27,7 +27,7 @@ def feature_dimension_reduction(tensor_fn, tiff_fn, nCh=5):
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        tifffile.imwrite(tiff_fn + '.tiff', np.transpose(img, (2, 0, 1)), imagej=True)
+        tifffile.imwrite(tiff_fn, np.transpose(img, (2, 0, 1)), imagej=True)
 
 
 if __name__ == "__main__":
