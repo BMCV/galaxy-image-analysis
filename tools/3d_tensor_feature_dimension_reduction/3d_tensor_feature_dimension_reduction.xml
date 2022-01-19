@@ -11,7 +11,7 @@
         python '$__tool_directory__/3d_tensor_feature_dimension_reduction.py'
         ./input.h5
         '$nCh'
-        ./output.tif
+        ./output.tiff
     ]]>
     </command>
     <inputs>
@@ -19,7 +19,7 @@
         <param name="nCh" type="integer" value="5" optional="true" min="1" max="10" label="Reduced dimensions of features" />
     </inputs>
     <outputs>
-        <data format="tiff" name="fn_out" from_work_dir="output.tif" />
+        <data format="tiff" name="fn_out" from_work_dir="output.tiff" />
     </outputs>
     <tests>
         <test>
