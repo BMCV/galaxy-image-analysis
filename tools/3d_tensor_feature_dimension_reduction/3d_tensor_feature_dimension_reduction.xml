@@ -25,11 +25,7 @@
         <test>
             <param name="fn_in" value="tensor.h5"/>
             <param name="nCh" value="3"/>
-            <output name="fn_out">
-                <assert_contents>
-                    <has_size value="170000" delta="20000" />
-                </assert_contents>
-            </output>
+            <output name="fn_out" value="tensor_r.tif" ftype="tiff" compare="sim_size"/>
         </test>
     </tests>
     <help>
