@@ -1,23 +1,31 @@
-<tool id="ip_image_registration" name="Image Registration" version="0.0.1"> 
+<tool id="ip_image_registration" name="Image Registration" version="0.0.2" profile="20.05"> 
     <description>based on intensity information</description>
     <requirements>
-        <requirement type="package" version="0.14.2">scikit-image</requirement>
-        <requirement type="package" version="1.1.0">scipy</requirement>
-        <requirement type="package" version="0.23.4">pandas</requirement>
-        <requirement type="package" version="1.15.2">numpy</requirement>
-        <requirement type="package" version="0.15.1">tifffile</requirement>
+        <requirement type="package" version="0.18.1">scikit-image</requirement>
+        <requirement type="package" version="1.6.2">scipy</requirement>
+        <requirement type="package" version="1.2.4">pandas</requirement>
+        <requirement type="package" version="1.20.2">numpy</requirement>
+        <requirement type="package" version="2020.10.1">tifffile</requirement>
     </requirements>
-    <command>
+    <command detect_errors="aggressive">
     <![CDATA[
          python '$__tool_directory__/image_registration_affine.py'
          '$fn_moving'
          '$fn_fixed'
          '$fn_tmat'
+         '$sigma'
+         '$metric'
     ]]>
     </command>
     <inputs>
-        <param name="fn_moving" type="data" format="png" label="Moving Image" />
-        <param name="fn_fixed"  type="data" format="png" label="Fixed Image" />
+        <param name="fn_moving" type="data" format="tiff,png,jpg" label="Moving image" />
+        <param name="fn_fixed" type="data" format="tiff,png,jpg" label="Fixed (reference) image" />
+        <param name="sigma" type="float" value="3" label="Sigma of Gaussian filter for smoothing input images" />
+        <param name="metric" type="select" label="Image similarity metric">
+            <option value="lcc" selected="True">Local cross-correlation</option>
+            <option value="mse">Mean squared error</option>
+            <option value="mae">Mean absolute error</option>
+        </param>
     </inputs>
     <outputs>
        <data format="tabular" name="fn_tmat" />
@@ -26,6 +34,8 @@
       <test>
         <param name="fn_moving" value="moving.png"/>
         <param name="fn_fixed" value="fixed.png"/>
+        <param name="sigma" value="3"/>
+        <param name="metric" value="lcc"/>
         <output name="fn_tmat" value="tmat.tsv" ftype="tabular" compare="diff" lines_diff="6"/>
       </test>
     </tests>
@@ -34,4 +44,6 @@
 
     This tool estimates the (affine) transformation matrix for registration of two images based on intensity information. 
     </help>
+    <citations>
+    </citations>
 </tool>
