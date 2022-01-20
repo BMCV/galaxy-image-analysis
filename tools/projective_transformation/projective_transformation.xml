@@ -9,27 +9,41 @@
     </requirements>
     <command detect_errors="aggressive">
     <![CDATA[
-         python '$__tool_directory__/projective_transformation.py'
-         '$fixed_image'
-         '$moving_image'
-         '$warp_matrix'
-         ./out
+        ln -s '$moving' ./in.$moving.ext && 
+        python '$__tool_directory__/projective_transformation.py'
+        '$fixed'
+        ./in.$moving.ext
+        '$tmat'
+        ./out.$moving.ext 
+        && mv ./out.$moving.ext ./result_image
     ]]>
     </command>
     <inputs>
-        <param name="moving_image" type="data" format="tiff,png,jpg" label="Moving image (to be transformed)" />
-        <param name="fixed_image" type="data" format="tiff,png,jpg" label="Fixed image (the reference)" />
-        <param name="warp_matrix" type="data" format="tabular" label="Transformation matrix" />
+        <param name="moving" type="data" format="tiff,png" label="Moving image (to be transformed)" />
+        <param name="fixed" type="data" format="tiff,png" label="Fixed image (the reference)" />
+        <param name="tmat" type="data" format="tabular" label="Transformation matrix" />
     </inputs>
     <outputs>
-        <data format_source="moving_image" name="warped_image" from_work_dir="out" />
+        <data name="warped" format_source="moving" metadata_source="moving" from_work_dir="result_image" />
     </outputs>
     <tests>
-      <test>
-        <param name="fixed_image" value="sample1.png"/>
-        <param name="moving_image" value="sample2.png"/>
-        <param name="warp_matrix" value="warp_matrix.tsv"/>
-        <output name="warped_image" value="yam.png" ftype="png" compare="sim_size"/>
+        <test>
+            <param name="fixed" value="fixed.png"/>
+            <param name="moving" value="moving.png"/>
+            <param name="tmat" value="tmat.tsv"/>
+            <output name="warped" value="moving_warped.png" ftype="png" compare="sim_size" delta_frac="0.1" />
+        </test>
+        <test>
+            <param name="fixed" value="fixed_rgb.png"/>
+            <param name="moving" value="moving_rgb.png"/>
+            <param name="tmat" value="tmat.tsv"/>
+            <output name="warped" value="moving_rgb_warped.png" ftype="png" compare="sim_size" delta_frac="0.1" />
+        </test>
+        <test>
+            <param name="fixed" value="multi_f.tif"/>
+            <param name="moving" value="multi_m.tif"/>
+            <param name="tmat" value="tmat.tsv"/>
+            <output name="warped" value="multi_m_warped.tif" ftype="tiff" compare="sim_size" delta_frac="0.1" />
       </test>
     </tests>
     <help>

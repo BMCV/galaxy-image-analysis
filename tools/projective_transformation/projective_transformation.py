@@ -7,7 +7,6 @@ See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
 """
 
 import argparse
-import imghdr
 import warnings
 
 import numpy as np
@@ -50,7 +49,6 @@ def warp_coords_batch(coord_map, shape, dtype=np.float64, batch_size=1000000):
 def transform(moving_fn, fixed_fn, warp_mat, output_fn):
 
     moving = skimage.io.imread(moving_fn)
-    extension = imghdr.what(moving_fn)
     nDims = len(moving.shape)
     assert nDims in [2, 3, 4, 5, 6], 'this tool only supports up to 6 dimensions'
 
@@ -96,9 +94,9 @@ def transform(moving_fn, fixed_fn, warp_mat, output_fn):
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         if isMulCh:
-            tifffile.imwrite(output_fn + '.tif', warped_moving, imagej=True, metadata={'mode': 'composite'})
+            tifffile.imwrite(output_fn, warped_moving, imagej=True, metadata={'mode': 'composite'})
         else:
-            skimage.io.imsave(output_fn + '.' + extension, warped_moving)
+            skimage.io.imsave(output_fn, warped_moving)
 
 
 if __name__ == "__main__":
