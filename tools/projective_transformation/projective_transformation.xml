@@ -1,5 +1,5 @@
-<tool id="ip_projective_transformation" name="Projective Transformation" version="0.1.0" profile="20.05"> 
-    <description>2D Projective Transformation</description>
+<tool id="ip_projective_transformation" name="Projective Transformation" version="0.1.1" profile="20.05"> 
+    <description>of 2D images</description>
     <requirements>
         <requirement type="package" version="0.18.1">scikit-image</requirement>
         <requirement type="package" version="1.2.4">pandas</requirement>
