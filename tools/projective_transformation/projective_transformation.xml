@@ -9,13 +9,13 @@
     </requirements>
     <command detect_errors="aggressive">
     <![CDATA[
-        ln -s '$moving' ./in.$moving.ext && 
+        ln -s '$moving' ./in.${moving.ext} && 
         python '$__tool_directory__/projective_transformation.py'
         '$fixed'
-        ./in.$moving.ext
+        ./in.${moving.ext}
         '$tmat'
-        ./out.$moving.ext 
-        && mv ./out.$moving.ext ./result_image
+        ./out.${moving.ext}
+        && mv ./out.${moving.ext} ./result_image
     ]]>
     </command>
     <inputs>
@@ -47,7 +47,8 @@
       </test>
     </tests>
     <help>
-    **What it does**
+
+**What it does**
 
     This tool performs a projective transformation of the moving image so that it fits the fixed image. 
     Multi-channel and RGB images are supported.
