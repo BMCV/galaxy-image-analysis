@@ -81,7 +81,7 @@ def transform(fn_roi_coords, fn_warp_matrix, fn_out):
     df['y'] = idx_roi_coords_warped[1] + 1
     if ncols > 2:
         for i in range(2, ncols):
-            df[col_names[i]] = all_data[:, i].take(roi_annots_warped)
+            df[col_names[i]] = all_data[:, i].take(roi_annots_warped - 1)
     df.to_csv(fn_out, index=False, sep="\t")
 
 
