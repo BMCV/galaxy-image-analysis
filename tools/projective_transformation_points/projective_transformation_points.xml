@@ -1,5 +1,5 @@
-<tool id="ip_projective_transformation_points" name="Projective Transformation" version="0.1.0">
-    <description>of input points</description>
+<tool id="ip_projective_transformation_points" name="Projective Transformation" version="0.1.1" profile="20.05">
+    <description>of ROIs defined by pixel (point) coordinates</description>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
         <requirement type="package" version="1.2.1">scipy</requirement>
@@ -7,32 +7,39 @@
         <requirement type="package" version="1.15.2">numpy</requirement>
         <requirement type="package" version="0.15.1">tifffile</requirement>
     </requirements>
-    <command>
+    <command detect_errors="aggressive">
     <![CDATA[
         python '$__tool_directory__/projective_transformation_points.py'
-            '$moving_points'
-            '$warp_matrix'
-            '$out'
+            '$input'
+            '$tmat'
+            '$output'
     ]]>
     </command>
     <inputs>
-        <param name="moving_points" type="data" format="tabular" label="Moving Points" />
-        <param name="warp_matrix" type= "data" format="tabular" label="Warp Matrix" />
+        <param name="input" type="data" format="tabular" label="ROIs (pixel coordinates) to be transformed (TSV file)" />
+        <param name="tmat" type= "data" format="tabular" label="Transformation matrix (TSV file)" />
     </inputs>
     <outputs>
-       <data format="tabular" name="out" />
+       <data format="tabular" name="output" />
     </outputs> 
     <tests>
       <test>
-        <param name="moving_points" value="points_tsv.tsv" />
-        <param name="warp_matrix" value="warp_matrix.tsv" />
-        <output name="out" value="out.tsv" ftype="tabular" />
+        <param name="input" value="in.tabular" />
+        <param name="tmat" value="tmat.tabular" />
+        <output name="output" value="out.tabular" ftype="tabular" compare="sim_size" delta_frac="0.1"/>
       </test>
     </tests>
     <help>
     **What it does**
 
-    This tool performs a projective transformation of the input (moving) points (with/without labels).
+    This tool performs a projective transformation of regions of interest (ROIs) defined by pixel (point) coordinates with/without labels.
+
+    About the format of point coordinates (and labels) in the input TSV table: 
+    1st column: x-coordinate; 
+    2nd column: y-coordinate; 
+    (optional) more column(s): point label(s) (numerical or categorical).
+    The top row of the table will be regarded as column headers.
+
     </help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
