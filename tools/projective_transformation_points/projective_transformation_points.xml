@@ -1,4 +1,4 @@
-<tool id="ip_projective_transformation_points" name="Projective Transformation" version="0.1.1" profile="20.05">
+<tool id="ip_projective_transformation_points" name="Projective Transformation" license="MIT" version="0.1.1" profile="20.05">
     <description>of ROIs defined by pixel (point) coordinates</description>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
