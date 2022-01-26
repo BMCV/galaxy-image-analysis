@@ -1,7 +1,7 @@
 categories:
   - Imaging
-description: Projective transformation - Points
-long_description: This tool performs a projective transformation of input coordinates with a warp matrix.
+description: Projective transformation of ROIs defined by pixel (point) coordinates
+long_description: This tool performs a projective transformation of regions of interest (ROIs) defined by pixel (point) coordinates based on a given transformation matrix.
 name: projective_transformation_points
 owner: imgteam
 homepage_url: https://github.com/bmcv
