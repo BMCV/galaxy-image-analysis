@@ -20,27 +20,21 @@
             "name": "Input dataset",
             "outputs": [],
             "position": {
-                "bottom": 193,
-                "height": 81,
-                "left": 402,
-                "right": 602,
-                "top": 112,
+                "bottom": 267.703125,
+                "height": 82.1953125,
+                "left": 603.703125,
+                "right": 803.703125,
+                "top": 185.5078125,
                 "width": 200,
-                "x": 402,
-                "y": 112
+                "x": 603.703125,
+                "y": 185.5078125
             },
             "tool_id": null,
             "tool_state": "{\"optional\": false}",
             "tool_version": null,
             "type": "data_input",
             "uuid": "78e303e9-1c42-4476-b3b6-0190c47166ce",
-            "workflow_outputs": [
-                {
-                    "label": null,
-                    "output_name": "output",
-                    "uuid": "a820011b-4d91-485c-8248-3157e7890c3a"
-                }
-            ]
+            "workflow_outputs": []
         },
         "1": {
             "annotation": "",
@@ -58,150 +52,34 @@
             "name": "Input dataset",
             "outputs": [],
             "position": {
-                "bottom": 744,
-                "height": 81,
-                "left": 413,
-                "right": 613,
-                "top": 663,
+                "bottom": 809.359375,
+                "height": 82.1953125,
+                "left": 604.046875,
+                "right": 804.046875,
+                "top": 727.1640625,
                 "width": 200,
-                "x": 413,
-                "y": 663
+                "x": 604.046875,
+                "y": 727.1640625
             },
             "tool_id": null,
             "tool_state": "{\"optional\": false}",
             "tool_version": null,
             "type": "data_input",
             "uuid": "8dea8197-01dd-4781-9f34-75b01914a134",
-            "workflow_outputs": [
-                {
-                    "label": null,
-                    "output_name": "output",
-                    "uuid": "0445e743-fed7-40c6-8529-78f04a1d40d3"
-                }
-            ]
+            "workflow_outputs": []
         },
         "2": {
             "annotation": "",
-            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/imagej2_smooth/imagej2_smooth/3.0.0",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/image_registration_affine/ip_image_registration/0.0.1",
             "errors": null,
             "id": 2,
             "input_connections": {
-                "input": {
-                    "id": 0,
-                    "output_name": "output"
-                }
-            },
-            "inputs": [
-                {
-                    "description": "runtime parameter for tool Smooth",
-                    "name": "input"
-                }
-            ],
-            "label": null,
-            "name": "Smooth",
-            "outputs": [
-                {
-                    "name": "output",
-                    "type": "input"
-                }
-            ],
-            "position": {
-                "bottom": 364,
-                "height": 92,
-                "left": 542,
-                "right": 742,
-                "top": 272,
-                "width": 200,
-                "x": 542,
-                "y": 272
-            },
-            "post_job_actions": {},
-            "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/imagej2_smooth/imagej2_smooth/3.0.0",
-            "tool_shed_repository": {
-                "changeset_revision": "53fb6f4afcc8",
-                "name": "imagej2_smooth",
-                "owner": "imgteam",
-                "tool_shed": "toolshed.g2.bx.psu.edu"
-            },
-            "tool_state": "{\"input\": {\"__class__\": \"RuntimeValue\"}, \"__page__\": null, \"__rerun_remap_job_id__\": null}",
-            "tool_version": null,
-            "type": "tool",
-            "uuid": "6be808fb-de4f-4b67-9fcc-d8f01b32e9e5",
-            "workflow_outputs": [
-                {
-                    "label": null,
-                    "output_name": "output",
-                    "uuid": "3d5dc41f-9cee-4445-b3db-f8cc62bd2f39"
-                }
-            ]
-        },
-        "3": {
-            "annotation": "",
-            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/imagej2_smooth/imagej2_smooth/3.0.0",
-            "errors": null,
-            "id": 3,
-            "input_connections": {
-                "input": {
-                    "id": 1,
-                    "output_name": "output"
-                }
-            },
-            "inputs": [
-                {
-                    "description": "runtime parameter for tool Smooth",
-                    "name": "input"
-                }
-            ],
-            "label": null,
-            "name": "Smooth",
-            "outputs": [
-                {
-                    "name": "output",
-                    "type": "input"
-                }
-            ],
-            "position": {
-                "bottom": 574,
-                "height": 92,
-                "left": 543,
-                "right": 743,
-                "top": 482,
-                "width": 200,
-                "x": 543,
-                "y": 482
-            },
-            "post_job_actions": {},
-            "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/imagej2_smooth/imagej2_smooth/3.0.0",
-            "tool_shed_repository": {
-                "changeset_revision": "53fb6f4afcc8",
-                "name": "imagej2_smooth",
-                "owner": "imgteam",
-                "tool_shed": "toolshed.g2.bx.psu.edu"
-            },
-            "tool_state": "{\"input\": {\"__class__\": \"RuntimeValue\"}, \"__page__\": null, \"__rerun_remap_job_id__\": null}",
-            "tool_version": null,
-            "type": "tool",
-            "uuid": "48f75a05-cf7a-48d1-b22b-d4cf56cbb71a",
-            "workflow_outputs": [
-                {
-                    "label": null,
-                    "output_name": "output",
-                    "uuid": "2a3b502b-a83f-463c-819f-78c3e8818b32"
-                }
-            ]
-        },
-        "4": {
-            "annotation": "",
-            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/image_registration_affine/ip_image_registration/0.0.1",
-            "errors": null,
-            "id": 4,
-            "input_connections": {
                 "fn_fixed": {
-                    "id": 3,
+                    "id": 1,
                     "output_name": "output"
                 },
                 "fn_moving": {
-                    "id": 2,
+                    "id": 0,
                     "output_name": "output"
                 }
             },
@@ -224,14 +102,14 @@
                 }
             ],
             "position": {
-                "bottom": 513,
-                "height": 142,
-                "left": 802,
-                "right": 1002,
-                "top": 371,
+                "bottom": 565.515625,
+                "height": 143.9921875,
+                "left": 792.40625,
+                "right": 992.40625,
+                "top": 421.5234375,
                 "width": 200,
-                "x": 802,
-                "y": 371
+                "x": 792.40625,
+                "y": 421.5234375
             },
             "post_job_actions": {},
             "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/image_registration_affine/ip_image_registration/0.0.1",
@@ -242,22 +120,22 @@
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
             "tool_state": "{\"fn_fixed\": {\"__class__\": \"RuntimeValue\"}, \"fn_moving\": {\"__class__\": \"RuntimeValue\"}, \"__page__\": null, \"__rerun_remap_job_id__\": null}",
-            "tool_version": null,
+            "tool_version": "0.0.1",
             "type": "tool",
             "uuid": "75a8ac98-b71c-45bf-b379-d5c9f86b44c2",
             "workflow_outputs": [
                 {
                     "label": null,
                     "output_name": "fn_tmat",
-                    "uuid": "659c1d70-de0d-4ed1-822e-025260ef5cbf"
+                    "uuid": "48c092eb-f8ce-427d-bf95-1e654e5187ce"
                 }
             ]
         },
-        "5": {
+        "3": {
             "annotation": "",
             "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/projective_transformation/ip_projective_transformation/0.0.4",
             "errors": null,
-            "id": 5,
+            "id": 3,
             "input_connections": {
                 "fixed_image": {
                     "id": 1,
@@ -268,11 +146,24 @@
                     "output_name": "output"
                 },
                 "warp_matrix": {
-                    "id": 4,
+                    "id": 2,
                     "output_name": "fn_tmat"
                 }
             },
-            "inputs": [],
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool Projective Transformation",
+                    "name": "fixed_image"
+                },
+                {
+                    "description": "runtime parameter for tool Projective Transformation",
+                    "name": "moving_image"
+                },
+                {
+                    "description": "runtime parameter for tool Projective Transformation",
+                    "name": "warp_matrix"
+                }
+            ],
             "label": null,
             "name": "Projective Transformation",
             "outputs": [
@@ -282,14 +173,14 @@
                 }
             ],
             "position": {
-                "bottom": 546,
-                "height": 172,
-                "left": 1237,
-                "right": 1437,
-                "top": 374,
+                "bottom": 582.8828125,
+                "height": 174.390625,
+                "left": 1128.40625,
+                "right": 1328.40625,
+                "top": 408.4921875,
                 "width": 200,
-                "x": 1237,
-                "y": 374
+                "x": 1128.40625,
+                "y": 408.4921875
             },
             "post_job_actions": {},
             "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/projective_transformation/ip_projective_transformation/0.0.4",
@@ -299,20 +190,20 @@
                 "owner": "imgteam",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
-            "tool_state": "{\"fixed_image\": {\"__class__\": \"ConnectedValue\"}, \"moving_image\": {\"__class__\": \"ConnectedValue\"}, \"warp_matrix\": {\"__class__\": \"ConnectedValue\"}, \"__page__\": null, \"__rerun_remap_job_id__\": null}",
-            "tool_version": null,
+            "tool_state": "{\"fixed_image\": {\"__class__\": \"RuntimeValue\"}, \"moving_image\": {\"__class__\": \"RuntimeValue\"}, \"warp_matrix\": {\"__class__\": \"RuntimeValue\"}, \"__page__\": null, \"__rerun_remap_job_id__\": null}",
+            "tool_version": "0.0.4",
             "type": "tool",
             "uuid": "b90cbf09-3b69-4a5a-977b-1c974e3ae08b",
             "workflow_outputs": [
                 {
                     "label": null,
                     "output_name": "out",
-                    "uuid": "2d61abeb-e67c-45ca-b081-5c185ebcaa1b"
+                    "uuid": "cf5aa6d8-9382-43e2-8b3b-d1604910a55b"
                 }
             ]
         }
     },
     "tags": [],
-    "uuid": "fd0e528d-8532-4db8-b5c0-7a76e8e4d03f",
-    "version": 4
+    "uuid": "c1eb222b-b1c5-47a7-92c0-f9821ce218fc",
+    "version": 9
 }
