@@ -28,13 +28,13 @@
             <option value="Gauss" selected="True">Gaussian</option>
             <option value="LoG">Laplacian-of-Gaussian, LoG (more accurate when spots have similar sizes)</option>
         </param>
-        <param name="ssig" type="float" value="1" label="Sigma of the Gaussian (for noise suppression)" />
-        <param name="thres" type="float" value="10" label="Percentage of the global maximal as the threshold for candidate spots" />
+        <param name="ssig" type="float" value="1.0" min="0.5" max="10" label="Sigma of the Gaussian (for noise suppression)" />
+        <param name="thres" type="float" value="10.0" min="0" max="100" label="Percentage of the global maximal as the threshold for candidate spots" />
         <param name="typ_intens" type="select" label="How to measure the intensities">
             <option value="smoothed" selected="True">Smoothed</option>
             <option value="robust">Robust</option>
         </param>
-        <param name="bndy" type="integer" value="10" label="Width (in pixel) of image boundaries where spots will be ignored" />
+        <param name="bndy" type="integer" value="10" min="0" max="50" label="Width (in pixel) of image boundaries where spots will be ignored" />
     </inputs>
     <outputs>
         <data format="tabular" name="fn_out" />
@@ -49,7 +49,7 @@
             <param name="thres" value="10"/>
             <param name="typ_intens" value="smoothed"/>
             <param name="bndy" value="10"/>
-            <output name="fn_out" value="spots_detected.tsv" ftype="tabular" compare="diff" />
+            <output name="fn_out" value="spots_detected.tsv" ftype="tabular" />
         </test>
     </tests>
     <help>
