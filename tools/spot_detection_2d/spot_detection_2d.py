@@ -13,7 +13,7 @@ import imageio
 import numpy as np
 import pandas as pd
 from skimage.feature import peak_local_max
-from skimage.filters import gaussian
+from skimage.filters import gaussian, laplace
 
 
 def getbr(xy, img, nb, firstn):
@@ -27,7 +27,9 @@ def getbr(xy, img, nb, firstn):
     return br
 
 
-def spot_detection(fn_in, fn_out, frame_1st=1, frame_end=0, typ_br='smoothed', th=10, ssig=1, bd=10):
+def spot_detection(fn_in, fn_out, frame_1st=1, frame_end=0,
+                   typ_filter='Gauss', ssig=1, th=10,
+                   typ_br='smoothed', bd=10):
     ims_ori = imageio.mimread(fn_in, format='TIFF')
     ims_smd = np.zeros((len(ims_ori), ims_ori[0].shape[0], ims_ori[0].shape[1]), dtype='float64')
     if frame_end == 0 or frame_end > len(ims_ori):
@@ -40,6 +42,9 @@ def spot_detection(fn_in, fn_out, frame_1st=1, frame_end=0, typ_br='smoothed', t
     txyb_all = np.array([]).reshape(0, 4)
     for i in range(frame_1st - 1, frame_end):
         tmp = np.copy(ims_smd[i, :, :])
+        if typ_filter == 'LoG':
+            tmp = laplace(tmp)
+
         tmp[tmp < th * ims_smd_max / 100] = 0
         coords = peak_local_max(tmp, min_distance=1)
         idx_to_del = np.where((coords[:, 0] <= bd) | (coords[:, 0] >= tmp.shape[0] - bd) |
@@ -66,21 +71,18 @@ def spot_detection(fn_in, fn_out, frame_1st=1, frame_end=0, typ_br='smoothed', t
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Spot detection based on local maxima")
+    parser = argparse.ArgumentParser(description="Spot detection")
     parser.add_argument("fn_in", help="Name of input image sequence (stack)")
     parser.add_argument("fn_out", help="Name of output file to save the coordinates and intensities of detected spots")
     parser.add_argument("frame_1st", type=int, help="Index for the starting frame to detect spots (1 for first frame of the stack)")
     parser.add_argument("frame_end", type=int, help="Index for the last frame to detect spots (0 for the last frame of the stack)")
+    parser.add_argument("filter", help="Detection filter")
+    parser.add_argument("ssig", type=float, help="Sigma of the Gaussian for noise suppression")
+    parser.add_argument("thres", type=float, help="Percentage of the global maximal for thresholding candidate spots")
     parser.add_argument("typ_intens", help="smoothed or robust (for measuring the intensities of spots)")
-    parser.add_argument("thres", type=float, help="Percentage of the global maximal intensity for thresholding candidate spots")
-    parser.add_argument("ssig", type=float, help="Sigma of the Gaussian filter for noise suppression")
     parser.add_argument("bndy", type=int, help="Number of pixels (Spots close to image boundaries will be ignored)")
     args = parser.parse_args()
-    spot_detection(args.fn_in,
-                   args.fn_out,
-                   frame_1st=args.frame_1st,
-                   frame_end=args.frame_end,
-                   typ_br=args.typ_intens,
-                   th=args.thres,
-                   ssig=args.ssig,
-                   bd=args.bndy)
+    spot_detection(args.fn_in, args.fn_out,
+                   frame_1st=args.frame_1st, frame_end=args.frame_end,
+                   typ_filter=args.filter, ssig=args.ssig, th=args.thres,
+                   typ_br=args.typ_intens, bd=args.bndy)
