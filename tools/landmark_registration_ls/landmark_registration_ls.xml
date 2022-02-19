@@ -1,11 +1,12 @@
-<tool id="ip_landmark_registration_ls" name="Landmark Registration" version="0.0.1">
+<tool id="ip_landmark_registration_ls" name="Landmark Registration" version="0.0.2" profile="20.05">
     <description>using least squares</description>
     <requirements>
         <requirement type="package" version="1.2.1">scipy</requirement>
         <requirement type="package" version="0.23.4">pandas</requirement>
         <requirement type="package" version="1.15.2">numpy</requirement>
     </requirements>
-    <command><![CDATA[ 
+    <command detect_errors="aggressive">
+    <![CDATA[ 
          python '$__tool_directory__/landmark_registration_ls.py'
          '$fn_pts1'
          '$fn_pts2'
@@ -29,5 +30,9 @@
     **What it does**
 
     This tool estimates the (affine) transformation matrix using least squares given two sets of 2d coordinates of landmarks.
+
+    Note: This tool is deprecated and may not be supported in future. Please use the tool "Landmark Registration" instead.
     </help>
+    <citations>
+    </citations>
 </tool>

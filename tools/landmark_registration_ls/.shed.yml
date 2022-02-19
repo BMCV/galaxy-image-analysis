@@ -2,7 +2,7 @@ categories:
   - Imaging
 description: Landmark Registration using Least Squares
 long_description: |
-  This tool estimates the (affine) transformation matrix using least squares given two sets of 2d coordinates of landmarks.
+  This tool is deprecated.
 name: landmark_registration_ls
 owner: imgteam
 homepage_url: https://github.com/bmcv
