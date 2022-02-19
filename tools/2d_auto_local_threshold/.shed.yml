@@ -1,7 +1,7 @@
 categories:
   - Imaging
 description: 2d auto local threshold
-long_description: Automatic local thresholding in 2D
+long_description: This tool is deprecated.
 name: 2d_local_threshold
 owner: imgteam
 homepage_url: https://github.com/bmcv

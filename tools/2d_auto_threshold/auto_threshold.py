@@ -1,35 +1,47 @@
-import argparse
-import numpy as np
-import sys 
-import skimage.io
-import skimage.filters
-import skimage.util
+"""
+Copyright 2017-2022 Biomedical Computer Vision Group, Heidelberg University.
 
-threshOptions = {
-    'otsu': lambda img_raw: skimage.filters.threshold_otsu(img_raw),
-    'gaussian_adaptive': lambda img_raw: skimage.filters.threshold_local(img_raw, 3, method='gaussian'),
-    'mean_adaptive': lambda img_raw: skimage.filters.threshold_local(img_raw, 3, method='mean'),
-    'isodata': lambda img_raw: skimage.filters.threshold_isodata(img_raw),
-    'li': lambda img_raw: skimage.filters.threshold_li(img_raw),
-    'yen': lambda img_raw: skimage.filters.threshold_yen(img_raw),
+Distributed under the MIT license.
+See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
+
+"""
+
+import argparse
+
+import skimage.filters
+import skimage.io
+import skimage.util
+import tifffile
+
+thOptions = {
+    'otsu': lambda img_raw, bz: skimage.filters.threshold_otsu(img_raw),
+    'li': lambda img_raw, bz: skimage.filters.threshold_li(img_raw),
+    'yen': lambda img_raw, bz: skimage.filters.threshold_yen(img_raw),
+    'isodata': lambda img_raw, bz: skimage.filters.threshold_isodata(img_raw),
+
+    'loc_gaussian': lambda img_raw, bz: skimage.filters.threshold_local(img_raw, bz, method='gaussian'),
+    'loc_median': lambda img_raw, bz: skimage.filters.threshold_local(img_raw, bz, method='median'),
+    'loc_mean': lambda img_raw, bz: skimage.filters.threshold_local(img_raw, bz, method='mean')
 }
 
+
+def auto_thresholding(in_fn, out_fn, th_method, block_size=5, dark_bg=True):
+    img = skimage.io.imread(in_fn)
+    th = thOptions[th_method](img, block_size)
+    if dark_bg:
+        res = img > th
+    else:
+        res = img <= th
+    tifffile.imwrite(out_fn, skimage.util.img_as_ubyte(res))
+
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Segment Foci')
-    parser.add_argument('input_file', type=argparse.FileType('r'), default=sys.stdin, help='input file')
-    parser.add_argument('out_file', type=argparse.FileType('w'), default=sys.stdin, help='out file (TIFF)')
-    parser.add_argument('thresh_type', choices=threshOptions.keys(), help='thresholding method')
-    parser.add_argument('dark_background', default=True, type=bool, help='True if background is dark')
+    parser = argparse.ArgumentParser(description='Automatic Image Thresholding')
+    parser.add_argument('im_in', help='Path to the input image')
+    parser.add_argument('im_out', help='Path to the output image (TIFF)')
+    parser.add_argument('th_method', choices=thOptions.keys(), help='Thresholding method')
+    parser.add_argument('block_size', type=int, default=5, help='Odd size of pixel neighborhood for calculating the threshold')
+    parser.add_argument('dark_bg', default=True, type=bool, help='True if background is dark')
     args = parser.parse_args()
 
-    img_in = skimage.io.imread(args.input_file.name)
-    img_in = np.reshape(img_in, [img_in.shape[0], img_in.shape[1]])
-    thresh = threshOptions[args.thresh_type](img_in)
-
-    if args.dark_background:
-        res = img_in > thresh
-    else: 
-        res = img_in <= thresh
-
-    res = skimage.util.img_as_uint(res)
-    skimage.io.imsave(args.out_file.name, res, plugin="tifffile")
+    auto_thresholding(args.im_in, args.im_out, args.th_method, args.block_size, args.dark_bg)
