@@ -5,7 +5,6 @@
         <requirement type="package" version="1.2.1">scipy</requirement>
         <requirement type="package" version="0.23.4">pandas</requirement>
         <requirement type="package" version="1.15.4">numpy</requirement>
-        <requirement type="package" version="0.15.1">tifffile</requirement>
     </requirements>
     <command detect_errors="aggressive">
     <![CDATA[ 
@@ -26,11 +25,11 @@
                 <option value="ransac" selected="True">RANSAC</option>
                 <option value="ls">Least Squares</option>
             </param>
-            <when value="true">
+            <when value="ransac">
                 <param name="res_thr" type="float" value="2.0" label="Maximum distance for a data point to be classified as an inlier." />
                 <param name="max_iter" type="integer" value="100" label="Maximum number of iterations for random sample selection." />
             </when>
-            <when value="false"></when>
+            <when value="ls"></when>
         </conditional>
     </inputs>
     <outputs>
