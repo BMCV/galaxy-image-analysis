@@ -2,7 +2,7 @@
     "a_galaxy_workflow": "true",
     "annotation": "",
     "format-version": "0.1",
-    "name": "Segmentation", 
+    "name": "Segmentation",
     "steps": {
         "0": {
             "annotation": "",
@@ -10,89 +10,35 @@
             "errors": null,
             "id": 0,
             "input_connections": {},
-            "inputs": [
-                {
-                    "description": "",
-                    "name": "Input Dataset"
-                }
-            ],
+            "inputs": [],
             "label": null,
             "name": "Input dataset",
             "outputs": [],
             "position": {
-                "left": 200,
-                "top": 200
+                "bottom": 429.1875,
+                "height": 82.1953125,
+                "left": 479,
+                "right": 679,
+                "top": 346.9921875,
+                "width": 200,
+                "x": 479,
+                "y": 346.9921875
             },
             "tool_id": null,
-            "tool_state": "{\"name\": \"Input Dataset\"}",
+            "tool_state": "{\"optional\": false}",
             "tool_version": null,
             "type": "data_input",
-            "uuid": "20ac95e9-00e6-4bda-ba74-2e6f7c378bca",
-            "workflow_outputs": [
-                {
-                    "label": null,
-                    "output_name": "output",
-                    "uuid": "6f109dfb-e9c1-4fd3-a681-18bda304ec46"
-                }
-            ]
+            "uuid": "ea6d214f-5f61-47ad-a42b-d77bcdd63e73",
+            "workflow_outputs": []
         },
         "1": {
             "annotation": "",
-            "content_id": "testtoolshed.g2.bx.psu.edu/repos/iuc/imagej2_noise/imagej2_noise/1.0.0",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/2d_auto_threshold/ip_threshold/0.0.4",
             "errors": null,
             "id": 1,
             "input_connections": {
                 "input": {
                     "id": 0,
-                    "output_name": "output"
-                }
-            },
-            "inputs": [
-                {
-                    "description": "runtime parameter for tool Add or remove noise",
-                    "name": "input"
-                }
-            ],
-            "label": null,
-            "name": "Add or remove noise",
-            "outputs": [
-                {
-                    "name": "output",
-                    "type": "input"
-                }
-            ],
-            "position": {
-                "left": 428,
-                "top": 200
-            },
-            "post_job_actions": {
-                "HideDatasetActionoutput": {
-                    "action_arguments": {},
-                    "action_type": "HideDatasetAction",
-                    "output_name": "output"
-                }
-            },
-            "tool_id": "testtoolshed.g2.bx.psu.edu/repos/iuc/imagej2_noise/imagej2_noise/1.0.0",
-            "tool_shed_repository": {
-                "changeset_revision": "fd2cbe35e919",
-                "name": "imagej2_noise",
-                "owner": "iuc",
-                "tool_shed": "testtoolshed.g2.bx.psu.edu"
-            },
-            "tool_state": "{\"input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"noise_cond\": \"{\\\"threshold\\\": \\\"50.0\\\", \\\"which_outliers\\\": \\\"bright\\\", \\\"noise\\\": \\\"remove_outliers\\\", \\\"radius\\\": \\\"2.0\\\", \\\"__current_case__\\\": 4}\", \"__page__\": 0}",
-            "tool_version": "1.0.0",
-            "type": "tool",
-            "uuid": "b9de27e2-0bd3-46f4-916d-55fb877535c5",
-            "workflow_outputs": []
-        },
-        "2": {
-            "annotation": "",
-            "content_id": "ip_threshold",
-            "errors": null,
-            "id": 2,
-            "input_connections": {
-                "input": {
-                    "id": 1,
                     "output_name": "output"
                 }
             },
@@ -111,72 +57,92 @@
                 }
             ],
             "position": {
-                "left": 666,
-                "top": 198.5
+                "bottom": 459.0859375,
+                "height": 113.59375,
+                "left": 735,
+                "right": 935,
+                "top": 345.4921875,
+                "width": 200,
+                "x": 735,
+                "y": 345.4921875
             },
-            "post_job_actions": {
-                "HideDatasetActionoutput": {
-                    "action_arguments": {},
-                    "action_type": "HideDatasetAction",
-                    "output_name": "output"
-                }
+            "post_job_actions": {},
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/2d_auto_threshold/ip_threshold/0.0.4",
+            "tool_shed_repository": {
+                "changeset_revision": "81f0cbca04a7",
+                "name": "2d_auto_threshold",
+                "owner": "imgteam",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
             },
-            "tool_id": "ip_threshold",
-            "tool_state": "{\"input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"thresh_type\": \"\\\"otsu\\\"\", \"dark_background\": \"\\\"true\\\"\", \"__rerun_remap_job_id__\": null, \"__page__\": null}",
-            "tool_version": "0.0.2",
+            "tool_state": "{\"dark_background\": \"true\", \"input\": {\"__class__\": \"RuntimeValue\"}, \"thresh_type\": \"otsu\", \"__page__\": null, \"__rerun_remap_job_id__\": null}",
+            "tool_version": null,
             "type": "tool",
-            "uuid": "754b46c1-58b4-4777-936c-4ae85e960dc6",
-            "workflow_outputs": []
+            "uuid": "27c174b8-1f52-4631-84e7-9abe2a5c9ab1",
+            "workflow_outputs": [
+                {
+                    "label": null,
+                    "output_name": "output",
+                    "uuid": "0f34367c-098f-4288-bb3c-5ca268dfb385"
+                }
+            ]
         },
-        "3": {
+        "2": {
             "annotation": "",
-            "content_id": "testtoolshed.g2.bx.psu.edu/repos/iuc/imagej2_watershed_binary/imagej2_watershed_binary/1.0.0",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/2d_split_binaryimage_by_watershed/ip_2d_split_binaryimage_by_watershed/0.0.1",
             "errors": null,
-            "id": 3,
+            "id": 2,
             "input_connections": {
                 "input": {
-                    "id": 2,
+                    "id": 1,
                     "output_name": "output"
                 }
             },
             "inputs": [
                 {
-                    "description": "runtime parameter for tool Watershed segmentation",
+                    "description": "runtime parameter for tool Split objects",
                     "name": "input"
                 }
             ],
             "label": null,
-            "name": "Watershed segmentation",
+            "name": "Split objects",
             "outputs": [
                 {
                     "name": "output",
-                    "type": "input"
+                    "type": "tiff"
                 }
             ],
             "position": {
-                "left": 907,
-                "top": 200
+                "bottom": 438.6875,
+                "height": 93.1953125,
+                "left": 996,
+                "right": 1196,
+                "top": 345.4921875,
+                "width": 200,
+                "x": 996,
+                "y": 345.4921875
             },
             "post_job_actions": {},
-            "tool_id": "testtoolshed.g2.bx.psu.edu/repos/iuc/imagej2_watershed_binary/imagej2_watershed_binary/1.0.0",
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/2d_split_binaryimage_by_watershed/ip_2d_split_binaryimage_by_watershed/0.0.1",
             "tool_shed_repository": {
-                "changeset_revision": "7507cbee7554",
-                "name": "imagej2_watershed_binary",
-                "owner": "iuc",
-                "tool_shed": "testtoolshed.g2.bx.psu.edu"
+                "changeset_revision": "f8f7987586b7",
+                "name": "2d_split_binaryimage_by_watershed",
+                "owner": "imgteam",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
             },
-            "tool_state": "{\"black_background\": \"\\\"yes\\\"\", \"input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"__page__\": null}",
-            "tool_version": "1.0.0",
+            "tool_state": "{\"input\": {\"__class__\": \"RuntimeValue\"}, \"min_distance\": \"5\", \"__page__\": null, \"__rerun_remap_job_id__\": null}",
+            "tool_version": null,
             "type": "tool",
-            "uuid": "3db2747f-549b-4e97-8af5-2ed3133ede79",
+            "uuid": "4f10c70d-0537-4a83-b0c9-b37f495da769",
             "workflow_outputs": [
                 {
                     "label": null,
                     "output_name": "output",
-                    "uuid": "3e9d45a9-bfa7-465c-9db7-96f47f4ad251"
+                    "uuid": "7fb33590-bcc0-4c4d-9561-1c7451becb6e"
                 }
             ]
         }
     },
-    "uuid": "5a832543-d36e-4eab-857f-4471c3bfd61d"
+    "tags": [],
+    "uuid": "c98668fa-d1d8-425e-919e-fce20bf53bc3",
+    "version": 6
 }

@@ -1,4 +1,4 @@
-<tool id="ip_localthreshold" name="Local Threshold" version="0.0.2"> 
+<tool id="ip_localthreshold" name="Local Threshold" version="0.0.3" profile="20.05"> 
    <description>applies a local threshold algorithm to an image</description> 
    <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
@@ -35,6 +35,8 @@
     </tests>
     <help>
         Applies a local threshold algorithm to an image.
+
+        Note: This tool is deprecated and may not be supported in future. Please use the tool "Auto Threshold" instead.
     </help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>

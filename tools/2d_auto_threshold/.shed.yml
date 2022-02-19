@@ -1,7 +1,7 @@
 categories:
   - Imaging
-description: 2d automatic threshold
-long_description: Automatic thresholding in 2D
+description: Automatic thresholding
+long_description: Applying a standard thresholding method to an image.
 name: 2d_auto_threshold
 owner: imgteam
 homepage_url: https://github.com/bmcv
