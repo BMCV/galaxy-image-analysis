@@ -12,6 +12,10 @@
         '$fn_pts1'
         '$fn_pts2'
         '$fn_tmat'
+        #if $algo_option.algo == 'ransac'
+        --res_th $algo_option.res_thr
+        --max_ite $algo_option.max_iter
+        #end if
 ]]></command>
     <inputs>
         <param name="fn_pts1" type="data" format="tabular" label="Coordinates of SRC landmarks (tsv file)" />
@@ -36,6 +40,14 @@
             <param name="fn_pts1" value="points_moving.tsv"/>
             <param name="fn_pts2" value="points_fixed.tsv"/>
             <param name="algo_option.algo" value="ls"/>
+            <output name="fn_tmat" value="tmat.tsv" ftype="tabular" compare="diff" lines_diff="6"/>
+        </test>
+        <test>
+            <param name="fn_pts1" value="points_moving.tsv"/>
+            <param name="fn_pts2" value="points_fixed.tsv"/>
+            <param name="algo_option.algo" value="ransac"/>
+            <param name="algo_option.res_thr" value="2"/>
+            <param name="algo_option.max_iter" value="100"/>
             <output name="fn_tmat" value="tmat.tsv" ftype="tabular" compare="diff" lines_diff="6"/>
         </test>
     </tests>
