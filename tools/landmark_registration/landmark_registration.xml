@@ -16,6 +16,17 @@
     <inputs>
         <param name="fn_pts1" type="data" format="tabular" label="Coordinates of SRC landmarks (tsv file)" />
         <param name="fn_pts2" type="data" format="tabular" label="Coordinates of DST landmarks (tsv file)" />
+        <conditional name="algo_option">
+            <param name="algo" type="select" label="Select the algorithm">
+                <option value="ransac" selected="True">RANSAC</option>
+                <option value="ls">Least Squares</option>
+            </param>
+            <when value="ransac">
+                <param name="res_thr" type="float" value="2.0" label="Maximum distance for a data point to be classified as an inlier." />
+                <param name="max_iter" type="integer" value="100" label="Maximum number of iterations for random sample selection." />
+            </when>
+            <when value="ls"></when>
+        </conditional>
     </inputs>
     <outputs>
         <data format="tabular" name="fn_tmat" />
@@ -24,6 +35,7 @@
         <test>
             <param name="fn_pts1" value="points_moving.tsv"/>
             <param name="fn_pts2" value="points_fixed.tsv"/>
+            <param name="algo_option.algo" value="ls"/>
             <output name="fn_tmat" value="tmat.tsv" ftype="tabular" compare="diff" lines_diff="6"/>
         </test>
     </tests>
