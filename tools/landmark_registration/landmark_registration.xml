@@ -1,41 +1,62 @@
-<tool id="ip_landmark_registration" name="Landmark Registration" version="0.0.2">
-    <description>Landmark Registration</description>
+<tool id="ip_landmark_registration" name="Landmark Registration" version="0.0.3" profile="20.05">
+    <description>estimates the affine transformation matrix</description>
     <requirements>
-        <requirement type="package" version="0.14.2">scikit-image</requirement>
-        <requirement type="package" version="0.23.4">pandas</requirement>
-        <requirement type="package" version="1.15.4">numpy</requirement>
-        <requirement type="package" version="0.15.1">tifffile</requirement>
+        <requirement type="package" version="0.18.1">scikit-image</requirement>
+        <requirement type="package" version="1.6.2">scipy</requirement>
+        <requirement type="package" version="1.2.4">pandas</requirement>
+        <requirement type="package" version="1.20.2">numpy</requirement>
     </requirements>
-    <command><![CDATA[ 
-         python '$__tool_directory__/landmark_registration.py'
-         --residual_threshold $residual_threshold
-         --max_trials $max_trials
-         '$points_file1'
-         '$points_file2'
-         '$warp_matrix'
+    <command detect_errors="aggressive">
+    <![CDATA[ 
+        python '$__tool_directory__/landmark_registration.py'
+        '$fn_pts1'
+        '$fn_pts2'
+        '$fn_tmat'
+        #if $algo_option.algo == 'ransac'
+        --res_th $algo_option.res_thr
+        --max_ite $algo_option.max_iter
+        #end if
 ]]></command>
     <inputs>
-          <param name="points_file1" type="data" format="tabular" label="Path to tab-separated file with src points" />
-          <param name="points_file2" type="data" format="tabular" label="Path to tab-separated file with dst points" />
-          <param name="residual_threshold" type="float" value="2" label="Maximum distance for a data point to be classified as an inlier." />
-        <param name="max_trials" type="integer" value="100" label="Maximum number of iterations for random sample selection." />
+        <param name="fn_pts1" type="data" format="tabular" label="Coordinates of SRC landmarks (tsv file)" />
+        <param name="fn_pts2" type="data" format="tabular" label="Coordinates of DST landmarks (tsv file)" />
+        <conditional name="algo_option">
+            <param name="algo" type="select" label="Select the algorithm">
+                <option value="ransac" selected="True">RANSAC</option>
+                <option value="ls">Least Squares</option>
+            </param>
+            <when value="ransac">
+                <param name="res_thr" type="float" value="2.0" label="Maximum distance for a data point to be classified as an inlier." />
+                <param name="max_iter" type="integer" value="100" label="Maximum number of iterations for random sample selection." />
+            </when>
+            <when value="ls"></when>
+        </conditional>
     </inputs>
     <outputs>
-       <data format="tabular" name="warp_matrix" />
+        <data format="tabular" name="fn_tmat" />
     </outputs>
     <tests>
         <test>
-            <param name="points_file1" value="points1.tsv"/>
-            <param name="points_file2" value="points2.tsv"/>
-            <param name="residual_threshold" value="2"/>
-            <param name="max_trials" value="100"/>
-            <output name="warp_matrix" value="warp.tsv" ftype="tabular" compare="diff" lines_diff="6"/>
+            <param name="fn_pts1" value="points_moving.tsv"/>
+            <param name="fn_pts2" value="points_fixed.tsv"/>
+            <param name="algo_option.algo" value="ls"/>
+            <output name="fn_tmat" value="tmat.tsv" ftype="tabular" compare="diff" lines_diff="6"/>
+        </test>
+        <test>
+            <param name="fn_pts1" value="points_moving.tsv"/>
+            <param name="fn_pts2" value="points_fixed.tsv"/>
+            <param name="algo_option.algo" value="ransac"/>
+            <param name="algo_option.res_thr" value="2"/>
+            <param name="algo_option.max_iter" value="100"/>
+            <output name="fn_tmat" value="tmat.tsv" ftype="tabular" compare="diff" lines_diff="6"/>
         </test>
     </tests>
     <help>
     **What it does**
 
     This tool estimates the transformation matrix between two sets of 2d points.
+
+    About the format of landmark coordinates in the input TSV table: Columns with header "x" and "y" are for x- and y-coordinate, respectively.
     </help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>

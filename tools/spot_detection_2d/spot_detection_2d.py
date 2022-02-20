@@ -1,5 +1,5 @@
 """
-Copyright 2021 Biomedical Computer Vision Group, Heidelberg University.
+Copyright 2021-2022 Biomedical Computer Vision Group, Heidelberg University.
 Author: Qi Gao (qi.gao@bioquant.uni-heidelberg.de)
 
 Distributed under the MIT license.
