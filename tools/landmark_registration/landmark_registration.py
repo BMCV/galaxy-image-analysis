@@ -1,6 +1,5 @@
 """
 Copyright 2017-2022 Biomedical Computer Vision Group, Heidelberg University.
-Author: Qi Gao (qi.gao@bioquant.uni-heidelberg.de)
 
 Distributed under the MIT license.
 See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
