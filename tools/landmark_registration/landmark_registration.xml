@@ -1,10 +1,10 @@
 <tool id="ip_landmark_registration" name="Landmark Registration" version="0.0.3" profile="20.05">
     <description>estimates the affine transformation matrix</description>
     <requirements>
-        <requirement type="package" version="0.14.2">scikit-image</requirement>
-        <requirement type="package" version="1.2.1">scipy</requirement>
-        <requirement type="package" version="0.23.4">pandas</requirement>
-        <requirement type="package" version="1.15.4">numpy</requirement>
+        <requirement type="package" version="0.18.1">scikit-image</requirement>
+        <requirement type="package" version="1.6.2">scipy</requirement>
+        <requirement type="package" version="1.2.4">pandas</requirement>
+        <requirement type="package" version="1.20.2">numpy</requirement>
     </requirements>
     <command detect_errors="aggressive">
     <![CDATA[ 
@@ -32,7 +32,7 @@
 
     This tool estimates the transformation matrix between two sets of 2d points.
 
-    About format of landmark coordinates in the input TSV table: Columns with header "x" and "y" are for x- and y-coordinate, respectively.
+    About the format of landmark coordinates in the input TSV table: Columns with header "x" and "y" are for x- and y-coordinate, respectively.
     </help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
