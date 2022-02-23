@@ -1,0 +1,111 @@
+{
+    "a_galaxy_workflow": "true",
+    "annotation": "",
+    "format-version": "0.1",
+    "name": "Particle tracking",
+    "steps": {
+        "0": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/spot_detection_2d/ip_spot_detection_2d/0.0.1",
+            "errors": null,
+            "id": 0,
+            "input_connections": {},
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool Spot Detection",
+                    "name": "fn_in"
+                }
+            ],
+            "label": null,
+            "name": "Spot Detection",
+            "outputs": [
+                {
+                    "name": "fn_out",
+                    "type": "tabular"
+                }
+            ],
+            "position": {
+                "bottom": 614.890625,
+                "height": 113.59375,
+                "left": 908,
+                "right": 1108,
+                "top": 501.296875,
+                "width": 200,
+                "x": 908,
+                "y": 501.296875
+            },
+            "post_job_actions": {},
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/spot_detection_2d/ip_spot_detection_2d/0.0.1",
+            "tool_shed_repository": {
+                "changeset_revision": "d78372040976",
+                "name": "spot_detection_2d",
+                "owner": "imgteam",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"bndy\": \"10\", \"fn_in\": {\"__class__\": \"RuntimeValue\"}, \"frame_1st\": \"1\", \"frame_end\": \"0\", \"ssig\": \"1.0\", \"thres\": \"10.0\", \"typ_intens\": \"smoothed\", \"__page__\": null, \"__rerun_remap_job_id__\": null}",
+            "tool_version": null,
+            "type": "tool",
+            "uuid": "e1da7735-bf10-473f-bf68-aa99f54da210",
+            "workflow_outputs": [
+                {
+                    "label": null,
+                    "output_name": "fn_out",
+                    "uuid": "4c77a0d5-d2f2-4a90-8e35-4988dc7cce85"
+                }
+            ]
+        },
+        "1": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/points_association_nn/ip_points_association_nn/0.0.2",
+            "errors": null,
+            "id": 1,
+            "input_connections": {
+                "fn_in": {
+                    "id": 0,
+                    "output_name": "fn_out"
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "Association of points",
+            "outputs": [
+                {
+                    "name": "fn_out",
+                    "type": "xlsx"
+                }
+            ],
+            "position": {
+                "bottom": 649.6875,
+                "height": 154.390625,
+                "left": 1185,
+                "right": 1385,
+                "top": 495.296875,
+                "width": 200,
+                "x": 1185,
+                "y": 495.296875
+            },
+            "post_job_actions": {},
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/points_association_nn/ip_points_association_nn/0.0.2",
+            "tool_shed_repository": {
+                "changeset_revision": "b30aa285ac0a",
+                "name": "points_association_nn",
+                "owner": "imgteam",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"fn_in\": {\"__class__\": \"ConnectedValue\"}, \"minlen\": \"50.0\", \"nbpx\": \"6\", \"thres\": \"25.0\", \"__page__\": null, \"__rerun_remap_job_id__\": null}",
+            "tool_version": null,
+            "type": "tool",
+            "uuid": "aedf27ce-e28f-4ff8-a951-2627e02b2778",
+            "workflow_outputs": [
+                {
+                    "label": null,
+                    "output_name": "fn_out",
+                    "uuid": "feeb93bf-199a-4b48-ac22-abe9535f17b5"
+                }
+            ]
+        }
+    },
+    "tags": [],
+    "uuid": "6f9d4237-ce1f-4150-9460-895ff79b24d0",
+    "version": 3
+}
