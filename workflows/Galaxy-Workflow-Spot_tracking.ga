@@ -2,7 +2,7 @@
     "a_galaxy_workflow": "true",
     "annotation": "",
     "format-version": "0.1",
-    "name": "Particle tracking",
+    "name": "Spot tracking",
     "steps": {
         "0": {
             "annotation": "",
@@ -45,12 +45,12 @@
             "tool_state": "{\"bndy\": \"10\", \"fn_in\": {\"__class__\": \"RuntimeValue\"}, \"frame_1st\": \"1\", \"frame_end\": \"0\", \"ssig\": \"1.0\", \"thres\": \"10.0\", \"typ_intens\": \"smoothed\", \"__page__\": null, \"__rerun_remap_job_id__\": null}",
             "tool_version": null,
             "type": "tool",
-            "uuid": "e1da7735-bf10-473f-bf68-aa99f54da210",
+            "uuid": "92e040dc-cbd8-46c6-83a0-8421ab0e6436",
             "workflow_outputs": [
                 {
                     "label": null,
                     "output_name": "fn_out",
-                    "uuid": "4c77a0d5-d2f2-4a90-8e35-4988dc7cce85"
+                    "uuid": "a8baf712-1a95-4a16-808d-615addd911ca"
                 }
             ]
         },
@@ -95,17 +95,17 @@
             "tool_state": "{\"fn_in\": {\"__class__\": \"ConnectedValue\"}, \"minlen\": \"50.0\", \"nbpx\": \"6\", \"thres\": \"25.0\", \"__page__\": null, \"__rerun_remap_job_id__\": null}",
             "tool_version": null,
             "type": "tool",
-            "uuid": "aedf27ce-e28f-4ff8-a951-2627e02b2778",
+            "uuid": "3fd1174a-4cf7-4629-8bb7-f301ddc8ef35",
             "workflow_outputs": [
                 {
                     "label": null,
                     "output_name": "fn_out",
-                    "uuid": "feeb93bf-199a-4b48-ac22-abe9535f17b5"
+                    "uuid": "b75b13a5-e923-4774-94e4-6d8df9baeb10"
                 }
             ]
         }
     },
     "tags": [],
-    "uuid": "6f9d4237-ce1f-4150-9460-895ff79b24d0",
-    "version": 3
+    "uuid": "967e6f2a-7b0f-4ba2-a1f6-a9d564e8dc46",
+    "version": 4
 }
