@@ -52,20 +52,26 @@
         <test>
             <param name="im1" value="mask1.tif"/>
             <param name="im2" value="mask1r.tif"/>
-            <param name="method_option.method" value="coloc_vis"/>
+            <conditional name="method_option">
+                <param name="method" value="coloc_vis"/>
+            </conditional>
             <output name="out" value="test1.tif" ftype="tiff" compare="sim_size" delta_frac="0.1"/>
         </test>
         <test>
             <param name="im1" value="mask1.tif"/>
             <param name="im2" value="mask1r.tif"/>
-            <param name="method_option.method" value="blending"/>
+            <conditional name="method_option">
+                <param name="method" value="blending"/>
+            </conditional>
             <param name="alpha" value="0.3"/>
             <output name="out" value="test2.tif" ftype="tiff" compare="sim_size" delta_frac="0.1"/>
         </test>
         <test>
             <param name="im1" value="sample1.tif"/>
             <param name="im2" value="mask1.tif"/>
-            <param name="method_option.method" value="seg_contour"/>
+            <conditional name="method_option">
+                <param name="method" value="seg_contour"/>
+            </conditional>
             <param name="thickness" value="0.4"/>
             <param name="color" value="#ffaa00"/>
             <param name="show_label" value="true"/>
