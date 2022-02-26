@@ -10,7 +10,7 @@
     <![CDATA[
         python '$__tool_directory__/overlay_images.py'
         '$im1' '$im2' ./output.tif
-        --method '$methpod_option.method'
+        --method '$method_option.method'
         #if $method_option.method == 'blending'
             --alpha '$alpha'
         #elif $method_option.method == 'seg_contour'
@@ -21,7 +21,7 @@
     ]]>
     </command>
     <inputs>
-        <conditional name="methpod_option">
+        <conditional name="method_option">
             <param name="method" type="select" label="How to visualize the overlay?">
                 <option value="coloc_vis" selected="True">Colocalization</option>
                 <option value="blending">Blending</option>
