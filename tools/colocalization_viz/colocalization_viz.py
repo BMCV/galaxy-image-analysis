@@ -1,13 +1,14 @@
-import skimage.io
-import skimage.color
-from skimage import img_as_uint
-from skimage.exposure import equalize_adapthist
-import numpy as np
 import argparse
 import sys
 
+import numpy as np
+import skimage.color
+import skimage.io
+from skimage import img_as_uint
+from skimage.exposure import equalize_adapthist
 
-# TODO make importable by python script 
+
+# TODO make importable by python script
 def readImg(path):
     img = skimage.io.imread(path)
 

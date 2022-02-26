@@ -1,4 +1,4 @@
-<tool id="ip_overlay_segmentation" name="Overlay Segmentation Mask" version="0.0.6"> 
+<tool id="ip_overlay_segmentation" name="Overlay Segmentation Mask" version="0.0.7" profile="20.05"> 
     <description>Overlay Segmentation Mask</description>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement> 
@@ -53,8 +53,9 @@
     **What it does**
 
     This tool overlays a segmentation mask over an image.
+
+    Note: This tool is deprecated and may not be supported in future. Please use the tool "Overlay Images" instead.
     </help>
     <citations>
-        <citation type="doi">10.7717/peerj.453</citation>
     </citations>
 </tool>

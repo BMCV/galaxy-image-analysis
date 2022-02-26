@@ -1,20 +1,17 @@
 import argparse
-import sys
-import os
 
 import matplotlib
-matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-
-#TODO make importable by python script
-
 import skimage.io
-import skimage.measure 
+import skimage.measure
+
+matplotlib.use('Agg')
+# TODO make importable by python script
 
 parser = argparse.ArgumentParser()
 parser.add_argument('input_file', type=argparse.FileType('r'), help='input file')
 parser.add_argument('mask_file', type=argparse.FileType('r'), help='mask file')
-parser.add_argument('out_file', type=str, help='out file (PNG)') # file would be created immediately with argparse.FileType('w') s.t. file cannot be renamed on galaxy
+parser.add_argument('out_file', type=str, help='out file (PNG)')  # file would be created immediately with argparse.FileType('w') s.t. file cannot be renamed on galaxy
 parser.add_argument('--grey', dest='greyscale', action='store_true', help='image is greyscale')
 parser.add_argument('--label', dest='label', action='store_true', help='plot label')
 parser.add_argument('--label_color', dest='label_color', default='#FFFF00', help='label color')

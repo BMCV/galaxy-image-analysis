@@ -1,7 +1,7 @@
 categories:
   - Imaging
 description: Overlay segmentation mask
-long_description: Overlay segmentation mask 
+long_description: This tool is deprecated.
 name: overlay_segmentation_mask
 owner: imgteam
 homepage_url: https://github.com/bmcv
