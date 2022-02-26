@@ -75,7 +75,7 @@
             <param name="thickness" value="0.4"/>
             <param name="color" value="#ffaa00"/>
             <param name="show_label" value="true"/>
-            <output name="out" value="test3.tif" ftype="tiff" compare="sim_size" delta_frac="0.1"/>
+            <output name="out" value="test3.tif" ftype="tiff" compare="sim_size" delta_frac="0.2"/>
         </test>
     </tests>
     <help>
