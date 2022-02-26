@@ -13,13 +13,10 @@
         --method '$methpod_option.method'
         #if $method_option.method == 'blending'
             --alpha '$alpha'
-        #end if
-        #if $method_option.method == 'seg_contour'
+        #elif $method_option.method == 'seg_contour'
             --thickness '$thickness'
             --color '$color'
-            #if $show_label
-            --show_label
-            #end if
+            $show_label
         #end if
     ]]>
     </command>
@@ -44,7 +41,7 @@
                 <param name="im2" type="data" format="tiff,png" label="Label image" />
                 <param name="thickness" type="float" value="0.3" label="Contour thickness" />
                 <param name="color" type="color" value="#ff0000" label="Contour color"/>
-                <param name="show_label" type="boolean" checked='false' label="Show labels" />
+                <param argument="--show_label" type="boolean" checked='false' truevalue="--show_label" falsevale="" label="Show labels" />
             </when>
         </conditional>
     </inputs>
