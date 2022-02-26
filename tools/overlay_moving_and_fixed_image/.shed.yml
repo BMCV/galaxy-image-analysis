@@ -1,7 +1,7 @@
 categories:
   - Imaging
 description: Overlay moving and fixed image
-long_description: This tool generates an overlay of two images of which one was transformed to match the other.
+long_description: This tool is deprecated.
 name: overlay_moving_and_fixed_image
 owner: imgteam
 homepage_url: https://github.com/bmcv

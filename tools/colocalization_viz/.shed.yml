@@ -1,7 +1,7 @@
 categories:
   - Imaging
 description: Colocalization Visualization
-long_description: Visualizes colocalization
+long_description: This tool is deprecated.
 name: colocalization_viz
 owner: imgteam
 homepage_url: https://github.com/bmcv

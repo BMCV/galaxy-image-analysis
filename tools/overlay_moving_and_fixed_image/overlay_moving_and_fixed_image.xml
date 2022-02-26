@@ -1,4 +1,4 @@
-<tool id="ip_viz_overlay_moving_and_fixed_image" name="Overlay" version="0.0.2">
+<tool id="ip_viz_overlay_moving_and_fixed_image" name="Overlay" version="0.0.3" profile="20.05">
     <description>moving and fixed image</description>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
@@ -42,6 +42,8 @@
     **What it does**
 
     This tool performs an overlay of two images of which one was transformed to match the other.
+
+    Note: This tool is deprecated and may not be supported in future. Please use the tools "Projective Transformation" and "Overlay Images" instead.
     </help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>

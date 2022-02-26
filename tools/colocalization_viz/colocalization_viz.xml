@@ -1,4 +1,4 @@
-<tool id="ip_colocalization" name="Colocalization" version="0.0.8">
+<tool id="ip_colocalization" name="Colocalization" version="0.0.9" profile="20.05">
     <description>of two segmentation maps</description>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
@@ -29,6 +29,8 @@
     **What it does**
 
     This tool overlays two segmentation maps and displays the colocalization results.
+
+    Note: This tool is deprecated and may not be supported in future. Please use the tool "Overlay Images" instead.
     </help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
