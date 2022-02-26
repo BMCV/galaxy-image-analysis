@@ -41,7 +41,7 @@
                 <param name="im2" type="data" format="tiff,png" label="Label image" />
                 <param name="thickness" type="float" value="0.3" label="Contour thickness" />
                 <param name="color" type="color" value="#ff0000" label="Contour color"/>
-                <param argument="--show_label" type="boolean" checked='false' truevalue="--show_label" falsevale="" label="Show labels" />
+                <param argument="--show_label" type="boolean" checked='false' truevalue="--show_label" falsevalue="" label="Show labels" />
             </when>
         </conditional>
     </inputs>
