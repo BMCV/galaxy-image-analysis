@@ -17,7 +17,9 @@
         #if $method_option.method == 'seg_contour'
             --thickness '$thickness'
             --color '$color'
-            --show_label '$show_label'
+            #if $show_label
+            --show_label
+            #end if
         #end if
     ]]>
     </command>
