@@ -11,9 +11,9 @@
         python '$__tool_directory__/overlay_images.py'
         '$im1' '$im2' ./output.tif
         --method '$method_option.method'
-        #if $method_option.method == 'blending'
+        #if '$method_option.method' == 'blending':
             --alpha '$alpha'
-        #elif $method_option.method == 'seg_contour'
+        #elif '$method_option.method' == 'seg_contour':
             --thickness '$thickness'
             --color '$color'
             $show_label
