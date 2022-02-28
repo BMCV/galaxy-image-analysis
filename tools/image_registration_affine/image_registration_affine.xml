@@ -1,4 +1,4 @@
-<tool id="ip_image_registration" name="Image Registration" version="0.0.2" profile="20.05"> 
+<tool id="ip_image_registration" name="Image Registration" version="0.0.3" profile="20.05"> 
     <description>based on intensity information</description>
     <requirements>
         <requirement type="package" version="0.18.1">scikit-image</requirement>
@@ -22,9 +22,9 @@
         <param name="fn_fixed" type="data" format="tiff,png,jpg" label="Fixed (reference) image" />
         <param name="sigma" type="float" value="3" label="Sigma of Gaussian filter for smoothing input images" />
         <param name="metric" type="select" label="Image similarity metric">
-            <option value="lcc" selected="True">Local cross-correlation</option>
-            <option value="mse">Mean squared error</option>
+            <option value="mse" selected="True">Mean squared error</option>
             <option value="mae">Mean absolute error</option>
+            <option value="lcc">Local cross-correlation</option>
         </param>
     </inputs>
     <outputs>
