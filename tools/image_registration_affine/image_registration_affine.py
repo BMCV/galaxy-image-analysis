@@ -109,6 +109,8 @@ def image_registration(fn_moving, fn_fixed, fn_out, smooth_sigma=3, metric='lcc'
     tmat[0, :] = result.x.take([0, 1, 2])
     tmat[1, :] = result.x.take([3, 4, 5])
 
+    tmat = np.linalg.inv(tmat)
+
     pd.DataFrame(tmat).to_csv(fn_out, header=None, index=False, sep="\t")
 
 

@@ -47,7 +47,6 @@ def warp_coords_batch(coord_map, shape, dtype=np.float64, batch_size=1000000):
 
 
 def transform(moving_fn, fixed_fn, warp_mat, output_fn):
-
     moving = skimage.io.imread(moving_fn)
     nDims = len(moving.shape)
     assert nDims in [2, 3, 4, 5, 6], 'this tool only supports up to 6 dimensions'
@@ -79,8 +78,8 @@ def transform(moving_fn, fixed_fn, warp_mat, output_fn):
     warp_mat = np.array(warp_mat)
     assert warp_mat.shape[0] in [3], 'only 2D image transformaton is supported'
 
-    trans = ProjectiveTransform(matrix=warp_mat)
-    warped_coords = warp_coords_batch(trans, hw_fixed)
+    transI = ProjectiveTransform(matrix=np.linalg.inv(warp_mat))
+    warped_coords = warp_coords_batch(transI, hw_fixed)
 
     if isMulCh or isRGB:
         for i in range(nCh):

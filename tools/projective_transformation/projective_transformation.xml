@@ -1,4 +1,4 @@
-<tool id="ip_projective_transformation" name="Projective Transformation" version="0.1.1" profile="20.05"> 
+<tool id="ip_projective_transformation" name="Projective Transformation" version="0.1.2" profile="20.05"> 
     <description>of 2D images</description>
     <requirements>
         <requirement type="package" version="0.18.1">scikit-image</requirement>
