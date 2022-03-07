@@ -2,45 +2,13 @@
     "a_galaxy_workflow": "true",
     "annotation": "",
     "format-version": "0.1",
-    "name": "Registration of images based on landmarks using least squares",
+    "name": "Registration of images based on landmarks",
     "steps": {
         "0": {
             "annotation": "",
             "content_id": null,
             "errors": null,
             "id": 0,
-            "input_connections": {},
-            "inputs": [
-                {
-                    "description": "",
-                    "name": "landmarks in reference image"
-                }
-            ],
-            "label": "landmarks in reference image",
-            "name": "Input dataset",
-            "outputs": [],
-            "position": {
-                "bottom": 457.40625,
-                "height": 82.1953125,
-                "left": 564.1953125,
-                "right": 764.1953125,
-                "top": 375.2109375,
-                "width": 200,
-                "x": 564.1953125,
-                "y": 375.2109375
-            },
-            "tool_id": null,
-            "tool_state": "{\"optional\": false}",
-            "tool_version": null,
-            "type": "data_input",
-            "uuid": "6786e622-e470-450d-b1ee-86e319e9e2fe",
-            "workflow_outputs": []
-        },
-        "1": {
-            "annotation": "",
-            "content_id": null,
-            "errors": null,
-            "id": 1,
             "input_connections": {},
             "inputs": [
                 {
@@ -52,25 +20,57 @@
             "name": "Input dataset",
             "outputs": [],
             "position": {
-                "bottom": 558.59375,
+                "bottom": 424.609375,
                 "height": 82.1953125,
-                "left": 562.8828125,
-                "right": 762.8828125,
-                "top": 476.3984375,
+                "left": 348.5390625,
+                "right": 548.5390625,
+                "top": 342.4140625,
                 "width": 200,
-                "x": 562.8828125,
-                "y": 476.3984375
+                "x": 348.5390625,
+                "y": 342.4140625
             },
             "tool_id": null,
             "tool_state": "{\"optional\": false}",
             "tool_version": null,
             "type": "data_input",
-            "uuid": "33ab9953-a55a-40ee-b064-b03eac26db5f",
+            "uuid": "60e0019e-d87f-4d23-854f-3527f9e46cea",
+            "workflow_outputs": []
+        },
+        "1": {
+            "annotation": "",
+            "content_id": null,
+            "errors": null,
+            "id": 1,
+            "input_connections": {},
+            "inputs": [
+                {
+                    "description": "",
+                    "name": "landmarks in reference image"
+                }
+            ],
+            "label": "landmarks in reference image",
+            "name": "Input dataset",
+            "outputs": [],
+            "position": {
+                "bottom": 549.421875,
+                "height": 82.1953125,
+                "left": 349.8515625,
+                "right": 549.8515625,
+                "top": 467.2265625,
+                "width": 200,
+                "x": 349.8515625,
+                "y": 467.2265625
+            },
+            "tool_id": null,
+            "tool_state": "{\"optional\": false}",
+            "tool_version": null,
+            "type": "data_input",
+            "uuid": "fb5de3cb-bcc5-47b8-8884-74b695825653",
             "workflow_outputs": []
         },
         "2": {
             "annotation": "",
-            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/landmark_registration_ls/ip_landmark_registration_ls/0.0.1",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/landmark_registration/ip_landmark_registration/0.0.4",
             "errors": null,
             "id": 2,
             "input_connections": {
@@ -83,7 +83,16 @@
                     "output_name": "output"
                 }
             },
-            "inputs": [],
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool Landmark Registration",
+                    "name": "fn_pts1"
+                },
+                {
+                    "description": "runtime parameter for tool Landmark Registration",
+                    "name": "fn_pts2"
+                }
+            ],
             "label": null,
             "name": "Landmark Registration",
             "outputs": [
@@ -93,42 +102,42 @@
                 }
             ],
             "position": {
-                "bottom": 559.140625,
+                "bottom": 531.9375,
                 "height": 184.7890625,
-                "left": 857.7890625,
-                "right": 1057.7890625,
-                "top": 374.3515625,
+                "left": 647.7265625,
+                "right": 847.7265625,
+                "top": 347.1484375,
                 "width": 200,
-                "x": 857.7890625,
-                "y": 374.3515625
+                "x": 647.7265625,
+                "y": 347.1484375
             },
             "post_job_actions": {},
-            "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/landmark_registration_ls/ip_landmark_registration_ls/0.0.1",
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/landmark_registration/ip_landmark_registration/0.0.4",
             "tool_shed_repository": {
-                "changeset_revision": "2f36165c49fb",
-                "name": "landmark_registration_ls",
+                "changeset_revision": "9ccd642e7ae2",
+                "name": "landmark_registration",
                 "owner": "imgteam",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
-            "tool_state": "{\"fn_pts1\": {\"__class__\": \"ConnectedValue\"}, \"fn_pts2\": {\"__class__\": \"ConnectedValue\"}, \"__page__\": null, \"__rerun_remap_job_id__\": null}",
-            "tool_version": "0.0.1",
+            "tool_state": "{\"algo_option\": {\"algo\": \"ransac\", \"__current_case__\": 0, \"res_thr\": \"2.0\", \"max_iter\": \"100\"}, \"fn_pts1\": {\"__class__\": \"RuntimeValue\"}, \"fn_pts2\": {\"__class__\": \"RuntimeValue\"}, \"__page__\": null, \"__rerun_remap_job_id__\": null}",
+            "tool_version": "0.0.4",
             "type": "tool",
-            "uuid": "3a47361d-6fed-4c82-9933-308e4ebcb691",
+            "uuid": "9b442894-dca6-4445-99f2-ebaf98663fa0",
             "workflow_outputs": [
                 {
                     "label": null,
                     "output_name": "fn_tmat",
-                    "uuid": "fc17f61e-2fc8-4a33-a388-2600c7af9587"
+                    "uuid": "1a16b03b-cb27-46ca-a303-87ce2032ba7a"
                 }
             ]
         },
         "3": {
             "annotation": "",
-            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/projective_transformation/ip_projective_transformation/0.0.4",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/projective_transformation/ip_projective_transformation/0.1.2",
             "errors": null,
             "id": 3,
             "input_connections": {
-                "warp_matrix": {
+                "tmat": {
                     "id": 2,
                     "output_name": "fn_tmat"
                 }
@@ -136,57 +145,57 @@
             "inputs": [
                 {
                     "description": "runtime parameter for tool Projective Transformation",
-                    "name": "fixed_image"
+                    "name": "fixed"
                 },
                 {
                     "description": "runtime parameter for tool Projective Transformation",
-                    "name": "moving_image"
+                    "name": "moving"
                 },
                 {
                     "description": "runtime parameter for tool Projective Transformation",
-                    "name": "warp_matrix"
+                    "name": "tmat"
                 }
             ],
             "label": null,
             "name": "Projective Transformation",
             "outputs": [
                 {
-                    "name": "out",
-                    "type": "png"
+                    "name": "warped",
+                    "type": "input"
                 }
             ],
             "position": {
-                "bottom": 549.7890625,
-                "height": 174.390625,
-                "left": 1157.3203125,
-                "right": 1357.3203125,
-                "top": 375.3984375,
+                "bottom": 547.6015625,
+                "height": 215.1875,
+                "left": 918.9765625,
+                "right": 1118.9765625,
+                "top": 332.4140625,
                 "width": 200,
-                "x": 1157.3203125,
-                "y": 375.3984375
+                "x": 918.9765625,
+                "y": 332.4140625
             },
             "post_job_actions": {},
-            "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/projective_transformation/ip_projective_transformation/0.0.4",
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/projective_transformation/ip_projective_transformation/0.1.2",
             "tool_shed_repository": {
-                "changeset_revision": "974cf4357707",
+                "changeset_revision": "37b079c98c38",
                 "name": "projective_transformation",
                 "owner": "imgteam",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
-            "tool_state": "{\"fixed_image\": {\"__class__\": \"RuntimeValue\"}, \"moving_image\": {\"__class__\": \"RuntimeValue\"}, \"warp_matrix\": {\"__class__\": \"RuntimeValue\"}, \"__page__\": null, \"__rerun_remap_job_id__\": null}",
-            "tool_version": "0.0.4",
+            "tool_state": "{\"fixed\": {\"__class__\": \"RuntimeValue\"}, \"moving\": {\"__class__\": \"RuntimeValue\"}, \"tmat\": {\"__class__\": \"RuntimeValue\"}, \"__page__\": null, \"__rerun_remap_job_id__\": null}",
+            "tool_version": "0.1.2",
             "type": "tool",
-            "uuid": "dd04a6cf-209c-414b-9fed-044295088e24",
+            "uuid": "d78cd9d9-44b7-44db-afb0-8c045a40a3f6",
             "workflow_outputs": [
                 {
                     "label": null,
-                    "output_name": "out",
-                    "uuid": "a702d011-c9f2-40a0-97af-dd76c1819528"
+                    "output_name": "warped",
+                    "uuid": "4e1aeb63-7678-4d3a-8b62-c3a91043db1f"
                 }
             ]
         }
     },
     "tags": [],
-    "uuid": "ee39957a-9112-4f2a-adc4-e5611572a770",
-    "version": 7
+    "uuid": "3bedfbd4-5591-47e3-9840-4bc1e9d8d419",
+    "version": 19
 }

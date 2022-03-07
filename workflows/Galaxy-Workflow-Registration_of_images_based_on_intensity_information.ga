@@ -20,14 +20,14 @@
             "name": "Input dataset",
             "outputs": [],
             "position": {
-                "bottom": 267.703125,
-                "height": 82.1953125,
-                "left": 603.703125,
-                "right": 803.703125,
-                "top": 185.5078125,
-                "width": 200,
-                "x": 603.703125,
-                "y": 185.5078125
+                "bottom": 322.0980415344238,
+                "height": 65.75624084472656,
+                "left": 554.3593597412109,
+                "right": 714.3593597412109,
+                "top": 256.34180068969727,
+                "width": 160,
+                "x": 554.3593597412109,
+                "y": 256.34180068969727
             },
             "tool_id": null,
             "tool_state": "{\"optional\": false}",
@@ -52,14 +52,14 @@
             "name": "Input dataset",
             "outputs": [],
             "position": {
-                "bottom": 809.359375,
-                "height": 82.1953125,
-                "left": 604.046875,
-                "right": 804.046875,
-                "top": 727.1640625,
-                "width": 200,
-                "x": 604.046875,
-                "y": 727.1640625
+                "bottom": 863.7542724609375,
+                "height": 65.7562255859375,
+                "left": 554.7031402587891,
+                "right": 714.7031402587891,
+                "top": 797.998046875,
+                "width": 160,
+                "x": 554.7031402587891,
+                "y": 797.998046875
             },
             "tool_id": null,
             "tool_state": "{\"optional\": false}",
@@ -70,7 +70,7 @@
         },
         "2": {
             "annotation": "",
-            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/image_registration_affine/ip_image_registration/0.0.1",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/image_registration_affine/ip_image_registration/0.0.3",
             "errors": null,
             "id": 2,
             "input_connections": {
@@ -102,50 +102,50 @@
                 }
             ],
             "position": {
-                "bottom": 565.515625,
-                "height": 143.9921875,
-                "left": 792.40625,
-                "right": 992.40625,
-                "top": 421.5234375,
-                "width": 200,
-                "x": 792.40625,
-                "y": 421.5234375
+                "bottom": 607.5589828491211,
+                "height": 115.19375610351562,
+                "left": 743.0546569824219,
+                "right": 903.0546569824219,
+                "top": 492.36522674560547,
+                "width": 160,
+                "x": 743.0546569824219,
+                "y": 492.36522674560547
             },
             "post_job_actions": {},
-            "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/image_registration_affine/ip_image_registration/0.0.1",
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/image_registration_affine/ip_image_registration/0.0.3",
             "tool_shed_repository": {
-                "changeset_revision": "e34222a620d4",
+                "changeset_revision": "77dc68af2b40",
                 "name": "image_registration_affine",
                 "owner": "imgteam",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
-            "tool_state": "{\"fn_fixed\": {\"__class__\": \"RuntimeValue\"}, \"fn_moving\": {\"__class__\": \"RuntimeValue\"}, \"__page__\": null, \"__rerun_remap_job_id__\": null}",
-            "tool_version": "0.0.1",
+            "tool_state": "{\"fn_fixed\": {\"__class__\": \"RuntimeValue\"}, \"fn_moving\": {\"__class__\": \"RuntimeValue\"}, \"metric\": \"mse\", \"sigma\": \"3.0\", \"__page__\": null, \"__rerun_remap_job_id__\": null}",
+            "tool_version": "0.0.3",
             "type": "tool",
             "uuid": "75a8ac98-b71c-45bf-b379-d5c9f86b44c2",
             "workflow_outputs": [
                 {
                     "label": null,
                     "output_name": "fn_tmat",
-                    "uuid": "48c092eb-f8ce-427d-bf95-1e654e5187ce"
+                    "uuid": "7339f013-5261-48c2-8b25-9d152c943bd1"
                 }
             ]
         },
         "3": {
             "annotation": "",
-            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/projective_transformation/ip_projective_transformation/0.0.4",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/projective_transformation/ip_projective_transformation/0.1.2",
             "errors": null,
             "id": 3,
             "input_connections": {
-                "fixed_image": {
+                "fixed": {
                     "id": 1,
                     "output_name": "output"
                 },
-                "moving_image": {
+                "moving": {
                     "id": 0,
                     "output_name": "output"
                 },
-                "warp_matrix": {
+                "tmat": {
                     "id": 2,
                     "output_name": "fn_tmat"
                 }
@@ -153,57 +153,57 @@
             "inputs": [
                 {
                     "description": "runtime parameter for tool Projective Transformation",
-                    "name": "fixed_image"
+                    "name": "fixed"
                 },
                 {
                     "description": "runtime parameter for tool Projective Transformation",
-                    "name": "moving_image"
+                    "name": "moving"
                 },
                 {
                     "description": "runtime parameter for tool Projective Transformation",
-                    "name": "warp_matrix"
+                    "name": "tmat"
                 }
             ],
             "label": null,
             "name": "Projective Transformation",
             "outputs": [
                 {
-                    "name": "out",
-                    "type": "png"
+                    "name": "warped",
+                    "type": "input"
                 }
             ],
             "position": {
-                "bottom": 582.8828125,
-                "height": 174.390625,
-                "left": 1128.40625,
-                "right": 1328.40625,
-                "top": 408.4921875,
-                "width": 200,
-                "x": 1128.40625,
-                "y": 408.4921875
+                "bottom": 651.4839859008789,
+                "height": 172.14999389648438,
+                "left": 1079.0625,
+                "right": 1239.0625,
+                "top": 479.33399200439453,
+                "width": 160,
+                "x": 1079.0625,
+                "y": 479.33399200439453
             },
             "post_job_actions": {},
-            "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/projective_transformation/ip_projective_transformation/0.0.4",
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/projective_transformation/ip_projective_transformation/0.1.2",
             "tool_shed_repository": {
-                "changeset_revision": "974cf4357707",
+                "changeset_revision": "37b079c98c38",
                 "name": "projective_transformation",
                 "owner": "imgteam",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
-            "tool_state": "{\"fixed_image\": {\"__class__\": \"RuntimeValue\"}, \"moving_image\": {\"__class__\": \"RuntimeValue\"}, \"warp_matrix\": {\"__class__\": \"RuntimeValue\"}, \"__page__\": null, \"__rerun_remap_job_id__\": null}",
-            "tool_version": "0.0.4",
+            "tool_state": "{\"fixed\": {\"__class__\": \"RuntimeValue\"}, \"moving\": {\"__class__\": \"RuntimeValue\"}, \"tmat\": {\"__class__\": \"RuntimeValue\"}, \"__page__\": null, \"__rerun_remap_job_id__\": null}",
+            "tool_version": "0.1.2",
             "type": "tool",
             "uuid": "b90cbf09-3b69-4a5a-977b-1c974e3ae08b",
             "workflow_outputs": [
                 {
                     "label": null,
-                    "output_name": "out",
-                    "uuid": "cf5aa6d8-9382-43e2-8b3b-d1604910a55b"
+                    "output_name": "warped",
+                    "uuid": "5726e9e6-4af8-409e-ae42-305fd638e2fb"
                 }
             ]
         }
     },
     "tags": [],
-    "uuid": "c1eb222b-b1c5-47a7-92c0-f9821ce218fc",
-    "version": 9
+    "uuid": "ec5943f8-395f-44de-865f-0a62b17f562f",
+    "version": 14
 }
