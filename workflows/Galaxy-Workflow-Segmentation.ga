@@ -15,14 +15,14 @@
             "name": "Input dataset",
             "outputs": [],
             "position": {
-                "bottom": 429.1875,
-                "height": 82.1953125,
-                "left": 479,
-                "right": 679,
-                "top": 346.9921875,
-                "width": 200,
-                "x": 479,
-                "y": 346.9921875
+                "bottom": 504.4496078491211,
+                "height": 65.75625610351562,
+                "left": 386.09375,
+                "right": 546.09375,
+                "top": 438.69335174560547,
+                "width": 160,
+                "x": 386.09375,
+                "y": 438.69335174560547
             },
             "tool_id": null,
             "tool_state": "{\"optional\": false}",
@@ -57,14 +57,14 @@
                 }
             ],
             "position": {
-                "bottom": 459.0859375,
-                "height": 113.59375,
-                "left": 735,
-                "right": 935,
-                "top": 345.4921875,
-                "width": 200,
-                "x": 735,
-                "y": 345.4921875
+                "bottom": 712.5683441162109,
+                "height": 90.875,
+                "left": 606.8437576293945,
+                "right": 766.8437271118164,
+                "top": 621.6933441162109,
+                "width": 159.99996948242188,
+                "x": 606.8437576293945,
+                "y": 621.6933441162109
             },
             "post_job_actions": {},
             "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/2d_auto_threshold/ip_threshold/0.0.4",
@@ -75,14 +75,14 @@
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
             "tool_state": "{\"dark_background\": \"true\", \"input\": {\"__class__\": \"RuntimeValue\"}, \"thresh_type\": \"otsu\", \"__page__\": null, \"__rerun_remap_job_id__\": null}",
-            "tool_version": null,
+            "tool_version": "0.0.4",
             "type": "tool",
             "uuid": "27c174b8-1f52-4631-84e7-9abe2a5c9ab1",
             "workflow_outputs": [
                 {
                     "label": null,
                     "output_name": "output",
-                    "uuid": "0f34367c-098f-4288-bb3c-5ca268dfb385"
+                    "uuid": "7bfb4ed0-4033-43f0-9312-6b5824ee0ee6"
                 }
             ]
         },
@@ -112,14 +112,14 @@
                 }
             ],
             "position": {
-                "bottom": 438.6875,
-                "height": 93.1953125,
-                "left": 996,
-                "right": 1196,
-                "top": 345.4921875,
-                "width": 200,
-                "x": 996,
-                "y": 345.4921875
+                "bottom": 698.4996109008789,
+                "height": 74.55624389648438,
+                "left": 843.8515472412109,
+                "right": 1003.8515472412109,
+                "top": 623.9433670043945,
+                "width": 160,
+                "x": 843.8515472412109,
+                "y": 623.9433670043945
             },
             "post_job_actions": {},
             "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/2d_split_binaryimage_by_watershed/ip_2d_split_binaryimage_by_watershed/0.0.1",
@@ -130,19 +130,82 @@
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
             "tool_state": "{\"input\": {\"__class__\": \"RuntimeValue\"}, \"min_distance\": \"5\", \"__page__\": null, \"__rerun_remap_job_id__\": null}",
-            "tool_version": null,
+            "tool_version": "0.0.1",
             "type": "tool",
             "uuid": "4f10c70d-0537-4a83-b0c9-b37f495da769",
             "workflow_outputs": [
                 {
                     "label": null,
                     "output_name": "output",
-                    "uuid": "7fb33590-bcc0-4c4d-9561-1c7451becb6e"
+                    "uuid": "d8a299c1-8914-4321-8c61-4587b53d6098"
+                }
+            ]
+        },
+        "3": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/overlay_images/ip_overlay_images/0.0.1",
+            "errors": null,
+            "id": 3,
+            "input_connections": {
+                "method_option|im1": {
+                    "id": 0,
+                    "output_name": "output"
+                },
+                "method_option|im2": {
+                    "id": 2,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool Overlay Images",
+                    "name": "method_option"
+                },
+                {
+                    "description": "runtime parameter for tool Overlay Images",
+                    "name": "method_option"
+                }
+            ],
+            "label": "Visualization",
+            "name": "Overlay Images",
+            "outputs": [
+                {
+                    "name": "out",
+                    "type": "tiff"
+                }
+            ],
+            "position": {
+                "bottom": 551.4418106079102,
+                "height": 115.19375610351562,
+                "left": 1091.1015319824219,
+                "right": 1251.1015319824219,
+                "top": 436.24805450439453,
+                "width": 160,
+                "x": 1091.1015319824219,
+                "y": 436.24805450439453
+            },
+            "post_job_actions": {},
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/overlay_images/ip_overlay_images/0.0.1",
+            "tool_shed_repository": {
+                "changeset_revision": "589af0005df5",
+                "name": "overlay_images",
+                "owner": "imgteam",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"method_option\": {\"method\": \"seg_contour\", \"__current_case__\": 2, \"im1\": {\"__class__\": \"RuntimeValue\"}, \"im2\": {\"__class__\": \"RuntimeValue\"}, \"thickness\": \"0.3\", \"color\": \"#ff0000\", \"show_label\": \"false\"}, \"__page__\": null, \"__rerun_remap_job_id__\": null}",
+            "tool_version": "0.0.1",
+            "type": "tool",
+            "uuid": "78dc9565-b588-43b5-8f78-e3f78f24ac6c",
+            "workflow_outputs": [
+                {
+                    "label": null,
+                    "output_name": "out",
+                    "uuid": "6b7be88d-bbc5-4041-9097-1979224e61dd"
                 }
             ]
         }
     },
     "tags": [],
-    "uuid": "c98668fa-d1d8-425e-919e-fce20bf53bc3",
-    "version": 6
+    "uuid": "c4b9f346-c41a-48f0-a83d-05ce563a9682",
+    "version": 7
 }
