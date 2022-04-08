@@ -58,5 +58,6 @@
     This tool detects spots and measures the intensities in a 2D image (sequence).
     </help>
     <citations>
+        <citation type="doi">10.1097/j.pain.0000000000002642</citation>
     </citations>
 </tool>
