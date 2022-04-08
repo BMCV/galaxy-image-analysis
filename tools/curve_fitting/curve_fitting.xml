@@ -1,4 +1,4 @@
-<tool id="ip_curve_fitting" name="Curve Fitting" version="0.0.1" profile="20.05"> 
+<tool id="ip_curve_fitting" name="Curve Fitting" version="0.0.2" profile="20.05"> 
     <description>to data points using (1st- or 2nd-degree) polynomial function</description>
     <requirements>
         <requirement type="package" version="1.20.2">numpy</requirement>
