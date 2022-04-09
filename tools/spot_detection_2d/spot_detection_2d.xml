@@ -1,4 +1,4 @@
-<tool id="ip_spot_detection_2d" name="Spot Detection" version="0.0.2" profile="20.05"> 
+<tool id="ip_spot_detection_2d" name="Spot Detection" version="0.0.3" profile="20.05"> 
     <description>in a 2D image (sequence)</description>
     <requirements>
         <requirement type="package" version="2.9.0">imageio</requirement>
@@ -58,5 +58,6 @@
     This tool detects spots and measures the intensities in a 2D image (sequence).
     </help>
     <citations>
+        <citation type="doi">10.1097/j.pain.0000000000002642</citation>
     </citations>
 </tool>

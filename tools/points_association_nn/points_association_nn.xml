@@ -1,4 +1,4 @@
-<tool id="ip_points_association_nn" name="Association of points" version="0.0.2" profile="20.05"> 
+<tool id="ip_points_association_nn" name="Association of points" version="0.0.3" profile="20.05"> 
     <description>in consecutive frames (slices) using the nearest neighbor algorithm</description>
     <requirements>
         <requirement type="package" version="1.20.2">numpy</requirement>
@@ -39,4 +39,7 @@
 
     This tool associates points in consecutive frames (slices) using the nearest neighbor algorithm.
     </help>
+    <citations>
+        <citation type="doi">10.1097/j.pain.0000000000002642</citation>
+    </citations>
 </tool>
