@@ -23,7 +23,7 @@
         </test>
         <test>
             <param name="input" value="sample_3d.tif"/>
-            <output name="output" value="result_3d.tif" ftype="tiff" compare="sim_size"/>
+            <output name="output" value="result_3d.tif" ftype="tiff"/>
         </test>
     </tests>
     <help>

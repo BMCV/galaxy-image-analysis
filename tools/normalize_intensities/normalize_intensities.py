@@ -4,7 +4,7 @@ import skimage.io
 
 
 def normalize(input_file, output_file, eps=1e-10):
-    img_in = skimage.io.imread(input_file,  plugin='tifffile')
+    img_in = skimage.io.imread(input_file, plugin='tifffile')
     out_img = (img_in - img_in.mean()) / (img_in.std() + eps)
     skimage.io.imsave(output_file, out_img, plugin='tifffile')
 
