@@ -1,0 +1,36 @@
+<tool id="ip_normalize_intensities" name="Normalize Intensities" version="0.0.1" profile="20.05">
+    <description>of an image</description>
+    <requirements>
+        <requirement type="package" version="0.19.2">scikit-image</requirement>
+    </requirements>
+    <command detect_errors="aggressive">
+    <![CDATA[
+        python '$__tool_directory__/normalize_intensities.py'
+        '$input'
+        ./output.tif
+    ]]>
+    </command>
+    <inputs>
+        <param name="input" type="data" format="tiff,png" label="Input image" />
+    </inputs>
+    <outputs>
+        <data format="tiff" name="output" from_work_dir="output.tif" />
+    </outputs>
+    <tests>
+        <test>
+            <param name="input" value="sample_2d.tif"/>
+            <output name="output" value="result_2d.tif" ftype="tiff"/>
+        </test>
+        <test>
+            <param name="input" value="sample_3d.tif"/>
+            <output name="output" value="result_3d.tif" ftype="tiff" compare="sim_size"/>
+        </test>
+    </tests>
+    <help>
+    **What it does**
+
+    This tool normalizes the intensities of an image.
+    </help>
+    <citations>
+    </citations>
+</tool>
