@@ -14,12 +14,12 @@
         '$fn_out'
         #if '$algo_option.algo' == 'pwlt':
             --pwlt '$fn_ptsmov'
-        #end if
-        #if '$algo_option.algo' == 'ransac':
+        #elif '$algo_option.algo' == 'ransac':
             --res_th '$res_thr'
             --max_ite '$max_iter'
         #end if
-]]></command>
+    ]]>
+    </command>
     <inputs>
         <param name="fn_lmkmov" type="data" format="tabular" label="Coordinates of moving landmarks (tsv file)" />
         <param name="fn_lmkfix" type="data" format="tabular" label="Coordinates of fixed landmarks (tsv file)" />
