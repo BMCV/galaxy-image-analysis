@@ -13,11 +13,11 @@
         '$fn_lmkfix'
         '$fn_out'
         #if '$algo_option.algo' == 'pwlt':
-            --pwlt $algo_option.fn_ptsmov
+            --pwlt '$fn_ptsmov'
         #end if
         #if '$algo_option.algo' == 'ransac':
-            --res_th $algo_option.res_thr
-            --max_ite $algo_option.max_iter
+            --res_th '$res_thr'
+            --max_ite '$max_iter'
         #end if
 ]]></command>
     <inputs>
