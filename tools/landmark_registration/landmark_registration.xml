@@ -56,9 +56,9 @@
             <param name="fn_lmkfix" value="points_fixed.tsv"/>
             <conditional name="algo_option">
                 <param name="algo" value="ransac"/>
-                <param name="res_thr" value="2"/>
-                <param name="max_iter" value="100"/>
             </conditional>
+            <param name="res_thr" value="2"/>
+            <param name="max_iter" value="100"/>
             <output name="fn_out" value="tmat.tsv" ftype="tabular" compare="diff" lines_diff="6"/>
         </test>
         <test>
@@ -66,8 +66,8 @@
             <param name="fn_lmkfix" value="lmk_fix.tsv"/>
             <conditional name="algo_option">
                 <param name="algo" value="pwlt"/>
-                <param name="fn_ptsmov" value="points.tsv"/>
             </conditional>
+            <param name="fn_ptsmov" value="points.tsv"/>
             <output name="fn_out" value="points_pwlt.tsv" ftype="tabular"/>
         </test>
     </tests>
