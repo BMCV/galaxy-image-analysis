@@ -30,12 +30,12 @@
                 <option value="pwlt" selected="True">Piecewise Affine Transformation</option>
             </param>
             <when value="ransac">
-                <param name="res_thr" type="float" value="2.0" label="Maximum distance for a data point to be classified as an inlier." />
-                <param name="max_iter" type="integer" value="100" label="Maximum number of iterations for random sample selection." />
+                <param argument="--res_thr" type="float" value="2.0" label="Maximum distance for a data point to be classified as an inlier." />
+                <param argument="--max_iter" type="integer" value="100" label="Maximum number of iterations for random sample selection." />
             </when>
             <when value="ls"></when>
             <when value="pwlt">
-                <param name="fn_ptsmov" type="data" format="tabular" label="Coordinates of points to be transformed (tsv file)" />
+                <param argument="--pwlt" name="fn_ptsmov" type="data" format="tabular" label="Coordinates of points to be transformed (tsv file)" />
             </when>
         </conditional>
     </inputs>
