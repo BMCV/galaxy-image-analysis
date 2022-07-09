@@ -64,9 +64,7 @@
         <test>
             <param name="fn_lmkmov" value="lmk_mov.tsv"/>
             <param name="fn_lmkfix" value="lmk_fix.tsv"/>
-            <conditional name="algo_option">
-                <param name="algo" value="pwlt"/>
-            </conditional>
+            <param name="algo_option.algo" value="pwlt"/>
             <param name="fn_ptsmov" value="points.tsv"/>
             <output name="fn_out" value="points_pwlt.tsv" ftype="tabular"/>
         </test>
