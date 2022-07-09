@@ -93,7 +93,7 @@ if __name__ == "__main__":
     parser.add_argument("fn_lmkmov", help="Coordinates of moving landmarks (tsv file)")
     parser.add_argument("fn_lmkfix", help="Coordinates of fixed landmarks (tsv file)")
     parser.add_argument("fn_out", help="Path to the output")
-    parser.add_argument("fn_ptsmov", help="Coordinates of points to be transformed (tsv file)")
+    parser.add_argument("--pwlt", dest="fn_ptsmov", help="Coordinates of points to be transformed (tsv file)")
     parser.add_argument("--res_th", dest="res_th", type=float, help="Maximum distance for a data point to be classified as an inlier")
     parser.add_argument("--max_ite", dest="max_ite", type=int, help="Maximum number of iterations for random sample selection")
     args = parser.parse_args()
