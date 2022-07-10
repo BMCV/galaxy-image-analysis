@@ -13,10 +13,10 @@
         '$fn_lmkfix'
         '$fn_out'
         #if $algo_option.algo == 'pwlt':
-            --pwlt '$fn_ptsmov'
+        --pwlt '$fn_ptsmov'
         #elif $algo_option.algo == 'ransac':
-            --res_th $res_th
-            --max_ite $max_ite
+        --res_th $res_th
+        --max_ite $max_ite
         #end if
     ]]>
     </command>
@@ -30,12 +30,12 @@
                 <option value="pwlt" selected="True">Piecewise Affine Transformation</option>
             </param>
             <when value="ransac">
-                <param argument="--res_th" type="float" value="2.0" label="Maximum distance for a data point to be classified as an inlier." />
-                <param argument="--max_ite" type="integer" value="100" label="Maximum number of iterations for random sample selection." />
+                <param name="res_th" type="float" value="2.0" label="Maximum distance for a data point to be classified as an inlier." />
+                <param name="max_ite" type="integer" value="100" label="Maximum number of iterations for random sample selection." />
             </when>
             <when value="ls"></when>
             <when value="pwlt">
-                <param argument="--pwlt" name="fn_ptsmov" type="data" format="tabular" label="Coordinates of points to be transformed (tsv file)" />
+                <param name="fn_ptsmov" type="data" format="tabular" label="Coordinates of points to be transformed (tsv file)" />
             </when>
         </conditional>
     </inputs>
