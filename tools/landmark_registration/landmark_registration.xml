@@ -12,9 +12,9 @@
         '$fn_lmkmov'
         '$fn_lmkfix'
         '$fn_out'
-        #if $algo_option.algo == 'pwlt':
+        #if $algo_option.algo == 'pwlt'
         --pwlt '$fn_ptsmov'
-        #elif $algo_option.algo == 'ransac':
+        #elif $algo_option.algo == 'ransac'
         --res_th $res_th
         --max_ite $max_ite
         #end if
@@ -33,7 +33,6 @@
                 <param name="res_th" type="float" value="2.0" label="Maximum distance for a data point to be classified as an inlier." />
                 <param name="max_ite" type="integer" value="100" label="Maximum number of iterations for random sample selection." />
             </when>
-            <when value="ls"></when>
             <when value="pwlt">
                 <param name="fn_ptsmov" type="data" format="tabular" label="Coordinates of points to be transformed (tsv file)" />
             </when>
@@ -46,17 +45,13 @@
         <test>
             <param name="fn_lmkmov" value="points_moving.tsv"/>
             <param name="fn_lmkfix" value="points_fixed.tsv"/>
-            <conditional name="algo_option">
-                <param name="algo" value="ls"/>
-            </conditional>
+            <param name="algo_option.algo" value="ls"/>
             <output name="fn_out" value="tmat.tsv" ftype="tabular" compare="diff" lines_diff="6"/>
         </test>
         <test>
             <param name="fn_lmkmov" value="points_moving.tsv"/>
             <param name="fn_lmkfix" value="points_fixed.tsv"/>
-            <conditional name="algo_option">
-                <param name="algo" value="ransac"/>
-            </conditional>
+            <param name="algo_option.algo" value="ransac"/>
             <param name="res_th" value="2"/>
             <param name="max_ite" value="100"/>
             <output name="fn_out" value="tmat.tsv" ftype="tabular" compare="diff" lines_diff="6"/>
