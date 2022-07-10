@@ -12,9 +12,9 @@
         '$fn_lmkmov'
         '$fn_lmkfix'
         '$fn_out'
-        #if '$algo_option.algo' == 'pwlt':
+        #if $algo_option.algo == 'pwlt':
             --pwlt '$fn_ptsmov'
-        #elif '$algo_option.algo' == 'ransac':
+        #elif $algo_option.algo == 'ransac':
             --res_th '$res_thr'
             --max_ite '$max_iter'
         #end if
