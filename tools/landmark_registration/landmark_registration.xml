@@ -12,11 +12,11 @@
         '$fn_lmkmov'
         '$fn_lmkfix'
         '$fn_out'
-        #if $algo_option['algo'] == 'pwlt'
-        --pwlt '$fn_ptsmov'
-        #elif $algo_option['algo'] == 'ransac'
-        --res_th $res_th
-        --max_ite $max_ite
+        #if $algo_option.algo == "pwat"
+        --pwlt '$algo_option.fn_ptsmov'
+        #elif $algo_option.algo == "ransac"
+        --res_th $algo_option.res_th
+        --max_ite $algo_option.max_ite
         #end if
     ]]>
     </command>
@@ -27,13 +27,14 @@
             <param name="algo" type="select" label="Select the algorithm">
                 <option value="ransac">Affine Transformation (based on RANSAC)</option>
                 <option value="ls">Affine Transformation (based on Least Squares)</option>
-                <option value="pwlt" selected="True">Piecewise Affine Transformation</option>
+                <option value="pwat" selected="True">Piecewise Affine Transformation</option>
             </param>
             <when value="ransac">
                 <param name="res_th" type="float" value="2.0" label="Maximum distance for a data point to be classified as an inlier." />
                 <param name="max_ite" type="integer" value="100" label="Maximum number of iterations for random sample selection." />
             </when>
-            <when value="pwlt">
+            <when value="ls"></when>
+            <when value="pwat">
                 <param name="fn_ptsmov" type="data" format="tabular" label="Coordinates of points to be transformed (tsv file)" />
             </when>
         </conditional>
@@ -45,21 +46,21 @@
         <test>
             <param name="fn_lmkmov" value="points_moving.tsv"/>
             <param name="fn_lmkfix" value="points_fixed.tsv"/>
-            <param name="algo_option.algo" value="ls"/>
+            <param name="algo" value="ls"/>
             <output name="fn_out" value="tmat.tsv" ftype="tabular" compare="diff" lines_diff="6"/>
         </test>
         <test>
             <param name="fn_lmkmov" value="points_moving.tsv"/>
             <param name="fn_lmkfix" value="points_fixed.tsv"/>
-            <param name="algo_option.algo" value="ransac"/>
-            <param name="res_th" value="2"/>
+            <param name="algo" value="ransac"/>
+            <param name="res_th" value="2.0"/>
             <param name="max_ite" value="100"/>
             <output name="fn_out" value="tmat.tsv" ftype="tabular" compare="diff" lines_diff="6"/>
         </test>
         <test>
             <param name="fn_lmkmov" value="lmk_mov.tsv"/>
             <param name="fn_lmkfix" value="lmk_fix.tsv"/>
-            <param name="algo_option.algo" value="pwlt"/>
+            <param name="algo" value="pwat"/>
             <param name="fn_ptsmov" value="points.tsv"/>
             <output name="fn_out" value="points_pwlt.tsv" ftype="tabular"/>
         </test>

@@ -71,7 +71,7 @@ def landmark_registration(pts_f1, pts_f2, out_f, pts_f=None, res_th=None, max_it
         df = pd.DataFrame()
         df['x'] = pts_pwlt[:, 0]
         df['y'] = pts_pwlt[:, 1]
-        df.to_csv(out_f, index=False, sep="\t")
+        df.to_csv(out_f, index=False, sep="\t", float_format='%.1f')
 
     else:
         A = np.zeros((src.size, 6))
