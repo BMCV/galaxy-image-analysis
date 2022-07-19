@@ -68,7 +68,7 @@ def curve_fitting_io(fn_in, fn_out, degree=2, penalty='abs', alpha=0.01):
         seq = data_all[i][:, -1]
         seq_fit = seq.copy()
         idx_valid = ~np.isnan(seq)
-        seq_fit[idx_valid] = curve_fitting(seq[idx_valid], degree=2, penalty='abs')
+        seq_fit[idx_valid] = curve_fitting(seq[idx_valid], degree=degree, penalty=penalty)
         data_all[i] = np.concatenate((data_all[i], seq_fit.reshape(-1, 1)), axis=1)
         if alpha > 0:
             diff = np.concatenate((diff, seq_fit[idx_valid] - seq[idx_valid]))

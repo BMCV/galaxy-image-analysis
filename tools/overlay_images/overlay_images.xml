@@ -1,4 +1,4 @@
-<tool id="ip_overlay_images" name="Overlay Images" version="0.0.1" profile="20.05"> 
+<tool id="ip_overlay_images" name="Overlay Images" version="0.0.2" profile="20.05"> 
     <description>for visualization</description>
     <requirements>
         <requirement type="package" version="0.18.1">scikit-image</requirement> 
@@ -9,14 +9,14 @@
     <command detect_errors="aggressive">
     <![CDATA[
         python '$__tool_directory__/overlay_images.py'
-        '$im1' '$im2' ./output.tif
-        --method '$method_option.method'
-        #if '$method_option.method' == 'blending':
-            --alpha '$alpha'
-        #elif '$method_option.method' == 'seg_contour':
-            --thickness '$thickness'
-            --color '$color'
-            $show_label
+        '$method_option.im1' '$method_option.im2' ./output.tif
+        --method $method_option.method
+        #if $method_option.method == "blending"
+            --alpha $method_option.alpha
+        #elif $method_option.method == "seg_contour"
+            --thickness $method_option.thickness
+            --color '$method_option.colour'
+            $method_option.show_label
         #end if
     ]]>
     </command>
@@ -40,7 +40,7 @@
                 <param name="im1" type="data" format="tiff,png" label="Image" />
                 <param name="im2" type="data" format="tiff,png" label="Label image" />
                 <param name="thickness" type="float" value="0.3" label="Contour thickness" />
-                <param name="color" type="color" value="#ff0000" label="Contour color"/>
+                <param name="colour" type="color" value="#ff0000" label="Contour color"/>
                 <param argument="--show_label" type="boolean" checked='false' truevalue="--show_label" falsevalue="" label="Show labels" />
             </when>
         </conditional>
@@ -52,29 +52,23 @@
         <test>
             <param name="im1" value="mask1.tif"/>
             <param name="im2" value="mask1r.tif"/>
-            <conditional name="method_option">
-                <param name="method" value="coloc_vis"/>
-            </conditional>
+            <param name="method" value="coloc_vis"/>
             <output name="out" value="test1.tif" ftype="tiff" compare="sim_size" delta_frac="0.1"/>
         </test>
         <test>
             <param name="im1" value="mask1.tif"/>
             <param name="im2" value="mask1r.tif"/>
-            <conditional name="method_option">
-                <param name="method" value="blending"/>
-            </conditional>
+            <param name="method" value="blending"/>
             <param name="alpha" value="0.3"/>
             <output name="out" value="test2.tif" ftype="tiff" compare="sim_size" delta_frac="0.1"/>
         </test>
         <test>
             <param name="im1" value="sample1.tif"/>
             <param name="im2" value="mask1.tif"/>
-            <conditional name="method_option">
-                <param name="method" value="seg_contour"/>
-            </conditional>
+            <param name="method" value="seg_contour"/>
             <param name="thickness" value="0.4"/>
-            <param name="color" value="#ffaa00"/>
-            <param name="show_label" value="true"/>
+            <param name="colour" value="#ffaa00"/>
+            <param name="show_label" value="--show_label"/>
             <output name="out" value="test3.tif" ftype="tiff" compare="sim_size" delta="20000" delta_frac="0.2"/>
         </test>
     </tests>
