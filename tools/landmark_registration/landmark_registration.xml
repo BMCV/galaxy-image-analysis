@@ -1,4 +1,4 @@
-<tool id="ip_landmark_registration" name="Landmark Registration" version="0.0.5" profile="20.05">
+<tool id="ip_landmark_registration" name="Landmark Registration" version="0.1.0" profile="20.05">
     <description>estimates the affine transformation matrix or performs piecewise affine transformation</description>
     <requirements>
         <requirement type="package" version="0.18.1">scikit-image</requirement>
@@ -74,6 +74,7 @@
     About the format of landmark/point coordinates in the input TSV table: Columns with header "x" and "y" are for x- and y-coordinate, respectively.
     </help>
     <citations>
+        <citation type="doi">10.3390/cells11152390</citation>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
     </citations>
 </tool>
