@@ -1,34 +1,45 @@
-<tool id="ip_convertimage" name="Convert image" version="0.4"> 
+<tool id="ip_convertimage" name="Convert image" version="6.7.0.5"> 
   <description>Convert image</description>
   <requirements>
-        <requirement type="package" version="5.7.1">bftools</requirement>
+      <requirement type="package" version="6.7.0">bftools</requirement>
+      <container type="docker">quay.io/goeckslab/bftools:6.7.0</container>    
   </requirements>
   <command> 
         <![CDATA[  
         bfconvert  
         #if $series_options['extract'] == 'True'
-        -series $series
+        -series $series_options.series
         #end if
         #if $timepoint_options['extract'] == 'True'
-        -timepoint $timepoint
+        -timepoint $timepoint_options.timepoint
         #end if
         #if $channel_options['extract'] == 'True'
-        -channel $channel
+        -channel $channel_options.channel
         #end if
         #if $z_options['extract'] == 'True'
-        -z $z
+        -z $z_options.z
         #end if
         #if $range_options['extract'] == 'True'
-        -range $range_lower $range_upper
+        -range $range_options.range_lower $range_options.range_upper
         #end if
         #if $crop_options['extract'] == 'True'
-        -crop $crop_x $crop_y $crop_width $crop_height
+        -crop "$crop_options.crop_x,$crop_options.crop_y,$crop_options.crop_width,$crop_options.crop_height"
         #end if
         #if $tile_options['extract'] == 'True'
-        -tilex $tile_x -tiley $tile_y
+        -tilex $tile_options.tile_x -tiley $tile_options.tile_y
         #end if
-        '$input_file' ./res.$out_format  &&
-        mv ./res.$out_format ./result_image
+        #if $pyramid_options['generate'] == 'True'
+        -pyramid-resolutions $pyramid_options.pyramid_resolutions
+        -pyramid-scale $pyramid_options.pyramid_scale
+        #end if
+        $bigtiff
+        $noflat
+        #if $compression != 'False'
+        -compression $compression
+        #end if  
+        '$input_file' './res.$out_format'  &&
+        mv './res.$out_format' './result_image' &&
+        ls -lh
         ]]>
   </command>
   <inputs>
@@ -118,6 +129,26 @@
         <param name="tile_y" type="integer" value="512 " label="Tile height" />
       </when>
     </conditional>
+    <conditional name="pyramid_options">
+      <param label="Pyramid image" name="generate" type="select">
+        <option selected="True" value="True">Generate Pyramid</option>
+        <option  value="False">No Pyramid</option>
+      </param>
+      <when value="True">
+        <param name="pyramid_resolutions" type="integer" value="4" label="Pyramid Resolutions"/>
+        <param name="pyramid_scale" type="integer" value="2" label="Pyramid Scale" />
+      </when>
+    </conditional>
+    <param name="bigtiff" label="Big TIFF" type="boolean" checked="false" truevalue="-bigtiff" falsevalue=""/>
+    <param name="noflat" label="No Flatten" type="boolean" checked="true" truevalue="-noflat" falsevalue=""/>
+    <param label="Compression" name="compression" type="select">
+        <option selected="True" value="False">No Compression</option>
+        <option value="LZW">LZW</option>
+        <option value="JPEG-2000">JPEG-2000</option>
+        <option value="JPEG-2000 Lossy">JPEG-2000 Lossy</option>
+        <option value="JPEG">JPEG</option>
+        <option value="zlib">zlib</option>
+    </param>  
   </inputs>
   <outputs>
     <data format="tiff" name="output" from_work_dir="result_image">
@@ -125,7 +156,7 @@
             <when input="out_format" value="tiff" format="tiff" />
             <when input="out_format" value="png" format="png" />
             <when input="out_format" value="jpg" format="jpg" />
-            <when input="out_format" value="ome.tiff" format="tiff" />
+            <when input="out_format" value="ome.tiff" format="ome.tiff" />
             <when input="out_format" value="jp2" format="jpg" />
             <when input="out_format" value="eps" format="eps" />
             <when input="out_format" value="avi" format="avi" />
@@ -137,6 +168,14 @@
             <param name="input_file" value="input.png" />
             <param name="out_format" value="tiff" />            
             <output name="output" value="res.tiff" ftype="tiff" compare="sim_size"/>
+        </test>
+        <test>
+            <param name="input_file" value="input.png" />
+            <param name="out_format" value="ome.tiff" />
+            <param name="pyramid_options.generate" value="True"/>
+            <param name="pyramid_options.pyramid_resolutions" value="4"/>
+            <param name="pyramid_options.pyramid_scale" value="2"/>
+            <output name="output" value="res.ome.tiff" ftype="ome.tiff" compare="sim_size"/>
         </test>
   </tests>    
   <help>
