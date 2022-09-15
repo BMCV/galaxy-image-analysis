@@ -1,143 +1,141 @@
-<tool id="ip_convertimage" name="Convert image" version="6.7.0.5"> 
+<tool id="ip_convertimage" name="Convert image" version="6.7.0+galaxy0"> 
   <description>Convert image</description>
   <requirements>
       <requirement type="package" version="6.7.0">bftools</requirement>
-      <container type="docker">quay.io/goeckslab/bftools:6.7.0</container>    
   </requirements>
   <command> 
         <![CDATA[  
         bfconvert  
         #if $series_options['extract'] == 'True'
-        -series $series_options.series
+          -series $series_options.series
         #end if
         #if $timepoint_options['extract'] == 'True'
-        -timepoint $timepoint_options.timepoint
+          -timepoint $timepoint_options.timepoint
         #end if
         #if $channel_options['extract'] == 'True'
-        -channel $channel_options.channel
+          -channel $channel_options.channel
         #end if
         #if $z_options['extract'] == 'True'
-        -z $z_options.z
+          -z $z_options.z
         #end if
         #if $range_options['extract'] == 'True'
-        -range $range_options.range_lower $range_options.range_upper
+          -range $range_options.range_lower $range_options.range_upper
         #end if
         #if $crop_options['extract'] == 'True'
-        -crop "$crop_options.crop_x,$crop_options.crop_y,$crop_options.crop_width,$crop_options.crop_height"
+          -crop "$crop_options.crop_x,$crop_options.crop_y,$crop_options.crop_width,$crop_options.crop_height"
         #end if
         #if $tile_options['extract'] == 'True'
-        -tilex $tile_options.tile_x -tiley $tile_options.tile_y
+          -tilex $tile_options.tile_x -tiley $tile_options.tile_y
         #end if
-        #if $pyramid_options['generate'] == 'True'
-        -pyramid-resolutions $pyramid_options.pyramid_resolutions
-        -pyramid-scale $pyramid_options.pyramid_scale
+        #if $pyramid_options.generate == 'True'
+          -pyramid-resolutions $pyramid_options.pyramid_resolutions
+          -pyramid-scale $pyramid_options.pyramid_scale
         #end if
         $bigtiff
         $noflat
         #if $compression != 'False'
-        -compression $compression
+          -compression $compression
         #end if  
         '$input_file' './res.$out_format'  &&
-        mv './res.$out_format' './result_image' &&
-        ls -lh
+        mv './res.$out_format' ./result_image
         ]]>
   </command>
   <inputs>
     <param label="Input Image" name="input_file" type="data" format="atsf,scn,ali,labels,ffr,jpeg,ndpi,tf8,pty,fff,mnc,vms,mng,xml,pcx,img,pct,ims,bip,ome.xml,bin,flex,his,hdr,mov,psd,spi,ipl,dv,aiix,j2kr,pst,mod,ome.tif,tif,obf,dib,dic,im3,tga,pbm,c01,crw,mrcs,l2d,seq,mdb,cfg,htm,mvd2,arf,vsi,companion.ome,htd,aim,fts,ndpis,r3d.log,nef,res,jpx,ics,rec,nd2,cr2,dcm,mea,ome,lei,lms,j2k,oib,mtb,ima,ets,wlz,pict,sm3,sm2,nrrd,xdce,acff,al3d,zvi,1sc,xys,tiff,pgm,pcoraw,ppm,ipm,set,cxd,ipw,apl,fake,tnb,txt,xv,tf2,ps,log,zip,epsi,j2ki,dicom,top,msr,frm,hed,gif,dm2,dm3,dm4,zpo,wav,wat,2fl,sdt,liff,hx,pic,ome.btf,am,bmp,pnl,r3d_d3d,jpf,png,tfr,dti,nii.gz,cif,fdf,grey,df3,stk,fli,hdf,btf,stp,ch5,v,sld,ids,dv.log,jpk,mrw,r3d,xlog,ano,jpe,sxm,jpg,vws,raw,czi,spl,avi,ome.tf8,inf,spc,ome.tf2,spe,lsm,afm,lif,naf,afi,inr,lim,nd,tim,html,sif,env,tif,csv,map,nii,gel,ome.tiff,oif,par,amiramesh,pr3,fits,lut,jp2,oir,dat,aisf,zfr,zfp,xqd,eps,xqf,st,nhdr,i2i,thm,exp,svs,mrc"/>
     <param name="out_format" type="select" label="Output data type">
-      <option value="tiff" selected="True">TIFF</option>
-      <option value="png">PNG</option>
-      <option value="jpg">JPEG</option>
-      <option value="ome.tiff">OME TIFF</option>
-      <option value="jp2">JPEG 2000</option>
-      <option value="eps">EPS</option>
-      <option value="avi">AVI</option>
+        <option value="tiff" selected="True">TIFF</option>
+        <option value="png">PNG</option>
+        <option value="jpg">JPEG</option>
+        <option value="ome.tiff">OME TIFF</option>
+        <option value="jp2">JPEG 2000</option>
+        <option value="eps">EPS</option>
+        <option value="avi">AVI</option>
     </param>
 
     <conditional name="series_options">
-      <param label="Extract series" name="extract" type="select">
-          <option selected="True" value="False">All series</option>
-          <option value="True">Extract series</option>
-      </param>
-      <when value="False"> </when>
-      <when value="True">
-        <param name="series" type="integer" value="0" label="Series id" />
-      </when>
+        <param label="Extract series" name="extract" type="select">
+            <option selected="True" value="False">All series</option>
+            <option value="True">Extract series</option>
+        </param>
+        <when value="False"> </when>
+        <when value="True">
+            <param name="series" type="integer" value="0" label="Series id" />
+        </when>
     </conditional>
     <conditional name="timepoint_options">
-      <param label="Extract timepoint" name="extract" type="select">
-          <option selected="True" value="False">All timepoints</option>
-          <option value="True">Extract timepoint</option>
-      </param>
-      <when value="False"> </when>
-      <when value="True">
-        <param name="timepoint" type="integer" value="0" label="Timepoint id" />
-      </when>
+        <param name="extract" type="select" label="Extract timepoint">
+            <option selected="True" value="False">All timepoints</option>
+            <option value="True">Extract timepoint</option>
+        </param>
+        <when value="False"></when>
+        <when value="True">
+            <param name="timepoint" type="integer" value="0" label="Timepoint ID" />
+        </when>
     </conditional>
     <conditional name="channel_options">
-      <param label="Extract channel" name="extract" type="select">
-          <option selected="True" value="False">All channels</option>
-          <option value="True">Extract channel</option>
-      </param>
-      <when value="False"> </when>
-      <when value="True">
-        <param name="channel" type="integer" value="0" label="Channel id" />
-      </when>
+        <param name="extract" type="select" label="Extract channel" >
+            <option selected="True" value="False">All channels</option>
+            <option value="True">Extract channel</option>
+        </param>
+        <when value="False"> </when>
+        <when value="True">
+            <param name="channel" type="integer" value="0" label="Channel id" />
+        </when>
     </conditional>
     <conditional name="z_options">
-      <param label="Extract z-slice" name="extract" type="select">
-          <option selected="True" value="False">All z-slices</option>
-          <option value="True">Extract z-slice</option>
-      </param>
-      <when value="False"> </when>
-      <when value="True">
-        <param name="z" type="integer" value="0" label="Z-slice id" />
-      </when>
+        <param label="Extract z-slice" name="extract" type="select">
+            <option selected="True" value="False">All z-slices</option>
+            <option value="True">Extract z-slice</option>
+        </param>
+        <when value="False"> </when>
+        <when value="True">
+            <param name="z" type="integer" value="0" label="Z-slice id" />
+        </when>
     </conditional>
     <conditional name="range_options">
-      <param label="Extract range" name="extract" type="select">
-          <option selected="True" value="False">All images</option>
-          <option value="True">Extract range by indicess (inclusive)</option>
-      </param>
-      <when value="False"> </when>
-      <when value="True">
-        <param name="range_lower" type="integer" value="0" label="Lower image id" />
-        <param name="range_upper" type="integer" value="1" label="Upper image id" />
-      </when>
+        <param label="Extract range" name="extract" type="select">
+            <option selected="True" value="False">All images</option>
+            <option value="True">Extract range by indicess (inclusive)</option>
+        </param>
+        <when value="False"> </when>
+        <when value="True">
+            <param name="range_lower" type="integer" value="0" label="Lower image id" />
+            <param name="range_upper" type="integer" value="1" label="Upper image id" />
+        </when>
     </conditional>
     <conditional name="crop_options">
-      <param label="Extract crop" name="extract" type="select">
-          <option selected="True" value="False">Full image</option>
-          <option value="True">Extract crop</option>
-      </param>
-      <when value="False"> </when>
-      <when value="True">
-        <param name="crop_x" type="integer" value="0" label="X" />
-        <param name="crop_y" type="integer" value="0" label="Y" />
-        <param name="crop_width" type="integer" value="512" label="Width" />
-        <param name="crop_height" type="integer" value="512" label="height" />
-      </when>
+        <param label="Extract crop" name="extract" type="select">
+            <option selected="True" value="False">Full image</option>
+            <option value="True">Extract crop</option>
+        </param>
+        <when value="False"> </when>
+        <when value="True">
+            <param name="crop_x" type="integer" value="0" label="X" />
+            <param name="crop_y" type="integer" value="0" label="Y" />
+            <param name="crop_width" type="integer" value="512" label="Width" />
+            <param name="crop_height" type="integer" value="512" label="height" />
+        </when>
     </conditional>
     <conditional name="tile_options">
-      <param label="Tile image" name="extract" type="select">
-          <option selected="True" value="False">No tiling</option>
-          <option value="True">Tile image</option>
-      </param>
-      <when value="False"> </when>
-      <when value="True">
-        <param name="tile_x" type="integer" value="512 " label="Tile width" />
-        <param name="tile_y" type="integer" value="512 " label="Tile height" />
-      </when>
+        <param label="Tile image" name="extract" type="select">
+            <option selected="True" value="False">No tiling</option>
+            <option value="True">Tile image</option>
+        </param>
+        <when value="False"> </when>
+        <when value="True">
+            <param name="tile_x" type="integer" value="512 " label="Tile width" />
+            <param name="tile_y" type="integer" value="512 " label="Tile height" />
+        </when>
     </conditional>
     <conditional name="pyramid_options">
-      <param label="Pyramid image" name="generate" type="select">
-        <option selected="True" value="True">Generate Pyramid</option>
-        <option  value="False">No Pyramid</option>
-      </param>
-      <when value="True">
-        <param name="pyramid_resolutions" type="integer" value="4" label="Pyramid Resolutions"/>
-        <param name="pyramid_scale" type="integer" value="2" label="Pyramid Scale" />
-      </when>
+        <param label="Pyramid image" name="generate" type="select">
+            <option selected="True" value="True">Generate Pyramid</option>
+            <option value="False">No Pyramid</option>
+        </param>
+        <when value="True">
+            <param name="pyramid_resolutions" type="integer" value="4" label="Pyramid Resolutions"/>
+            <param name="pyramid_scale" type="integer" value="2" label="Pyramid Scale" />
+        </when>
     </conditional>
     <param name="bigtiff" label="Big TIFF" type="boolean" checked="false" truevalue="-bigtiff" falsevalue=""/>
     <param name="noflat" label="No Flatten" type="boolean" checked="true" truevalue="-noflat" falsevalue=""/>
