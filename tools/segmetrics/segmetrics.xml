@@ -1,0 +1,96 @@
+<tool id="ip_segmetrics" name="SegMetrics" version="0.11.3" profile="20.05">
+   <description>image segmentation and object detection performance measures</description>
+   <requirements> 
+        <requirement type="package" version="0.11.3">segmetrics</requirement>
+        <requirement type="package" version="0.18.1">scikit-image</requirement>
+   </requirements>
+   <command detect_errors="aggressive">
+   <![CDATA[
+   python '$__tool_directory__/run-segmetrics.py'
+   '$input_seg'
+   '$input_gt'
+   ./results.csv
+   $unzip
+   $is_seg_unique
+   $is_gt_unique
+   $measures.dice
+   $measures.seg
+   $measures.jc
+   $measures.ji
+   $measures.ri
+   $measures.ari
+   $measures.hsd_sym
+   $measures.hsd_e2a
+   $measures.hsd_a2e
+   $measures.nsd
+   $measures.o_hsd_sym
+   $measures.o_hsd_e2a
+   $measures.o_hsd_a2e
+   $measures.o_nsd
+   $measures.fs
+   $measures.fm
+   $measures.fp
+   $measures.fn
+   ]]>
+   </command>
+   <inputs>
+
+        <param name="input_seg" type="data" format="tiff,png,zip" label="Segmented images" />
+        <param name="input_gt"  type="data" format="tiff,png,zip" label="Ground truth images" />
+
+        <param name="unzip" type="boolean" checked="false" truevalue="-unzip" falsevalue="" label="Unzip" />
+
+        <param name="is_seg_unique" type="boolean" checked="false" truevalue="-seg_unique" falsevalue="" label="Segmentation is uniquely labeled" />
+        <param name="is_gt_unique"  type="boolean" checked="false" truevalue="-gt_unique"  falsevalue="" label="Ground truth is uniquely labeled" />
+
+        <section name="measures" title="Performance measures" >
+            <param name="dice" type="boolean" checked="true"  truevalue="-measure-dice" falsevalue="" label="Dice" />
+            <param name="seg"  type="boolean" checked="true"  truevalue="-measure-seg"  falsevalue="" label="SEG" />
+            <param name="jc"   type="boolean" checked="false" truevalue="-measure-jc"   falsevalue="" label="Jaccard coefficient" />
+            <param name="ji"   type="boolean" checked="true"  truevalue="-measure-ji"   falsevalue="" label="Jaccard index" />
+            <param name="ri"   type="boolean" checked="false" truevalue="-measure-ri"   falsevalue="" label="Rand index" />
+            <param name="ari"  type="boolean" checked="false" truevalue="-measure-ari"  falsevalue="" label="Adjusted Rand index" />
+            <param name="hsd_sym" type="boolean" checked="false" truevalue="-measure-hsd_sym" falsevalue="" label="Hausdorff distance (symmetric)" />
+            <param name="hsd_e2a" type="boolean" checked="false" truevalue="-measure-hsd_e2a" falsevalue="" label="Hausdorff distance (ground truth to segmented)" />
+            <param name="hsd_a2e" type="boolean" checked="false" truevalue="-measure-hsd_a2e" falsevalue="" label="Hausdorff distance (segmented to ground truth)" />
+            <param name="nsd"     type="boolean" checked="false" truevalue="-measure-nsd"     falsevalue="" label="Normalized sum of distances" />
+            <param name="o_hsd_sym" type="boolean" checked="true"  truevalue="-measure-o_hsd_sym" falsevalue="" label="Object-based Hausdorff distance (symmetric)" />
+            <param name="o_hsd_e2a" type="boolean" checked="false" truevalue="-measure-o_hsd_e2a" falsevalue="" label="Object-based Hausdorff distance (ground truth to segmented)" />
+            <param name="o_hsd_a2e" type="boolean" checked="false" truevalue="-measure-o_hsd_a2e" falsevalue="" label="Object-based Hausdorff distance (segmented to ground truth)" />
+            <param name="o_nsd"     type="boolean" checked="true"  truevalue="-measure-o_nsd"     falsevalue="" label="Object-based normalized sum of distances" />
+            <param name="fs" type="boolean" checked="true" truevalue="-measure-fs" falsevalue="" label="Falsely split objects per image" />
+            <param name="fm" type="boolean" checked="true" truevalue="-measure-fm" falsevalue="" label="Falsely merged objects per image" />
+            <param name="fp" type="boolean" checked="true" truevalue="-measure-fp" falsevalue="" label="Spurious objects per image" />
+            <param name="fn" type="boolean" checked="true" truevalue="-measure-fn" falsevalue="" label="Missing objects per image" />
+        </section>
+
+    </inputs>
+    <outputs>
+       <data format="csv" name="results" from_work_dir="results.csv" />
+    </outputs>
+    <tests>
+        <test>
+            <param name="input_seg" value="input2.png"/>
+            <param name="input_gt"  value="input1.png"/>
+            <output name="results" value="results1.csv" ftype="csv" compare="diff"/>
+            <param name="is_seg_unique" value="True"/>
+            <param name="is_gt_unique"  value="True"/>
+        </test>
+        <test>
+            <param name="input_seg" value="input1.zip"/>
+            <param name="input_gt"  value="input2.zip"/>
+            <output name="results" value="results2.csv" ftype="csv" compare="diff"/>
+            <param name="is_seg_unique" value="True"/>
+            <param name="is_gt_unique"  value="True"/>
+            <param name="unzip" value="True"/>
+        </test>
+    </tests>
+    <help>
+        Image segmentation and object detection performance measures for 2-D image data.
+    </help>
+    <citations>
+        <citation type="doi">10.1093/bioinformatics/btu080</citation>
+        <citation type="doi">10.1109/ISBI.2009.5193098</citation>
+        <citation type="doi">10.1109/ICIP.2003.1246871</citation>
+    </citations>
+</tool>
