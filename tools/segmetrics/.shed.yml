@@ -1,0 +1,8 @@
+categories:
+  - Imaging
+description: Image segmentation and object detection performance measures
+long_description: Image segmentation and object detection performance measures for 2-D image data.
+name: segmetrics
+owner: imgteam
+homepage_url: https://github.com/bmcv
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tools/segmetrics/
