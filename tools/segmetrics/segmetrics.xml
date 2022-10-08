@@ -1,4 +1,4 @@
-<tool id="ip_segmetrics" name="SegMetrics" version="0.11.3-1" profile="20.05">
+<tool id="ip_segmetrics" name="SegMetrics" version="0.11.3-2" profile="20.05">
    <description>image segmentation and object detection performance measures</description>
    <requirements> 
         <requirement type="package" version="0.11.3">segmetrics</requirement>
@@ -9,7 +9,7 @@
    python '$__tool_directory__/run-segmetrics.py'
    '$input_seg'
    '$input_gt'
-   ./results.csv
+   ./results.tsv
    $unzip
    $is_seg_unique
    $is_gt_unique
@@ -66,20 +66,20 @@
 
     </inputs>
     <outputs>
-       <data format="csv" name="results" from_work_dir="results.csv" />
+       <data format="tsv" name="results" from_work_dir="results.tsv" />
     </outputs>
     <tests>
         <test>
             <param name="input_seg" value="input2.png"/>
             <param name="input_gt"  value="input1.png"/>
-            <output name="results" value="results1.csv" ftype="csv" compare="diff"/>
+            <output name="results" value="results1.tsv" ftype="tsv" compare="diff"/>
             <param name="is_seg_unique" value="True"/>
             <param name="is_gt_unique"  value="True"/>
         </test>
         <test>
             <param name="input_seg" value="input1.zip"/>
             <param name="input_gt"  value="input2.zip"/>
-            <output name="results" value="results2.csv" ftype="csv" compare="diff"/>
+            <output name="results" value="results2.tsv" ftype="tsv" compare="diff"/>
             <param name="is_seg_unique" value="True"/>
             <param name="is_gt_unique"  value="True"/>
             <param name="unzip" value="True"/>
