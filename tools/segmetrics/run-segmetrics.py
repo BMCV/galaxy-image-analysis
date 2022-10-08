@@ -128,6 +128,7 @@ if __name__ == "__main__":
 
     # write results
     with open(args.results, 'w', newline='') as fout:
-        csv_writer = csv.writer(fout, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        #csv_writer = csv.writer(fout, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        csv_writer = csv.writer(fout, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         for row in rows:
             csv_writer.writerow(row)
