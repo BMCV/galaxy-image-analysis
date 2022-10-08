@@ -1,4 +1,4 @@
-<tool id="ip_segmetrics" name="SegMetrics" version="0.11.3" profile="20.05">
+<tool id="ip_segmetrics" name="SegMetrics" version="0.11.3-1" profile="20.05">
    <description>image segmentation and object detection performance measures</description>
    <requirements> 
         <requirement type="package" version="0.11.3">segmetrics</requirement>
@@ -86,7 +86,11 @@
         </test>
     </tests>
     <help>
-        Image segmentation and object detection performance measures for 2-D image data.
+        This tool permits the computation of image segmentation and object detection performance measures for 2-D image data.
+
+        You can either use a pair of individual input images (a segmented and a ground truth image), or a pair of ZIP archives which contain the segmented and the correspondiong ground truth images. When using a pair of individual images, remember to turn off the "Unzip" option. When using ZIP archives, turn it on instead and make sure that the directory structure is the same for the segmented and the ground truth images. Correspondences are estbalished based on the file names, which should be *identical* for a pair of corresponding images.
+
+        If all objects within your segmented images are *uniquely* labeled, you can turn on the "Segmentation is uniquely labeled" switch to speed up the computations. Leave it off otherwise, or if you are unsure. The same accounts for the "Ground truth is uniquely labeled" switch and your ground turth image data.
     </help>
     <citations>
         <citation type="doi">10.1093/bioinformatics/btu080</citation>
