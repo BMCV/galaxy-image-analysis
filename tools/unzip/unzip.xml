@@ -15,17 +15,17 @@
         #if $input_file.is_of_type("zip"):
             unzip
             #if $extract_options['extract_all'] == 'False'
-                -p "$input_file" "$extract_options['pathtofile']" > out.data
+                -p '$input_file' '$extract_options["pathtofile"]' > out.data
             #else
-                "$input_file" -d out/
+                '$input_file' -d out/
             #end if
         #end if
         #if $input_file.is_of_type("tar"):
             tar
             #if $extract_options['extract_all'] == 'False'
-              xfO "$input_file" "$extract_options['pathtofile']" > out.data
+              xfO '$input_file' '$extract_options["pathtofile"]' > out.data
             #else
-              -xf "$input_file" -C ./out/
+              -xf '$input_file' -C ./out/
             #end if
         #end if
         &&
