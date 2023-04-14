@@ -10,25 +10,30 @@
         <requirement type="package" version="1.34">tar</requirement>
     </requirements>
     <command> 
-        <![CDATA[  
+    <![CDATA[
         mkdir ./out &&
         #if $input_file.is_of_type("zip"):
-          unzip
-          #if $extract_options['extract_all'] == 'False'
-            -p "$input_file" "$extract_options['pathtofile']" > out.data
-          #else
-            "$input_file" -d out/
-          #end if
+            unzip
+            #if $extract_options['extract_all'] == 'False'
+                -p "$input_file" "$extract_options['pathtofile']" > out.data
+            #else
+                "$input_file" -d out/
+            #end if
         #end if
         #if $input_file.is_of_type("tar"):
-          tar
-          #if $extract_options['extract_all'] == 'False'
-            xfO "$input_file" "$extract_options['pathtofile']" > out.data
-          #else
-            -xf "$input_file" -C ./out/
-          #end if
+            tar
+            #if $extract_options['extract_all'] == 'False'
+              xfO "$input_file" "$extract_options['pathtofile']" > out.data
+            #else
+              -xf "$input_file" -C ./out/
+            #end if
         #end if
-        ]]>
+        &&
+
+        ## Flatten any potential directory structure, e.g.
+        ## out/sub1/subsub2/fileA.ext -> out/sub1_subsub2_fileA.ext
+        find out -type f | cut -d '/' -f 2- | grep '/' | xargs -I % sh -c "mv out/% out/\\$(echo % | tr / _)"
+    ]]>
     </command>
     <inputs>
         <param label="input_file" name="input_file" type="data" format="zip,tar"/>
@@ -68,18 +73,29 @@
         <test expect_num_outputs="1">
             <param name="input_file" value="input.zip" ftype="zip"/>
             <param name="extract_all" value="True"/>
-            <output_collection name="unzipped" type="list">
+            <output_collection name="unzipped" type="list" count="2">
                 <element name="input" file="input.png" ftype="png" compare="sim_size"/>
                 <element name="res" file="res.tiff" ftype="tiff" compare="sim_size"/>
             </output_collection>
-        </test> -->
+        </test>
         <!-- Binary files without file extension -->
         <test expect_num_outputs="1">
             <param name="input_file" value="input_binary.zip" ftype="zip"/>
             <param name="extract_all" value="True"/>
-            <output_collection name="unzipped" type="list">
+            <output_collection name="unzipped" type="list" count="2">
                 <element name="yelp" file="yelp" compare="sim_size"/>
                 <element name="yes" file="yes" compare="sim_size"/>
+            </output_collection>
+        </test>
+        <!-- Compressed object with subfolders, each containing files -->
+        <test expect_num_outputs="1">
+            <param name="input_file" value="subfolders.zip" ftype="zip"/>
+            <param name="extract_all" value="True"/>
+            <output_collection name="unzipped" type="list" count="4">
+                <element name="binaries_yelp" file="yelp" compare="sim_size"/>
+                <element name="binaries_yes" file="yes" compare="sim_size"/>
+                <element name="images_input" file="input.png" ftype="png" compare="sim_size"/>
+                <element name="images_res" file="res.tiff" ftype="tiff" compare="sim_size"/>
             </output_collection>
         </test>
         <test expect_num_outputs="1">
@@ -91,7 +107,7 @@
         <test expect_num_outputs="1">
             <param name="input_file" value="input.tar" ftype="tar"/>
             <param name="extract_all" value="True"/>
-            <output_collection name="unzipped" type="list">
+            <output_collection name="unzipped" type="list" count="2">
                 <element name="input" file="input.png" ftype="png" compare="sim_size"/>
                 <element name="res" file="res.tiff" ftype="tiff" compare="sim_size"/>
             </output_collection>
@@ -100,7 +116,7 @@
     <help>
         **What it does**
           
-        Unzip folder to collection.
+        Unzip a folder containing file(s) of various types. If multiple files are asked to be retained, the output will be a collection containing all files within the zip or tar archive.
     </help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
