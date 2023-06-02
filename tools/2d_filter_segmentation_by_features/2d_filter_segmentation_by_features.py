@@ -1,8 +1,9 @@
 import argparse
 import sys
-import skimage.io 
-import skimage.util
+
 import pandas as pd
+import skimage.io
+import skimage.util
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Filter segmentation by features')
@@ -15,8 +16,8 @@ if __name__ == "__main__":
     img_in = skimage.io.imread(args.input_file.name)
     features = pd.read_csv(args.feature_file, delimiter="\t")
     rules = pd.read_csv(args.rule_file, delimiter="\t")
-    
-    cols = [a for a in rules.columns if not 'Unnamed' in a]
+
+    cols = [a for a in rules.columns if 'Unnamed' not in a]
     for a_c in cols:
         a_min = rules[rules.ix[:, 0] == 'min'][a_c]
         a_max = rules[rules.ix[:, 0] == 'max'][a_c]
