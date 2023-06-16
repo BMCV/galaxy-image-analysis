@@ -2,9 +2,9 @@
    <description>image segmentation and object detection performance measures</description>
    <requirements> 
         <requirement type="package" version="1.3">segmetrics</requirement>
-        <requirement type="package" version="0.18.1">scikit-image</requirement>
+        <requirement type="package" version="0.23.4">pandas</requirement>
    </requirements>
-   <!--<command detect_errors="aggressive">
+   <command detect_errors="aggressive">
    <![CDATA[
    python '$__tool_directory__/run-segmetrics.py'
    '$input_seg'
@@ -13,26 +13,34 @@
    $unzip
    $is_seg_unique
    $is_gt_unique
-   $measures.dice
-   $measures.seg
-   $measures.jc
-   $measures.ji
-   $measures.ri
-   $measures.ari
-   $measures.hsd_sym
-   $measures.hsd_e2a
-   $measures.hsd_a2e
-   $measures.nsd
-   $measures.o_hsd_sym
-   $measures.o_hsd_e2a
-   $measures.o_hsd_a2e
-   $measures.o_nsd
-   $measures.fs
-   $measures.fm
-   $measures.fp
-   $measures.fn
+   #for $m in $measures
+       #set $kwargs = ""
+       #set $suffix = ""
+       #set $is_distance = False
+       #if str($m.measure_type_selector) == "ISBIScore":
+           #set $kwargs = "min_ref_size=${m.min_ref_size}, "
+       #elif str($m.measure_type_selector) == "Hausdorff":
+           #set $kwargs = "mode=${m.mode}, quantile=${m.quantile}, "
+           #set $is_distance = True
+       #elif str($m.measure_type_selector) == "NSD":
+           #set $is_distance = True
+       #end if
+       #if $is_distance:
+           #if $m.object_based:
+               #set $ob_kwargs = ""
+               #if $m.skip_fn:
+                   #set $ob_kwargs = "skip_fn=True"
+               #end if
+               #set $suffix = ".object_based(${ob_kwargs})"
+           #end if
+       #end if
+       #if str($m.aggregation) != "":
+           #set $kwargs = "aggregation='${m.aggregation}', ${kwargs}"
+       #end if
+       "sm.${$m.measure_type_selector}(${kwargs})${suffix}"
+   #end for
    ]]>
-   </command>-->
+   </command>
    <inputs>
 
         <param name="input_seg" type="data" format="tiff,png,zip" label="Segmented images" />
@@ -60,19 +68,26 @@
                     <option value="FalseNegative">Detection-based / Count Missing Objects</option>
                 </param>
                 <when value="Dice">
+                    <param name="aggregation" type="hidden" value="" />
                 </when>
                 <when value="ISBIScore">
+                    <param name="aggregation" type="hidden" value="" />
                     <param name="min_ref_size" type="integer" value="1" label="Minimum size of ground truth objects (in pixels)" help="Ground truth objects smaller than this value (in pixels) are skipped. It is reasonable to set this value to 2 so that objects of a single pixel in size are skipped, since such objects obviously correspond to misannotations which distort the performance evaluation. However, for compatibility to the official implementation, the value is set to 1 by default so all ground truth objects are included."/>
                 </when>
                 <when value="JaccardCoefficient">
+                    <param name="aggregation" type="hidden" value="" />
                 </when>
                 <when value="JaccardIndex">
+                    <param name="aggregation" type="hidden" value="" />
                 </when>
                 <when value="RandIndex">
+                    <param name="aggregation" type="hidden" value="" />
                 </when>
                 <when value="AdjustedRandIndex">
+                    <param name="aggregation" type="hidden" value="" />
                 </when>
                 <when value="Hausdorff">
+                    <param name="aggregation" type="hidden" value="" />
                     <param name="mode" type="select" label="Direction">
                         <option value="a2e">Actual (segmentation result) to expected (ground truth)</option>
                         <option value="e2a">Expected (ground truth) to actual (segmentation result)</option>
@@ -80,17 +95,28 @@
                     </param>
                     <param name="quantile" type="float" min="0" max="1" value="1" label="Quantile" help="Must be between 0 and 1. If set to 1, then the implementaiton corresponds to the Hausdorff distance described by Bamford (2003). Any other value corresponds to the quantile method described by Rucklidge (1997)." />
                     <conditional name="object_based">
-                        <param name="object_based_selector" type="boolean" value="false" label="Object-based" help="Object correspondances between the segmented and the ground truth objects are established on a many-to-many basis, so that the resulting distances are minimal." />
+                        <param name="object_based_selector" type="select" label="Object-based" help="Object correspondances between the segmented and the ground truth objects are established on a many-to-many basis, so that the resulting distances are minimal.">
+                            <option value="false" selected="true">No</option>
+                            <option value="true">Yes</option>
+                        </param>
                         <when value="true">
                             <param name="skip_fn" type="boolean" value="false" label="Specifies whether false-negative detections shall be skipped." />
+                        </when>
+                        <when value="false">
                         </when>
                     </conditional>
                 </when>
                 <when value="NSD">
+                    <param name="aggregation" type="hidden" value="" />
                     <conditional name="object_based">
-                        <param name="object_based_selector" type="boolean" value="false" label="Object-based" help="Object correspondances between the segmented and the ground truth objects are established on a many-to-many basis, so that the resulting distances are minimal." />
+                        <param name="object_based_selector" type="select" label="Object-based" help="Object correspondances between the segmented and the ground truth objects are established on a many-to-many basis, so that the resulting distances are minimal.">
+                            <option value="false" selected="true">No</option>
+                            <option value="true">Yes</option>
+                        </param>
                         <when value="true">
                             <param name="skip_fn" type="boolean" value="false" label="Specifies whether false-negative detections shall be skipped." />
+                        </when>
+                        <when value="false">
                         </when>
                     </conditional>
                 </when>
@@ -101,7 +127,7 @@
                         <option value="obj-mean">Proportion w.r.t. ground truth objects</option>
                     </param>
                 </when>
-                <when value="FalseMege">
+                <when value="FalseMerge">
                     <param name="aggregation" type="select" label="Aggregation">
                         <option value="mean" selected="true">Mean per Image</option>
                         <option value="sum">Sum over all images</option>
