@@ -25,6 +25,7 @@ def process_batch(seg_dir, seg_file, gt_file, tsv_output_file, recursive, gt_uni
         if seg_unique:
             cmd.append('--seg-unique')
         cmd += measures
+        print(cmd)
         subprocess.run(cmd, check=True)
         df = pd.read_csv(csv_output_file.name)
         df.to_csv(str(tsv_output_file), sep='\t', index=False)
@@ -49,8 +50,8 @@ if __name__ == "__main__":
             gt_path, seg_path = basepath / 'gt', basepath / 'seg'
             zipfile_seg.extractall(str(seg_path))
             zipfile_gt.extractall(str(gt_path))
-            process_batch(seg_dir=seg_path, seg_file=r'^(.*)$', gt_file=gt_path / r'\\1', tsv_output_file=args.results, recursive=True, gt_unique=args.gt_unique, seg_unique=args.seg_unique, measures=args.measures)
+            process_batch(seg_dir=seg_path, seg_file=rf'^{seg_path}/(.+)$', gt_file=gt_path / r'\1', tsv_output_file=args.results, recursive=True, gt_unique=args.gt_unique, seg_unique=args.seg_unique, measures=args.measures)
 
     else:
         seg_path = pathlib.Path(args.input_seg)
-        process_batch(seg_dir=seg_path.parent, seg_file=seg_path.name, gt_file=args.input_gt, tsv_output_file=args.results, recursive=False, gt_unique=args.gt_unique, seg_unique=args.seg_unique, measures=args.measures)
+        process_batch(seg_dir=seg_path.parent, seg_file=seg_path, gt_file=args.input_gt, tsv_output_file=args.results, recursive=False, gt_unique=args.gt_unique, seg_unique=args.seg_unique, measures=args.measures)

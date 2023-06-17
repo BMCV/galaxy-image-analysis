@@ -17,27 +17,23 @@
        #set $kwargs = ""
        #set $suffix = ""
        #set $is_distance = False
-       #if str($m.measure_type_selector) == "ISBIScore":
-           #set $kwargs = "min_ref_size=${m.min_ref_size}, "
-       #elif str($m.measure_type_selector) == "Hausdorff":
-           #set $kwargs = "mode=${m.mode}, quantile=${m.quantile}, "
+       #if str($m.measure_type.measure_type_selector) == "ISBIScore":
+           #set $kwargs = "min_ref_size=" + str($m.measure_type.min_ref_size) + ", "
+       #elif str($m.measure_type.measure_type_selector) == "Hausdorff":
+           #set $kwargs = "mode=" + str($m.measure_type.mode) + ", quantile=" + str($m.measure_type.quantile) + ", "
            #set $is_distance = True
-       #elif str($m.measure_type_selector) == "NSD":
+       #elif str($m.measure_type.measure_type_selector) == "NSD":
            #set $is_distance = True
        #end if
        #if $is_distance:
-           #if $m.object_based:
-               #set $ob_kwargs = ""
-               #if $m.skip_fn:
-                   #set $ob_kwargs = "skip_fn=True"
-               #end if
-               #set $suffix = ".object_based(${ob_kwargs})"
+           #if $m.measure_type.object_based:
+               #set $suffix = ".object_based()"
            #end if
        #end if
-       #if str($m.aggregation) != "":
-           #set $kwargs = "aggregation='${m.aggregation}', ${kwargs}"
+       #if str($m.measure_type.aggregation) != "":
+           #set $kwargs = "aggregation='" + str($m.measure_type.aggregation) + "', " + $kwargs
        #end if
-       "sm.${$m.measure_type_selector}(${kwargs})${suffix}"
+       "sm.${m.measure_type.measure_type_selector}(${kwargs})${suffix}"
    #end for
    ]]>
    </command>
@@ -91,34 +87,14 @@
                     <param name="mode" type="select" label="Direction">
                         <option value="a2e">Actual (segmentation result) to expected (ground truth)</option>
                         <option value="e2a">Expected (ground truth) to actual (segmentation result)</option>
-                        <option value="sym" selected="true">Maximum of the two</option>
+                        <option value="sym" selected="true">Symmetric (maximum of the two)</option>
                     </param>
                     <param name="quantile" type="float" min="0" max="1" value="1" label="Quantile" help="Must be between 0 and 1. If set to 1, then the implementaiton corresponds to the Hausdorff distance described by Bamford (2003). Any other value corresponds to the quantile method described by Rucklidge (1997)." />
-                    <conditional name="object_based">
-                        <param name="object_based_selector" type="select" label="Object-based" help="Object correspondances between the segmented and the ground truth objects are established on a many-to-many basis, so that the resulting distances are minimal.">
-                            <option value="false" selected="true">No</option>
-                            <option value="true">Yes</option>
-                        </param>
-                        <when value="true">
-                            <param name="skip_fn" type="boolean" value="false" label="Specifies whether false-negative detections shall be skipped." />
-                        </when>
-                        <when value="false">
-                        </when>
-                    </conditional>
+                    <param name="object_based" type="boolean" label="Object-based" help="Object correspondances between the segmented and the ground truth objects are established on a many-to-many basis, so that the resulting distances are minimal." />
                 </when>
                 <when value="NSD">
                     <param name="aggregation" type="hidden" value="" />
-                    <conditional name="object_based">
-                        <param name="object_based_selector" type="select" label="Object-based" help="Object correspondances between the segmented and the ground truth objects are established on a many-to-many basis, so that the resulting distances are minimal.">
-                            <option value="false" selected="true">No</option>
-                            <option value="true">Yes</option>
-                        </param>
-                        <when value="true">
-                            <param name="skip_fn" type="boolean" value="false" label="Specifies whether false-negative detections shall be skipped." />
-                        </when>
-                        <when value="false">
-                        </when>
-                    </conditional>
+                    <param name="object_based" type="boolean" label="Object-based" help="Object correspondances between the segmented and the ground truth objects are established on a many-to-many basis, so that the resulting distances are minimal." />
                 </when>
                 <when value="FalseSplit">
                     <param name="aggregation" type="select" label="Aggregation">
@@ -149,7 +125,6 @@
                     </param>
                 </when>
             </conditional>
-            <param name="name" type="text" value="" label="Custom name of the measure" help="Must be unique or empty. Leave empty to use the default." />
         </repeat>
 
     </inputs>
