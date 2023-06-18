@@ -52,7 +52,7 @@ if __name__ == "__main__":
             gt_path, seg_path = basepath / 'gt', basepath / 'seg'
             zipfile_seg.extractall(str(seg_path))
             zipfile_gt.extractall(str(gt_path))
-            process_batch(seg_dir=seg_path, seg_file=rf'^{seg_path}/(.+)$', gt_file=gt_path / r'\1', tsv_output_file=args.results, recursive=True, gt_unique=args.gt_unique, seg_unique=args.seg_unique, measures=args.measures)
+            process_batch(seg_dir=seg_path, seg_file=rf'^{seg_path}/(.+\.(?:png|PNG|tif|TIF|tiff|TIFF))$', gt_file=gt_path / r'\1', tsv_output_file=args.results, recursive=True, gt_unique=args.gt_unique, seg_unique=args.seg_unique, measures=args.measures)
 
     else:
         seg_path = pathlib.Path(args.input_seg)
