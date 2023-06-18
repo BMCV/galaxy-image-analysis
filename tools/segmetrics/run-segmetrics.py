@@ -25,12 +25,9 @@ def process_batch(seg_dir, seg_file, gt_file, tsv_output_file, recursive, gt_uni
         if seg_unique:
             cmd.append('--seg-unique')
         cmd += measures
-        print(cmd)
         subprocess.run(cmd, check=True)
         df = pd.read_csv(csv_output_file.name, sep=';')
         df.to_csv(str(tsv_output_file), sep='\t', index=False)
-        import shutil
-        shutil.copy(str(tsv_output_file), '/tmp/segmetrics-results.tsv')
 
 
 if __name__ == "__main__":
