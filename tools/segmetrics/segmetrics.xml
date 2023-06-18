@@ -131,23 +131,101 @@
     <outputs>
        <data format="tsv" name="results" from_work_dir="results.tsv" />
     </outputs>
-    <!--<tests>
+    <tests>
         <test>
-            <param name="input_seg" value="input2.png"/>
-            <param name="input_gt"  value="input1.png"/>
+            <param name="input_seg" value="input1.png"/>
+            <param name="input_gt"  value="input2.png"/>
             <output name="results" value="results1.tsv" ftype="tsv" compare="diff"/>
-            <param name="is_seg_unique" value="True"/>
-            <param name="is_gt_unique"  value="True"/>
+            <param name="is_seg_unique" value="true"/>
+            <param name="is_gt_unique"  value="true"/>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="Dice" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="ISBIScore" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="JaccardCoefficient" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="JaccardIndex" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="RandIndex" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="AdjustedRandIndex" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="Hausdorff" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="Hausdorff" />
+                    <param name="quantile" value="0.9" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="Hausdorff" />
+                    <param name="object_based" value="true" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="NSD" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="NSD" />
+                    <param name="object_based" value="true" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="FalseSplit" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="FalseMerge" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="FalsePositive" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="FalseNegative" />
+                </conditional>
+            </repeat>
         </test>
-        <test>
+        <!--<test>
             <param name="input_seg" value="input1.zip"/>
             <param name="input_gt"  value="input2.zip"/>
             <output name="results" value="results2.tsv" ftype="tsv" compare="diff"/>
             <param name="is_seg_unique" value="True"/>
             <param name="is_gt_unique"  value="True"/>
             <param name="unzip" value="True"/>
-        </test>
-    </tests>-->
+        </test>-->
+    </tests>
     <help>
         This tool permits the computation of image segmentation and object detection performance measures for 2-D image data.
 

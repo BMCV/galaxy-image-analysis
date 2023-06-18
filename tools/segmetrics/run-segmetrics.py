@@ -17,7 +17,7 @@ import pandas as pd
 
 def process_batch(seg_dir, seg_file, gt_file, tsv_output_file, recursive, gt_unique, seg_unique, measures):
     with tempfile.NamedTemporaryFile() as csv_output_file:
-        cmd = ['python', '-m', 'segmetrics.cli', str(seg_dir), str(seg_file), str(gt_file), str(csv_output_file.name)]
+        cmd = ['python', '-m', 'segmetrics.cli', str(seg_dir), str(seg_file), str(gt_file), str(csv_output_file.name), '--semicolon']
         if recursive:
             cmd.append('--recursive')
         if gt_unique:
@@ -27,8 +27,10 @@ def process_batch(seg_dir, seg_file, gt_file, tsv_output_file, recursive, gt_uni
         cmd += measures
         print(cmd)
         subprocess.run(cmd, check=True)
-        df = pd.read_csv(csv_output_file.name)
+        df = pd.read_csv(csv_output_file.name, sep=';')
         df.to_csv(str(tsv_output_file), sep='\t', index=False)
+        import shutil
+        shutil.copy(str(tsv_output_file), '/tmp/segmetrics-results.tsv')
 
 
 if __name__ == "__main__":
