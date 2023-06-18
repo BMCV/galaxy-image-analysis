@@ -14,26 +14,26 @@
    $is_seg_unique
    $is_gt_unique
    #for $m in $measures
-       #set $kwargs = ""
-       #set $suffix = ""
+       #set $kwargs = ''
+       #set $suffix = ''
        #set $is_distance = False
-       #if str($m.measure_type.measure_type_selector) == "ISBIScore":
-           #set $kwargs = "min_ref_size=" + str($m.measure_type.min_ref_size) + ", "
-       #elif str($m.measure_type.measure_type_selector) == "Hausdorff":
-           #set $kwargs = "mode='" + str($m.measure_type.mode) + "', quantile=" + str($m.measure_type.quantile) + ", "
+       #if str($m.measure_type.measure_type_selector) == 'ISBIScore':
+           #set $kwargs = 'min_ref_size=' + str($m.measure_type.min_ref_size) + ', '
+       #elif str($m.measure_type.measure_type_selector) == 'Hausdorff':
+           #set $kwargs = 'mode="' + str($m.measure_type.mode) + '", quantile=' + str($m.measure_type.quantile) + ', '
            #set $is_distance = True
-       #elif str($m.measure_type.measure_type_selector) == "NSD":
+       #elif str($m.measure_type.measure_type_selector) == 'NSD':
            #set $is_distance = True
        #end if
        #if $is_distance:
            #if $m.measure_type.object_based:
-               #set $suffix = ".object_based()"
+               #set $suffix = '.object_based()'
            #end if
        #end if
-       #if str($m.measure_type.aggregation) != "":
-           #set $kwargs = "aggregation='" + str($m.measure_type.aggregation) + "', " + $kwargs
+       #if str($m.measure_type.aggregation) != '':
+           #set $kwargs = 'aggregation="' + str($m.measure_type.aggregation) + '", ' + $kwargs
        #end if
-       "sm.${m.measure_type.measure_type_selector}(${kwargs})${suffix}"
+       'sm.${m.measure_type.measure_type_selector}(${kwargs})${suffix}'
    #end for
    ]]>
    </command>
