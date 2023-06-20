@@ -1,7 +1,11 @@
-<tool id="ip_superdsm" name="SuperDSM" version="0.1.0-1" profile="20.05">
+<tool id="ip_superdsm" name="SuperDSM" version="0.1.2-1" profile="20.05">
    <description>globally optimal segmentation method based on superadditivity and deformable shape models for cell nuclei in fluorescence microscopy images</description>
    <requirements> 
-        <requirement type="package" version="0.1.0">superdsm</requirement>
+        <requirement type="package" version="0.1.2">superdsm</requirement>
+        <requirement type="package" version="2.3.0">ray-core</requirement>
+        <requirement type="package" version="2.3.0">ray-dashboard</requirement>
+        <requirement type="package" version="2.3.0">ray-default</requirement>
+        <requirement type="package" version="0.18.1">scikit-image</requirement>
    </requirements>
    <command detect_errors="aggressive">
    <![CDATA[
@@ -10,24 +14,13 @@
    'cfg.json'
    'masks.png'
    'overlay.png'
-   ${computing.num_cpus}
-   ${computing.num_threads}
+   $seg_border
    > stdout.txt
    ]]>
    </command>
-   <!--
-   <command detect_errors="aggressive">
-   <![CDATA[
-   python '$__tool_directory__/run-superdsm.py'
-   ]]>
-   </command>
-   -->
    <inputs>
         <param name="dataset" type="data" format="tiff,png" label="Dataset" />
-        <section name="computing" title="Computing" expanded="false">
-            <param name="num_cpus" type="integer" min="1" value="4" label="Number of processes" />
-            <param name="num_threads" type="integer" min="1" value="2" label="Number of threads per process" />
-        </section>
+        <param name="seg_border" type="integer" min="1" value="8" label="Width of the outlines (in pixels) of the segmentation results (overlays)" />
         <!--
         <section name="config" title="Hyperparameters" expanded="false">
         </section>
