@@ -18,45 +18,6 @@ import superdsm.io
 import superdsm.render
 
 
-# It was not possible to get ray to work in conjunction with planemo, though the reason remains
-# unclear. Most of the time, the attempts failed due to out-of-memory issues, although ray
-# shouldn't consume any significant amount of memory. Thus, below, ray is effectively "patched
-# out" of SuperDSM. This is neither efficient nor clean, but at least it works.
-
-
-class _Future:
-    def __init__(self, getter):
-        self.getter = getter
-
-
-class _ray_remote:
-    def __init__(self, func):
-        self.func = func
-
-    def remote(self, *args, **kwargs):
-        args = [(arg.getter() if isinstance(arg, _Future) else arg) for arg in args]
-        kwargs = {key: (arg.getter() if isinstance(arg, _Future) else arg) for key, arg in kwargs.items()}
-        return _Future(lambda: self.func(*args, **kwargs))
-
-
-def _ray_wait(futures, num_returns):
-    return futures[:num_returns], futures[num_returns:]
-
-
-def _ray_put(obj):
-    return _Future(lambda: obj)
-
-
-def _ray_get(future):
-    return future.getter()
-
-
-ray.remote = _ray_remote
-ray.wait = _ray_wait
-ray.put = _ray_put
-ray.get = _ray_get
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Segmentation of cell nuclei in 2-D fluorescence microscopy images')
     parser.add_argument('image', help='Path to the input image')
@@ -72,7 +33,7 @@ if __name__ == "__main__":
         img_filepath = tmpdir / f'input.{img_ext}'
         shutil.copy(str(args.image), img_filepath)
 
-        ray.init(local_mode=True, log_to_driver=True)
+        ray.init(num_cpus=1, log_to_driver=True)
         pipeline = superdsm.pipeline.create_default_pipeline()
         cfg = superdsm.config.Config()
         img = superdsm.io.imread(img_filepath)
