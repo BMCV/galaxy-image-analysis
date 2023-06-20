@@ -1,8 +1,8 @@
-<tool id="ip_segmetrics" name="SegMetrics" version="0.11.3-2" profile="20.05">
+<tool id="ip_segmetrics" name="SegMetrics" version="1.4.0-1" profile="20.05">
    <description>image segmentation and object detection performance measures</description>
    <requirements> 
-        <requirement type="package" version="0.11.3">segmetrics</requirement>
-        <requirement type="package" version="0.18.1">scikit-image</requirement>
+        <requirement type="package" version="1.4">segmetrics</requirement>
+        <requirement type="package" version="0.23.4">pandas</requirement>
    </requirements>
    <command detect_errors="aggressive">
    <![CDATA[
@@ -13,24 +13,28 @@
    $unzip
    $is_seg_unique
    $is_gt_unique
-   $measures.dice
-   $measures.seg
-   $measures.jc
-   $measures.ji
-   $measures.ri
-   $measures.ari
-   $measures.hsd_sym
-   $measures.hsd_e2a
-   $measures.hsd_a2e
-   $measures.nsd
-   $measures.o_hsd_sym
-   $measures.o_hsd_e2a
-   $measures.o_hsd_a2e
-   $measures.o_nsd
-   $measures.fs
-   $measures.fm
-   $measures.fp
-   $measures.fn
+   #for $m in $measures
+       #set $kwargs = ''
+       #set $suffix = ''
+       #set $is_distance = False
+       #if str($m.measure_type.measure_type_selector) == 'ISBIScore':
+           #set $kwargs = 'min_ref_size=' + str($m.measure_type.min_ref_size) + ', '
+       #elif str($m.measure_type.measure_type_selector) == 'Hausdorff':
+           #set $kwargs = 'mode="' + str($m.measure_type.mode) + '", quantile=' + str($m.measure_type.quantile) + ', '
+           #set $is_distance = True
+       #elif str($m.measure_type.measure_type_selector) == 'NSD':
+           #set $is_distance = True
+       #end if
+       #if $is_distance:
+           #if $m.measure_type.object_based:
+               #set $suffix = '.object_based()'
+           #end if
+       #end if
+       #if str($m.measure_type.aggregation) != '':
+           #set $kwargs = 'aggregation="' + str($m.measure_type.aggregation) + '", ' + $kwargs
+       #end if
+       'sm.${m.measure_type.measure_type_selector}(${kwargs})${suffix}'
+   #end for
    ]]>
    </command>
    <inputs>
@@ -43,46 +47,260 @@
         <param name="is_seg_unique" type="boolean" checked="false" truevalue="-seg_unique" falsevalue="" label="Segmentation is uniquely labeled" />
         <param name="is_gt_unique"  type="boolean" checked="false" truevalue="-gt_unique"  falsevalue="" label="Ground truth is uniquely labeled" />
 
-        <section name="measures" title="Performance measures" >
-            <param name="dice" type="boolean" checked="true"  truevalue="-measure-dice" falsevalue="" label="Dice" />
-            <param name="seg"  type="boolean" checked="true"  truevalue="-measure-seg"  falsevalue="" label="SEG" />
-            <param name="jc"   type="boolean" checked="false" truevalue="-measure-jc"   falsevalue="" label="Jaccard coefficient" />
-            <param name="ji"   type="boolean" checked="true"  truevalue="-measure-ji"   falsevalue="" label="Jaccard index" />
-            <param name="ri"   type="boolean" checked="false" truevalue="-measure-ri"   falsevalue="" label="Rand index" />
-            <param name="ari"  type="boolean" checked="false" truevalue="-measure-ari"  falsevalue="" label="Adjusted Rand index" />
-            <param name="hsd_sym" type="boolean" checked="false" truevalue="-measure-hsd_sym" falsevalue="" label="Hausdorff distance (symmetric)" />
-            <param name="hsd_e2a" type="boolean" checked="false" truevalue="-measure-hsd_e2a" falsevalue="" label="Hausdorff distance (ground truth to segmented)" />
-            <param name="hsd_a2e" type="boolean" checked="false" truevalue="-measure-hsd_a2e" falsevalue="" label="Hausdorff distance (segmented to ground truth)" />
-            <param name="nsd"     type="boolean" checked="false" truevalue="-measure-nsd"     falsevalue="" label="Normalized sum of distances" />
-            <param name="o_hsd_sym" type="boolean" checked="true"  truevalue="-measure-o_hsd_sym" falsevalue="" label="Object-based Hausdorff distance (symmetric)" />
-            <param name="o_hsd_e2a" type="boolean" checked="false" truevalue="-measure-o_hsd_e2a" falsevalue="" label="Object-based Hausdorff distance (ground truth to segmented)" />
-            <param name="o_hsd_a2e" type="boolean" checked="false" truevalue="-measure-o_hsd_a2e" falsevalue="" label="Object-based Hausdorff distance (segmented to ground truth)" />
-            <param name="o_nsd"     type="boolean" checked="true"  truevalue="-measure-o_nsd"     falsevalue="" label="Object-based normalized sum of distances" />
-            <param name="fs" type="boolean" checked="true" truevalue="-measure-fs" falsevalue="" label="Falsely split objects per image" />
-            <param name="fm" type="boolean" checked="true" truevalue="-measure-fm" falsevalue="" label="Falsely merged objects per image" />
-            <param name="fp" type="boolean" checked="true" truevalue="-measure-fp" falsevalue="" label="Spurious objects per image" />
-            <param name="fn" type="boolean" checked="true" truevalue="-measure-fn" falsevalue="" label="Missing objects per image" />
-        </section>
-
+        <repeat name="measures" title="Performance measure(s)" min="1">
+            <conditional name="measure_type">
+                <param name="measure_type_selector" type="select" label="Type">
+                    <option value="Dice">Region-based / Dice</option>
+                    <option value="ISBIScore">Region-based / SEG</option>
+                    <option value="JaccardCoefficient">Region-based / Jaccard Coefficient</option>
+                    <option value="JaccardIndex">Region-based / Jaccard Index</option>
+                    <option value="RandIndex">Region-based / Rand Index</option>
+                    <option value="AdjustedRandIndex">Region-based / Adjusted Rand Index</option>
+                    <option value="Hausdorff">Contour-based / Hausdorff Distance</option>
+                    <option value="NSD">Contour-based / Normalized Sum of Distances</option>
+                    <option value="FalseSplit">Detection-based / Count Falsely Split Objects</option>
+                    <option value="FalseMerge">Detection-based / Count Falsely Merged Objects</option>
+                    <option value="FalsePositive">Detection-based / Count Spurious Objects</option>
+                    <option value="FalseNegative">Detection-based / Count Missing Objects</option>
+                </param>
+                <when value="Dice">
+                    <param name="aggregation" type="hidden" value="" />
+                </when>
+                <when value="ISBIScore">
+                    <param name="aggregation" type="hidden" value="" />
+                    <param name="min_ref_size" type="integer" value="1" label="Minimum size of ground truth objects (in pixels)" help="Ground truth objects smaller than this value (in pixels) are skipped. It is reasonable to set this value to 2 so that objects of a single pixel in size are skipped, since such objects obviously correspond to misannotations which distort the performance evaluation. However, for compatibility to the official implementation, the value is set to 1 by default so all ground truth objects are included."/>
+                </when>
+                <when value="JaccardCoefficient">
+                    <param name="aggregation" type="hidden" value="" />
+                </when>
+                <when value="JaccardIndex">
+                    <param name="aggregation" type="hidden" value="" />
+                </when>
+                <when value="RandIndex">
+                    <param name="aggregation" type="hidden" value="" />
+                </when>
+                <when value="AdjustedRandIndex">
+                    <param name="aggregation" type="hidden" value="" />
+                </when>
+                <when value="Hausdorff">
+                    <param name="aggregation" type="hidden" value="" />
+                    <param name="mode" type="select" label="Direction">
+                        <option value="a2e">Actual (segmentation result) to expected (ground truth)</option>
+                        <option value="e2a">Expected (ground truth) to actual (segmentation result)</option>
+                        <option value="sym" selected="true">Symmetric (maximum of the two)</option>
+                    </param>
+                    <param name="quantile" type="float" min="0" max="1" value="1" label="Quantile" help="Must be between 0 and 1. If set to 1, then the implementaiton corresponds to the Hausdorff distance described by Bamford (2003). Any other value corresponds to the quantile method described by Rucklidge (1997)." />
+                    <param name="object_based" type="boolean" label="Object-based" help="Object correspondances between the segmented and the ground truth objects are established on a many-to-many basis, so that the resulting distances are minimal." />
+                </when>
+                <when value="NSD">
+                    <param name="aggregation" type="hidden" value="" />
+                    <param name="object_based" type="boolean" label="Object-based" help="Object correspondances between the segmented and the ground truth objects are established on a many-to-many basis, so that the resulting distances are minimal." />
+                </when>
+                <when value="FalseSplit">
+                    <param name="aggregation" type="select" label="Aggregation">
+                        <option value="mean" selected="true">Mean per Image</option>
+                        <option value="sum">Sum over all images</option>
+                        <option value="obj-mean">Proportion w.r.t. ground truth objects</option>
+                    </param>
+                </when>
+                <when value="FalseMerge">
+                    <param name="aggregation" type="select" label="Aggregation">
+                        <option value="mean" selected="true">Mean per Image</option>
+                        <option value="sum">Sum over all images</option>
+                        <option value="obj-mean">Proportion w.r.t. ground truth objects</option>
+                    </param>
+                </when>
+                <when value="FalsePositive">
+                    <param name="aggregation" type="select" label="Aggregation">
+                        <option value="mean" selected="true">Mean per Image</option>
+                        <option value="sum">Sum over all images</option>
+                        <option value="obj-mean">Proportion w.r.t. ground truth objects</option>
+                    </param>
+                </when>
+                <when value="FalseNegative">
+                    <param name="aggregation" type="select" label="Aggregation">
+                        <option value="mean" selected="true">Mean per Image</option>
+                        <option value="sum">Sum over all images</option>
+                        <option value="obj-mean">Proportion w.r.t. ground truth objects</option>
+                    </param>
+                </when>
+            </conditional>
+        </repeat>
     </inputs>
     <outputs>
        <data format="tsv" name="results" from_work_dir="results.tsv" />
     </outputs>
     <tests>
         <test>
-            <param name="input_seg" value="input2.png"/>
-            <param name="input_gt"  value="input1.png"/>
+            <param name="input_seg" value="input1.png"/>
+            <param name="input_gt"  value="input2.png"/>
             <output name="results" value="results1.tsv" ftype="tsv" compare="diff"/>
-            <param name="is_seg_unique" value="True"/>
-            <param name="is_gt_unique"  value="True"/>
+            <param name="is_seg_unique" value="true"/>
+            <param name="is_gt_unique"  value="true"/>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="Dice" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="ISBIScore" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="JaccardCoefficient" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="JaccardIndex" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="RandIndex" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="AdjustedRandIndex" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="Hausdorff" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="Hausdorff" />
+                    <param name="quantile" value="0.9" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="Hausdorff" />
+                    <param name="object_based" value="true" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="NSD" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="NSD" />
+                    <param name="object_based" value="true" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="FalseSplit" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="FalseMerge" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="FalsePositive" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="FalseNegative" />
+                </conditional>
+            </repeat>
         </test>
         <test>
             <param name="input_seg" value="input1.zip"/>
             <param name="input_gt"  value="input2.zip"/>
             <output name="results" value="results2.tsv" ftype="tsv" compare="diff"/>
-            <param name="is_seg_unique" value="True"/>
-            <param name="is_gt_unique"  value="True"/>
-            <param name="unzip" value="True"/>
+            <param name="is_seg_unique" value="true"/>
+            <param name="is_gt_unique"  value="true"/>
+            <param name="unzip" value="true"/>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="Dice" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="ISBIScore" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="JaccardCoefficient" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="JaccardIndex" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="RandIndex" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="AdjustedRandIndex" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="Hausdorff" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="Hausdorff" />
+                    <param name="quantile" value="0.9" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="Hausdorff" />
+                    <param name="object_based" value="true" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="NSD" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="NSD" />
+                    <param name="object_based" value="true" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="FalseSplit" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="FalseMerge" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="FalsePositive" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="FalseNegative" />
+                </conditional>
+            </repeat>
         </test>
     </tests>
     <help>
@@ -96,5 +314,6 @@
         <citation type="doi">10.1093/bioinformatics/btu080</citation>
         <citation type="doi">10.1109/ISBI.2009.5193098</citation>
         <citation type="doi">10.1109/ICIP.2003.1246871</citation>
+        <citation type="doi">10.1023/A:1007975324482</citation>
     </citations>
 </tool>
