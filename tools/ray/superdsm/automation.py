@@ -8,17 +8,6 @@ _max = max
 _min = min
 
 
-def normalize_image(img, spread=1, ret_minmax=False):
-    if not np.allclose(img.std(), 0):
-        minval, maxval = max([img.min(), img.mean() - spread * img.std()]), min([img.max(), img.mean() + spread * img.std()])
-        img = img.clip(minval, maxval)
-    else:
-        minval, maxval = 0, 1
-    img  = img - img.min()
-    img /= img.max()
-    return (img, minval, maxval) if ret_minmax else img
-
-
 def _blob_doh(image, sigma_list, threshold=0.01, overlap=.5, mask=None):
     """Finds blobs in the given grayscale image.
 
@@ -54,8 +43,7 @@ def _estimate_scale(im, min_radius=20, max_radius=200, num_radii=10, thresholds=
     sigma_list = np.linspace(min_radius, max_radius, num_radii) / math.sqrt(2)
     sigma_list = np.concatenate([[sigma_list.min() / 2], sigma_list])
     
-    im_norm  = normalize_image(im)
-    im_norm /= im_norm.max()
+    im_norm = im
 
     blobs_mask  = {sigma: ndi.gaussian_laplace(im_norm, sigma) < 0 for sigma in sigma_list}
     mean_radius = None
@@ -71,7 +59,3 @@ def _estimate_scale(im, min_radius=20, max_radius=200, num_radii=10, thresholds=
         radii_inliers = np.logical_and(radii >= radii_median - radii_mad, radii <= radii_median + radii_mad)
         mean_radius   = np.mean(radii[radii_inliers])
         break
-    
-    if mean_radius is None:
-        raise ValueError('scale estimation failed')
-    return mean_radius / math.sqrt(2), blobs_doh, radii_inliers
