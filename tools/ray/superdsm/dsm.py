@@ -1,5 +1,4 @@
 from ._aux import SystemSemaphore, uplift_smooth_matrix
-from ._mkl import dot as mkl_dot, gram as mkl_gram
 
 import numpy as np
 import cvxopt
@@ -13,10 +12,11 @@ from scipy.sparse import csr_matrix, coo_matrix, bmat as sparse_block, diags as 
 
 
 def _fast_dot(A, B):
-    """Performs fast multiplication of two sparse or dense matrices (sparsity is exploited).
-    """
-    if A.shape[1] == B.shape[0] == 1: return A @ B
-    return mkl_dot(A, B)
+    return A @ B
+
+
+def _gram(A):
+    return A @ A.T
 
 
 class DeformableShapeModel:
@@ -368,7 +368,7 @@ class Energy:
         if self.smooth_mat.shape[1] > 0:
             H = sparse_block([
                 [D1 @ D1.T, csr_matrix((D1.shape[0], D2.shape[0]))],
-                [_fast_dot(D2, D1.T), mkl_gram(D2).T if D2.shape[1] > 0 else csr_matrix((D2.shape[0], D2.shape[0]))]])
+                [_fast_dot(D2, D1.T), _gram(D2).T if D2.shape[1] > 0 else csr_matrix((D2.shape[0], D2.shape[0]))]])
             g = self.alpha * (1 / self.term2 - self.term3 / np.power(self.term2, 3))
             assert np.allclose(0, g[g < 0])
             g[g < 0] = 0
