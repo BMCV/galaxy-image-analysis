@@ -1,22 +1,15 @@
-import numpy as np
+import sys
+
+import skimage.io
 import ray
-
-
-@ray.remote
-def f(y, x):
-    return y * x
+import superdsm.automation
+import superdsm.io
+import superdsm.render
 
 
 if __name__ == "__main__":
-
-    np.random.seed(0)
-    y = np.random.rand(1024, 1024)
-
     ray.init(num_cpus=1, log_to_driver=True)
-
-    y_id = ray.put(y)
-    futures = [f.remote(y_id, x) for x in range(4)]
-    results = [ray.get(future) for future in futures]
-
-    for result in results:
-        print(result.mean())
+    pipeline = superdsm.pipeline.create_default_pipeline()
+    cfg = superdsm.config.Config()
+    img = skimage.io.imread(sys.argv[1])
+    data, cfg, _ = superdsm.automation.process_image(pipeline, cfg, img)
