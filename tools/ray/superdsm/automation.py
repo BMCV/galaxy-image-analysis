@@ -1,5 +1,3 @@
-from .render import normalize_image
-
 import skimage
 import math
 import scipy.ndimage as ndi
@@ -8,6 +6,17 @@ import numpy as np
 
 _max = max
 _min = min
+
+
+def normalize_image(img, spread=1, ret_minmax=False):
+    if not np.allclose(img.std(), 0):
+        minval, maxval = max([img.min(), img.mean() - spread * img.std()]), min([img.max(), img.mean() + spread * img.std()])
+        img = img.clip(minval, maxval)
+    else:
+        minval, maxval = 0, 1
+    img  = img - img.min()
+    img /= img.max()
+    return (img, minval, maxval) if ret_minmax else img
 
 
 def _blob_doh(image, sigma_list, threshold=0.01, overlap=.5, mask=None):

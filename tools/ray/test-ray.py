@@ -3,8 +3,6 @@ import sys
 import skimage.io
 import ray
 import superdsm.automation
-import superdsm.io
-import superdsm.render
 
 
 if __name__ == "__main__":
