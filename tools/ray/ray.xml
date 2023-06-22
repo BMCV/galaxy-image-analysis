@@ -1,0 +1,31 @@
+<tool id="ip_ray" name="Ray" version="0.1-1" profile="20.05">
+    <description>ray testing</description>
+    <requirements> 
+        <requirement type="package" version="1.20.3">numpy</requirement>
+        <requirement type="package" version="2.3.0">ray-core</requirement>
+        <requirement type="package" version="2.3.0">ray-dashboard</requirement>
+        <requirement type="package" version="2.3.0">ray-default</requirement>
+    </requirements>
+    <command detect_errors="aggressive">
+    <![CDATA[
+    python '$__tool_directory__/test-ray.py' > stdout.txt
+    ]]>
+    </command>
+    <inputs>
+        <param name="input" type="text" label="Dummy input" />
+    </inputs>
+    <outputs>
+        <data format="txt" name="stdout" from_work_dir="stdout.txt" />
+    </outputs>
+    <tests>
+        <test>
+            <output name="stdout" value="stdout.txt" ftype="txt" compare="diff" />
+        </test>
+    </tests>
+    <help>
+        This tool tests ray.
+    </help>
+    <citations>
+        <citation type="bibtex">@article{dummy_citation}</citation>
+    </citations>
+</tool>
