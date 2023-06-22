@@ -17,18 +17,17 @@
     </requirements>
     <command detect_errors="aggressive">
     <![CDATA[
-    python '$__tool_directory__/test-ray.py' '$input' > stdout.txt
+    python '$__tool_directory__/test-ray.py' > stdout.txt
     ]]>
     </command>
     <inputs>
-        <param name="input" type="data" format="png" label="Input image" />
+        <param name="input" type="text" value="" label="Dummy input" />
     </inputs>
     <outputs>
         <data format="txt" name="stdout" from_work_dir="stdout.txt" />
     </outputs>
     <tests>
         <test>
-            <param name="input" value="test.png" />
             <output name="stdout" value="stdout.txt" ftype="txt" compare="diff" />
         </test>
     </tests>
