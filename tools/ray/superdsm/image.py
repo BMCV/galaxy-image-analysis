@@ -1,5 +1,3 @@
-from .io import imread
-
 import numpy as np
 
 
