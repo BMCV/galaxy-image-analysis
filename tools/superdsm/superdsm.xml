@@ -3,8 +3,6 @@
    <requirements> 
         <requirement type="package" version="0.1.2">superdsm</requirement>
         <requirement type="package" version="2.3.0">ray-core</requirement>
-        <requirement type="package" version="2.3.0">ray-dashboard</requirement>
-        <requirement type="package" version="2.3.0">ray-default</requirement>
         <requirement type="package" version="0.18.1">scikit-image</requirement>
    </requirements>
    <command detect_errors="aggressive">
