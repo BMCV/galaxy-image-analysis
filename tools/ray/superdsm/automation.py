@@ -43,19 +43,7 @@ def _estimate_scale(im, min_radius=20, max_radius=200, num_radii=10, thresholds=
     sigma_list = np.linspace(min_radius, max_radius, num_radii) / math.sqrt(2)
     sigma_list = np.concatenate([[sigma_list.min() / 2], sigma_list])
     
-    im_norm = im
-
-    blobs_mask  = {sigma: ndi.gaussian_laplace(im_norm, sigma) < 0 for sigma in sigma_list}
-    mean_radius = None
-    for threshold in sorted(thresholds, reverse=True):
-        blobs_doh = _blob_doh(im_norm, sigma_list, threshold=threshold, mask=blobs_mask)
-        blobs_doh = blobs_doh[~np.isclose(blobs_doh[:,2], sigma_list.min())]
-        if len(blobs_doh) == 0: continue
-
-        radii = blobs_doh[:,2] * math.sqrt(2)
-        radii_median  = np.median(radii)
-        radii_mad     = np.mean(np.abs(radii - np.median(radii)))
-        radii_bound   = np.inf if np.isinf(inlier_tol) else radii_mad * inlier_tol
-        radii_inliers = np.logical_and(radii >= radii_median - radii_mad, radii <= radii_median + radii_mad)
-        mean_radius   = np.mean(radii[radii_inliers])
-        break
+    blobs_mask = {sigma: ndi.gaussian_laplace(im, sigma) < 0 for sigma in sigma_list}
+    threshold = sorted(thresholds)[-1]
+    blobs_doh = _blob_doh(im, sigma_list, threshold=threshold, mask=blobs_mask)
+    blobs_doh = blobs_doh[~np.isclose(blobs_doh[:,2], sigma_list.min())]
