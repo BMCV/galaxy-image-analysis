@@ -112,7 +112,7 @@ class C2F_RegionAnalysis(Stage):
 
     def __init__(self):
         super(C2F_RegionAnalysis, self).__init__('c2f-region-analysis',
-                                                 inputs  = ['y', 'dsm_cfg'],
+                                                 inputs  = ['g_raw'],
                                                  outputs = ['y_mask', 'atoms', 'adjacencies', 'seeds', 'clusters'])
 
     def process(self, input_data, cfg, out, log_root_dir):
@@ -122,11 +122,8 @@ class C2F_RegionAnalysis(Stage):
         min_norm_energy_improvement = cfg.get('min_norm_energy_improvement', 0.1)
         max_cluster_marker_irregularity = cfg.get('max_cluster_marker_irregularity', 0.2)
 
-        dsm_cfg = copy_dict(input_data['dsm_cfg'])
-        dsm_cfg['smooth_amount'] = np.inf
-        
         out.intermediate(f'Analyzing cluster markers...')
-        y = Image.create_from_array(input_data['y'], normalize=False)
+        y = Image.create_from_array(input_data['g_raw'], normalize=False)
         fg_mask = (y.model > 0)
         fg_bd   = np.logical_xor(fg_mask, morph.binary_erosion(fg_mask, morph.disk(1)))
         y_mask  = np.ones(y.model.shape, bool)
@@ -146,7 +143,7 @@ class C2F_RegionAnalysis(Stage):
         atom_candidate_by_label = {}
         
         y_id = ray.put(y)
-        dsm_cfg_id = ray.put(dsm_cfg)
+        dsm_cfg_id = ray.put(None)
         y_mask_id = ray.put(y_mask)
         clusters_id = ray.put(clusters)
         futures = [process_cluster.remote(clusters_id, cluster_label, y_id, y_mask_id, max_atom_norm_energy, min_atom_radius, min_norm_energy_improvement, dsm_cfg_id, seed_connectivity) for cluster_label in frozenset(clusters.reshape(-1)) - {0}]

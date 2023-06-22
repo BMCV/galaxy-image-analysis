@@ -223,13 +223,9 @@ def create_pipeline(stages):
 
 
 def create_default_pipeline():
-    from .preprocess import Preprocessing
-    from .dsmcfg import DSM_Config
     from .c2freganal import C2F_RegionAnalysis
 
     stages = [
-        Preprocessing(),
-        DSM_Config(),
         C2F_RegionAnalysis(),
     ]
 
