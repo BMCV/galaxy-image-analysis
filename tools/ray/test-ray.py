@@ -1,8 +1,6 @@
-import ray
-
 import numpy as np
+import ray
 import scipy.ndimage as ndi
-
 
 if __name__ == "__main__":
     ray.init(num_cpus=1, log_to_driver=True)
