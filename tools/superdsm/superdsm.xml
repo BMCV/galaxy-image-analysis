@@ -13,6 +13,7 @@
    'masks.png'
    'overlay.png'
    $seg_border
+   \${GALAXY_SLOTS:-4}
    > stdout.txt
    ]]>
    </command>
