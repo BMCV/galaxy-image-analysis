@@ -1,0 +1,48 @@
+<tool id="ip_superdsm" name="SuperDSM" version="0.1.2-1" profile="20.05">
+   <description>globally optimal segmentation method based on superadditivity and deformable shape models for cell nuclei in fluorescence microscopy images</description>
+   <requirements> 
+        <requirement type="package" version="0.1.2">superdsm</requirement>
+        <requirement type="package" version="1.6.0">ray-core</requirement>
+        <requirement type="package" version="0.18.1">scikit-image</requirement>
+   </requirements>
+   <command detect_errors="aggressive">
+   <![CDATA[
+   python '$__tool_directory__/run-superdsm.py'
+   '${dataset}'
+   'cfg.json'
+   'masks.png'
+   'overlay.png'
+   $seg_border
+   \${GALAXY_SLOTS:-4}
+   > stdout.txt
+   ]]>
+   </command>
+   <inputs>
+        <param name="dataset" type="data" format="tiff,png" label="Dataset" />
+        <param name="seg_border" type="integer" min="1" value="8" label="Width of the outlines (in pixels) of the segmentation results (overlays)" />
+        <!--
+        <section name="config" title="Hyperparameters" expanded="false">
+        </section>
+        -->
+    </inputs>
+    <outputs>
+        <data format="txt" name="stdout" from_work_dir="stdout.txt" label="${tool.name} on ${on_string}: stdout" />
+        <data format="json" name="cfg" from_work_dir="cfg.json" label="${tool.name} on ${on_string}: cfg" />
+        <data format="png" name="masks" from_work_dir="masks.png" label="${tool.name} on ${on_string}: masks" />
+        <data format="png" name="overlay" from_work_dir="overlay.png" label="${tool.name} on ${on_string}: overlay" />
+    </outputs>
+    <tests>
+        <test>
+            <param name="dataset" value="BBBC033_C2_z28.png" />
+            <output name="overlay" value="overlay.png" ftype="png" compare="sim_size" />
+        </test>
+    </tests>
+    <help>
+        This tool permits the segmentation of cell nuclei in 2-D fluorescence microscopy images.
+
+        You can either use an individual input image (PNG, TIF) or a collection of such images.
+    </help>
+    <citations>
+        <citation type="doi">10.1109/TPAMI.2022.3185583</citation>
+    </citations>
+</tool>
