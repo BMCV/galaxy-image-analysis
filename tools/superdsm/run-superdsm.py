@@ -19,6 +19,37 @@ import superdsm.io
 import superdsm.render
 
 
+hyperparameters = [
+    ('AF_scale', float),
+    ('c2f_region_analysis/min_atom_radius', float),
+    ('c2f_region_analysis_min_norm_energy_improvement', float),
+    ('c2f_region_analysis_max_atom_norm_energy', float),
+    ('c2f_region_analysis_max_cluster_marker_irregularity', float),
+    ('dsm_alpha', float),
+    ('dsm_AF_alpha', float),
+    ('global_energy_minimization_betai', float),
+    ('global_energy_minimization_AF_beta', float),
+    ('postprocess_mask_max_distance', int),
+    ('postprocess_mask_stdamp', float),
+    ('postprocess_max_norm_energy', float),
+    ('postprocess_min_contrast', float),
+    ('postprocess_min_object_radius', float),
+]
+
+
+def get_param_name(key):
+    return key.replace('/', '_')
+
+
+def create_config(args):
+    cfg = superdsm.config.Config()
+    for key, _ in hyperparameters:
+        value = getattr(args, get_param_name(key))
+        if value is not None:
+            cfg[key] = value
+    return cfg
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Segmentation of cell nuclei in 2-D fluorescence microscopy images')
     parser.add_argument('image', help='Path to the input image')
@@ -27,6 +58,8 @@ if __name__ == "__main__":
     parser.add_argument('overlay', help='Path to the file containing the overlay of the segmentation results')
     parser.add_argument('seg_border', type=int)
     parser.add_argument('slots', type=int)
+    for key, ptype in hyperparameters:
+        parser.add_argument('--' + get_param_name(key), type=ptype, default=None)
     args = parser.parse_args()
 
     if args.slots >= 2:
@@ -49,7 +82,7 @@ if __name__ == "__main__":
         shutil.copy(str(args.image), img_filepath)
 
         pipeline = superdsm.pipeline.create_default_pipeline()
-        cfg = superdsm.config.Config()
+        cfg = create_config(args)
         img = superdsm.io.imread(img_filepath)
         data, cfg, _ = superdsm.automation.process_image(pipeline, cfg, img)
 
