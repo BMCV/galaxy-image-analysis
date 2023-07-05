@@ -1,7 +1,7 @@
-<tool id="ip_superdsm" name="SuperDSM" version="0.1.2-1" profile="20.05">
+<tool id="ip_superdsm" name="SuperDSM" version="0.1.3" profile="20.05">
    <description>globally optimal segmentation method based on superadditivity and deformable shape models for cell nuclei in fluorescence microscopy images</description>
    <requirements> 
-        <requirement type="package" version="0.1.2">superdsm</requirement>
+        <requirement type="package" version="0.1.3">superdsm</requirement>
         <requirement type="package" version="1.6.0">ray-core</requirement>
         <requirement type="package" version="0.18.1">scikit-image</requirement>
    </requirements>
@@ -14,19 +14,71 @@
    'overlay.png'
    $seg_border
    \${GALAXY_SLOTS:-4}
-   > stdout.txt
+   #if str($config.AF_scale) != '':
+       --AF_scale '${config.AF_scale}'
+   #end if
+   #if str($config.c2f_region_analysis_min_atom_radius) != '':
+       --c2f_region_analysis_min_atom_radius '${config.c2f_region_analysis_min_atom_radius}'
+   #end if
+   #if str($config.c2f_region_analysis_min_norm_energy_improvement) != '':
+       --c2f_region_analysis_min_norm_energy_improvement '${config.c2f_region_analysis_min_norm_energy_improvement}'
+   #end if
+   #if str($config.c2f_region_analysis_max_atom_norm_energy) != '':
+       --c2f_region_analysis_max_atom_norm_energy '${config.c2f_region_analysis_max_atom_norm_energy}'
+   #end if
+   #if str($config.c2f_region_analysis_max_cluster_marker_irregularity) != '':
+       --c2f_region_analysis_max_cluster_marker_irregularity '${config.c2f_region_analysis_max_cluster_marker_irregularity}'
+   #end if
+   #if str($config.dsm_alpha) != '':
+       --dsm_alpha '${config.dsm_alpha}'
+   #end if
+   #if str($config.dsm_AF_alpha) != '':
+       --dsm_AF_alpha '${config.dsm_AF_alpha}'
+   #end if
+   #if str($config.global_energy_minimization_beta) != '':
+       --global_energy_minimization_beta '${config.global_energy_minimization_beta}'
+   #end if
+   #if str($config.global_energy_minimization_AF_beta) != '':
+       --global_energy_minimization_AF_beta '${config.global_energy_minimization_AF_beta}'
+   #end if
+   #if str($config.postprocess_mask_max_distance) != '':
+       --postprocess_mask_max_distance '${config.postprocess_mask_max_distance}'
+   #end if
+   #if str($config.postprocess_mask_stdamp) != '':
+       --postprocess_mask_stdamp '${config.postprocess_mask_stdamp}'
+   #end if
+   #if str($config.postprocess_max_norm_energy) != '':
+       --postprocess_max_norm_energy '${config.postprocess_max_norm_energy}'
+   #end if
+   #if str($config.postprocess_min_contrast) != '':
+       --postprocess_min_contrast '${config.postprocess_min_contrast}'
+   #end if
+   #if str($config.postprocess_min_object_radius) != '':
+       --postprocess_min_object_radius '${config.postprocess_min_object_radius}'
+   #end if
    ]]>
    </command>
    <inputs>
         <param name="dataset" type="data" format="tiff,png" label="Dataset" />
         <param name="seg_border" type="integer" min="1" value="8" label="Width of the outlines (in pixels) of the segmentation results (overlays)" />
-        <!--
         <section name="config" title="Hyperparameters" expanded="false">
+            <param argument="--AF_scale" optional="true" type="float" value="" min="0" label="scale σ" help="The scale of the objects to be segmented. Leave empty to use the automatically determined value." />
+            <param argument="--c2f_region_analysis_min_atom_radius" optional="true" type="float" value="" min="0" label="min_atom_radius" help="No region determined by the Coarse-to-fine region analysis scheme is smaller than a circle of this radius (in terms of the surface area). Leave empty to use the automatically determined value." />
+            <param argument="--c2f_region_analysis_min_norm_energy_improvement" type="float" value="0.1" min="0" label="min_norm_energy_improvement" help="Each split performed during the computation of the atomic image regions must improve the normalized energy 𝑟(𝜔) of an image region 𝜔 by at least this factor. Given that an image region is split into the sub-regions 𝜔₁, 𝜔₂, the improvement of the split is defined by the fraction max{𝑟(𝜔)₁, 𝑟(𝜔₂)} / 𝑟(𝜔₁ ∪ 𝜔₂). Lower values of the fraction correspond to better improvements." />
+            <param argument="--c2f_region_analysis_max_atom_norm_energy" type="float" value="0.05" min="0" label="max_norm_energy1" help="No atomic image region 𝜔 determined by the Coarse-to-fine region analysis has a normalized energy 𝑟(𝜔) smaller than this value." />
+            <param argument="--c2f_region_analysis_max_cluster_marker_irregularity" type="float" value="0.2" min="0" label="max_pa_ratio" help="Threshold for the “irregularity” of image regions. Image regions with an “irregularity” higher than this value are masked as “empty” image regions and discarded from further considerations." />
+            <param argument="--dsm_alpha" type="float" value="" optional="true" min="0" label="regularization of the deformations 𝛼" help="Governs the regularization of the deformations. Increasing this value leads to a smoother segmentation result. Leave empty to use the automatically determined value." />
+            <param argument="--dsm_AF_alpha" type="float" value="0.0005" min="0" label="factor used for automatic computation of 𝛼" />
+            <param argument="--global_energy_minimization_beta" type="float" value="" optional="true" min="0" label="sparsity 𝛽" help="Increasing this value leads to a sparser segmentation result. Leave empty to use the automatically determined value." />
+            <param argument="--global_energy_minimization_AF_beta" type="float" value="0.66" min="0" label="factor used for automatic computation of 𝛽" />
+            <param argument="--postprocess_mask_max_distance" type="integer" value="1" min="0" label="mask_max_distance" help="Image points within this maximum distance of the boundary of the original segmentation mask are subject to refinement in post-processing. Image points further away from the boundary are neither added to nor removed from the segmentation mask." />
+            <param argument="--postprocess_mask_stdamp" type="float" value="2" min="0" label="mask_stdamp" help="An image point adjacent to the boundary of the original segmentation mask is added to the segmentation mask in post-processing, if its Gaussian-smoothed intensity is sufficiently similar to the mean intensity of the mask. The image point is removed otherwise. The lower the value set, the stricter the similarity must be." />
+            <param argument="--postprocess_max_norm_energy" type="float" value="0.2" label="max_norm_energy2" help="Objects with a normalized energy larger than this value are discarded in post-processing." />
+            <param argument="--postprocess_min_contrast" type="float" value="1.35" label="min_contrast" help="A segmented object is discarded in post-processing, if the contrast as defined above is below this threshold." />
+            <param argument="--postprocess_min_object_radius" type="float" value="0" label="min_object_radius" help="Objects smaller than a circle of this radius are discarded in post-processing (in terms of the surface area)." />
         </section>
-        -->
     </inputs>
     <outputs>
-        <data format="txt" name="stdout" from_work_dir="stdout.txt" label="${tool.name} on ${on_string}: stdout" />
         <data format="json" name="cfg" from_work_dir="cfg.json" label="${tool.name} on ${on_string}: cfg" />
         <data format="png" name="masks" from_work_dir="masks.png" label="${tool.name} on ${on_string}: masks" />
         <data format="png" name="overlay" from_work_dir="overlay.png" label="${tool.name} on ${on_string}: overlay" />
