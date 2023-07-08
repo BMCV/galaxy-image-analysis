@@ -1,4 +1,4 @@
-<tool id="ip_count_objects" name="Count Objects" version="0.0.4">
+<tool id="ip_count_objects" name="Count Objects" version="0.0.5">
     <description>in labled images</description>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
@@ -11,7 +11,7 @@
     ]]>
     </command>
     <inputs> 
-        <param name="input" type="data" format="tiff" label="Source file" />
+        <param name="input" type="data" format="tiff,png" label="Source file" />
     </inputs>
     <outputs>
         <data format="tabular" name="output" />
