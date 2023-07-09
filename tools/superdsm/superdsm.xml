@@ -4,6 +4,8 @@
         <requirement type="package" version="0.1.3">superdsm</requirement>
         <requirement type="package" version="1.6.0">ray-core</requirement>
         <requirement type="package" version="0.18.1">scikit-image</requirement>
+        <requirement type="package" version="2020.0">mkl</requirement>
+        <requirement type="package" version="*=mkl">blas</requirement>
    </requirements>
    <command detect_errors="aggressive">
    <![CDATA[
