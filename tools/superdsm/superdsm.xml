@@ -1,4 +1,4 @@
-<tool id="ip_superdsm" name="SuperDSM" version="0.1.3" profile="20.05">
+<tool id="ip_superdsm" name="SuperDSM" version="0.1.3-1" profile="20.05">
     <description>globally optimal segmentation method based on superadditivity and deformable shape models for cell nuclei in fluorescence microscopy images</description>
     <requirements> 
         <requirement type="package" version="0.1.3">superdsm</requirement>
