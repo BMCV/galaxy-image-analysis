@@ -66,7 +66,6 @@ if __name__ == "__main__":
 
     os.environ['MKL_NUM_THREADS'] = str(num_threads_per_process)
     os.environ['OPENBLAS_NUM_THREADS'] = str(num_threads_per_process)
-    os.environ['MKL_DEBUG_CPU_TYPE'] = '5'
 
     import ray
     import superdsm.automation

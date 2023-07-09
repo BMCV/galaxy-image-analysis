@@ -1,66 +1,69 @@
 <tool id="ip_superdsm" name="SuperDSM" version="0.1.3" profile="20.05">
-   <description>globally optimal segmentation method based on superadditivity and deformable shape models for cell nuclei in fluorescence microscopy images</description>
-   <requirements> 
+    <description>globally optimal segmentation method based on superadditivity and deformable shape models for cell nuclei in fluorescence microscopy images</description>
+    <requirements> 
         <requirement type="package" version="0.1.3">superdsm</requirement>
         <requirement type="package" version="1.6.0">ray-core</requirement>
         <requirement type="package" version="0.18.1">scikit-image</requirement>
         <requirement type="package" version="2020.0">mkl</requirement>
         <requirement type="package" version="*=mkl">blas</requirement>
-   </requirements>
-   <command detect_errors="aggressive">
-   <![CDATA[
-   python '$__tool_directory__/run-superdsm.py'
-   '${dataset}'
-   'cfg.json'
-   'masks.png'
-   'overlay.png'
-   $seg_border
-   \${GALAXY_SLOTS:-4}
-   #if str($config.AF_scale) != '':
-       --AF_scale '${config.AF_scale}'
-   #end if
-   #if str($config.c2f_region_analysis_min_atom_radius) != '':
-       --c2f_region_analysis_min_atom_radius '${config.c2f_region_analysis_min_atom_radius}'
-   #end if
-   #if str($config.c2f_region_analysis_min_norm_energy_improvement) != '':
-       --c2f_region_analysis_min_norm_energy_improvement '${config.c2f_region_analysis_min_norm_energy_improvement}'
-   #end if
-   #if str($config.c2f_region_analysis_max_atom_norm_energy) != '':
-       --c2f_region_analysis_max_atom_norm_energy '${config.c2f_region_analysis_max_atom_norm_energy}'
-   #end if
-   #if str($config.c2f_region_analysis_max_cluster_marker_irregularity) != '':
-       --c2f_region_analysis_max_cluster_marker_irregularity '${config.c2f_region_analysis_max_cluster_marker_irregularity}'
-   #end if
-   #if str($config.dsm_alpha) != '':
-       --dsm_alpha '${config.dsm_alpha}'
-   #end if
-   #if str($config.dsm_AF_alpha) != '':
-       --dsm_AF_alpha '${config.dsm_AF_alpha}'
-   #end if
-   #if str($config.global_energy_minimization_beta) != '':
-       --global_energy_minimization_beta '${config.global_energy_minimization_beta}'
-   #end if
-   #if str($config.global_energy_minimization_AF_beta) != '':
-       --global_energy_minimization_AF_beta '${config.global_energy_minimization_AF_beta}'
-   #end if
-   #if str($config.postprocess_mask_max_distance) != '':
-       --postprocess_mask_max_distance '${config.postprocess_mask_max_distance}'
-   #end if
-   #if str($config.postprocess_mask_stdamp) != '':
-       --postprocess_mask_stdamp '${config.postprocess_mask_stdamp}'
-   #end if
-   #if str($config.postprocess_max_norm_energy) != '':
-       --postprocess_max_norm_energy '${config.postprocess_max_norm_energy}'
-   #end if
-   #if str($config.postprocess_min_contrast) != '':
-       --postprocess_min_contrast '${config.postprocess_min_contrast}'
-   #end if
-   #if str($config.postprocess_min_object_radius) != '':
-       --postprocess_min_object_radius '${config.postprocess_min_object_radius}'
-   #end if
-   ]]>
-   </command>
-   <inputs>
+    </requirements>
+    <command detect_errors="aggressive">
+    <![CDATA[
+    python '$__tool_directory__/run-superdsm.py'
+    '${dataset}'
+    'cfg.json'
+    'masks.png'
+    'overlay.png'
+    $seg_border
+    \${GALAXY_SLOTS:-4}
+    #if str($config.AF_scale) != '':
+        --AF_scale '${config.AF_scale}'
+    #end if
+    #if str($config.c2f_region_analysis_min_atom_radius) != '':
+        --c2f_region_analysis_min_atom_radius '${config.c2f_region_analysis_min_atom_radius}'
+    #end if
+    #if str($config.c2f_region_analysis_min_norm_energy_improvement) != '':
+        --c2f_region_analysis_min_norm_energy_improvement '${config.c2f_region_analysis_min_norm_energy_improvement}'
+    #end if
+    #if str($config.c2f_region_analysis_max_atom_norm_energy) != '':
+        --c2f_region_analysis_max_atom_norm_energy '${config.c2f_region_analysis_max_atom_norm_energy}'
+    #end if
+    #if str($config.c2f_region_analysis_max_cluster_marker_irregularity) != '':
+        --c2f_region_analysis_max_cluster_marker_irregularity '${config.c2f_region_analysis_max_cluster_marker_irregularity}'
+    #end if
+    #if str($config.dsm_alpha) != '':
+        --dsm_alpha '${config.dsm_alpha}'
+    #end if
+    #if str($config.dsm_AF_alpha) != '':
+        --dsm_AF_alpha '${config.dsm_AF_alpha}'
+    #end if
+    #if str($config.global_energy_minimization_beta) != '':
+        --global_energy_minimization_beta '${config.global_energy_minimization_beta}'
+    #end if
+    #if str($config.global_energy_minimization_AF_beta) != '':
+        --global_energy_minimization_AF_beta '${config.global_energy_minimization_AF_beta}'
+    #end if
+    #if str($config.postprocess_mask_max_distance) != '':
+        --postprocess_mask_max_distance '${config.postprocess_mask_max_distance}'
+    #end if
+    #if str($config.postprocess_mask_stdamp) != '':
+        --postprocess_mask_stdamp '${config.postprocess_mask_stdamp}'
+    #end if
+    #if str($config.postprocess_max_norm_energy) != '':
+        --postprocess_max_norm_energy '${config.postprocess_max_norm_energy}'
+    #end if
+    #if str($config.postprocess_min_contrast) != '':
+        --postprocess_min_contrast '${config.postprocess_min_contrast}'
+    #end if
+    #if str($config.postprocess_min_object_radius) != '':
+        --postprocess_min_object_radius '${config.postprocess_min_object_radius}'
+    #end if
+    ]]>
+    </command>
+    <environment_variables>
+        <environment_variable name="MKL_DEBUG_CPU_TYPE">5</environment_variable>
+    </environment_variables>
+    <inputs>
         <param name="dataset" type="data" format="tiff,png" label="Dataset" />
         <param name="seg_border" type="integer" min="1" value="8" label="Width of the outlines (in pixels) of the segmentation results (overlays)" />
         <section name="config" title="Hyperparameters" expanded="false">
