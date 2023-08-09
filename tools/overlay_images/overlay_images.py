@@ -1,19 +1,20 @@
 """
-Copyright 2022 Biomedical Computer Vision Group, Heidelberg University.
+Copyright 2022-2023 Biomedical Computer Vision Group, Heidelberg University.
 
 Distributed under the MIT license.
 See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
-
 """
 
 import argparse
 
+import matplotlib.colors
 import matplotlib.pyplot as plt
 import numpy as np
 import skimage.color
 import skimage.io
 import skimage.measure
 import tifffile
+from contours import ContourPaint
 
 
 def read_im_gray(fn):
@@ -26,6 +27,21 @@ def read_im_gray(fn):
         return img[:, :, 0]
     else:
         return img
+
+
+def get_rgb8_copy(img):
+    img = np.squeeze(img)
+    assert img.ndim == 2 or (img.ndim == 3 and img.shape[-1] in (3, 4))
+    if str(img.dtype).startswith('float'):
+        img = np.round(img * 255).astype('uint8')
+    elif img.dtype == 'uint16':
+        img = img // 256
+    elif img.dtype != 'uint8':
+        raise ValueError(f'unknown dtype: {img.dtype}')
+    if img.ndim == 2:
+        return np.dstack([img] * 3).copy()
+    else:
+        return img[:, :, :3].copy()
 
 
 def coloc_vis(in_red_fn, in_green_fn, out_fn):
@@ -53,23 +69,32 @@ def blending(im1_fn, im2_fn, out_fn, alpha=0.5):
         skimage.io.imsave(out_fn, out_im.astype(im1.dtype))  # format of output is the same as input
 
 
-def seg_contour(im1_fn, im2_fn, out_fn, linewidth=0.3, color='#ff0000', show_label=False):
+def seg_contour(im1_fn, im2_fn, out_fn, linewidth, color='#ff0000', show_label=False, label_color='#ffff00'):
     img = skimage.io.imread(im1_fn)
-    label = skimage.io.imread(im2_fn)
+    labels = skimage.io.imread(im2_fn)
 
-    fig = plt.figure()
-    ax = fig.add_axes([0, 0, 1, 1])
-    ax.axis('off')
+    result = get_rgb8_copy(img)
+    cp = ContourPaint(labels, linewidth, where='center')
+    color_rgb = np.multiply(255, matplotlib.colors.to_rgb(color))
+
+    for label in np.unique(labels):
+        if label > 0:
+            cc = (labels == label)
+            bd = cp.get_contour_mask(cc)
+            for i in range(3):
+                result[:, :, i][bd] = color_rgb[i]
+
     if show_label:
-        for reg in skimage.measure.regionprops(label):
-            ax.text(reg.centroid[1], reg.centroid[0], str(reg.label), color=color)
+        fig = plt.figure(figsize=np.divide(img.shape[:2][::-1], 100), dpi=100)
+        ax = fig.add_axes([0, 0, 1, 1])
+        ax.axis('off')
+        ax.imshow(result)
+        for reg in skimage.measure.regionprops(labels):
+            ax.text(reg.centroid[1], reg.centroid[0], str(reg.label), color=label_color)
+        fig.canvas.print_png(out_fn)
 
-    if len(img.shape) == 2:
-        plt.imshow(img, cmap=plt.cm.gray)
     else:
-        plt.imshow(img)
-    plt.contour(label, linewidths=linewidth, colors=color)
-    fig.canvas.print_png(out_fn)  # output is RGB
+        skimage.io.imsave(out_fn, result)  # format of output is RGB8
 
 
 if __name__ == "__main__":
@@ -79,9 +104,10 @@ if __name__ == "__main__":
     parser.add_argument("out", help="Output image")
     parser.add_argument('--method', dest='method', default='coloc_vis', help='How to overlay images')
     parser.add_argument('--alpha', dest='alpha', default=0.5, type=float, help='Blending weight')
-    parser.add_argument('--thickness', dest='thickness', default=0.3, type=float, help='Contour thickness')
-    parser.add_argument('--color', dest='color', default='#FFFF00', help='Contour color')
-    parser.add_argument('--show_label', dest='show_label', action='store_true', help='Plot label')
+    parser.add_argument('--thickness', dest='thickness', default=2, type=int, help='Contour thickness')
+    parser.add_argument('--color', dest='color', default='#FF0000', help='Contour color')
+    parser.add_argument('--show_label', dest='show_label', action='store_true', help='Show labels')
+    parser.add_argument('--label_color', dest='label_color', default='#FFFF00', help='Label color')
     args = parser.parse_args()
 
     if args.method == 'coloc_vis':
@@ -92,4 +118,5 @@ if __name__ == "__main__":
         seg_contour(args.im1, args.im2, args.out,
                     linewidth=args.thickness,
                     color=args.color,
-                    show_label=args.show_label)
+                    show_label=args.show_label,
+                    label_color=args.label_color)
