@@ -1,4 +1,4 @@
-<tool id="ip_overlay_images" name="Overlay Images" version="0.0.2" profile="20.05"> 
+<tool id="ip_overlay_images" name="Overlay Images" version="0.0.3" profile="20.05"> 
     <description>for visualization</description>
     <requirements>
         <requirement type="package" version="0.18.1">scikit-image</requirement> 
@@ -15,8 +15,9 @@
             --alpha $method_option.alpha
         #elif $method_option.method == "seg_contour"
             --thickness $method_option.thickness
-            --color '$method_option.colour'
+            --color '$method_option.color'
             $method_option.show_label
+            --label_color '$method_option.label_color'
         #end if
     ]]>
     </command>
@@ -39,9 +40,10 @@
             <when value="seg_contour">
                 <param name="im1" type="data" format="tiff,png" label="Image" />
                 <param name="im2" type="data" format="tiff,png" label="Label image" />
-                <param name="thickness" type="float" value="0.3" label="Contour thickness" />
-                <param name="colour" type="color" value="#ff0000" label="Contour color"/>
+                <param name="thickness" type="integer" value="2" min="1" label="Contour thickness (in pixels)" />
+                <param name="color" type="color" value="#ff0000" label="Contour color"/>
                 <param argument="--show_label" type="boolean" checked='false' truevalue="--show_label" falsevalue="" label="Show labels" />
+                <param name="label_color" type="color" value="#ffff00" label="Label color"/>
             </when>
         </conditional>
     </inputs>
@@ -66,10 +68,18 @@
             <param name="im1" value="sample1.tif"/>
             <param name="im2" value="mask1.tif"/>
             <param name="method" value="seg_contour"/>
-            <param name="thickness" value="0.4"/>
-            <param name="colour" value="#ffaa00"/>
+            <param name="thickness" value="2"/>
+            <param name="color" value="#ff0000"/>
             <param name="show_label" value="--show_label"/>
-            <output name="out" value="test3.tif" ftype="tiff" compare="sim_size" delta="20000" delta_frac="0.2"/>
+            <output name="out" value="test3.tif" ftype="tiff" compare="sim_size" delta_frac="0.1"/>
+        </test>
+        <test>
+            <param name="im1" value="sample1.tif"/>
+            <param name="im2" value="mask2.tif"/>
+            <param name="method" value="seg_contour"/>
+            <param name="thickness" value="2"/>
+            <param name="color" value="#ff0000"/>
+            <output name="out" value="test4.tif" ftype="tiff" compare="sim_size" delta_frac="0.1"/>
         </test>
     </tests>
     <help>
@@ -78,5 +88,6 @@
     This tool overlays two image to visualize 1) image blending, 2) colocalization, or 3) a segmentation mask over an image.
     </help>
     <citations>
+        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
     </citations>
 </tool>
