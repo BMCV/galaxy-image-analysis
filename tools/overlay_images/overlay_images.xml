@@ -88,5 +88,6 @@
     This tool overlays two image to visualize 1) image blending, 2) colocalization, or 3) a segmentation mask over an image.
     </help>
     <citations>
+        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
     </citations>
 </tool>
