@@ -27,7 +27,7 @@
         #if $tile_options['extract'] == 'True'
           -tilex $tile_options.tile_x -tiley $tile_options.tile_y
         #end if
-        #if $pyramid_options.generate == 'True'
+        #if $pyramid_options.generate == 'True' or ($pyramid_options.generate == 'Auto' and $out_format not in ['png', 'jpg', 'eps', 'avi'])
           -pyramid-resolutions $pyramid_options.pyramid_resolutions
           -pyramid-scale $pyramid_options.pyramid_scale
         #end if
@@ -36,7 +36,7 @@
         #if $compression != 'False'
           -compression $compression
         #end if  
-        '$input_file' './res.$out_format'  &&
+        '$input_file' './res.$out_format' &&
         mv './res.$out_format' ./result_image
         ]]>
   </command>
@@ -129,9 +129,14 @@
     </conditional>
     <conditional name="pyramid_options">
         <param label="Pyramid image" name="generate" type="select">
-            <option selected="True" value="True">Generate Pyramid</option>
+            <option selected="True" value="Auto">Default</option>
+            <option value="True">Generate Pyramid</option>
             <option value="False">No Pyramid</option>
         </param>
+        <when value="Auto">
+            <param name="pyramid_resolutions" type="integer" value="4" label="Pyramid Resolutions"/>
+            <param name="pyramid_scale" type="integer" value="2" label="Pyramid Scale" />
+        </when>
         <when value="True">
             <param name="pyramid_resolutions" type="integer" value="4" label="Pyramid Resolutions"/>
             <param name="pyramid_scale" type="integer" value="2" label="Pyramid Scale" />
@@ -177,6 +182,11 @@
                 <param name="pyramid_scale" value="2"/>
             </conditional>
             <output name="output" value="res.ome.tiff" ftype="ome.tiff" compare="sim_size"/>
+        </test>
+        <test>
+            <param name="input_file" value="input.tiff" />
+            <param name="out_format" value="png" />
+            <output name="output" value="input.tiff.png" ftype="png" compare="sim_size"/>
         </test>
   </tests>    
   <help>
