@@ -136,6 +136,7 @@
             <param name="pyramid_resolutions" type="integer" value="4" label="Pyramid Resolutions"/>
             <param name="pyramid_scale" type="integer" value="2" label="Pyramid Scale" />
         </when>
+        <when value="False" />
     </conditional>
     <param name="bigtiff" label="Big TIFF" type="boolean" checked="false" truevalue="-bigtiff" falsevalue=""/>
     <param name="noflat" label="No Flatten" type="boolean" checked="true" truevalue="-noflat" falsevalue=""/>
@@ -170,9 +171,11 @@
         <test>
             <param name="input_file" value="input.png" />
             <param name="out_format" value="ome.tiff" />
-            <param name="pyramid_options.generate" value="True"/>
-            <param name="pyramid_options.pyramid_resolutions" value="4"/>
-            <param name="pyramid_options.pyramid_scale" value="2"/>
+            <conditional name="pyramid_options">
+                <param name="generate" value="True"/>
+                <param name="pyramid_resolutions" value="4"/>
+                <param name="pyramid_scale" value="2"/>
+            </conditional>
             <output name="output" value="res.ome.tiff" ftype="ome.tiff" compare="sim_size"/>
         </test>
   </tests>    
