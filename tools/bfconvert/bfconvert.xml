@@ -1,4 +1,4 @@
-<tool id="ip_convertimage" name="Convert image" version="6.7.0+galaxy0"> 
+<tool id="ip_convertimage" name="Convert image" version="6.7.0+galaxy1"> 
   <description>Convert image</description>
   <requirements>
       <requirement type="package" version="6.7.0">bftools</requirement>
