@@ -6,4 +6,4 @@ description: Overlay two images
 long_description: |
   This tool overlays two image to visualize 1) image blending, 2) colocalization, and 3) a segmentation mask over an image.
 homepage_url: https://github.com/BMCV/galaxy-image-analysis
-remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tree/master/tools/overlay_images/
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tree/master/tree/master/tools/overlay_images/

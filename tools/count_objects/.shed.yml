@@ -5,4 +5,4 @@ long_description: Count objects in an image
 name: count_objects
 owner: imgteam
 homepage_url: https://github.com/bmcv
-remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tools/count_objects/
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tree/master/tools/count_objects/

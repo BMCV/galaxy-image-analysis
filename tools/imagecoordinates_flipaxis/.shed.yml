@@ -5,4 +5,4 @@ long_description: Makes x the horizontal axis (left to right) and y the vertical
 name: imagecoordinates_flipaxis
 owner: imgteam
 homepage_url: https://github.com/bmcv
-remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tools/imagecoordinates_flipaxis/
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tree/master/tools/imagecoordinates_flipaxis/

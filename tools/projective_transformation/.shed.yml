@@ -5,4 +5,4 @@ long_description: This tool performs a projective transformation of the input (m
 name: projective_transformation
 owner: imgteam
 homepage_url: https://github.com/bmcv
-remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tools/projective_transformation/
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tree/master/tools/projective_transformation/
