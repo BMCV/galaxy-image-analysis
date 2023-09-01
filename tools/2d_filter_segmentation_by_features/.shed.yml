@@ -5,4 +5,4 @@ long_description: Filter segmentation by features
 name: 2d_filter_segmentation_by_features
 owner: imgteam
 homepage_url: https://github.com/bmcv
-remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tools/2d_filter_segmentation_by_features/
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tree/master/tools/2d_filter_segmentation_by_features/

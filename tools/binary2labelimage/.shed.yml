@@ -5,4 +5,4 @@ long_description: This tools converts a binary image to a label image (every obj
 name: binary2labelimage
 owner: imgteam
 homepage_url: https://github.com/bmcv
-remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tools/binary2labelimage/
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tree/master/tools/binary2labelimage/

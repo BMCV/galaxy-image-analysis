@@ -5,4 +5,4 @@ long_description: This tool converts a label image to points.
 name: labelimage2points
 owner: imgteam
 homepage_url: https://github.com/bmcv
-remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tools/labelimage2points/
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tree/master/tools/labelimage2points/
