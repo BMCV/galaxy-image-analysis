@@ -1,5 +1,5 @@
 <tool id="ip_threshold" name="Threshold image" version="0.0.5-2" profile="20.05">
-   <description>scikit-image</description>
+    <description>scikit-image</description>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
@@ -7,21 +7,21 @@
         <xref type="bio.tools">scikit-image</xref>
         <xref type="biii">scikit-image</xref>
     </xrefs>
-   <requirements> 
+    <requirements> 
         <requirement type="package" version="0.18.1">scikit-image</requirement>
         <requirement type="package" version="2020.10.1">tifffile</requirement>
-   </requirements>
-   <command detect_errors="aggressive">
-   <![CDATA[
-   python '$__tool_directory__/auto_threshold.py'
-   '$input'
-   ./out.tif
-   '$th_method'
-   '$block_size'
-   '$dark_bg'
-   ]]>
-   </command>
-   <inputs>
+    </requirements>
+    <command detect_errors="aggressive">
+    <![CDATA[
+    python '$__tool_directory__/auto_threshold.py'
+    '$input'
+    ./out.tif
+    '$th_method'
+    '$block_size'
+    '$dark_bg'
+    ]]>
+    </command>
+    <inputs>
         <param name="input" type="data" format="tiff,png" label="Input image" />
         <param name="th_method" type="select" label="Thresholding method">
           <option value="otsu" selected="True">Otsu</option>
