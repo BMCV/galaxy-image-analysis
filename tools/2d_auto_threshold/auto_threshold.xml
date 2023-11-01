@@ -1,5 +1,12 @@
-<tool id="ip_threshold" name="Auto Threshold" version="0.0.5" profile="20.05">
-   <description>applies a standard thresholding algorithm to an image</description>
+<tool id="ip_threshold" name="Threshold image" version="0.0.5-2" profile="20.05">
+   <description>scikit-image</description>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="bio.tools">scikit-image</xref>
+        <xref type="biii">scikit-image</xref>
+    </xrefs>
    <requirements> 
         <requirement type="package" version="0.18.1">scikit-image</requirement>
         <requirement type="package" version="2020.10.1">tifffile</requirement>
