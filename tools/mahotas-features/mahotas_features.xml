@@ -1,5 +1,11 @@
-<tool id="ip_mahotas_features" name="Mahotas-features" version="0.7">
-    <description>Compute features using mahotas</description>
+<tool id="ip_mahotas_features" name="Compute image features" version="0.7-2">
+    <description>Mahotas</description>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="biii">mahotas-feature-computation</xref>
+    </xrefs>
     <requirements>
         <requirement type="package" version="1.4.3">mahotas</requirement>
         <requirement type="package" version="4.0.0">pillow</requirement>
