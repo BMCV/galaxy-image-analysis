@@ -1,43 +1,46 @@
-<tool id="ip_segmetrics" name="SegMetrics" version="1.4.0-1" profile="20.05">
-   <description>image segmentation and object detection performance measures</description>
-   <requirements> 
+<tool id="ip_segmetrics" name="Compute image segmentation and object detection performance measures" version="1.4.0-2" profile="20.05">
+    <description>SegMetrics</description>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <requirements> 
         <requirement type="package" version="1.4">segmetrics</requirement>
         <requirement type="package" version="0.23.4">pandas</requirement>
-   </requirements>
-   <command detect_errors="aggressive">
-   <![CDATA[
-   python '$__tool_directory__/run-segmetrics.py'
-   '$input_seg'
-   '$input_gt'
-   ./results.tsv
-   $unzip
-   $is_seg_unique
-   $is_gt_unique
-   #for $m in $measures
-       #set $kwargs = ''
-       #set $suffix = ''
-       #set $is_distance = False
-       #if str($m.measure_type.measure_type_selector) == 'ISBIScore':
-           #set $kwargs = 'min_ref_size=' + str($m.measure_type.min_ref_size) + ', '
-       #elif str($m.measure_type.measure_type_selector) == 'Hausdorff':
-           #set $kwargs = 'mode="' + str($m.measure_type.mode) + '", quantile=' + str($m.measure_type.quantile) + ', '
-           #set $is_distance = True
-       #elif str($m.measure_type.measure_type_selector) == 'NSD':
-           #set $is_distance = True
-       #end if
-       #if $is_distance:
-           #if $m.measure_type.object_based:
-               #set $suffix = '.object_based()'
-           #end if
-       #end if
-       #if str($m.measure_type.aggregation) != '':
-           #set $kwargs = 'aggregation="' + str($m.measure_type.aggregation) + '", ' + $kwargs
-       #end if
-       'sm.${m.measure_type.measure_type_selector}(${kwargs})${suffix}'
-   #end for
-   ]]>
-   </command>
-   <inputs>
+    </requirements>
+    <command detect_errors="aggressive">
+    <![CDATA[
+    python '$__tool_directory__/run-segmetrics.py'
+    '$input_seg'
+    '$input_gt'
+    ./results.tsv
+    $unzip
+    $is_seg_unique
+    $is_gt_unique
+    #for $m in $measures
+        #set $kwargs = ''
+        #set $suffix = ''
+        #set $is_distance = False
+        #if str($m.measure_type.measure_type_selector) == 'ISBIScore':
+            #set $kwargs = 'min_ref_size=' + str($m.measure_type.min_ref_size) + ', '
+        #elif str($m.measure_type.measure_type_selector) == 'Hausdorff':
+            #set $kwargs = 'mode="' + str($m.measure_type.mode) + '", quantile=' + str($m.measure_type.quantile) + ', '
+            #set $is_distance = True
+        #elif str($m.measure_type.measure_type_selector) == 'NSD':
+            #set $is_distance = True
+        #end if
+        #if $is_distance:
+            #if $m.measure_type.object_based:
+                #set $suffix = '.object_based()'
+            #end if
+        #end if
+        #if str($m.measure_type.aggregation) != '':
+            #set $kwargs = 'aggregation="' + str($m.measure_type.aggregation) + '", ' + $kwargs
+        #end if
+        'sm.${m.measure_type.measure_type_selector}(${kwargs})${suffix}'
+    #end for
+    ]]>
+    </command>
+    <inputs>
 
         <param name="input_seg" type="data" format="tiff,png,zip" label="Segmented images" />
         <param name="input_gt"  type="data" format="tiff,png,zip" label="Ground truth images" />
