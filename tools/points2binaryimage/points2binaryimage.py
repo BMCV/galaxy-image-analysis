@@ -1,11 +1,11 @@
 import argparse
-import sys
-import numpy as np
-import skimage.io
-import pandas as pd
 import os
 import warnings
- 
+
+import numpy as np
+import pandas as pd
+import skimage.io
+
 
 def points2binaryimage(point_file, out_file, shape=[500, 500], has_header=False, invert_xy=False):
 
@@ -22,21 +22,22 @@ def points2binaryimage(point_file, out_file, shape=[500, 500], has_header=False,
                 raise IndexError("Point {},{} is out of image with bounds {},{}.".format(int(a_row[0]), int(a_row[1]), shape[0], shape[1]))
 
             if invert_xy:
-                if img.shape[0]<=int(a_row[0]) or img.shape[1]<=int(a_row[1]):
+                if img.shape[0] <= int(a_row[0]) or img.shape[1] <= int(a_row[1]):
                     raise IndexError("Point {},{} is out of image with bounds {},{}.".format(int(a_row[0]), int(a_row[1]), shape[0], shape[1]))
                 else:
                     img[int(a_row[1]), int(a_row[0])] = 32767
             else:
-                if img.shape[0]<=int(a_row[1]) or img.shape[1]<=int(a_row[0]):
+                if img.shape[0] <= int(a_row[1]) or img.shape[1] <= int(a_row[0]):
                     raise IndexError("Point {},{} is out of image with bounds {},{}.".format(int(a_row[1]), int(a_row[0]), shape[0], shape[1]))
                 else:
                     img[int(a_row[0]), int(a_row[1])] = 32767
     else:
-        raise Exception("{} is empty or does not exist.".format(point_file)) # appropriate built-in error?
+        raise Exception("{} is empty or does not exist.".format(point_file))  # appropriate built-in error?
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        skimage.io.imsave(out_file, img, plugin='tifffile') # otherwise we get problems with the .dat extension
+        skimage.io.imsave(out_file, img, plugin='tifffile')  # otherwise we get problems with the .dat extension
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -49,5 +50,5 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    #TOOL
+    # TOOL
     points2binaryimage(args.point_file.name, args.out_file, [args.shapey, args.shapex], has_header=args.has_header, invert_xy=args.invert_xy)
