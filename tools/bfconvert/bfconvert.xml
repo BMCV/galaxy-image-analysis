@@ -1,5 +1,11 @@
-<tool id="ip_convertimage" name="Convert image" version="6.7.0+galaxy1"> 
-  <description>Convert image</description>
+<tool id="ip_convertimage" name="Convert image format" version="6.7.0+galaxy2">
+  <description>Bioformats</description>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="biii">python-bioformats</xref>
+    </xrefs>
   <requirements>
       <requirement type="package" version="6.7.0">bftools</requirement>
   </requirements>
