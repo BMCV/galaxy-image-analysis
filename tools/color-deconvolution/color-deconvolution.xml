@@ -1,5 +1,11 @@
-<tool id="ip_color_deconvolution" name="Color Deconvolution" version="0.8"> 
-    <description>Color deconvolution</description>
+<tool id="ip_color_deconvolution" name="Perform color decomposition" version="0.8-2"> 
+    <description></description>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="bio.tools">galaxy_image_analysis</xref>
+    </xrefs>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
         <requirement type="package" version="4.0.0">pillow</requirement>
