@@ -1,5 +1,12 @@
 <tool id="ip_2d_feature_extraction" name="Extract 2D features" version="0.1.1-2">
     <description>scikit-image</description>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="bio.tools">scikit-image</xref>
+        <xref type="biii">scikit-image</xref>
+    </xrefs>
     <requirements> 
         <requirement type="package" version="0.23.4">pandas</requirement>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
@@ -86,11 +93,4 @@
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
     </citations>
-    <edam_operations>
-        <edam_operation>operation_3443</edam_operation>
-    </edam_operations>
-    <xrefs>
-        <xref type="bio.tools">scikit-image</xref>
-        <xref type="biii">scikit-image</xref>
-    </xrefs>
 </tool>
