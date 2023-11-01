@@ -1,32 +1,34 @@
 import argparse
-import sys
 import warnings
+
 import numpy as np
 import skimage.io
-import skimage.util 
+import skimage.util
+
 
 def permutate_axis(input_image_path, output_image_path, axis, permutate):
     images = []
     raw_image = skimage.io.imread(input_image_path, plugin='tifffile')
     for i in permutate:
-        # TODO generalise 
+        # TODO generalise
         if axis == 0:
             a_slice = raw_image[i]
         elif axis == 1:
-            a_slice = raw_image[:,i]
+            a_slice = raw_image[:, i]
         elif axis == 2:
-            a_slice = raw_image[:,:,i]
+            a_slice = raw_image[:, :, i]
         elif axis == 3:
-            a_slice = raw_image[:,:,:,i]
+            a_slice = raw_image[:, :, :, i]
         elif axis == 4:
-            a_slice = raw_image[:,:,:,:,i]
+            a_slice = raw_image[:, :, :, :, i]
         images.append(np.expand_dims(a_slice, axis))
 
     res = np.concatenate(images, axis)
     with warnings.catch_warnings():
-    	warnings.simplefilter("ignore")
-    	res = skimage.util.img_as_uint(res) #Attention: precision loss
-    	skimage.io.imsave(output_image_path, res, plugin='tifffile')
+        warnings.simplefilter("ignore")
+        res = skimage.util.img_as_uint(res)  # Attention: precision loss
+        skimage.io.imsave(output_image_path, res, plugin='tifffile')
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
