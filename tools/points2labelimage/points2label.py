@@ -1,9 +1,11 @@
 import argparse
 import sys
-import numpy as np
-import skimage.io
-import pandas as pd 
 import warnings
+
+import numpy as np
+import pandas as pd
+import skimage.io
+
 
 def points2label(labels, shape, output_file=None, has_header=False, is_TSV=True):
     labelimg = np.zeros([shape[0], shape[1]], dtype=np.int32)
@@ -21,7 +23,7 @@ def points2label(labels, shape, output_file=None, has_header=False, is_TSV=True)
 
     for i in range(0, len(df)):
         a_row = df.iloc[i]
-        labelimg[a_row[0], a_row[1]] = i+1
+        labelimg[a_row[0], a_row[1]] = i + 1
 
     if output_file is not None:
         with warnings.catch_warnings():
@@ -29,6 +31,7 @@ def points2label(labels, shape, output_file=None, has_header=False, is_TSV=True)
             skimage.io.imsave(output_file, labelimg, plugin='tifffile')
     else:
         return labelimg
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
