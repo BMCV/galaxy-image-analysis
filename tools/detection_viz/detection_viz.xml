@@ -1,5 +1,11 @@
-<tool id="ip_detection_viz" name="Detection Visualization" version="0.3"> 
-    <description>Detection Visualization</description>
+<tool id="ip_detection_viz" name="Visualize detections" version="0.3-2">
+    <description></description>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="bio.tools">galaxy_image_analysis</xref>
+    </xrefs>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
         <requirement type="package" version="3.0.2">matplotlib</requirement>
@@ -61,9 +67,15 @@
     <tests>
         <test>
             <param name="input" value="sample.png"/>
-            <param name="tp_option.display" value="false"/>
-            <param name="fn_option.display" value="false"/>
-            <param name="fp_option.display" value="false"/>
+            <conditional name="tp_option">
+                <param name="display" value="false"/>
+            </conditional>
+            <conditional name="fn_option">
+                <param name="display" value="false"/>
+            </conditional>
+            <conditional name="fp_option">
+                <param name="display" value="false"/>
+            </conditional>
             <output name="output" value="out.png" ftype="png"/>
         </test>
     </tests>
