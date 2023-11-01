@@ -1,5 +1,5 @@
 <tool id="ip_threshold" name="Threshold image" version="0.0.5-2" profile="20.05">
-    <description>scikit-image</description>
+    <description>with scikit-image</description>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>

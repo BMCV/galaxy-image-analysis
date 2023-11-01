@@ -1,5 +1,5 @@
 <tool id="ip_histogram_equalization" name="Perform histogram equalization" version="0.0.1-2">
-   <description>scikit-image</description>
+   <description>with scikit-image</description>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
