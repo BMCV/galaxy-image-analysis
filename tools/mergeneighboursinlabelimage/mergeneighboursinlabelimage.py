@@ -1,11 +1,13 @@
 import argparse
 import sys
+import warnings
+
+import numpy as np
+import scipy.spatial.distance
 import skimage.io
 import skimage.util
 from skimage.measure import regionprops
-import scipy.spatial.distance
-import numpy as np
-import warnings 
+
 
 def merge_n(img, dist=50):
     props = regionprops(img)
@@ -13,7 +15,7 @@ def merge_n(img, dist=50):
     for i in range(0, len(props)):
         i_coords = props[i].coords
         for q in range(0, len(props)):
-            if i==q:
+            if i == q:
                 continue
             q_coords = props[q].coords
             iq_dist = np.min(scipy.spatial.distance.cdist(i_coords, q_coords, 'euclidean'))
@@ -25,6 +27,7 @@ def merge_n(img, dist=50):
     if found:
         merge_n(img, dist)
     return img
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -43,6 +46,6 @@ if __name__ == "__main__":
     label_image = skimage.io.imread(args.input_file.name)
     label_image = merge_n(label_image, args.cluster_merge)
     with warnings.catch_warnings():
-    	warnings.simplefilter("ignore")
-    	res = skimage.util.img_as_uint(label_image)
-    	skimage.io.imsave(args.out_file.name, res, plugin="tifffile")
+        warnings.simplefilter("ignore")
+        res = skimage.util.img_as_uint(label_image)
+        skimage.io.imsave(args.out_file.name, res, plugin="tifffile")

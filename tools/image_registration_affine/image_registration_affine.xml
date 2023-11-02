@@ -1,5 +1,11 @@
-<tool id="ip_image_registration" name="Image Registration" version="0.0.3" profile="20.05"> 
-    <description>based on intensity information</description>
+<tool id="ip_image_registration" name="Perform affine image registration (intensity-based)" version="0.0.3-2" profile="20.05"> 
+    <description></description>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="bio.tools">galaxy_image_analysis</xref>
+    </xrefs>
     <requirements>
         <requirement type="package" version="0.18.1">scikit-image</requirement>
         <requirement type="package" version="1.6.2">scipy</requirement>
@@ -45,5 +51,6 @@
     This tool estimates the (affine) transformation matrix for registration of two images based on intensity information. 
     </help>
     <citations>
+        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
     </citations>
 </tool>

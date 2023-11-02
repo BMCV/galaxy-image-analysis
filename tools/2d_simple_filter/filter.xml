@@ -1,5 +1,12 @@
-<tool id="ip_filter_standard" name="Filter Image" version="0.0.3">
-    <description>applies a standard filter to an image</description>
+<tool id="ip_filter_standard" name="Filter 2D image" version="0.0.3-2">
+    <description>with scikit-image</description>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="bio.tools">scikit-image</xref>
+        <xref type="biii">scikit-image</xref>
+    </xrefs>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
         <requirement type="package" version="1.15.4">numpy</requirement>

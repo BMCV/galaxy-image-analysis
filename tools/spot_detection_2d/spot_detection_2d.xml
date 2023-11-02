@@ -1,5 +1,11 @@
-<tool id="ip_spot_detection_2d" name="Spot Detection" version="0.0.3" profile="20.05"> 
-    <description>in a 2D image (sequence)</description>
+<tool id="ip_spot_detection_2d" name="Perform 2D spot detection" version="0.0.3-2" profile="20.05">
+    <description></description>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="bio.tools">galaxy_image_analysis</xref>
+    </xrefs>
     <requirements>
         <requirement type="package" version="2.9.0">imageio</requirement>
         <requirement type="package" version="1.20.2">numpy</requirement>

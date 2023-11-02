@@ -1,5 +1,11 @@
-<tool id="ip_imageinfo" name="Image Info" version="0.2">
-  <description>Show Image Info</description>
+<tool id="ip_imageinfo" name="Show image info" version="5.7.1">
+  <description>with Bioformats</description>
+  <edam_operations>
+    <edam_operation>operation_3443</edam_operation>
+  </edam_operations>
+  <xrefs>
+    <xref type="biii">python-bioformats</xref>
+  </xrefs>
   <requirements>
         <requirement type="package" version="5.7.1">bftools</requirement>
   </requirements>

@@ -1,5 +1,11 @@
-<tool id="ip_binary_to_labelimage" name="Binary 2 Label" version="0.4"> 
-    <description>Converts Binary to Label Image</description>
+<tool id="ip_binary_to_labelimage" name="Convert binary image to label map" version="0.4-2"> 
+    <description></description>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="bio.tools">galaxy_image_analysis</xref>
+    </xrefs>
     <requirements>
         <requirement type="package" version="0.12.3">scikit-image</requirement> 
         <requirement type="package" version="0.15.1">tifffile</requirement>

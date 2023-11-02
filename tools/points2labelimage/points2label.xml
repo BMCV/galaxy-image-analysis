@@ -1,5 +1,11 @@
-<tool id="ip_points_to_label" name="Points to Label" version="0.3"> 
-    <description>Points to Label Image</description>
+<tool id="ip_points_to_label" name="Convert point coordinates to label map" version="0.3-2"> 
+    <description></description>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="bio.tools">galaxy_image_analysis</xref>
+    </xrefs>
     <requirements>
         <requirement type="package" version="1.15.4">numpy</requirement>
         <requirement type="package" version="0.14.2">scikit-image</requirement>

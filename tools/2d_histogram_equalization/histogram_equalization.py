@@ -1,13 +1,13 @@
 import argparse
-import os
 import sys
-import skimage.io
+
 import skimage.exposure
+import skimage.io
 import skimage.util
 
 hOptions = {
-    'default' : lambda img_raw: skimage.exposure.equalize_hist(img_raw),
-    'clahe' : lambda img_raw: skimage.exposure.equalize_adapthist(img_raw)
+    'default': lambda img_raw: skimage.exposure.equalize_hist(img_raw),
+    'clahe': lambda img_raw: skimage.exposure.equalize_adapthist(img_raw)
 }
 
 if __name__ == "__main__":

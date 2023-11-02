@@ -1,17 +1,17 @@
 import argparse
-import sys
-import warnings
-import numpy as np
-import random
 import os.path
+import random
+import warnings
+
+import numpy as np
+import skimage.feature
 import skimage.io
 import skimage.util
-import skimage.feature
-from scipy.stats import entropy as scipy_entropy
- 
-def slice_image(input_file, out_folder, label=None, label_out_folder=None, window_size=64, 
+
+
+def slice_image(input_file, out_folder, label=None, label_out_folder=None, window_size=64,
                 stride=1, bg_thresh=1, limit_slices=False, n_thresh=5000, seed=None):
-    #TODO NOT Implemented:process labels 
+    # TODO NOT Implemented:process labels
     # --> label and label_out_folder useless so far
 
     # primarily for testing purposes:
@@ -22,36 +22,35 @@ def slice_image(input_file, out_folder, label=None, label_out_folder=None, windo
     if len(img_raw.shape) == 2:
         img_raw = np.expand_dims(img_raw, 3)
 
-    with warnings.catch_warnings(): # ignore FutureWarning
+    with warnings.catch_warnings():  # ignore FutureWarning
         warnings.simplefilter("ignore")
         patches_raw = skimage.util.view_as_windows(img_raw, (window_size, window_size, img_raw.shape[2]), step=stride)
         patches_raw = patches_raw.reshape([-1, window_size, window_size, img_raw.shape[2]])
 
-        new_path = os.path.join(out_folder, "%d.tiff") 
-        
-        #samples for thresholding the amount of slices
+        new_path = os.path.join(out_folder, "%d.tiff")
+
+        # samples for thresholding the amount of slices
         sample = random.sample(range(patches_raw.shape[0]), n_thresh)
 
         for i in range(0, patches_raw.shape[0]):
             # TODO improve
-            sum_image = np.sum(patches_raw[i], 2)/img_raw.shape[2]
-            total_entr = np.var(sum_image.reshape([-1]))
+            sum_image = np.sum(patches_raw[i], 2) / img_raw.shape[2]
 
             if bg_thresh > 0:
                 sum_image = skimage.util.img_as_uint(sum_image)
-                g = skimage.feature.greycomatrix(sum_image, [1,2], [0, np.pi/2], nnormed=True, symmetric=True)
+                g = skimage.feature.greycomatrix(sum_image, [1, 2], [0, np.pi / 2], nnormed=True, symmetric=True)
                 hom = np.var(skimage.feature.greycoprops(g, prop='homogeneity'))
-                if hom > bg_thresh: #0.0005
+                if hom > bg_thresh:  # 0.0005
                     continue
-        
-            if limit_slices == True:
+
+            if limit_slices:
                 if i in sample:
-                    res = skimage.util.img_as_uint(patches_raw[i]) #Attention: precision loss
+                    res = skimage.util.img_as_uint(patches_raw[i])  # Attention: precision loss
                     skimage.io.imsave(new_path % i, res, plugin='tifffile')
             else:
-                res = skimage.util.img_as_uint(patches_raw[i]) #Attention: precision loss
-                skimage.io.imsave(new_path % i, res, plugin='tifffile') 
-                    
+                res = skimage.util.img_as_uint(patches_raw[i])  # Attention: precision loss
+                skimage.io.imsave(new_path % i, res, plugin='tifffile')
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -69,5 +68,5 @@ if __name__ == "__main__":
 
     slice_image(args.input_file.name, args.out_folder,
                 label=args.label_file, label_out_folder=args.label_out_folder,
-                stride=args.stride, window_size=args.window_size, bg_thresh=args.bg_thresh, 
+                stride=args.stride, window_size=args.window_size, bg_thresh=args.bg_thresh,
                 limit_slices=args.limit_slices, n_thresh=args.n_thresh, seed=args.seed)

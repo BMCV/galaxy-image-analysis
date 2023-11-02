@@ -1,5 +1,11 @@
-<tool id="ip_concat_channels" name="Concatenate images" version="0.2"> 
+<tool id="ip_concat_channels" name="Concatenate images or channels" version="0.2-2">
     <description></description>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="bio.tools">galaxy_image_analysis</xref>
+    </xrefs>
     <requirements>
         <requirement type="package" version="0.14.2">scikit-image</requirement>
         <requirement type="package" version="1.15.4">numpy</requirement>
