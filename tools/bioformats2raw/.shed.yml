@@ -1,0 +1,9 @@
+categories:
+  - Imaging
+  - Convert Formats
+description: Convert image to OME-Zarr
+long_description: Convert image to OME-Zarr using bioformats2raw
+name: bioformats2raw
+owner: Euro-BioImaging
+homepage_url: https://github.com/Euro-BioImaging
+remote_repository_url: https://github.com/Euro-BioImaging/Galaxy-OME-Zarr/tree/main/tools/bioformats2raw
