@@ -5,7 +5,7 @@
 Galaxy Image Analysis
 ========================
 
-Galaxy Image Analysis is mainly developed by the [Biomedical Computer Vision (BMCV) Group](http://www.bioquant.uni-heidelberg.de/research/groups/biomedical_computer_vision.html) at Heidelberg University. If you would like to contribute, please see <CONTRIBUTING.md> for instructions.
+Galaxy Image Analysis is mainly developed by the [Biomedical Computer Vision (BMCV) Group](http://www.bioquant.uni-heidelberg.de/research/groups/biomedical_computer_vision.html) at Heidelberg University. If you would like to contribute, please see [our contribution instructions](CONTRIBUTING.md).
 
 Galaxy Image Analysis is part of the [Galaxy Imaging Community](https://imaging.usegalaxy.eu).
 
