@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/BMCV/galaxy-image-analysis.svg?branch=master)](https://travis-ci.org/BMCV/galaxy-image-analysis)
 
+[![Chat on matrix](https://img.shields.io/badge/chat_on-matrix-cyan)](https://matrix.to/#/#galaxyproject_imaging:matrix.org)
+
 Galaxy Image Analysis
 ========================
 
