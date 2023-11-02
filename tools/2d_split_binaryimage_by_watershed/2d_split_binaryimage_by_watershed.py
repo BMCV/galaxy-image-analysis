@@ -1,11 +1,13 @@
 import argparse
 import sys
+
 import skimage.io
-from skimage.morphology import watershed
-from skimage.feature import peak_local_max
-from scipy import ndimage as ndi 
 import skimage.util
- 
+from scipy import ndimage as ndi
+from skimage.feature import peak_local_max
+from skimage.morphology import watershed
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Split binaryimage by watershed')
     parser.add_argument('input_file', type=argparse.FileType('r'), default=sys.stdin, help='input file')
@@ -15,9 +17,9 @@ if __name__ == "__main__":
 
     img_in = skimage.io.imread(args.input_file.name)
     distance = ndi.distance_transform_edt(img_in)
-    local_maxi = peak_local_max(distance, 
-                                indices=False, 
-                                min_distance=args.min_distance, 
+    local_maxi = peak_local_max(distance,
+                                indices=False,
+                                min_distance=args.min_distance,
                                 labels=img_in)
     markers = ndi.label(local_maxi)[0]
     res = watershed(-distance, markers, mask=img_in)

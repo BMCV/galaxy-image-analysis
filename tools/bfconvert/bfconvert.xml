@@ -1,5 +1,11 @@
-<tool id="ip_convertimage" name="Convert image" version="6.7.0+galaxy0"> 
-  <description>Convert image</description>
+<tool id="ip_convertimage" name="Convert image format" version="6.7.0+galaxy2">
+  <description>with Bioformats</description>
+  <edam_operations>
+    <edam_operation>operation_3443</edam_operation>
+  </edam_operations>
+  <xrefs>
+    <xref type="biii">python-bioformats</xref>
+  </xrefs>
   <requirements>
       <requirement type="package" version="6.7.0">bftools</requirement>
   </requirements>
@@ -27,7 +33,7 @@
         #if $tile_options['extract'] == 'True'
           -tilex $tile_options.tile_x -tiley $tile_options.tile_y
         #end if
-        #if $pyramid_options.generate == 'True'
+        #if $pyramid_options.generate == 'True' and $out_format not in ['png', 'jpg', 'eps', 'avi']
           -pyramid-resolutions $pyramid_options.pyramid_resolutions
           -pyramid-scale $pyramid_options.pyramid_scale
         #end if
@@ -36,7 +42,7 @@
         #if $compression != 'False'
           -compression $compression
         #end if  
-        '$input_file' './res.$out_format'  &&
+        '$input_file' './res.$out_format' &&
         mv './res.$out_format' ./result_image
         ]]>
   </command>
@@ -128,7 +134,7 @@
         </when>
     </conditional>
     <conditional name="pyramid_options">
-        <param label="Pyramid image" name="generate" type="select">
+        <param label="Pyramid image" name="generate" type="select" help="Pyramids will be generated only if the selected output format supports pyramids (OME TIFF, JPEG 2000)."><!-- see: https://docs.openmicroscopy.org/bio-formats/6.7.0/supported-formats.html -->
             <option selected="True" value="True">Generate Pyramid</option>
             <option value="False">No Pyramid</option>
         </param>
@@ -136,6 +142,7 @@
             <param name="pyramid_resolutions" type="integer" value="4" label="Pyramid Resolutions"/>
             <param name="pyramid_scale" type="integer" value="2" label="Pyramid Scale" />
         </when>
+        <when value="False" />
     </conditional>
     <param name="bigtiff" label="Big TIFF" type="boolean" checked="false" truevalue="-bigtiff" falsevalue=""/>
     <param name="noflat" label="No Flatten" type="boolean" checked="true" truevalue="-noflat" falsevalue=""/>
@@ -170,10 +177,17 @@
         <test>
             <param name="input_file" value="input.png" />
             <param name="out_format" value="ome.tiff" />
-            <param name="pyramid_options.generate" value="True"/>
-            <param name="pyramid_options.pyramid_resolutions" value="4"/>
-            <param name="pyramid_options.pyramid_scale" value="2"/>
+            <conditional name="pyramid_options">
+                <param name="generate" value="True"/>
+                <param name="pyramid_resolutions" value="4"/>
+                <param name="pyramid_scale" value="2"/>
+            </conditional>
             <output name="output" value="res.ome.tiff" ftype="ome.tiff" compare="sim_size"/>
+        </test>
+        <test>
+            <param name="input_file" value="input.tiff" />
+            <param name="out_format" value="png" />
+            <output name="output" value="input.tiff.png" ftype="png" compare="sim_size"/>
         </test>
   </tests>    
   <help>

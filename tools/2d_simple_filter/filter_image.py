@@ -1,21 +1,21 @@
 import argparse
 import sys
-import warnings
-import numpy as np
-import skimage.io
+
 import skimage.filters
+import skimage.io
 import skimage.util
-from skimage.morphology import disk
 from skimage import img_as_uint
+from skimage.morphology import disk
+
 
 filterOptions = {
-    'median' : lambda img_raw, radius: skimage.filters.median(img_raw, disk(radius)),
-    'gaussian' : lambda img_raw, radius: skimage.filters.gaussian(img_raw, sigma=radius),
-    'prewitt' : lambda img_raw, radius: skimage.filters.prewitt(img_raw),
-    'sobel' : lambda img_raw, radius: skimage.filters.sobel(img_raw),
-    'scharr' : lambda img_raw, radius: skimage.filters.scharr(img_raw),
+    'median': lambda img_raw, radius: skimage.filters.median(img_raw, disk(radius)),
+    'gaussian': lambda img_raw, radius: skimage.filters.gaussian(img_raw, sigma=radius),
+    'prewitt': lambda img_raw, radius: skimage.filters.prewitt(img_raw),
+    'sobel': lambda img_raw, radius: skimage.filters.sobel(img_raw),
+    'scharr': lambda img_raw, radius: skimage.filters.scharr(img_raw),
 }
- 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('input_file', type=argparse.FileType('r'), default=sys.stdin, help='input file')

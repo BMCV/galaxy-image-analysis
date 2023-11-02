@@ -1,5 +1,8 @@
-<tool id="ip_wsi_extract_top_view" name="Extract top view" version="0.2"> 
-    <description>from whole-slice image</description>
+<tool id="ip_wsi_extract_top_view" name="Extract top view from whole-slide image" version="0.2-2"> 
+    <description>with OpenSlide</description>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
     <requirements>  
         <requirement type="package" version="0.14.2">scikit-image</requirement>
         <requirement type="package" version="1.15.4">numpy</requirement>
@@ -27,7 +30,7 @@
     <help>
     **What it does**
 
-    Extracts the top view from a whole-slice image, also known as virtual slide, which are high-resolution images used in digital pathology.
+    Extracts the top view from a whole-slide image, also known as virtual slide, which are high-resolution images used in digital pathology.
     </help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
