@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/BMCV/galaxy-image-analysis.svg?branch=master)](https://travis-ci.org/BMCV/galaxy-image-analysis)
 [![DOI](https://img.shields.io/badge/DOI-10.1016%2Fj.jbiotec.2017.07.019-blue)](https://doi.org/10.1016/j.jbiotec.2017.07.019)
-[![Chat on matrix](https://img.shields.io/badge/chat_on-matrix-cyan)](https://matrix.to/#/#galaxyproject_imaging:matrix.org)
+[![Chat on matrix](https://img.shields.io/badge/chat_on-matrix-green)](https://matrix.to/#/#galaxyproject_imaging:matrix.org)
 
 Galaxy Image Analysis
 ========================
