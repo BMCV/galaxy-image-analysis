@@ -1,0 +1,92 @@
+{
+  "multiscales" : [ {
+    "metadata" : {
+      "method" : "loci.common.image.SimpleImageScaler",
+      "version" : "Bio-Formats 6.13.0"
+    },
+    "axes" : [ {
+      "name" : "t",
+      "type" : "time"
+    }, {
+      "name" : "c",
+      "type" : "channel"
+    }, {
+      "name" : "z",
+      "type" : "space"
+    }, {
+      "name" : "y",
+      "type" : "space"
+    }, {
+      "name" : "x",
+      "type" : "space"
+    } ],
+    "name" : "dataset_1.dat",
+    "datasets" : [ {
+      "path" : "0",
+      "coordinateTransformations" : [ {
+        "scale" : [ 1.0, 1.0, 1.0, 1.0, 1.0 ],
+        "type" : "scale"
+      } ]
+    }, {
+      "path" : "1",
+      "coordinateTransformations" : [ {
+        "scale" : [ 1.0, 1.0, 1.0, 2.0, 2.0 ],
+        "type" : "scale"
+      } ]
+    }, {
+      "path" : "2",
+      "coordinateTransformations" : [ {
+        "scale" : [ 1.0, 1.0, 1.0, 4.0, 4.0 ],
+        "type" : "scale"
+      } ]
+    } ],
+    "version" : "0.4"
+  } ],
+  "omero" : {
+    "channels" : [ {
+      "color" : "FF0000",
+      "coefficient" : 1,
+      "active" : true,
+      "label" : "Channel 0",
+      "window" : {
+        "min" : 0.0,
+        "max" : 255.0,
+        "start" : 0.0,
+        "end" : 255.0
+      },
+      "family" : "linear",
+      "inverted" : false
+    }, {
+      "color" : "00FF00",
+      "coefficient" : 1,
+      "active" : true,
+      "label" : "Channel 1",
+      "window" : {
+        "min" : 0.0,
+        "max" : 255.0,
+        "start" : 0.0,
+        "end" : 255.0
+      },
+      "family" : "linear",
+      "inverted" : false
+    }, {
+      "color" : "0000FF",
+      "coefficient" : 1,
+      "active" : true,
+      "label" : "Channel 2",
+      "window" : {
+        "min" : 0.0,
+        "max" : 255.0,
+        "start" : 0.0,
+        "end" : 255.0
+      },
+      "family" : "linear",
+      "inverted" : false
+    } ],
+    "rdefs" : {
+      "defaultT" : 0,
+      "model" : "color",
+      "defaultZ" : 0
+    }
+  }
+}

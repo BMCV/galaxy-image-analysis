@@ -1,0 +1,58 @@
+{
+  "multiscales" : [ {
+    "metadata" : {
+      "method" : "loci.common.image.SimpleImageScaler",
+      "version" : "Bio-Formats 6.13.0"
+    },
+    "axes" : [ {
+      "unit" : "second",
+      "name" : "t",
+      "type" : "time"
+    }, {
+      "name" : "c",
+      "type" : "channel"
+    }, {
+      "unit" : "micrometer",
+      "name" : "z",
+      "type" : "space"
+    }, {
+      "unit" : "micrometer",
+      "name" : "y",
+      "type" : "space"
+    }, {
+      "unit" : "micrometer",
+      "name" : "x",
+      "type" : "space"
+    } ],
+    "name" : "dataset_2.dat",
+    "datasets" : [ {
+      "path" : "0",
+      "coordinateTransformations" : [ {
+        "scale" : [ 1.0, 1.0, 0.23985, 0.021462000487230338, 0.021462000487230338 ],
+        "type" : "scale"
+      } ]
+    } ],
+    "version" : "0.4"
+  } ],
+  "omero" : {
+    "channels" : [ {
+      "color" : "808080",
+      "coefficient" : 1,
+      "active" : true,
+      "label" : "Channel 0",
+      "window" : {
+        "min" : 0.0,
+        "max" : 254.0,
+        "start" : 0.0,
+        "end" : 254.0
+      },
+      "family" : "linear",
+      "inverted" : false
+    } ],
+    "rdefs" : {
+      "defaultT" : 0,
+      "model" : "greyscale",
+      "defaultZ" : 14
+    }
+  }
+}

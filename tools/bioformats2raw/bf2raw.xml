@@ -1,0 +1,117 @@
+<tool id="bf2raw" name="bioformats2raw" version="0.0.1">
+    <description>A wrapper for the bioformats2raw package that converts various image file formats to the cloud-optimised OME-Zarr format following the OME-NGFF specification</description>
+    <requirements>
+        <container type="docker">quay.io/biocontainers/mulled-v2-ea5a9ffc5f22f92a78f0cd24aac43eb503c0e523:4c010c399f61cde74da64343581999ada3e11e24-0</container>
+    </requirements>
+    <command><![CDATA[
+
+if [ ! -d $output.extra_files_path ];then
+    mkdir -p $output.extra_files_path;
+fi;
+
+#if str($io_options.input.ext)=='html':
+    #set dirlist=os.listdir($io_options.input.extra_files_path)
+    #assert len($dirlist) > 0
+    #set input_path=os.path.join(str($io_options.input.extra_files_path), str($dirlist[0]))
+#else:
+    #set input_path=$io_options.input
+#end if
+
+bioformats2raw $input_path $output.extra_files_path/$io_options.output_name
+--target-min-size $bf2raw_params.min_xy_size
+#if not str($bf2raw_params.resolutions) == 'default':
+    --resolutions $bf2raw_params.resolutions
+#end if
+--tile_height $bf2raw_params.tile_height
+--tile_width $bf2raw_params.tile_width
+--chunk_depth $bf2raw_params.chunk_depth
+--downsample-type $bf2raw_params.downsample_type
+--compression $bf2raw_params.compression
+--max_workers $bf2raw_params.max_workers
+$bf2raw_params.nesting
+$bf2raw_params.omefolder
+$bf2raw_params.droptop
+#if not str($bf2raw_params.dimension_order) == 'keep input order':
+    --dimension-order $bf2raw_params.dimension_order
+#end if
+###--overwrite
+--debug off &> /dev/null;
+
+    ]]></command>
+    <inputs>
+        <section name="io_options" title="input-output paths">
+            <param name="input" type="data" format="data" label="input image located in Galaxy history"/>
+            <param name="output_name" type="text" value="data.zarr" label="output zarr data"/>
+        </section>
+        <section name="bf2raw_params" title="Parameters fed to file conversion module">
+            <param name="min_xy_size" type="text" label="min x-y dimension for the lowest resolution" value="256" />
+            <param name="resolutions" type="text" label="number of resolutions (if not default, will override min x-y dimension)" value="default"/>
+            <param name="tile_height" type="text" label="tile height" value="96" />
+            <param name="tile_width" type="text" label="tile width" value="96" />
+            <param name="chunk_depth" type="text" label="chunk depth" value="1" />
+            <param name="downsample_type" type="select" label="downsampling method" multiple="false" >
+                <option value="SIMPLE" selected="true">SIMPLE</option>
+                <option value="GAUSSIAN" selected="false">GAUSSIAN</option>
+                <option value="AREA" selected="false">AREA</option>
+                <option value="LINEAR" selected="false">LINEAR</option>
+                <option value="CUBIC" selected="false">CUBIC</option>
+                <option value="LANCZOS" selected="false">LANCZOS</option>
+            </param>
+            <param name="compression" type="select" label="compression method" multiple="false" >
+                <option value="null" selected="true">null</option>
+                <option value="zlib" selected="false">zlib</option>
+                <option value="blosc" selected="true">blosc</option>
+            </param>
+            <param name="dimension_order" type="select" label="dimension order" multiple="false">
+                <option value="keep input order" selected="true">keep input order</option>
+                <option value="XYZCT" selected="false">XYZCT</option>
+                <option value="XYZTC" selected="false">XYZTC</option>
+                <option value="XYCTZ" selected="false">XYCTZ</option>
+                <option value="XYCZT" selected="false">XYCZT</option>
+                <option value="XYTCZ" selected="false">XYTCZ</option>
+                <option value="XYTZC" selected="false">XYTZC</option>
+            </param>
+            <param name="nesting" type="boolean" label="use ' / ' as chunk path separator" truevalue="" falsevalue="--no-nested" checked="true" />
+            <param name="omefolder" type="boolean" label="export OME metadata" truevalue="" falsevalue="--no-ome-meta-export" checked="true" />
+            <param name="max_workers" type="integer" label="maximum number of workers" value="4" min="1" max="16" />
+            <param name="droptop" type="boolean" label="drop the top layer in the OME-Zarr folder hierarchy" truevalue="--scale-format-string '%2$d'" falsevalue="" checked="false" />
+        </section>
+    </inputs>
+    <outputs>
+        <data name="output" format="html" label="OME-Zarr Output" />
+    </outputs>
+    <tests>
+        <test expect_num_outputs="1">
+            <param name="input" value="filament.tif"/>
+            <param name="output_name" value="filament.zarr" />
+            <output name="output" ftype="html">
+                <extra_files type="file" name="filament.zarr/.zattrs" value="filament.zarr/.zattrs" />
+            </output>
+        </test>
+        <test expect_num_outputs="1">
+            <param name="input" value="astronaut.png"/>
+            <param name="output_name" value="astronaut.zarr" />
+            <output name="output" ftype="html">
+                <extra_files type="file" name="astronaut.zarr/.zgroup" value="astronaut.zarr/.zgroup" />
+            </output>
+        </test>
+        <test expect_num_outputs="1">
+            <param name="input" value="xy_12bit__plant.oir"/>
+            <param name="output_name" value="x_12bit_plant.zarr" />
+            <output name="output" ftype="html">
+                <extra_files type="file" name="x_12bit_plant.zarr/.zattrs" value="x_12bit_plant.zarr/.zattrs" />
+            </output>
+        </test>
+    </tests>
+    <help>
+**What it does**
+
+Bioformats-based tool that converts a wide range of image file formats to the cloud-optimised format OME-Zarr following the `OME-NGFF`_ specification.
+
+.. _OME-NGFF: https://ngff.openmicroscopy.org/latest
+    </help>
+    <citations>
+        <citation type="doi">https://doi.org/10.5281/zenodo.5548102 </citation>
+    </citations>
+</tool>
+
