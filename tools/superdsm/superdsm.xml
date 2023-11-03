@@ -11,8 +11,8 @@
         <requirement type="package" version="0.1.3">superdsm</requirement>
         <requirement type="package" version="1.6.0">ray-core</requirement>
         <requirement type="package" version="0.18.1">scikit-image</requirement>
-        <requirement type="package" version="2020.0">mkl</requirement>
-        <requirement type="package" version="*=mkl">blas</requirement>
+        <requirement type="package" version="2020.0">mkl</requirement><!-- this seems to be the last version of MKL which supports the "MKL_DEBUG_CPU_TYPE" environment variable -->
+        <requirement type="package" version="*=mkl">blas</requirement><!-- using MKL instead of other BLAS can significantly improve performance on some hardware, cf. https://stackoverflow.com/questions/62783262/why-is-numpy-with-ryzen-threadripper-so-much-slower-than-xeon -->
     </requirements>
     <command detect_errors="aggressive">
     <![CDATA[
@@ -68,7 +68,7 @@
     ]]>
     </command>
     <environment_variables>
-        <environment_variable name="MKL_DEBUG_CPU_TYPE">5</environment_variable>
+        <environment_variable name="MKL_DEBUG_CPU_TYPE">5</environment_variable><!-- this enables accelerated CPU instruction sets on AMD hardware, does nothing in Intel hardware, thus no need to change this -->
     </environment_variables>
     <inputs>
         <param name="dataset" type="data" format="tiff,png" label="Dataset" />
