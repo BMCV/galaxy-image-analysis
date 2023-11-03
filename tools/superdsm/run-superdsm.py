@@ -13,11 +13,6 @@ import pathlib
 import shutil
 import tempfile
 
-import ray
-import superdsm.automation
-import superdsm.io
-import superdsm.render
-
 
 hyperparameters = [
     ('AF_scale', float),
@@ -71,7 +66,11 @@ if __name__ == "__main__":
 
     os.environ['MKL_NUM_THREADS'] = str(num_threads_per_process)
     os.environ['OPENBLAS_NUM_THREADS'] = str(num_threads_per_process)
-    os.environ['MKL_DEBUG_CPU_TYPE'] = '5'
+
+    import ray
+    import superdsm.automation
+    import superdsm.io
+    import superdsm.render
 
     ray.init(num_cpus=num_processes, log_to_driver=True)
 
