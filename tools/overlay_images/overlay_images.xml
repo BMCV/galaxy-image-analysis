@@ -60,10 +60,10 @@
     </inputs>
     <outputs>
         <data format="tiff" name="out" from_work_dir="output.tif">
-            <filter>options['method_option'] != 'seg_contour'</filter>
+            <filter>method_option['method'] != 'seg_contour'</filter>
         </data>
         <data format="png" name="out" from_work_dir="output.png">
-            <filter>options['method_option'] == 'seg_contour'</filter>
+            <filter>method_option['method'] == 'seg_contour'</filter>
         </data>
     </outputs>
     <tests>
