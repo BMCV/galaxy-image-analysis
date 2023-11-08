@@ -15,7 +15,12 @@
     <command detect_errors="aggressive">
     <![CDATA[
         python '$__tool_directory__/overlay_images.py'
-        '$method_option.im1' '$method_option.im2' ./output.tif
+        '$method_option.im1' '$method_option.im2'
+        #if $method_option.method == "seg_contour"
+            ./output.png
+        #else
+            ./output.tif
+        #end if
         --method $method_option.method
         #if $method_option.method == "blending"
             --alpha $method_option.alpha
@@ -54,7 +59,12 @@
         </conditional>
     </inputs>
     <outputs>
-        <data format="tiff" name="out" from_work_dir="output.tif" />
+        <data format="tiff" name="out" from_work_dir="output.tif">
+            <filter>options['method_option'] != 'seg_contour'</filter>
+        </data>
+        <data format="png" name="out" from_work_dir="output.png">
+            <filter>options['method_option'] == 'seg_contour'</filter>
+        </data>
     </outputs>
     <tests>
         <test>
@@ -77,7 +87,7 @@
             <param name="thickness" value="2"/>
             <param name="color" value="#ff0000"/>
             <param name="show_label" value="--show_label"/>
-            <output name="out" value="test3.tif" ftype="tiff" compare="sim_size" delta_frac="0.1"/>
+            <output name="out" value="test3.png" ftype="png" compare="sim_size" delta_frac="0.1"/>
         </test>
         <test>
             <param name="im1" value="sample1.tif"/>
@@ -85,7 +95,7 @@
             <param name="method" value="seg_contour"/>
             <param name="thickness" value="2"/>
             <param name="color" value="#ff0000"/>
-            <output name="out" value="test4.tif" ftype="tiff" compare="sim_size" delta_frac="0.1"/>
+            <output name="out" value="test4.png" ftype="png" compare="sim_size" delta_frac="0.1"/>
         </test>
     </tests>
     <help>
