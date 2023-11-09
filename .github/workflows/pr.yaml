@@ -131,7 +131,7 @@ jobs:
       id: lint
       with:
         mode: lint
-        fail-level: 'error'
+        fail-level: 'warn'
         repository-list: ${{ needs.setup.outputs.repository-list }}
         tool-list: ${{ needs.setup.outputs.tool-list }}
     - uses: actions/upload-artifact@v3
