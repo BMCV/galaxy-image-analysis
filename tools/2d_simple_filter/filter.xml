@@ -1,4 +1,4 @@
-<tool id="ip_filter_standard" name="Filter 2D image" version="0.0.3-4">
+<tool id="ip_filter_standard" name="Filter 2D image" version="0.0.3-3">
     <description>with scikit-image</description>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
