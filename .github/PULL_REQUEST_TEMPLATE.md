@@ -4,3 +4,4 @@ FOR CONTRIBUTOR:
 * [ ] - This PR adds a new tool or tool collection
 * [ ] - This PR updates an existing tool or tool collection
 * [ ] - This PR does something else (explain below)
+* [ ] - Tools added/updated by this PR (if any) comply with the [Naming and Annotation Conventions for Tools in the Image Community in Galaxy](https://github.com/elixir-europe/biohackathon-projects-2023/blob/main/16/conventions.md) (or please explain why they do not)
