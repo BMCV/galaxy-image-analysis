@@ -2,7 +2,7 @@ categories:
   - Imaging
 description: 2d simple filter
 long_description: Simple filter in 2D
-name: 2d_simple_filter  
+name: 2d_simple_filter   
 owner: imgteam
 homepage_url: https://github.com/bmcv
 remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tree/master/tools/2d_simple_filter/
