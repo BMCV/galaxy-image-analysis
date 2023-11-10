@@ -133,7 +133,7 @@ jobs:
         echo "SKIP=-s tool_xsd" >> "$GITHUB_ENV"
     - name: Set fail level for merge
       if: ${{ github.event_name != 'pull_request' }}
-      run:
+      run: |
         echo "FAIL_LEVEL=error" >> "$GITHUB_ENV"
         echo "SKIP=-s tool_xsd" >> "$GITHUB_ENV"
     - name: Planemo lint
