@@ -1,10 +1,14 @@
-<tool id="ip_segmetrics" name="Compute image segmentation and object detection performance measures" version="1.4.0+galaxy3" profile="20.05">
+<tool id="ip_segmetrics" name="Compute image segmentation and object detection performance measures" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
     <description>with SegMetrics</description>
+    <macros>
+        <token name="@TOOL_VERSION@">1.4</token>
+        <token name="@VERSION_SUFFIX@">3</token>
+    </macros>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
     <requirements> 
-        <requirement type="package" version="1.4">segmetrics</requirement>
+        <requirement type="package" version="@TOOL_VERSION@">segmetrics</requirement>
         <requirement type="package" version="0.23.4">pandas</requirement>
     </requirements>
     <command detect_errors="aggressive">
@@ -314,7 +318,6 @@
         If all objects within your segmented images are *uniquely* labeled, you can turn on the "Segmentation is uniquely labeled" switch to speed up the computations. Leave it off otherwise, or if you are unsure. The same accounts for the "Ground truth is uniquely labeled" switch and your ground turth image data.
     </help>
     <citations>
-        <citation type="doi">10.5281/zenodo.10111958</citation>
         <citation type="doi">10.1093/bioinformatics/btu080</citation>
         <citation type="doi">10.1109/ISBI.2009.5193098</citation>
         <citation type="doi">10.1109/ICIP.2003.1246871</citation>
