@@ -1,0 +1,40 @@
+<tool id="rfove" name="Perform segmentation region-based fitting of overlapping ellipses" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
+    <description>with RFOVE</description>
+    <macros>
+        <token name="@TOOL_VERSION@">2023.11.12</token>
+        <token name="@VERSION_SUFFIX@">1</token>
+    </macros>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="bio.tools">rfove</xref>
+    </xrefs>
+    <requirements> 
+        <container type="docker">docker.io/kostrykin/rfove:@TOOL_VERSION@</container>
+    </requirements>
+    <command detect_errors="aggressive">
+    <![CDATA[
+    cp '${dataset}' ./input &&
+    docker run --rm -v .:/io kostrykin/rfove /rfove 250 0.1 0.2 201 /io/input /io/output.tiff
+    ]]>
+    </command>
+    <inputs>
+        <param name="dataset" type="data" format="tiff,png" label="Dataset" />
+    </inputs>
+    <outputs>
+        <data format="tiff" name="masks" from_work_dir="output.tiff" label="${tool.name} on ${on_string}" />
+    </outputs>
+    <tests>
+        <test>
+            <param name="dataset" value="BBBC033_C2_z28.png" />
+            <output name="masks" value="output.tiff" ftype="tiff" compare="sim_size" />
+        </test>
+    </tests>
+    <help>
+    RFOVE is completely unsupervised, operates without any assumption or prior knowledge on the object’s shape and extends and improves the Decremental Ellipse Fitting Algorithm (DEFA). Both RFOVE and DEFA solve the multi-ellipse fitting problem by performing model selection that is guided by the minimization of the Akaike Information Criterion on a suitably defined shape complexity measure. However, in contrast to DEFA, RFOVE minimizes an objective function that allows for ellipses with higher degree of overlap and, thus, achieves better ellipse-based shape approximation.
+    </help>
+    <citations>
+        <citation type="doi">10.1016/j.imavis.2019.09.001</citation>
+    </citations>
+</tool>
