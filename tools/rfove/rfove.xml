@@ -23,7 +23,8 @@
         ${min_area_max_area_ratio_ub}
         ${overlap_ub}
         ${neighborhood_size}
-        ${dataset}
+        '${dataset}'
+
         output.tiff
     ]]>
     </command>
