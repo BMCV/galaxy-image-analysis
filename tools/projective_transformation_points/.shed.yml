@@ -2,7 +2,7 @@ categories:
   - Imaging
 description: Projective transformation of ROIs defined by pixel (point) coordinates
 long_description: This tool performs a projective transformation of regions of interest (ROIs) defined by pixel (point) coordinates based on a given transformation matrix.
-name: projective_transformation_points
+name: projective_transformation_points 
 owner: imgteam
 homepage_url: https://github.com/bmcv
 remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tree/master/tools/projective_transformation_points/
