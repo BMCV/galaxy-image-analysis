@@ -31,7 +31,8 @@
     <inputs>
         <param name="dataset" type="data" format="tiff,png" label="Dataset" />
         <param name="area_ub" type="integer" label="Maximum ellipse area" value="250" min="5" />
-        <param name="min_area_max_area_ratio_ub" type="float" label="Upper bound of the ratio: minimum area / maximum area" value="0.1" min="0" max="1" />
+        <param name="min_area_max_area_ratio_ub" type="float" min="0" max="1" value="0.1" label="Upper bound of the ratio: minimum area / maximum area" />
+
         <param name="overlap_ub" type="float" label="Maximum ellipse overlap" value="0.2" min="0" />
         <param name="half_neighborhood_size" type="integer" label="Half neighborhood size" min="1" value="100" />
     </inputs>
