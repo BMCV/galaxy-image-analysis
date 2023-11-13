@@ -2,7 +2,7 @@ categories:
   - Imaging
 description: Permutates axes
 long_description: Edge-preserving, Anisotropic image diffusion.
-name: permutate_axis
+name: permutate_axis 
 owner: imgteam
 homepage_url: https://github.com/bmcv
 remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tree/master/tools/permutate_axis/
