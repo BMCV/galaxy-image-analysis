@@ -3,7 +3,6 @@
     <macros>
         <token name="@TOOL_VERSION@">2023.11.12</token>
         <token name="@VERSION_SUFFIX@">0</token>
-
     </macros>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
