@@ -1,5 +1,9 @@
-<tool id="ip_binary_to_labelimage" name="Convert binary image to label map" version="0.4-2"> 
+<tool id="ip_binary_to_labelimage" name="Convert binary image to label map" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@"> 
     <description></description>
+    <macros>
+        <token name="@TOOL_VERSION@">0.5</token>
+        <token name="@VERSION_SUFFIX@">0</token>
+    </macros>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
@@ -9,14 +13,32 @@
     <requirements>
         <requirement type="package" version="0.12.3">scikit-image</requirement> 
         <requirement type="package" version="0.15.1">tifffile</requirement>
+        <requirement type="package" version="1.15.4">numpy</requirement>
+        <requirement type="package" version="5.3.0">pillow</requirement>
+        <requirement type="package" version="1.2.1">scipy</requirement>
     </requirements>
     <command detect_errors="aggressive">
         <![CDATA[
-        python '$__tool_directory__/binary2label.py' '$input' '$output'
+        #if str($mode.mode_selector) == 'cca':
+            python '$__tool_directory__/binary2label.py' '$input' '$output'
+        #elif str($mode.mode_selector) == 'watershed':
+            python '$__tool_directory__/2d_split_binaryimage_by_watershed.py' '$input' '$output' $min_distance
+        #end if
         ]]>
     </command>
     <inputs>
-        <param name="input" type="data" format="tiff,png,jpg,bmp" label="Binary Image File"/>
+        <param name="input" type="data" format="tiff,png,jpg,bmp" label="Binary image"/>
+        <conditional name="mode">
+            <param name="mode_selector" type="select" label="Mode">
+                <option value="cca">Connected component analysis</option>
+                <option value="watershed">Watershed transform</option>
+            </param>
+            <when value="cca">
+            </when>
+            <when value="watershed">
+                <param name="min_distance" type="integer" min="0" value="5" label="Minimum distance between two objects" />
+            </when>
+        </conditional>
     </inputs>
     <outputs>
         <data format="tiff" name="output"/>
@@ -24,13 +46,24 @@
     <tests>
         <test>
             <param name="input" value="galaxyIcon_noText.tif" />
+            <conditional name="mode">
+                <param name="mode_selector" value="cca" />
+            </conditional>
             <output name="output" value="label.tif" ftype="tiff" compare="sim_size"/>
+        </test>
+        <test>
+            <param name="input" value="in.tif"/>
+            <conditional name="mode">
+                <param name="mode_selector" value="watershed" />
+                <param name="min_distance" value="10" />
+            </conditional>
+            <output name="output" value="out.tif" ftype="tiff" compare="sim_size"/>
         </test>
     </tests>
     <help>
-    **What it does**
+    This tool assigns each object a unique label.
 
-    This tool assigns every object an own grey value.
+    Individual objects are determined using connected component analysis, or distance transform and watershed.
     </help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
