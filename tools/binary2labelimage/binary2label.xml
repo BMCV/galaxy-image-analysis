@@ -11,7 +11,7 @@
         <xref type="bio.tools">galaxy_image_analysis</xref>
     </xrefs>
     <requirements>
-        <requirement type="package" version="0.12.3">scikit-image</requirement> 
+        <requirement type="package" version="0.14.2">scikit-image</requirement> 
         <requirement type="package" version="0.15.1">tifffile</requirement>
         <requirement type="package" version="1.15.4">numpy</requirement>
         <requirement type="package" version="5.3.0">pillow</requirement>
