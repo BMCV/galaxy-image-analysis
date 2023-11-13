@@ -16,15 +16,14 @@
     <command detect_errors="aggressive">
     <![CDATA[
     #set $neighborhood_size = "%d" % ($half_neighborhood_size.value * 2 + 1)
-    cp '${dataset}' ./input &&
-    docker run --rm
-        -v .:/io kostrykin/rfove /rfove
+    echo `uname -a` >> /tmp/hostinfo.txt &&
+    /rfove
         ${area_ub}
         ${min_area_max_area_ratio_ub}
         ${overlap_ub}
         ${neighborhood_size}
-        /io/input
-        /io/output.tiff
+        ${dataset}
+        output.tiff
     ]]>
     </command>
     <inputs>
