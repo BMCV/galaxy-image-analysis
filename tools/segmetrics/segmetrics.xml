@@ -2,7 +2,7 @@
     <description>with SegMetrics</description>
     <macros>
         <token name="@TOOL_VERSION@">1.4</token>
-        <token name="@VERSION_SUFFIX@">3</token>
+        <token name="@VERSION_SUFFIX@">4</token>
     </macros>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
