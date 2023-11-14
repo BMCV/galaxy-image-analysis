@@ -21,7 +21,12 @@
     'cfg.json'
     'masks.png'
     'overlay.png'
-    $seg_border
+    #if $seg_border.value % 2 == 1:
+        #set $seg_border = "%d" % ($seg_border.value + 1)
+        $seg_border
+    #else:
+        $seg_border
+    #end if
     \${GALAXY_SLOTS:-4}
     #if str($config.AF_scale) != '':
         --AF_scale '${config.AF_scale}'
