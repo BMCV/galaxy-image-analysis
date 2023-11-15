@@ -6,4 +6,4 @@ long_description: Convert image to OME-Zarr using bioformats2raw
 name: bioformats2raw
 owner: imgteam
 homepage_url: https://github.com/Euro-BioImaging
-remote_repository_url: https://github.com/Euro-BioImaging/Galaxy-OME-Zarr/tree/main/tools/bioformats2raw
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tree/master/tools/bioformats2raw
