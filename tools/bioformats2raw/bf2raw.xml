@@ -1,5 +1,8 @@
 <tool id="bf2raw" name="bioformats2raw" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@">
-    <description>A wrapper for the bioformats2raw package that converts various image file formats to the cloud-optimised OME-Zarr format following the OME-NGFF specification</description>
+    <description>with Bioformats</description>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
     <macros>
          <token name="@TOOL_VERSION@">0.7.0</token>
          <token name="@VERSION_SUFFIX@">0</token>
