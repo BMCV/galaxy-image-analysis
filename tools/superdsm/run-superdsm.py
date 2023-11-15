@@ -7,13 +7,12 @@ See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
 """
 
 import argparse
+import csv
 import imghdr
 import os
 import pathlib
 import shutil
 import tempfile
-import io
-import csv
 
 
 hyperparameters = [
@@ -45,6 +44,7 @@ def create_config(args):
         if value is not None:
             cfg[key] = value
     return cfg
+
 
 def flatten_dict(d, sep='/'):
     result = {}
@@ -99,9 +99,6 @@ if __name__ == "__main__":
 
         if args.do_cfg:
             print(f'Writing config to: {args.do_cfg}')
-            #cfg_buf = io.StringIO()
-            #cfg.dump_json(cfg_buf)
-            #cfg_json = json.loads(cfg_buf.get_value())
             with open(args.do_cfg, 'w') as fp:
                 tsv_out = csv.writer(fp, delimiter='\t')
                 tsv_out.writerow(['Hyperparameter', 'Value'])
