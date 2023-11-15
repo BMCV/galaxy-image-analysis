@@ -1,0 +1,133 @@
+<tool id="bf2raw" name="Convert to OME-Zarr" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@">
+    <description>with Bioformats</description>
+    <macros>
+         <token name="@TOOL_VERSION@">0.7.0</token>
+         <token name="@VERSION_SUFFIX@">0</token>
+    </macros>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <requirements>
+        <container type="docker">quay.io/biocontainers/mulled-v2-ea5a9ffc5f22f92a78f0cd24aac43eb503c0e523:4c010c399f61cde74da64343581999ada3e11e24-0</container>
+    </requirements>
+    <command><![CDATA[
+
+if [ ! -d $output.extra_files_path ];then
+    mkdir -p $output.extra_files_path;
+fi;
+
+#if str($io_options.input.ext)=='html':
+    #set dirlist=os.listdir($io_options.input.extra_files_path)
+    #assert len($dirlist) > 0
+    #set input_path=os.path.join(str($io_options.input.extra_files_path), str($dirlist[0]))
+#else:
+    #set input_path=$io_options.input
+#end if
+
+bioformats2raw $input_path $output.extra_files_path/$io_options.output_name
+#if $bf2raw_params.multiscales['options'] == 'auto':
+    --target-min-size $bf2raw_params.multiscales.min_xy_size
+#elif $bf2raw_params.multiscales['options'] == 'manual':
+    --resolutions $bf2raw_params.resolutions
+#end if
+--tile_height $bf2raw_params.tile_height
+--tile_width $bf2raw_params.tile_width
+--chunk_depth $bf2raw_params.chunk_depth
+--downsample-type $bf2raw_params.downsample_type
+--compression $bf2raw_params.compression
+--max_workers "\${GALAXY_SLOTS:-4}"
+$bf2raw_params.nesting
+$bf2raw_params.omefolder
+$bf2raw_params.droptop
+#if not str($bf2raw_params.dimension_order) == 'keep input order':
+    --dimension-order $bf2raw_params.dimension_order
+#end if
+###--overwrite
+--debug off &> /dev/null;
+
+    ]]></command>
+    <inputs>
+        <section name="io_options" title="Input-output paths">
+            <param name="input" type="data" format="atsf,scn,ali,labels,ffr,jpeg,ndpi,tf8,pty,fff,mnc,vms,mng,xml,pcx,img,pct,ims,bip,ome.xml,bin,flex,his,hdr,mov,psd,spi,ipl,dv,aiix,j2kr,pst,mod,ome.tif,tif,obf,dib,dic,im3,tga,pbm,c01,crw,mrcs,l2d,seq,mdb,cfg,htm,mvd2,arf,vsi,companion.ome,htd,aim,fts,ndpis,r3d.log,nef,res,jpx,ics,rec,nd2,cr2,dcm,mea,ome,lei,lms,j2k,oib,mtb,ima,ets,wlz,pict,sm3,sm2,nrrd,xdce,acff,al3d,zvi,1sc,xys,tiff,pgm,pcoraw,ppm,ipm,set,cxd,ipw,apl,fake,tnb,txt,xv,tf2,ps,log,zip,epsi,j2ki,dicom,top,msr,frm,hed,gif,dm2,dm3,dm4,zpo,wav,wat,2fl,sdt,liff,hx,pic,ome.btf,am,bmp,pnl,r3d_d3d,jpf,png,tfr,dti,nii.gz,cif,fdf,grey,df3,stk,fli,hdf,btf,stp,ch5,v,sld,ids,dv.log,jpk,mrw,r3d,xlog,ano,jpe,sxm,jpg,vws,raw,czi,spl,avi,ome.tf8,inf,spc,ome.tf2,spe,lsm,afm,lif,naf,afi,inr,lim,nd,tim,html,sif,env,tif,csv,map,nii,gel,ome.tiff,oif,par,amiramesh,pr3,fits,lut,jp2,oir,dat,aisf,zfr,zfp,xqd,eps,xqf,st,nhdr,i2i,thm,exp,svs,mrc" label="Input image located in Galaxy history"/>
+            <param name="output_name" type="text" value="data.zarr" label="Output zarr data"/>
+        </section>
+        <section name="bf2raw_params" title="Parameters fed to file conversion module">
+            <conditional name="multiscales" >
+                <param name="options" type="select" multiple="false" label="How should the number of resolutions be determined?" >
+                    <option value="auto" selected="true">auto</option>
+                    <option value="manual" selected="false">manual</option>
+                </param>
+                <when value="auto">
+                    <param name="min_xy_size" type="integer" min="1" optional="true" label="Min x-y dimension for the lowest resolution" value="256" />
+                </when>
+                <when value="manual">
+                    <param name="resolution_count" type="integer" min="1" optional="true" label="Number of resolution layers" value="3"/>
+                </when>
+            </conditional >
+            <param name="tile_height" type="integer" label="Tile height" value="96" min="1" />
+            <param name="tile_width" type="integer" label="Tile width" value="96" min="1" />
+            <param name="chunk_depth" type="integer" label="Chunk depth" value="1" min="1" />
+            <param name="downsample_type" type="select" label="Downsampling method" multiple="false" >
+                <option value="SIMPLE" selected="true">SIMPLE</option>
+                <option value="GAUSSIAN" selected="false">GAUSSIAN</option>
+                <option value="AREA" selected="false">AREA</option>
+                <option value="LINEAR" selected="false">LINEAR</option>
+                <option value="CUBIC" selected="false">CUBIC</option>
+                <option value="LANCZOS" selected="false">LANCZOS</option>
+            </param>
+            <param name="compression" type="select" label="Compression method" multiple="false" >
+                <option value="null" selected="false">null</option>
+                <option value="zlib" selected="false">zlib</option>
+                <option value="blosc" selected="true">blosc</option>
+            </param>
+            <param name="dimension_order" type="select" label="Dimension order" multiple="false">
+                <option value="keep input order" selected="true">keep input order</option>
+                <option value="XYZCT" selected="false">XYZCT</option>
+                <option value="XYZTC" selected="false">XYZTC</option>
+                <option value="XYCTZ" selected="false">XYCTZ</option>
+                <option value="XYCZT" selected="false">XYCZT</option>
+                <option value="XYTCZ" selected="false">XYTCZ</option>
+                <option value="XYTZC" selected="false">XYTZC</option>
+            </param>
+            <param name="nesting" type="boolean" label="Use ' / ' as chunk path separator" truevalue="" falsevalue="--no-nested" checked="true" />
+            <param name="omefolder" type="boolean" label="Export OME metadata" truevalue="" falsevalue="--no-ome-meta-export" checked="true" />
+            <param name="droptop" type="boolean" label="Drop the series layer in the OME-Zarr folder hierarchy" truevalue="--scale-format-string '%2$d'" falsevalue="" checked="false" />
+        </section>
+    </inputs>
+    <outputs>
+        <data name="output" format="html" label="OME-Zarr Output" />
+    </outputs>
+    <tests>
+        <test expect_num_outputs="1">
+            <param name="input" value="xyz_8bit__mitotic_plate_calibrated.tif"/>
+            <param name="output_name" value="xyz_8bit__mitotic_plate_calibrated.ome.zarr" />
+            <output name="output" ftype="html">
+                <extra_files type="file" name="xyz_8bit__mitotic_plate_calibrated.ome.zarr/.zattrs" value="xyz_8bit__mitotic_plate_calibrated.ome.zarr/.zattrs" />
+            </output>
+        </test>
+        <test expect_num_outputs="1">
+            <param name="input" value="astronaut.png"/>
+            <param name="output_name" value="astronaut.ome.zarr" />
+            <output name="output" ftype="html">
+                <extra_files type="file" name="astronaut.ome.zarr/.zgroup" value="astronaut.ome.zarr/.zgroup" />
+            </output>
+        </test>
+        <test expect_num_outputs="1">
+            <param name="input" value="rocket.jpg"/>
+            <param name="output_name" value="rocket.ome.zarr" />
+            <output name="output" ftype="html">
+                <extra_files type="file" name="rocket.ome.zarr/.zattrs" value="rocket.ome.zarr/.zattrs" />
+            </output>
+        </test>
+    </tests>
+    <help>
+**What it does**
+
+Bioformats-based tool that converts a wide range of image file formats to the cloud-optimised format OME-Zarr following the `OME-NGFF`_ specification.
+
+.. _OME-NGFF: https://ngff.openmicroscopy.org/latest
+    </help>
+    <citations>
+        <citation type="doi">https://doi.org/10.5281/zenodo.5548102 </citation>
+    </citations>
+</tool>
