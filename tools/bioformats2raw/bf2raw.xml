@@ -1,12 +1,12 @@
 <tool id="bf2raw" name="Convert to OME-Zarr" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@">
     <description>with Bioformats</description>
-    <edam_operations>
-        <edam_operation>operation_3443</edam_operation>
-    </edam_operations>
     <macros>
          <token name="@TOOL_VERSION@">0.7.0</token>
          <token name="@VERSION_SUFFIX@">0</token>
     </macros>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
     <requirements>
         <container type="docker">quay.io/biocontainers/mulled-v2-ea5a9ffc5f22f92a78f0cd24aac43eb503c0e523:4c010c399f61cde74da64343581999ada3e11e24-0</container>
     </requirements>
@@ -58,13 +58,13 @@ $bf2raw_params.droptop
                     <option value="manual" selected="false">manual</option>
                 </param>
                 <when value="auto">
-                    <param name="min_xy_size" type="integer" min="1" value="256" optional="true" label="Min x-y dimension for the lowest resolution" />
+                    <param name="min_xy_size" type="integer" min="1" optional="true" label="Min x-y dimension for the lowest resolution" value="256" />
                 </when>
                 <when value="manual">
                     <param name="resolution_count" type="integer" min="1" optional="true" label="Number of resolution layers" value="3"/>
                 </when>
             </conditional >
-            <param name="tile_height" type="integer" label="Tile height" min="1" value="96" />
+            <param name="tile_height" type="integer" label="Tile height" value="96" min="1" />
             <param name="tile_width" type="integer" label="Tile width" value="96" min="1" />
             <param name="chunk_depth" type="integer" label="Chunk depth" value="1" min="1" />
             <param name="downsample_type" type="select" label="Downsampling method" multiple="false" >
@@ -131,4 +131,3 @@ Bioformats-based tool that converts a wide range of image file formats to the cl
         <citation type="doi">https://doi.org/10.5281/zenodo.5548102 </citation>
     </citations>
 </tool>
-
