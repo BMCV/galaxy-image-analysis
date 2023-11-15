@@ -20,59 +20,67 @@
     </requirements>
     <command detect_errors="aggressive">
     <![CDATA[
-    python '$__tool_directory__/run-superdsm.py'
-    '${dataset}'
-    'cfg.json'
-    'masks.png'
-    'overlay.png'
-    #if $seg_border.value % 2 == 1:
-        #set $seg_border = "%d" % ($seg_border.value + 1)
-        $seg_border
-    #else:
-        $seg_border
-    #end if
-    \${GALAXY_SLOTS:-4}
-    #if str($config.AF_scale) != '':
-        --AF_scale '${config.AF_scale}'
-    #end if
-    #if str($config.c2f_region_analysis_min_atom_radius) != '':
-        --c2f_region_analysis_min_atom_radius '${config.c2f_region_analysis_min_atom_radius}'
-    #end if
-    #if str($config.c2f_region_analysis_min_norm_energy_improvement) != '':
-        --c2f_region_analysis_min_norm_energy_improvement '${config.c2f_region_analysis_min_norm_energy_improvement}'
-    #end if
-    #if str($config.c2f_region_analysis_max_atom_norm_energy) != '':
-        --c2f_region_analysis_max_atom_norm_energy '${config.c2f_region_analysis_max_atom_norm_energy}'
-    #end if
-    #if str($config.c2f_region_analysis_max_cluster_marker_irregularity) != '':
-        --c2f_region_analysis_max_cluster_marker_irregularity '${config.c2f_region_analysis_max_cluster_marker_irregularity}'
-    #end if
-    #if str($config.dsm_alpha) != '':
-        --dsm_alpha '${config.dsm_alpha}'
-    #end if
-    #if str($config.dsm_AF_alpha) != '':
-        --dsm_AF_alpha '${config.dsm_AF_alpha}'
-    #end if
-    #if str($config.global_energy_minimization_beta) != '':
-        --global_energy_minimization_beta '${config.global_energy_minimization_beta}'
-    #end if
-    #if str($config.global_energy_minimization_AF_beta) != '':
-        --global_energy_minimization_AF_beta '${config.global_energy_minimization_AF_beta}'
-    #end if
-    #if str($config.postprocess_mask_max_distance) != '':
-        --postprocess_mask_max_distance '${config.postprocess_mask_max_distance}'
-    #end if
-    #if str($config.postprocess_mask_stdamp) != '':
-        --postprocess_mask_stdamp '${config.postprocess_mask_stdamp}'
-    #end if
-    #if str($config.postprocess_max_norm_energy) != '':
-        --postprocess_max_norm_energy '${config.postprocess_max_norm_energy}'
-    #end if
-    #if str($config.postprocess_min_contrast) != '':
-        --postprocess_min_contrast '${config.postprocess_min_contrast}'
-    #end if
-    #if str($config.postprocess_min_object_radius) != '':
-        --postprocess_min_object_radius '${config.postprocess_min_object_radius}'
+    #if $do_masks_enabled == 'true' or $do_cfg_enabled == 'true' or $do_overlay.do_overlay_enabled == 'true':
+        python '$__tool_directory__/run-superdsm.py'
+        '${dataset}'
+        \${GALAXY_SLOTS:-4}
+        #if $do_masks_enabled == 'true':
+            --do-masks 'masks.png'
+        #end if
+        #if $do_cfg_enabled == 'true':
+            --do-cfg 'cfg.json'
+        #end if
+        #if $do_overlay.do_overlay_enabled == 'true':
+            --do-overlay 'overlay.png'
+            #if $seg_border.value % 2 == 1:
+                #set $seg_border = "%d" % ($seg_border.value + 1)
+                --do-overlay-border $seg_border
+            #else:
+                --do-overlay-border $seg_border
+            #end if
+        #end if
+        #if str($config.AF_scale) != '':
+            --AF_scale '${config.AF_scale}'
+        #end if
+        #if str($config.c2f_region_analysis_min_atom_radius) != '':
+            --c2f_region_analysis_min_atom_radius '${config.c2f_region_analysis_min_atom_radius}'
+        #end if
+        #if str($config.c2f_region_analysis_min_norm_energy_improvement) != '':
+            --c2f_region_analysis_min_norm_energy_improvement '${config.c2f_region_analysis_min_norm_energy_improvement}'
+        #end if
+        #if str($config.c2f_region_analysis_max_atom_norm_energy) != '':
+            --c2f_region_analysis_max_atom_norm_energy '${config.c2f_region_analysis_max_atom_norm_energy}'
+        #end if
+        #if str($config.c2f_region_analysis_max_cluster_marker_irregularity) != '':
+            --c2f_region_analysis_max_cluster_marker_irregularity '${config.c2f_region_analysis_max_cluster_marker_irregularity}'
+        #end if
+        #if str($config.dsm_alpha) != '':
+            --dsm_alpha '${config.dsm_alpha}'
+        #end if
+        #if str($config.dsm_AF_alpha) != '':
+            --dsm_AF_alpha '${config.dsm_AF_alpha}'
+        #end if
+        #if str($config.global_energy_minimization_beta) != '':
+            --global_energy_minimization_beta '${config.global_energy_minimization_beta}'
+        #end if
+        #if str($config.global_energy_minimization_AF_beta) != '':
+            --global_energy_minimization_AF_beta '${config.global_energy_minimization_AF_beta}'
+        #end if
+        #if str($config.postprocess_mask_max_distance) != '':
+            --postprocess_mask_max_distance '${config.postprocess_mask_max_distance}'
+        #end if
+        #if str($config.postprocess_mask_stdamp) != '':
+            --postprocess_mask_stdamp '${config.postprocess_mask_stdamp}'
+        #end if
+        #if str($config.postprocess_max_norm_energy) != '':
+            --postprocess_max_norm_energy '${config.postprocess_max_norm_energy}'
+        #end if
+        #if str($config.postprocess_min_contrast) != '':
+            --postprocess_min_contrast '${config.postprocess_min_contrast}'
+        #end if
+        #if str($config.postprocess_min_object_radius) != '':
+            --postprocess_min_object_radius '${config.postprocess_min_object_radius}'
+        #end if
     #end if
     ]]>
     </command>
@@ -81,7 +89,27 @@
     </environment_variables>
     <inputs>
         <param name="dataset" type="data" format="tiff,png" label="Dataset" />
-        <param name="seg_border" type="integer" min="1" value="8" label="Width of the outlines (in pixels) of the segmentation results (overlays)" />
+        <section name="outputs" title="Outputs" expanded="true">
+            <conditional name="do_overlay">
+                <param name="do_overlay_enabled" type="select" label="Segmentation overlay">
+                    <option value="true" selected="true">Create a segmentation overlay</option>
+                    <option value="false">Do not create a segmentation overlay</option>
+                </param>
+                <when value="true">
+                    <param name="seg_border" type="integer" min="1" value="8" label="Width of the outlines (in pixels)" />
+                </when>
+                <when value="false">
+                </when>
+            </conditional>
+            <param name="do_masks_enabled" type="select" label="Label map">
+                <option value="true">Create a label map (e.g., for further processing)</option>
+                <option value="false" selected="true">Do not create a label map</option>
+            </param>
+            <param name="do_cfg_enabled" type="select" label="Hyperparameters">
+                <option value="true">Report all hyperparameters (manually set and automatically determined values)</option>
+                <option value="false" selected="true">Do not report the values of the hyperparamters</option>
+            </param>
+        </section>
         <section name="config" title="Hyperparameters" expanded="false">
             <param argument="--AF_scale" optional="true" type="float" value="" min="0" label="scale σ" help="The scale of the objects to be segmented. Leave empty to use the automatically determined value." />
             <param argument="--c2f_region_analysis_min_atom_radius" optional="true" type="float" value="" min="0" label="min_atom_radius" help="No region determined by the Coarse-to-fine region analysis scheme is smaller than a circle of this radius (in terms of the surface area). Leave empty to use the automatically determined value." />
@@ -100,14 +128,36 @@
         </section>
     </inputs>
     <outputs>
-        <data format="json" name="cfg" from_work_dir="cfg.json" label="${tool.name} on ${on_string}: cfg" />
-        <data format="png" name="masks" from_work_dir="masks.png" label="${tool.name} on ${on_string}: masks" />
-        <data format="png" name="overlay" from_work_dir="overlay.png" label="${tool.name} on ${on_string}: overlay" />
+        <data format="png" name="masks" from_work_dir="masks.png" label="${tool.name} on ${on_string}: masks">
+            <filter>do_masks_enabled == 'true'</filter>
+        </data>
+        <data format="json" name="cfg" from_work_dir="cfg.json" label="${tool.name} on ${on_string}: cfg">
+            <filter>do_cfg_enabled == 'true'</filter>
+        </data>
+        <data format="png" name="overlay" from_work_dir="overlay.png" label="${tool.name} on ${on_string}: overlay">
+            <filter>do_overlay['do_overlay_enabled'] == 'true'</filter>
+        </data>
     </outputs>
     <tests>
-        <test>
+        <test expect_num_outputs="3">
             <param name="dataset" value="BBBC033_C2_z28.png" />
+            <param name="do_masks_enabled" value="true" />
+            <param name="do_overlay_enabled" value="true" />
+            <param name="do_cfg_enabled" value="true" />
             <output name="overlay" value="overlay.png" ftype="png" compare="sim_size" />
+        </test>
+        <test expect_num_outputs="1">
+            <param name="dataset" value="BBBC033_C2_z28.png" />
+            <param name="do_masks_enabled" value="false" />
+            <param name="do_overlay_enabled" value="true" />
+            <param name="do_cfg_enabled" value="false" />
+            <output name="overlay" value="overlay.png" ftype="png" compare="sim_size" />
+        </test>
+        <test expect_num_outputs="0">
+            <param name="dataset" value="BBBC033_C2_z28.png" />
+            <param name="do_masks_enabled" value="false" />
+            <param name="do_overlay_enabled" value="false" />
+            <param name="do_cfg_enabled" value="false" />
         </test>
     </tests>
     <help>
