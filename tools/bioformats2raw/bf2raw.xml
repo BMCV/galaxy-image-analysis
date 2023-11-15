@@ -76,7 +76,7 @@ $bf2raw_params.droptop
                 <option value="LANCZOS" selected="false">LANCZOS</option>
             </param>
             <param name="compression" type="select" label="Compression method" multiple="false" >
-                <option value="null" selected="true">null</option>
+                <option value="null" selected="false">null</option>
                 <option value="zlib" selected="false">zlib</option>
                 <option value="blosc" selected="true">blosc</option>
             </param>
@@ -99,24 +99,24 @@ $bf2raw_params.droptop
     </outputs>
     <tests>
         <test expect_num_outputs="1">
-            <param name="input" value="filament.tif"/>
-            <param name="output_name" value="filament.zarr" />
+            <param name="input" value="xyz_8bit__mitotic_plate_calibrated.tif"/>
+            <param name="output_name" value="xyz_8bit__mitotic_plate_calibrated.ome.zarr" />
             <output name="output" ftype="html">
-                <extra_files type="file" name="filament.zarr/.zattrs" value="filament.zarr/.zattrs" />
+                <extra_files type="file" name="xyz_8bit__mitotic_plate_calibrated.ome.zarr/.zattrs" value="xyz_8bit__mitotic_plate_calibrated.ome.zarr/.zattrs" />
             </output>
         </test>
         <test expect_num_outputs="1">
             <param name="input" value="astronaut.png"/>
-            <param name="output_name" value="astronaut.zarr" />
+            <param name="output_name" value="astronaut.ome.zarr" />
             <output name="output" ftype="html">
-                <extra_files type="file" name="astronaut.zarr/.zgroup" value="astronaut.zarr/.zgroup" />
+                <extra_files type="file" name="astronaut.ome.zarr/.zgroup" value="astronaut.ome.zarr/.zgroup" />
             </output>
         </test>
         <test expect_num_outputs="1">
-            <param name="input" value="xy_12bit__plant.oir"/>
-            <param name="output_name" value="x_12bit_plant.zarr" />
+            <param name="input" value="rocket.jpg"/>
+            <param name="output_name" value="rocket.ome.zarr" />
             <output name="output" ftype="html">
-                <extra_files type="file" name="x_12bit_plant.zarr/.zattrs" value="x_12bit_plant.zarr/.zattrs" />
+                <extra_files type="file" name="rocket.ome.zarr/.zattrs" value="rocket.ome.zarr/.zattrs" />
             </output>
         </test>
     </tests>
