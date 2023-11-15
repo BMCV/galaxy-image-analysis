@@ -58,7 +58,7 @@ $bf2raw_params.droptop
                     <option value="manual" selected="false">manual</option>
                 </param>
                 <when value="auto">
-                    <param name="min_xy_size" type="integer" min="1" optional="true" label="Min x-y dimension for the lowest resolution" value="256" />
+                    <param name="min_xy_size" type="integer" min="1" value="256" optional="true" label="Min x-y dimension for the lowest resolution" />
                 </when>
                 <when value="manual">
                     <param name="resolution_count" type="integer" min="1" optional="true" label="Number of resolution layers" value="3"/>
