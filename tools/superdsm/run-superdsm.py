@@ -12,6 +12,8 @@ import os
 import pathlib
 import shutil
 import tempfile
+import io
+import csv
 
 
 hyperparameters = [
@@ -43,6 +45,16 @@ def create_config(args):
         if value is not None:
             cfg[key] = value
     return cfg
+
+def flatten_dict(d, sep='/'):
+    result = {}
+    for key, val in d.items():
+        if isinstance(val, dict):
+            for sub_key, sub_val in flatten_dict(val, sep=sep).items():
+                result[f'{key}{sep}{sub_key}'] = sub_val
+        else:
+            result[key] = val
+    return result
 
 
 if __name__ == "__main__":
@@ -87,8 +99,14 @@ if __name__ == "__main__":
 
         if args.do_cfg:
             print(f'Writing config to: {args.do_cfg}')
+            #cfg_buf = io.StringIO()
+            #cfg.dump_json(cfg_buf)
+            #cfg_json = json.loads(cfg_buf.get_value())
             with open(args.do_cfg, 'w') as fp:
-                cfg.dump_json(fp)
+                tsv_out = csv.writer(fp, delimiter='\t')
+                tsv_out.writerow(['Hyperparameter', 'Value'])
+                for key, value in flatten_dict(cfg.entries).items():
+                    tsv_out.writerow([key, value])
 
         if args.do_overlay:
             print(f'Writing overlay to: {args.do_overlay}')
