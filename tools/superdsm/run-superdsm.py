@@ -106,7 +106,7 @@ if __name__ == "__main__":
                     tsv_out.writerow([key, value])
 
         if args.do_overlay or args.do_masks:
-            print(f'Performing segmentation')
+            print('Performing segmentation')
             data, cfg, _ = pipeline.process_image(img, cfg)
 
         if args.do_overlay:
