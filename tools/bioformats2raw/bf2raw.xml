@@ -1,5 +1,9 @@
-<tool id="bf2raw" name="bioformats2raw" version="0.0.1">
+<tool id="bf2raw" name="bioformats2raw" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@">
     <description>A wrapper for the bioformats2raw package that converts various image file formats to the cloud-optimised OME-Zarr format following the OME-NGFF specification</description>
+    <macros>
+         <token name="@TOOL_VERSION@">0.7.0</token>
+         <token name="@VERSION_SUFFIX@">0</token>
+    </macros>
     <requirements>
         <container type="docker">quay.io/biocontainers/mulled-v2-ea5a9ffc5f22f92a78f0cd24aac43eb503c0e523:4c010c399f61cde74da64343581999ada3e11e24-0</container>
     </requirements>
