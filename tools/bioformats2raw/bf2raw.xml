@@ -64,7 +64,7 @@ $bf2raw_params.droptop
                     <param name="resolution_count" type="integer" min="1" optional="true" label="Number of resolution layers" value="3"/>
                 </when>
             </conditional >
-            <param name="tile_height" type="integer" label="Tile height" value="96" min="1" />
+            <param name="tile_height" type="integer" label="Tile height" min="1" value="96" />
             <param name="tile_width" type="integer" label="Tile width" value="96" min="1" />
             <param name="chunk_depth" type="integer" label="Chunk depth" value="1" min="1" />
             <param name="downsample_type" type="select" label="Downsampling method" multiple="false" >
