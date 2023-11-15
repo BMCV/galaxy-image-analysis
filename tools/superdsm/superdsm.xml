@@ -81,6 +81,9 @@
         #if str($config.postprocess_min_object_radius) != '':
             --postprocess_min_object_radius '${config.postprocess_min_object_radius}'
         #end if
+    #else
+        echo "No outputs selected."
+        exit 1
     #end if
     ]]>
     </command>
@@ -154,7 +157,7 @@
             <param name="do_cfg_enabled" value="false" />
             <output name="overlay" value="overlay.png" ftype="png" compare="sim_size" />
         </test>
-        <test expect_num_outputs="0">
+        <test expect_failure="true">
             <param name="dataset" value="BBBC033_C2_z28.png" />
             <param name="do_masks_enabled" value="false" />
             <param name="do_overlay_enabled" value="false" />
