@@ -95,15 +95,19 @@ if __name__ == "__main__":
         pipeline = superdsm.pipeline.create_default_pipeline()
         cfg = create_config(args)
         img = superdsm.io.imread(img_filepath)
-        data, cfg, _ = superdsm.automation.process_image(pipeline, cfg, img)
 
         if args.do_cfg:
             print(f'Writing config to: {args.do_cfg}')
+            cfg, _ = superdsm.automation.create_config(pipeline, cfg, img)
             with open(args.do_cfg, 'w') as fp:
                 tsv_out = csv.writer(fp, delimiter='\t')
                 tsv_out.writerow(['Hyperparameter', 'Value'])
                 for key, value in flatten_dict(cfg.entries).items():
                     tsv_out.writerow([key, value])
+
+        if args.do_overlay or args.do_masks:
+            print(f'Performing segmentation')
+            data, cfg, _ = pipeline.process_image(img, cfg)
 
         if args.do_overlay:
             print(f'Writing overlay to: {args.do_overlay}')
