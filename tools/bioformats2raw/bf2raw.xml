@@ -1,4 +1,4 @@
-<tool id="bf2raw" name="bioformats2raw" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@">
+<tool id="bf2raw" name="Convert to OME-Zarr" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@">
     <description>with Bioformats</description>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
