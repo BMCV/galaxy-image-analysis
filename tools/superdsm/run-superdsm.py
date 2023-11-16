@@ -7,6 +7,7 @@ See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
 """
 
 import argparse
+import csv
 import imghdr
 import os
 import pathlib
@@ -45,14 +46,25 @@ def create_config(args):
     return cfg
 
 
+def flatten_dict(d, sep='/'):
+    result = {}
+    for key, val in d.items():
+        if isinstance(val, dict):
+            for sub_key, sub_val in flatten_dict(val, sep=sep).items():
+                result[f'{key}{sep}{sub_key}'] = sub_val
+        else:
+            result[key] = val
+    return result
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Segmentation of cell nuclei in 2-D fluorescence microscopy images')
-    parser.add_argument('image', help='Path to the input image')
-    parser.add_argument('cfg', help='Path to the file containing the configuration')
-    parser.add_argument('masks', help='Path to the file containing the segmentation masks')
-    parser.add_argument('overlay', help='Path to the file containing the overlay of the segmentation results')
-    parser.add_argument('seg_border', type=int)
+    parser.add_argument('image', type=str, help='Path to the input image')
     parser.add_argument('slots', type=int)
+    parser.add_argument('--do-masks', type=str, default=None, help='Path to the file containing the segmentation masks')
+    parser.add_argument('--do-cfg', type=str, default=None, help='Path to the file containing the configuration')
+    parser.add_argument('--do-overlay', type=str, default=None, help='Path to the file containing the overlay of the segmentation results')
+    parser.add_argument('--do-overlay-border', type=int)
     for key, ptype in hyperparameters:
         parser.add_argument('--' + get_param_name(key), type=ptype, default=None)
     args = parser.parse_args()
@@ -83,13 +95,26 @@ if __name__ == "__main__":
         pipeline = superdsm.pipeline.create_default_pipeline()
         cfg = create_config(args)
         img = superdsm.io.imread(img_filepath)
-        data, cfg, _ = superdsm.automation.process_image(pipeline, cfg, img)
 
-        with open(args.cfg, 'w') as fp:
-            cfg.dump_json(fp)
+        if args.do_cfg:
+            print(f'Writing config to: {args.do_cfg}')
+            cfg, _ = superdsm.automation.create_config(pipeline, cfg, img)
+            with open(args.do_cfg, 'w') as fp:
+                tsv_out = csv.writer(fp, delimiter='\t')
+                tsv_out.writerow(['Hyperparameter', 'Value'])
+                for key, value in flatten_dict(cfg.entries).items():
+                    tsv_out.writerow([key, value])
 
-        overlay = superdsm.render.render_result_over_image(data, border_width=args.seg_border, normalize_img=False)
-        superdsm.io.imwrite(args.overlay, overlay)
+        if args.do_overlay or args.do_masks:
+            print('Performing segmentation')
+            data, cfg, _ = pipeline.process_image(img, cfg)
 
-        masks = superdsm.render.rasterize_labels(data)
-        superdsm.io.imwrite(args.masks, masks)
+        if args.do_overlay:
+            print(f'Writing overlay to: {args.do_overlay}')
+            overlay = superdsm.render.render_result_over_image(data, border_width=args.do_overlay_border, normalize_img=False)
+            superdsm.io.imwrite(args.do_overlay, overlay)
+
+        if args.do_masks:
+            print(f'Writing masks to: {args.do_masks}')
+            masks = superdsm.render.rasterize_labels(data)
+            superdsm.io.imwrite(args.do_masks, masks)
