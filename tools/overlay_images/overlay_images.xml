@@ -85,7 +85,7 @@
             <output name="out_tiff" value="test2.tif" ftype="tiff" compare="sim_size" delta_frac="0.1"/>
         </test>
         <test expect_num_outputs="1">
-            <param name="im1" value="sample1.tif"/>
+            <param name="im1" value="sample1_uint8.tif"/>
             <param name="im2" value="mask1.tif"/>
             <param name="method" value="seg_contour"/>
             <param name="thickness" value="2"/>
@@ -93,21 +93,21 @@
             <param name="show_label" value="--show_label"/>
             <output name="out_png" value="test3.png" ftype="png" compare="sim_size" delta_frac="0.1"/>
         </test>
-        <test expect_num_outputs="1">
-            <param name="im1" value="sample1.tif"/>
+        <test expect_num_outputs="1"><!-- segemtation overlay, 8bit test -->
+            <param name="im1" value="sample1_uint8.tif"/>
             <param name="im2" value="mask2.tif"/>
             <param name="method" value="seg_contour"/>
             <param name="thickness" value="2"/>
             <param name="color" value="#ff0000"/>
             <output name="out_png" value="test4.png" ftype="png" compare="sim_size" delta_frac="0.1"/>
         </test>
-        <test expect_num_outputs="1">
-            <param name="im1" value="test5.tif"/>
-            <param name="im2" value="mask5.tif"/>
+        <test expect_num_outputs="1"><!-- segmentation overlay, 16bit test -->
+            <param name="im1" value="sample1_uint16.tif"/>
+            <param name="im2" value="mask2.tif"/>
             <param name="method" value="seg_contour"/>
             <param name="thickness" value="2"/>
             <param name="color" value="#ff0000"/>
-            <output name="out_png" value="test5.png" ftype="png" compare="sim_size" delta_frac="0.1"/>
+            <output name="out_png" value="test4.png" ftype="png" compare="sim_size" delta_frac="0.1"/>
         </test>
     </tests>
     <help>
