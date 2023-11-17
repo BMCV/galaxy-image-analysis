@@ -33,15 +33,17 @@ def get_rgb8_copy(img):
     img = np.squeeze(img)
     assert img.ndim == 2 or (img.ndim == 3 and img.shape[-1] in (3, 4))
     if str(img.dtype).startswith('float'):
-        img = np.round(img * 255).astype('uint8')
-    elif img.dtype == 'uint16':
-        img = img // 256
-    elif img.dtype != 'uint8':
+        img = np.round(img * 255).astype(np.uint8)
+    elif img.dtype == np.uint16:
+        img = (img // 256).astype(np.uint8)
+    elif img.dtype != np.uint8:
         raise ValueError(f'unknown dtype: {img.dtype}')
     if img.ndim == 2:
-        return np.dstack([img] * 3).copy()
+        result = np.dstack([img] * 3).copy()
     else:
-        return img[:, :, :3].copy()
+        result = img[:, :, :3].copy()
+    assert result.dtype == np.uint8, result.dtype
+    return result
 
 
 def coloc_vis(in_red_fn, in_green_fn, out_fn):
