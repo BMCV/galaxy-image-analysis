@@ -1,69 +1,98 @@
-<tool id="ip_superdsm" name="Perform segmentation using deformable shape models" version="0.1.3+galaxy1" profile="20.05">
-   <description>with SuperDSM</description>
+<tool id="ip_superdsm" name="Perform segmentation using deformable shape models" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
+    <description>with SuperDSM</description>
+    <macros>
+        <token name="@TOOL_VERSION@">0.1.3</token>
+        <token name="@VERSION_SUFFIX@">3</token>
+    </macros>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
-   <requirements> 
+    <xrefs>
+        <xref type="bio.tools">superdsm</xref>
+        <xref type="biii">superdsm</xref>
+    </xrefs>
+    <requirements> 
         <requirement type="package" version="0.1.3">superdsm</requirement>
         <requirement type="package" version="1.6.0">ray-core</requirement>
         <requirement type="package" version="0.18.1">scikit-image</requirement>
-   </requirements>
-   <command detect_errors="aggressive">
-   <![CDATA[
-   python '$__tool_directory__/run-superdsm.py'
-   '${dataset}'
-   'cfg.json'
-   'masks.png'
-   'overlay.png'
-   $seg_border
-   \${GALAXY_SLOTS:-4}
-   #if str($config.AF_scale) != '':
-       --AF_scale '${config.AF_scale}'
-   #end if
-   #if str($config.c2f_region_analysis_min_atom_radius) != '':
-       --c2f_region_analysis_min_atom_radius '${config.c2f_region_analysis_min_atom_radius}'
-   #end if
-   #if str($config.c2f_region_analysis_min_norm_energy_improvement) != '':
-       --c2f_region_analysis_min_norm_energy_improvement '${config.c2f_region_analysis_min_norm_energy_improvement}'
-   #end if
-   #if str($config.c2f_region_analysis_max_atom_norm_energy) != '':
-       --c2f_region_analysis_max_atom_norm_energy '${config.c2f_region_analysis_max_atom_norm_energy}'
-   #end if
-   #if str($config.c2f_region_analysis_max_cluster_marker_irregularity) != '':
-       --c2f_region_analysis_max_cluster_marker_irregularity '${config.c2f_region_analysis_max_cluster_marker_irregularity}'
-   #end if
-   #if str($config.dsm_alpha) != '':
-       --dsm_alpha '${config.dsm_alpha}'
-   #end if
-   #if str($config.dsm_AF_alpha) != '':
-       --dsm_AF_alpha '${config.dsm_AF_alpha}'
-   #end if
-   #if str($config.global_energy_minimization_beta) != '':
-       --global_energy_minimization_beta '${config.global_energy_minimization_beta}'
-   #end if
-   #if str($config.global_energy_minimization_AF_beta) != '':
-       --global_energy_minimization_AF_beta '${config.global_energy_minimization_AF_beta}'
-   #end if
-   #if str($config.postprocess_mask_max_distance) != '':
-       --postprocess_mask_max_distance '${config.postprocess_mask_max_distance}'
-   #end if
-   #if str($config.postprocess_mask_stdamp) != '':
-       --postprocess_mask_stdamp '${config.postprocess_mask_stdamp}'
-   #end if
-   #if str($config.postprocess_max_norm_energy) != '':
-       --postprocess_max_norm_energy '${config.postprocess_max_norm_energy}'
-   #end if
-   #if str($config.postprocess_min_contrast) != '':
-       --postprocess_min_contrast '${config.postprocess_min_contrast}'
-   #end if
-   #if str($config.postprocess_min_object_radius) != '':
-       --postprocess_min_object_radius '${config.postprocess_min_object_radius}'
-   #end if
-   ]]>
-   </command>
-   <inputs>
+        <requirement type="package" version="2020.0">mkl</requirement><!-- this seems to be the last version of MKL which supports the "MKL_DEBUG_CPU_TYPE" environment variable -->
+        <requirement type="package" version="*=mkl">blas</requirement><!-- using MKL instead of other BLAS can significantly improve performance on some hardware, cf. https://stackoverflow.com/questions/62783262/why-is-numpy-with-ryzen-threadripper-so-much-slower-than-xeon -->
+    </requirements>
+    <command detect_errors="aggressive">
+    <![CDATA[
+    python '$__tool_directory__/run-superdsm.py'
+    '${dataset}'
+    \${GALAXY_SLOTS:-4}
+    #if 'masks' in $outputs:
+        --do-masks 'masks.png'
+    #end if
+    #if 'cfg' in $outputs:
+        --do-cfg 'cfg.tsv'
+    #end if
+    #if 'overlay' in $outputs:
+        --do-overlay 'overlay.png'
+        #if $seg_border.value % 2 == 1:
+            #set $seg_border = "%d" % ($seg_border.value + 1)
+            --do-overlay-border $seg_border
+        #else:
+            --do-overlay-border $seg_border
+        #end if
+    #end if
+    #if str($config.AF_scale) != '':
+        --AF_scale '${config.AF_scale}'
+    #end if
+    #if str($config.c2f_region_analysis_min_atom_radius) != '':
+        --c2f_region_analysis_min_atom_radius '${config.c2f_region_analysis_min_atom_radius}'
+    #end if
+    #if str($config.c2f_region_analysis_min_norm_energy_improvement) != '':
+        --c2f_region_analysis_min_norm_energy_improvement '${config.c2f_region_analysis_min_norm_energy_improvement}'
+    #end if
+    #if str($config.c2f_region_analysis_max_atom_norm_energy) != '':
+        --c2f_region_analysis_max_atom_norm_energy '${config.c2f_region_analysis_max_atom_norm_energy}'
+    #end if
+    #if str($config.c2f_region_analysis_max_cluster_marker_irregularity) != '':
+        --c2f_region_analysis_max_cluster_marker_irregularity '${config.c2f_region_analysis_max_cluster_marker_irregularity}'
+    #end if
+    #if str($config.dsm_alpha) != '':
+        --dsm_alpha '${config.dsm_alpha}'
+    #end if
+    #if str($config.dsm_AF_alpha) != '':
+        --dsm_AF_alpha '${config.dsm_AF_alpha}'
+    #end if
+    #if str($config.global_energy_minimization_beta) != '':
+        --global_energy_minimization_beta '${config.global_energy_minimization_beta}'
+    #end if
+    #if str($config.global_energy_minimization_AF_beta) != '':
+        --global_energy_minimization_AF_beta '${config.global_energy_minimization_AF_beta}'
+    #end if
+    #if str($config.postprocess_mask_max_distance) != '':
+        --postprocess_mask_max_distance '${config.postprocess_mask_max_distance}'
+    #end if
+    #if str($config.postprocess_mask_stdamp) != '':
+        --postprocess_mask_stdamp '${config.postprocess_mask_stdamp}'
+    #end if
+    #if str($config.postprocess_max_norm_energy) != '':
+        --postprocess_max_norm_energy '${config.postprocess_max_norm_energy}'
+    #end if
+    #if str($config.postprocess_min_contrast) != '':
+        --postprocess_min_contrast '${config.postprocess_min_contrast}'
+    #end if
+    #if str($config.postprocess_min_object_radius) != '':
+        --postprocess_min_object_radius '${config.postprocess_min_object_radius}'
+    #end if
+    ]]>
+    </command>
+    <environment_variables>
+        <environment_variable name="MKL_DEBUG_CPU_TYPE">5</environment_variable><!-- this enables accelerated CPU instruction sets on AMD hardware, does nothing in Intel hardware, thus no need to change this -->
+    </environment_variables>
+    <inputs>
         <param name="dataset" type="data" format="tiff,png" label="Dataset" />
-        <param name="seg_border" type="integer" min="1" value="8" label="Width of the outlines (in pixels) of the segmentation results (overlays)" />
+        <param name="outputs" type="select" label="Outputs" multiple="true" optional="false">
+            <option value="overlay" selected="true">Create a segmentation overlay</option>
+            <option value="masks">Create a label map (e.g., for further processing)</option>
+            <option value="cfg">Report all hyperparameters (manually set and automatically determined values)</option>
+        </param>
+        <param name="seg_border" type="integer" min="1" value="8" label="Width of the outlines (in pixels)" help="This parameter is only used for segmentation overlays (see above)." />
         <section name="config" title="Hyperparameters" expanded="false">
             <param argument="--AF_scale" optional="true" type="float" value="" min="0" label="scale σ" help="The scale of the objects to be segmented. Leave empty to use the automatically determined value." />
             <param argument="--c2f_region_analysis_min_atom_radius" optional="true" type="float" value="" min="0" label="min_atom_radius" help="No region determined by the Coarse-to-fine region analysis scheme is smaller than a circle of this radius (in terms of the surface area). Leave empty to use the automatically determined value." />
@@ -82,14 +111,27 @@
         </section>
     </inputs>
     <outputs>
-        <data format="json" name="cfg" from_work_dir="cfg.json" label="${tool.name} on ${on_string}: cfg" />
-        <data format="png" name="masks" from_work_dir="masks.png" label="${tool.name} on ${on_string}: masks" />
-        <data format="png" name="overlay" from_work_dir="overlay.png" label="${tool.name} on ${on_string}: overlay" />
+        <data format="png" name="masks" from_work_dir="masks.png" label="${tool.name} on ${on_string}: masks">
+            <filter>'masks' in outputs</filter>
+        </data>
+        <data format="tsv" name="cfg" from_work_dir="cfg.tsv" label="${tool.name} on ${on_string}: cfg">
+            <filter>'cfg' in outputs</filter>
+        </data>
+        <data format="png" name="overlay" from_work_dir="overlay.png" label="${tool.name} on ${on_string}: overlay">
+            <filter>'overlay' in outputs</filter>
+        </data>
     </outputs>
     <tests>
-        <test>
+        <test expect_num_outputs="3">
             <param name="dataset" value="BBBC033_C2_z28.png" />
+            <param name="outputs" value="overlay,masks,cfg" />
             <output name="overlay" value="overlay.png" ftype="png" compare="sim_size" />
+            <output name="cfg" value="cfg.tsv" ftype="tsv" compare="sim_size" />
+        </test>
+        <test expect_num_outputs="1">
+            <param name="dataset" value="BBBC033_C2_z28.png" />
+            <param name="outputs" value="cfg" />
+            <output name="cfg" value="cfg.tsv" ftype="tsv" compare="sim_size" />
         </test>
     </tests>
     <help>

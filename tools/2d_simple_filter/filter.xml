@@ -1,4 +1,4 @@
-<tool id="ip_filter_standard" name="Filter 2D image" version="0.0.3-2">
+<tool id="ip_filter_standard" name="Filter 2D image" version="0.0.3-3">
     <description>with scikit-image</description>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
@@ -19,7 +19,7 @@
       ]]>
     </command>
     <inputs>
-        <param name="filter_type" type="select" label="Image type">
+        <param name="filter_type" type="select" label="Filter type">
           <option value="median" selected="True">Median</option>
           <option value="gaussian">Gaussian Blur</option>
           <option value="prewitt">Prewitt</option>
