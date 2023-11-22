@@ -12,19 +12,19 @@
     </requirements>
     <command><![CDATA[
 
-if [ ! -d $output.extra_files_path ];then
-    mkdir -p $output.extra_files_path;
+if [ ! -d $output.files_path ];then
+    mkdir -p $output.files_path;
 fi;
 
 #if str($io_options.input.ext)=='html':
-    #set dirlist=os.listdir($io_options.input.extra_files_path)
+    #set dirlist=os.listdir($io_options.input.files_path)
     #assert len($dirlist) > 0
-    #set input_path=os.path.join(str($io_options.input.extra_files_path), str($dirlist[0]))
+    #set input_path=os.path.join(str($io_options.input.files_path), str($dirlist[0]))
 #else:
     #set input_path=$io_options.input
 #end if
 
-bioformats2raw $input_path $output.extra_files_path/$io_options.output_name
+bioformats2raw $input_path $output.files_path/$io_options.output_name
 #if $bf2raw_params.multiscales['options'] == 'auto':
     --target-min-size $bf2raw_params.multiscales.min_xy_size
 #elif $bf2raw_params.multiscales['options'] == 'manual':
@@ -49,7 +49,7 @@ $bf2raw_params.droptop
     <inputs>
         <section name="io_options" title="Input-output paths">
             <param name="input" type="data" format="atsf,scn,ali,labels,ffr,jpeg,ndpi,tf8,pty,fff,mnc,vms,mng,xml,pcx,img,pct,ims,bip,ome.xml,bin,flex,his,hdr,mov,psd,spi,ipl,dv,aiix,j2kr,pst,mod,ome.tif,tif,obf,dib,dic,im3,tga,pbm,c01,crw,mrcs,l2d,seq,mdb,cfg,htm,mvd2,arf,vsi,companion.ome,htd,aim,fts,ndpis,r3d.log,nef,res,jpx,ics,rec,nd2,cr2,dcm,mea,ome,lei,lms,j2k,oib,mtb,ima,ets,wlz,pict,sm3,sm2,nrrd,xdce,acff,al3d,zvi,1sc,xys,tiff,pgm,pcoraw,ppm,ipm,set,cxd,ipw,apl,fake,tnb,txt,xv,tf2,ps,log,zip,epsi,j2ki,dicom,top,msr,frm,hed,gif,dm2,dm3,dm4,zpo,wav,wat,2fl,sdt,liff,hx,pic,ome.btf,am,bmp,pnl,r3d_d3d,jpf,png,tfr,dti,nii.gz,cif,fdf,grey,df3,stk,fli,hdf,btf,stp,ch5,v,sld,ids,dv.log,jpk,mrw,r3d,xlog,ano,jpe,sxm,jpg,vws,raw,czi,spl,avi,ome.tf8,inf,spc,ome.tf2,spe,lsm,afm,lif,naf,afi,inr,lim,nd,tim,html,sif,env,tif,csv,map,nii,gel,ome.tiff,oif,par,amiramesh,pr3,fits,lut,jp2,oir,dat,aisf,zfr,zfp,xqd,eps,xqf,st,nhdr,i2i,thm,exp,svs,mrc" label="Input image located in Galaxy history"/>
-            <param name="output_name" type="text" value="data.zarr" label="Output zarr data"/>
+            <param name="output_name" type="text" value="output.ome.zarr" label="Output zarr data"/>
         </section>
         <section name="bf2raw_params" title="Parameters fed to file conversion module">
             <conditional name="multiscales" >
@@ -106,17 +106,17 @@ $bf2raw_params.droptop
             </output>
         </test>
         <test expect_num_outputs="1">
-            <param name="input" value="astronaut.png"/>
-            <param name="output_name" value="astronaut.ome.zarr" />
+            <param name="input" value="coins.png"/>
+            <param name="output_name" value="coins.ome.zarr" />
             <output name="output" ftype="html">
-                <extra_files type="file" name="astronaut.ome.zarr/.zgroup" value="astronaut.ome.zarr/.zgroup" />
+                <extra_files type="file" name="coins.ome.zarr/.zgroup" value="coins.ome.zarr/.zgroup" />
             </output>
         </test>
         <test expect_num_outputs="1">
-            <param name="input" value="rocket.jpg"/>
-            <param name="output_name" value="rocket.ome.zarr" />
+            <param name="input" value="camera.jpg"/>
+            <param name="output_name" value="camera.ome.zarr" />
             <output name="output" ftype="html">
-                <extra_files type="file" name="rocket.ome.zarr/.zattrs" value="rocket.ome.zarr/.zattrs" />
+                <extra_files type="file" name="camera.ome.zarr/.zattrs" value="camera.ome.zarr/.zattrs" />
             </output>
         </test>
     </tests>
