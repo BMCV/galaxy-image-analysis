@@ -2,7 +2,7 @@ categories:
   - Imaging
 description: Scale image
 long_description: Scales image by a certain factor using nearest, bilinear or bicubic interpolation.
-name: scale_image
+name: scale_image 
 owner: imgteam
 homepage_url: https://github.com/bmcv
 remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tree/master/tools/scale_image/

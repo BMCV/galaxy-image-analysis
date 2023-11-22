@@ -1,10 +1,18 @@
-<tool id="ip_segmetrics" name="Compute image segmentation and object detection performance measures" version="1.4.0-2" profile="20.05">
+<tool id="ip_segmetrics" name="Compute image segmentation and object detection performance measures" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
     <description>with SegMetrics</description>
+    <macros>
+        <token name="@TOOL_VERSION@">1.4</token>
+        <token name="@VERSION_SUFFIX@">4</token>
+    </macros>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
+    <xrefs>
+        <xref type="bio.tools">segmetrics</xref>
+        <xref type="biii">segmetrics</xref>
+    </xrefs>
     <requirements> 
-        <requirement type="package" version="1.4">segmetrics</requirement>
+        <requirement type="package" version="@TOOL_VERSION@">segmetrics</requirement>
         <requirement type="package" version="0.23.4">pandas</requirement>
     </requirements>
     <command detect_errors="aggressive">

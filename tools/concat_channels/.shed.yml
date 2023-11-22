@@ -2,7 +2,7 @@ categories:
   - Imaging
 description: Concatenate images
 long_description: This tool concatenates images.
-name: concat_channels
+name: concat_channels 
 owner: imgteam
 homepage_url: https://github.com/bmcv
 remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tree/master/tools/concat_channels/
