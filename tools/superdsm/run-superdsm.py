@@ -17,15 +17,15 @@ import tempfile
 
 hyperparameters = [
     ('AF_scale', float),
-    ('c2f_region_analysis/min_atom_radius', float),
-    ('c2f_region_analysis/min_norm_energy_improvement', float),
-    ('c2f_region_analysis/max_atom_norm_energy', float),
-    ('c2f_region_analysis/max_cluster_marker_irregularity', float),
+    ('c2f-region-analysis/min_atom_radius', float),
+    ('c2f-region-analysis/min_norm_energy_improvement', float),
+    ('c2f-region-analysis/max_atom_norm_energy', float),
+    ('c2f-region-analysis/max_cluster_marker_irregularity', float),
     ('dsm/alpha', float),
     ('dsm/AF_alpha', float),
-    ('global_energy_minimization/pruning', str),
-    ('global_energy_minimization/beta', float),
-    ('global_energy_minimization/AF_beta', float),
+    ('global-energy-minimization/pruning', str),
+    ('global-energy-minimization/beta', float),
+    ('global-energy-minimization/AF_beta', float),
     ('postprocess/mask_max_distance', int),
     ('postprocess/mask_stdamp', float),
     ('postprocess/max_norm_energy', float),
@@ -35,7 +35,7 @@ hyperparameters = [
 
 
 def get_param_name(key):
-    return key.replace('/', '_')
+    return key.replace('/', '_').replace('-', '_')
 
 
 def create_config(args):
@@ -97,24 +97,32 @@ if __name__ == "__main__":
         cfg = create_config(args)
         img = superdsm.io.imread(img_filepath)
 
-        if args.do_cfg:
-            print(f'Writing config to: {args.do_cfg}')
+        # Create configuration if it is required:
+        if args.do_cfg or args.do_overlay or args.do_masks:
             cfg, _ = superdsm.automation.create_config(pipeline, cfg, img)
-            with open(args.do_cfg, 'w') as fp:
-                tsv_out = csv.writer(fp, delimiter='\t')
-                tsv_out.writerow(['Hyperparameter', 'Value'])
-                for key, value in flatten_dict(cfg.entries).items():
-                    tsv_out.writerow([key, value])
 
+        # Perform segmentation if it is required:
         if args.do_overlay or args.do_masks:
             print('Performing segmentation')
             data, cfg, _ = pipeline.process_image(img, cfg)
 
+        # Write configuration used for segmentation, or the automatically created one, otherwise:
+        if args.do_cfg:
+            print(f'Writing config to: {args.do_cfg}')
+            with open(args.do_cfg, 'w') as fp:
+                tsv_out = csv.writer(fp, delimiter='\t')
+                tsv_out.writerow(['Hyperparameter', 'Value'])
+                rows = sorted(flatten_dict(cfg.entries).items(), key=lambda item: item[0])
+                for key, value in rows:
+                    tsv_out.writerow([key, value])
+
+        # Write the overlay image:
         if args.do_overlay:
             print(f'Writing overlay to: {args.do_overlay}')
             overlay = superdsm.render.render_result_over_image(data, border_width=args.do_overlay_border, normalize_img=False)
             superdsm.io.imwrite(args.do_overlay, overlay)
 
+        # Write the label map:
         if args.do_masks:
             print(f'Writing masks to: {args.do_masks}')
             masks = superdsm.render.rasterize_labels(data)

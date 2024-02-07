@@ -120,7 +120,7 @@
             <option value="exact">Exact graph pruning (Kostrykin and Rohr, TPAMI 2023)</option>
             <option value="isbi24" selected="true">Robust graph pruning (Kostrykin and Rohr, ISBI 2024)</option>
         </param>
-        <param name="outputs" type="select" label="Tool outputs" multiple="true" optional="false">
+        <param name="outputs" type="select" label="Tool outputs" multiple="true" optional="false" help="Note that if neither a segmentation overlay nor a label map is created, segmentation and cluster splitting will not be performed. As a consequence, hyperparameters which are determined automatically during segmentation and cluster splitting will not be reported, even if &quot;Report all hyperparameters&quot; is selected.">
             <option value="overlay" selected="true">Create a segmentation overlay</option>
             <option value="masks">Create a label map (e.g., for further processing)</option>
             <option value="cfg">Report all hyperparameters (manually set and automatically determined values)</option>
@@ -160,7 +160,7 @@
             <param name="global_energy_minimization_pruning" value="exact" />
             <param name="outputs" value="overlay,masks,cfg" />
             <output name="overlay" value="overlay.png" ftype="png" compare="sim_size" />
-            <output name="cfg" value="cfg.tsv" ftype="tsv" compare="diff" />
+            <output name="cfg" value="cfg-full.tsv" ftype="tsv" compare="diff" />
         </test>
         <test expect_num_outputs="1">
             <param name="dataset" value="BBBC033_C2_z28.png" />
