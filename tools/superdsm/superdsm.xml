@@ -82,9 +82,7 @@
     #if str($config.dsm_AF_alpha) != '':
         --dsm_AF_alpha '${config.dsm_AF_alpha}'
     #end if
-    #if str($global_energy_minimization_pruning) != '':
-        --global_energy_minimization_pruning '${global_energy_minimization_pruning}'
-    #end if
+    --global_energy_minimization_pruning '${global_energy_minimization_pruning}'
     #if str($config.global_energy_minimization_beta) != '':
         --global_energy_minimization_beta '${config.global_energy_minimization_beta}'
     #end if
@@ -162,13 +160,13 @@
             <param name="global_energy_minimization_pruning" value="exact" />
             <param name="outputs" value="overlay,masks,cfg" />
             <output name="overlay" value="overlay.png" ftype="png" compare="sim_size" />
-            <output name="cfg" value="cfg.tsv" ftype="tsv" compare="sim_size" />
+            <output name="cfg" value="cfg.tsv" ftype="tsv" compare="diff" />
         </test>
         <test expect_num_outputs="1">
             <param name="dataset" value="BBBC033_C2_z28.png" />
             <param name="global_energy_minimization_pruning" value="exact" />
             <param name="outputs" value="cfg" />
-            <output name="cfg" value="cfg.tsv" ftype="tsv" compare="sim_size" />
+            <output name="cfg" value="cfg.tsv" ftype="tsv" compare="diff" />
         </test>
     </tests>
     <help>
