@@ -82,6 +82,9 @@
     #if str($config.dsm_AF_alpha) != '':
         --dsm_AF_alpha '${config.dsm_AF_alpha}'
     #end if
+    #if str($global_energy_minimization_pruning) != '':
+        --global_energy_minimization_pruning '${global_energy_minimization_pruning}'
+    #end if
     #if str($config.global_energy_minimization_beta) != '':
         --global_energy_minimization_beta '${config.global_energy_minimization_beta}'
     #end if
