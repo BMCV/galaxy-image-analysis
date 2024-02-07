@@ -1,8 +1,8 @@
 <tool id="ip_superdsm" name="Perform segmentation using deformable shape models" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
     <description>with SuperDSM</description>
     <macros>
-        <token name="@TOOL_VERSION@">0.1.3</token>
-        <token name="@VERSION_SUFFIX@">3</token>
+        <token name="@TOOL_VERSION@">0.2.0</token>
+        <token name="@VERSION_SUFFIX@">0</token>
     </macros>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
@@ -11,12 +11,35 @@
         <xref type="bio.tools">superdsm</xref>
         <xref type="biii">superdsm</xref>
     </xrefs>
-    <requirements> 
-        <requirement type="package" version="0.1.3">superdsm</requirement>
-        <requirement type="package" version="1.6.0">ray-core</requirement>
+    <requirements>
+
+        <requirement type="package" version="0.2.0">superdsm</requirement>
+
+        <!--
+        Pin the dependencies to specific versions for reproducibility:
+        https://github.com/BMCV/SuperDSM#dependency-version-considerations
+        -->
+        <requirement type="package" version="1.20">numpy</requirement>
+        <requirement type="package" version="1.6.3">scipy</requirement>
         <requirement type="package" version="0.18.1">scikit-image</requirement>
-        <requirement type="package" version="2020.0">mkl</requirement><!-- this seems to be the last version of MKL which supports the "MKL_DEBUG_CPU_TYPE" environment variable -->
-        <requirement type="package" version="*=mkl">blas</requirement><!-- using MKL instead of other BLAS can significantly improve performance on some hardware, cf. https://stackoverflow.com/questions/62783262/why-is-numpy-with-ryzen-threadripper-so-much-slower-than-xeon -->
+        <requirement type="package" version="1.2.6">cvxopt</requirement>
+        <requirement type="package" version="1.1.13">cvxpy</requirement>
+        <requirement type="package" version="1.6.0">ray-core</requirement>
+
+        <!--
+        2020.0 is the last version of MKL which supports the "MKL_DEBUG_CPU_TYPE" environment variable.
+        -->
+        <requirement type="package" version="2020.0">mkl</requirement>
+
+        <!--
+        Using MKL instead of other BLAS can significantly improve performance on some hardware:
+        https://stackoverflow.com/questions/62783262/why-is-numpy-with-ryzen-threadripper-so-much-slower-than-xeon
+
+        Pinning BLAS to version 1.0 is required for reproducibility:
+        https://github.com/BMCV/SuperDSM#dependency-version-considerations
+        -->
+        <requirement type="package" version="1.0=mkl">blas</requirement>
+
     </requirements>
     <command detect_errors="aggressive">
     <![CDATA[
@@ -83,11 +106,20 @@
     ]]>
     </command>
     <environment_variables>
-        <environment_variable name="MKL_DEBUG_CPU_TYPE">5</environment_variable><!-- this enables accelerated CPU instruction sets on AMD hardware, does nothing in Intel hardware, thus no need to change this -->
+
+        <!--
+        This enables accelerated CPU instruction sets on AMD hardware, does nothing in Intel hardware, thus no need to change this:
+        -->
+        <environment_variable name="MKL_DEBUG_CPU_TYPE">5</environment_variable>
+
     </environment_variables>
     <inputs>
         <param name="dataset" type="data" format="tiff,png" label="Dataset" />
-        <param name="outputs" type="select" label="Outputs" multiple="true" optional="false">
+        <param argument="--global_energy_minimization_pruning" type="select" label="Graph pruning for global energy minimization" help="Exact graph pruning corresponds to the original algorithm, which provably yields globally optimal results. Robust graph pruning is more greedy and has a provably bounded approximation error. Depending on the data, this can be significantly faster than exact graph pruning, without degrading the segmentation or cluster splitting performance.">
+            <option value="exact">Exact graph pruning (Kostrykin and Rohr, TPAMI 2023)</option>
+            <option value="isbi24" selected="true">Robust graph pruning (Kostrykin and Rohr, ISBI 2024)</option>
+        </param>
+        <param name="outputs" type="select" label="Tool outputs" multiple="true" optional="false">
             <option value="overlay" selected="true">Create a segmentation overlay</option>
             <option value="masks">Create a label map (e.g., for further processing)</option>
             <option value="cfg">Report all hyperparameters (manually set and automatically determined values)</option>
@@ -124,12 +156,14 @@
     <tests>
         <test expect_num_outputs="3">
             <param name="dataset" value="BBBC033_C2_z28.png" />
+            <param name="global_energy_minimization_pruning" value="exact" />
             <param name="outputs" value="overlay,masks,cfg" />
             <output name="overlay" value="overlay.png" ftype="png" compare="sim_size" />
             <output name="cfg" value="cfg.tsv" ftype="tsv" compare="sim_size" />
         </test>
         <test expect_num_outputs="1">
             <param name="dataset" value="BBBC033_C2_z28.png" />
+            <param name="global_energy_minimization_pruning" value="exact" />
             <param name="outputs" value="cfg" />
             <output name="cfg" value="cfg.tsv" ftype="tsv" compare="sim_size" />
         </test>
@@ -140,6 +174,15 @@
         You can either use an individual input image (PNG, TIF) or a collection of such images.
     </help>
     <citations>
+        <citation type="bibtex">
+        @inproceedings{kostrykin2024,
+          author = {Kostrykin, L. and Rohr, K.},
+          title = {Robust Graph Pruning for Efficient Segmentation and Cluster Splitting of Cell Nuclei using Deformable Shape Models},
+          booktitle = {Proc. IEEE International Symposium on Biomedical Imaging (ISBI'24)},
+          pages = {accepted for presentation},
+          year = {2024},
+        }
+        </citation>
         <citation type="doi">10.1109/TPAMI.2022.3185583</citation>
     </citations>
 </tool>
