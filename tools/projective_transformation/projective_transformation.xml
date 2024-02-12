@@ -1,4 +1,4 @@
-<tool id="ip_projective_transformation" name="Performs projective transformation with/without labels" version="0.1.2-2" profile="20.05"> 
+<tool id="ip_projective_transformation" name="Perform projective transformation with/without labels" version="0.1.2-2" profile="20.05"> 
     <description></description>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>

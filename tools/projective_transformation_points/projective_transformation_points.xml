@@ -1,4 +1,4 @@
-<tool id="ip_projective_transformation_points" name="Performs projective transformation" license="MIT" version="0.1.1-2" profile="20.05">
+<tool id="ip_projective_transformation_points" name="Perform projective transformation" license="MIT" version="0.1.1-2" profile="20.05">
     <description></description>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
