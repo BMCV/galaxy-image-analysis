@@ -1,5 +1,9 @@
-<tool id="ip_projective_transformation" name="Perform projective transformation with/without labels" version="0.1.2-2" profile="20.05"> 
+<tool id="ip_projective_transformation" name="Perform projective transformation with/without labels" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05"> 
     <description></description>
+    <macros>
+        <token name="@TOOL_VERSION@">0.1.2</token>
+        <token name="@VERSION_SUFFIX@">3</token>
+    </macros>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
