@@ -2,7 +2,7 @@
     <description>with Bioformats</description>
     <macros>
          <token name="@TOOL_VERSION@">0.7.0</token>
-         <token name="@VERSION_SUFFIX@">1</token>
+         <token name="@VERSION_SUFFIX@">2</token>
     </macros>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
@@ -11,7 +11,6 @@
         <container type="docker">quay.io/biocontainers/mulled-v2-ea5a9ffc5f22f92a78f0cd24aac43eb503c0e523:4c010c399f61cde74da64343581999ada3e11e24-0</container>
     </requirements>
     <command><![CDATA[
-
 if [ ! -d $output.files_path ];then
     mkdir -p $output.files_path;
 fi;
@@ -24,7 +23,7 @@ fi;
     #set input_path=$io_options.input
 #end if
 
-bioformats2raw $input_path $output.files_path/$io_options.output_name
+export _JAVA_OPTIONS="-Djava.io.tmpdir=/usr/local/man/" && bioformats2raw $input_path $output.files_path/$io_options.output_name
 #if $bf2raw_params.multiscales['options'] == 'auto':
     --target-min-size $bf2raw_params.multiscales.min_xy_size
 #elif $bf2raw_params.multiscales['options'] == 'manual':
@@ -42,8 +41,7 @@ $bf2raw_params.droptop
 #if not str($bf2raw_params.dimension_order) == 'keep input order':
     --dimension-order $bf2raw_params.dimension_order
 #end if
-###--overwrite
---debug off &> /dev/null;
+--overwrite &> /dev/null;
 
     ]]></command>
     <inputs>
