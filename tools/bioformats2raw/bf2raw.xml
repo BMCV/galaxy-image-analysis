@@ -47,7 +47,7 @@ $bf2raw_params.droptop
     <inputs>
         <section name="io_options" title="Input-output paths" expanded="true">
             <param name="input" type="data" format="atsf,scn,ali,labels,ffr,jpeg,ndpi,tf8,pty,fff,mnc,vms,mng,xml,pcx,img,pct,ims,bip,ome.xml,bin,flex,his,hdr,mov,psd,spi,ipl,dv,aiix,j2kr,pst,mod,ome.tif,tif,obf,dib,dic,im3,tga,pbm,c01,crw,mrcs,l2d,seq,mdb,cfg,htm,mvd2,arf,vsi,companion.ome,htd,aim,fts,ndpis,r3d.log,nef,res,jpx,ics,rec,nd2,cr2,dcm,mea,ome,lei,lms,j2k,oib,mtb,ima,ets,wlz,pict,sm3,sm2,nrrd,xdce,acff,al3d,zvi,1sc,xys,tiff,pgm,pcoraw,ppm,ipm,set,cxd,ipw,apl,fake,tnb,txt,xv,tf2,ps,log,zip,epsi,j2ki,dicom,top,msr,frm,hed,gif,dm2,dm3,dm4,zpo,wav,wat,2fl,sdt,liff,hx,pic,ome.btf,am,bmp,pnl,r3d_d3d,jpf,png,tfr,dti,nii.gz,cif,fdf,grey,df3,stk,fli,hdf,btf,stp,ch5,v,sld,ids,dv.log,jpk,mrw,r3d,xlog,ano,jpe,sxm,jpg,vws,raw,czi,spl,avi,ome.tf8,inf,spc,ome.tf2,spe,lsm,afm,lif,naf,afi,inr,lim,nd,tim,html,sif,env,tif,csv,map,nii,gel,ome.tiff,oif,par,amiramesh,pr3,fits,lut,jp2,oir,dat,aisf,zfr,zfp,xqd,eps,xqf,st,nhdr,i2i,thm,exp,svs,mrc" label="Input image located in Galaxy history"/>
-            <param name="output_name" type="text" value="output.ome.zarr" label="Output zarr data"/>
+            <param name="output_name" type="text" value="output.ome.zarr" label="Name of the generated OME-Zarr"/>
         </section>
         <section name="bf2raw_params" title="Parameters fed to file conversion module">
             <conditional name="multiscales" >
