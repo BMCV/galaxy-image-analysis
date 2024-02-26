@@ -2,7 +2,7 @@
     <description>with Bioformats</description>
     <macros>
          <token name="@TOOL_VERSION@">0.7.0</token>
-         <token name="@VERSION_SUFFIX@">1</token>
+         <token name="@VERSION_SUFFIX@">2</token>
     </macros>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
@@ -11,7 +11,6 @@
         <container type="docker">quay.io/biocontainers/mulled-v2-ea5a9ffc5f22f92a78f0cd24aac43eb503c0e523:4c010c399f61cde74da64343581999ada3e11e24-0</container>
     </requirements>
     <command><![CDATA[
-
 if [ ! -d $output.files_path ];then
     mkdir -p $output.files_path;
 fi;
@@ -24,7 +23,7 @@ fi;
     #set input_path=$io_options.input
 #end if
 
-bioformats2raw $input_path $output.files_path/$io_options.output_name
+export _JAVA_OPTIONS="-Djava.io.tmpdir=/usr/local/man/" && bioformats2raw $input_path $output.files_path/$io_options.output_name
 #if $bf2raw_params.multiscales['options'] == 'auto':
     --target-min-size $bf2raw_params.multiscales.min_xy_size
 #elif $bf2raw_params.multiscales['options'] == 'manual':
@@ -42,14 +41,13 @@ $bf2raw_params.droptop
 #if not str($bf2raw_params.dimension_order) == 'keep input order':
     --dimension-order $bf2raw_params.dimension_order
 #end if
-###--overwrite
---debug off &> /dev/null;
+--overwrite &> /dev/null;
 
     ]]></command>
     <inputs>
         <section name="io_options" title="Input-output paths" expanded="true">
             <param name="input" type="data" format="atsf,scn,ali,labels,ffr,jpeg,ndpi,tf8,pty,fff,mnc,vms,mng,xml,pcx,img,pct,ims,bip,ome.xml,bin,flex,his,hdr,mov,psd,spi,ipl,dv,aiix,j2kr,pst,mod,ome.tif,tif,obf,dib,dic,im3,tga,pbm,c01,crw,mrcs,l2d,seq,mdb,cfg,htm,mvd2,arf,vsi,companion.ome,htd,aim,fts,ndpis,r3d.log,nef,res,jpx,ics,rec,nd2,cr2,dcm,mea,ome,lei,lms,j2k,oib,mtb,ima,ets,wlz,pict,sm3,sm2,nrrd,xdce,acff,al3d,zvi,1sc,xys,tiff,pgm,pcoraw,ppm,ipm,set,cxd,ipw,apl,fake,tnb,txt,xv,tf2,ps,log,zip,epsi,j2ki,dicom,top,msr,frm,hed,gif,dm2,dm3,dm4,zpo,wav,wat,2fl,sdt,liff,hx,pic,ome.btf,am,bmp,pnl,r3d_d3d,jpf,png,tfr,dti,nii.gz,cif,fdf,grey,df3,stk,fli,hdf,btf,stp,ch5,v,sld,ids,dv.log,jpk,mrw,r3d,xlog,ano,jpe,sxm,jpg,vws,raw,czi,spl,avi,ome.tf8,inf,spc,ome.tf2,spe,lsm,afm,lif,naf,afi,inr,lim,nd,tim,html,sif,env,tif,csv,map,nii,gel,ome.tiff,oif,par,amiramesh,pr3,fits,lut,jp2,oir,dat,aisf,zfr,zfp,xqd,eps,xqf,st,nhdr,i2i,thm,exp,svs,mrc" label="Input image located in Galaxy history"/>
-            <param name="output_name" type="text" value="output.ome.zarr" label="Output zarr data"/>
+            <param name="output_name" type="text" value="output.ome.zarr" label="Name of the generated OME-Zarr"/>
         </section>
         <section name="bf2raw_params" title="Parameters fed to file conversion module">
             <conditional name="multiscales" >
