@@ -17,7 +17,6 @@ on:
       - '*'
 env:
   GALAXY_FORK: galaxyproject
-  # TODO remove additional-planemo-options from lint once biii is allowed in xsd
   GALAXY_BRANCH: release_23.1
   MAX_CHUNKS: 4
   MAX_FILE_SIZE: 1M
@@ -130,12 +129,10 @@ jobs:
       if: ${{ github.event_name == 'pull_request' }}
       run: |
         echo "FAIL_LEVEL=warn" >> "$GITHUB_ENV"
-        echo "SKIP=-s tool_xsd" >> "$GITHUB_ENV"
     - name: Set fail level for merge
       if: ${{ github.event_name != 'pull_request' }}
       run: |
         echo "FAIL_LEVEL=error" >> "$GITHUB_ENV"
-        echo "SKIP=-s tool_xsd" >> "$GITHUB_ENV"
     - name: Planemo lint
       uses: galaxyproject/planemo-ci-action@v1
       id: lint
