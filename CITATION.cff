@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+preferred-citation:
+  type: article
+  journal: "Journal of Biotechnology"
+  month: 7
+  start: 70 # First page number
+  end: 75 # Last page number
+  title: "Workflows for microscopy image analysis and cellular phenotyping"
+  doi: 10.1016/j.jbiotec.2017.07.019
+  volume: 261
+  year: 2017
+  authors:
+  - family-names: "Wollmann"
+    given-names: "Thomas"
+    orcid: "https://orcid.org/0000-0002-4741-3844"
+  - family-names: "Erfle"
+    given-names: "Holger"
+  - family-names: "Eils"
+    given-names: "Roland"
+  - family-names: "Rohr"
+    given-names: "Karl"
+  - family-names: "Gunkel"
+    given-names: "Manuel"
+    orcid: "https://orcid.org/0000-0002-5363-8943"
