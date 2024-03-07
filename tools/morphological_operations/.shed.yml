@@ -1,0 +1,8 @@
+categories:
+  - Imaging
+description: Apply morphological operations to images
+long_description: Apply morphological operations to images.
+name: morphological_operations 
+owner: imgteam
+homepage_url: https://github.com/bmcv
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tree/master/tools/morphological_operations

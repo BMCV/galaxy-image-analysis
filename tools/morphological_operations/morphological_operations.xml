@@ -1,0 +1,133 @@
+<tool id="morphological_operations" name="Apply a morphological operation" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="23.0">
+    <description>with SciPy</description>
+    <macros>
+        <token name="@TOOL_VERSION@">1.12.0</token>
+        <token name="@VERSION_SUFFIX@">0</token>
+    </macros>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="biii">scipy</xref>
+    </xrefs>
+    <requirements>
+        <requirement type="package" version="1.12.0">scipy</requirement>
+        <requirement type="package" version="0.22.0">scikit-image</requirement>
+    </requirements>
+    <command><![CDATA[
+    
+    ## Inputs
+    
+    python '$__tool_directory__/morphological_operations.py' '$image'
+    --operation $operation
+    --selem-shape $selem_shape
+    --selem-size $selem_size
+    
+    ## Outputs
+    
+    ./result.tiff
+    
+    ]]>
+    </command>
+    <inputs>
+        <param name="image" type="data" format="png,tiff" label="Input image" />
+        <param label="Morphological operation" argument="--operation" type="select">
+            <option value="erosion" selected="True">Erosion</option>
+            <option value="dilation">Dilation</option>
+            <option value="opening">Opening</option>
+            <option value="closing">Closing</option>
+            <option value="fill_holes">Fill holes</option>
+        </param>
+        <param label="Structuring element" argument="--selem-shape" type="select">
+            <option value="disk" selected="True">Disk</option>
+            <option value="square">Square</option>
+        </param>
+        <param label="Structuring element size" argument="--selem-size" type="integer" min="1" max="256" value="1" help="The radius of the disk, or the width of the square, in pixels." />
+    </inputs>
+    <outputs>
+       <data format="tiff" name="result" from_work_dir="result.tiff" />
+    </outputs>
+    <tests>
+        <!-- Test binary operations (input images with two distinct values) -->
+        <test>
+            <param name="image" value="input1.tiff" />
+            <param name="operation" value="erosion" />
+            <param name="selem_shape" value="disk" />
+            <param name="selem_size" value="1" />
+            <output name="result" value="output1_erosion.tiff" ftype="tiff" compare="sim_size" delta="10" />
+        </test>
+        <test>
+            <param name="image" value="input1.tiff" />
+            <param name="operation" value="dilation" />
+            <param name="selem_shape" value="disk" />
+            <param name="selem_size" value="2" />
+            <output name="result" value="output1_dilation.tiff" ftype="tiff" compare="sim_size" delta="10" />
+        </test>
+        <test>
+            <param name="image" value="input1.tiff" />
+            <param name="operation" value="opening" />
+            <param name="selem_shape" value="square" />
+            <param name="selem_size" value="1" />
+            <output name="result" value="output1_opening.tiff" ftype="tiff" compare="sim_size" delta="10" />
+        </test>
+        <test>
+            <param name="image" value="input1.tiff" />
+            <param name="operation" value="closing" />
+            <param name="selem_shape" value="square" />
+            <param name="selem_size" value="2" />
+            <output name="result" value="output1_closing.tiff" ftype="tiff" compare="sim_size" delta="10" />
+        </test>
+        <!-- Test intensity-based operations (more than two distinct values) -->
+        <test>
+            <param name="image" value="input3.png" />
+            <param name="operation" value="erosion" />
+            <param name="selem_shape" value="disk" />
+            <param name="selem_size" value="1" />
+            <output name="result" value="output3_erosion.tiff" ftype="tiff" compare="sim_size" delta="10" />
+        </test>
+        <test>
+            <param name="image" value="input3.png" />
+            <param name="operation" value="dilation" />
+            <param name="selem_shape" value="disk" />
+            <param name="selem_size" value="2" />
+            <output name="result" value="output3_dilation.tiff" ftype="tiff" compare="sim_size" delta="10" />
+        </test>
+        <test>
+            <param name="image" value="input3.png" />
+            <param name="operation" value="opening" />
+            <param name="selem_shape" value="square" />
+            <param name="selem_size" value="1" />
+            <output name="result" value="output3_opening.tiff" ftype="tiff" compare="sim_size" delta="10" />
+        </test>
+        <test>
+            <param name="image" value="input3.png" />
+            <param name="operation" value="closing" />
+            <param name="selem_shape" value="square" />
+            <param name="selem_size" value="2" />
+            <output name="result" value="output3_closing.tiff" ftype="tiff" compare="sim_size" delta="10" />
+        </test>
+        <!-- Test multi-channel image (with two distinct values per channel) -->
+        <test>
+            <param name="image" value="input2.png" />
+            <param name="operation" value="fill_holes" />
+            <param name="selem_shape" value="disk" />
+            <param name="selem_size" value="1" />
+            <output name="result" value="output2_fill_holes.tiff" ftype="tiff" compare="sim_size" delta="10" />
+        </test>
+    </tests>
+    <help>
+        Applies a morphological operation to a 2-D image.
+        For multi-channel images, the operation is applied to each channel separately.
+
+        The following operations are supported:
+
+        - **Erosion:** Shrink bright areas.
+        - **Dilation:** Grow bright areas.
+        - **Opening:** Erosion followed by Dilation. Erases tiny bright spots.
+        - **Closing:** Dilation followed by Erosion. Erases tiny dark holes.
+        - **Fill holes:** Fills the holes (dark areas) in binary images.
+    </help>
+    <citations>
+        <citation type="doi">10.1038/s41592-019-0686-2</citation>
+    </citations>
+</tool>
