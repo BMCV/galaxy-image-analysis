@@ -7,3 +7,4 @@ template_shed.yml
 /create_csvs.py
 .DS_Store
 ._*
+.devcontainer
