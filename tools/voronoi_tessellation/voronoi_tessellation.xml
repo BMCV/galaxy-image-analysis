@@ -1,0 +1,53 @@
+<tool id="voronoi_tessellation" name="Compute Voronoi tessellation" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="23.0">
+    <description>with scikit-image</description>
+    <macros>
+        <token name="@TOOL_VERSION@">0.22.0</token>
+        <token name="@VERSION_SUFFIX@">0</token>
+    </macros>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="bio.tools">scikit-image</xref>
+        <xref type="biii">scikit-image</xref>
+    </xrefs>
+    <requirements>
+        <requirement type="package" version="1.26.4">numpy</requirement>
+        <requirement type="package" version="1.12.0">scipy</requirement>
+        <requirement type="package" version="0.22.0">scikit-image</requirement>
+    </requirements>
+    <command><![CDATA[
+    
+    ## Inputs
+    
+    python '$__tool_directory__/voronoi_tessellation.py' '$input'
+    
+    ## Outputs
+    
+    ./result.tiff
+    
+    ]]>
+    </command>
+    <inputs>
+        <param name="input" type="data" format="png,tiff" label="Labeled image" />
+    </inputs>
+    <outputs>
+       <data format="tiff" name="result" from_work_dir="result.tiff" />
+    </outputs>
+    <tests>
+        <test>
+            <param name="input" value="input1.tiff" />
+            <output name="result" value="input1_result.tiff" ftype="tiff" compare="sim_size" delta="0" />
+        </test>
+    </tests>
+    <help>
+
+        This tool computes Voronoi tessellations for labeled images.
+        Voronoi tessellations are also known as Vornoi diagrams, or Dirichlet tessellations.
+        Zero labels are treated as image background.
+
+    </help>
+    <citations>
+        <citation type="doi">10.7717/peerj.453</citation>
+    </citations>
+</tool>
