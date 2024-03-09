@@ -33,7 +33,7 @@
         </param>
         <repeat name="inputs" title="Input images" min="1">
             <param name="image" type="data" format="png,tiff" label="Image" />
-            <param name="name" type="text" label="Variable for representation of the image within the expression"  optional="false">
+            <param name="name" type="text" label="Variable for representation of the image within the expression" optional="false">
                 <validator type="regex">^[a-zA-Z_][a-zA-Z0-9_]*$</validator>
             </param>
         </repeat>
