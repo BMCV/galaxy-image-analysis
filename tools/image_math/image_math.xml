@@ -1,0 +1,121 @@
+<tool id="image_math" name="Process images using mathematical expressions" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="23.0">
+    <description>with NumPy</description>
+    <macros>
+        <token name="@TOOL_VERSION@">1.26.4</token>
+        <token name="@VERSION_SUFFIX@">0</token>
+    </macros>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <requirements>
+        <requirement type="package" version="1.26.4">numpy</requirement>
+        <requirement type="package" version="0.22.0">scikit-image</requirement>
+    </requirements>
+    <command><![CDATA[
+    
+    ## Inputs
+    
+    python '$__tool_directory__/image_math.py'
+    --expression='$expression'
+    #for $item in $inputs:
+        --input='$item.name:$item.image'
+    #end for
+    
+    ## Outputs
+    
+    --output='./result.tiff'
+    
+    ]]>
+    </command>
+    <inputs>
+        <param argument="--expression" type="text" label="Expression" optional="false">
+            <validator type="regex">^[a-zA-Z0-9-_\*\+ \(\)/]+$</validator>
+        </param>
+        <repeat name="inputs" title="Input images" min="1">
+            <param name="image" type="data" format="png,tiff" label="Image" />
+            <param name="name" type="text" label="Variable for representation of the image within the expression"  optional="false">
+                <validator type="regex">^[a-zA-Z_][a-zA-Z0-9_]*$</validator>
+            </param>
+        </repeat>
+    </inputs>
+    <outputs>
+       <data format="tiff" name="result" from_work_dir="result.tiff" />
+    </outputs>
+    <tests>
+        <!-- Multiplication with a scalar -->
+        <test>
+            <param name="expression" value="input1 * 2" />
+            <repeat name="inputs">
+                <param name="image" value="input1.tiff" />
+                <param name="name" value="input1" />
+            </repeat>
+            <output name="result" value="input1_times_2.tiff" ftype="tiff" compare="sim_size" delta="0" />
+        </test>
+        <!-- Unary negation operator -->
+        <test>
+            <param name="expression" value="-input1" />
+            <repeat name="inputs">
+                <param name="image" value="input1.tiff" />
+                <param name="name" value="input1" />
+            </repeat>
+            <output name="result" value="minus_input1.tiff" ftype="tiff" compare="sim_size" delta="0" />
+        </test>
+        <!-- Binary addition, neutral element, addition with scalar -->
+        <test>
+            <param name="expression" value="input1 + input2 + 1" />
+            <repeat name="inputs">
+                <param name="image" value="input1.tiff" />
+                <param name="name" value="input1" />
+            </repeat>
+            <repeat name="inputs">
+                <param name="image" value="minus_input1.tiff" />
+                <param name="name" value="input2" />
+            </repeat>
+            <output name="result" value="ones.tiff" ftype="tiff" compare="sim_size" delta="0" />
+        </test>
+        <!-- Parentheses -->
+        <test>
+            <param name="expression" value="(input1 + input2) / 2" />
+            <repeat name="inputs">
+                <param name="image" value="input1.tiff" />
+                <param name="name" value="input1" />
+            </repeat>
+            <repeat name="inputs">
+                <param name="image" value="ones.tiff" />
+                <param name="name" value="input2" />
+            </repeat>
+            <output name="result" value="half_of_input1_plus_one.tiff" ftype="tiff" compare="sim_size" delta="0" />
+        </test>
+        <!-- Abs -->
+        <test>
+            <param name="expression" value="abs(input)" />
+            <repeat name="inputs">
+                <param name="image" value="input1.tiff" />
+                <param name="name" value="input" />
+            </repeat>
+            <output name="result" value="input1_abs.tiff" ftype="tiff" compare="sim_size" delta="0" />
+        </test>
+    </tests>
+    <help>
+
+        This tool processes images according to mathematical expressions.
+
+        Examples:
+
+        - **Negate an image.**
+          Expression: ``-image``
+          where ``image`` is an arbitrary input image.
+
+        - **Mean of two images.**
+          Expression: ``(image1 + image2) / 2``
+          where ``image1`` and `image2` are two arbitrary input images.
+
+        - **Perform division avoiding division-by-zero.**
+          Expression: ``image1 / (abs(image2) + 1e-8)``
+          where ``image1`` and `image2` are two arbitrary input images.
+
+    </help>
+    <citations>
+        <citation type="doi">10.1038/s41586-020-2649-2</citation>
+    </citations>
+</tool>
