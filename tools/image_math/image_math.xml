@@ -1,4 +1,4 @@
-<tool id="image_math" name="Process images using mathematical expressions" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="23.0">
+<tool id="image_math" name="Process images using arithmetic expressions" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="23.0">
     <description>with NumPy</description>
     <macros>
         <token name="@TOOL_VERSION@">1.26.4</token>
@@ -98,7 +98,17 @@
     </tests>
     <help>
 
-        This tool processes images according to mathematical expressions.
+        This tool processes images according to pixel-wise arithmetic expressions.
+
+        The supported pixel-wise expressions are:
+
+        - Addition, subtraction, multiplication, and division (``+``, ``-``, ``*``, ``/``)
+        - Integer division (e.g., ``input // 2``)
+        - Power (e.g., ``input ** 2``)
+        - Negation (e.g., ``-input``)
+        - Absolute values (e.g., ``abs(input)``)
+        - Square root (e.g., ``sqrt(input)``)
+        - Combinations of the above (also using parentheses)
 
         Examples:
 

@@ -1,7 +1,7 @@
 categories:
   - Imaging
-description: Process images using mathematical expressions
-long_description: Process images using mathematical expressions.
+description: Process images using arithmetic expressions
+long_description: Process images using arithmetic expressions.
 name: image_math 
 owner: imgteam
 homepage_url: https://github.com/bmcv
