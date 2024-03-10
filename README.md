@@ -14,8 +14,10 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 ## List of Tools on Galaxy Europe
 
 - [Apply anisotropic diffusion](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/anisotropic_diffusion/ip_anisotropic_diffusion)
+- [Apply a morphological operation](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/morphological_operations/morphological_operations)
 - [Compute image features](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/mahotas_features/ip_mahotas_features)
 - [Compute image segmentation and object detection performance measures](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/segmetrics/ip_segmetrics)
+- [Compute Voronoi tessellation](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/voronoi_tessellation/voronoi_tessellation)
 - [Concatenate images or channels](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/concat_channels/ip_concat_channels)
 - [Convert binary image to label map](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/binary2labelimage/ip_binary_to_labelimage)
 - [Convert binary image to points (center of masses)](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/binaryimage2points/ip_binaryimage_to_points)
@@ -46,6 +48,7 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 - [Performs projective transformation with/without labels](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/projective_transformation_points/ip_projective_transformation_points)
 - [Performs projective transformation](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/projective_transformation/ip_projective_transformation)
 - [Permutate image axes](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/permutate_axis/ip_permutate_axis)
+- [Process images using arithmetic expressions](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/image_math/image_math)
 - [Scale image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/scale_image/ip_scale_image)
 - [Show image info](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/image_info/ip_imageinfo)
 - [Slice image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/slice_image/ip_slice_image)
