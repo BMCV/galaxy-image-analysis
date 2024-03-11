@@ -1,5 +1,9 @@
-<tool id="ip_threshold" name="Threshold image" version="0.0.5-2" profile="20.05">
+<tool id="ip_threshold" name="Threshold image" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
     <description>with scikit-image</description>
+    <macros>
+        <token name="@TOOL_VERSION@">0.18.1</token>
+        <token name="@VERSION_SUFFIX@">0</token>
+    </macros>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
@@ -16,24 +20,59 @@
     python '$__tool_directory__/auto_threshold.py'
     '$input'
     ./out.tif
-    '$th_method'
-    '$block_size'
-    '$dark_bg'
+    '$th_method.method_id'
+    '$th_method.block_size'
+    '$th_method.threshold'
+    '$invert_output'
     ]]>
     </command>
     <inputs>
         <param name="input" type="data" format="tiff,png" label="Input image" />
-        <param name="th_method" type="select" label="Thresholding method">
-          <option value="otsu" selected="True">Otsu</option>
-          <option value="li">Li's Minimum Cross Entropy</option>
-          <option value="isodata">Isodata</option>
-          <option value="yen">Yen</option>
-          <option value="loc_gaussian">Adaptive (Gaussian)</option>
-          <option value="loc_median">Adaptive (Median)</option>
-          <option value="loc_mean">Adaptive (Mean)</option>
-        </param>
-        <param name="block_size" type="integer" value="5" label="Odd size of pixel neighborhood for determining the threshold (only valid for adaptive thresholding methods)" />
-        <param name="dark_bg" type="boolean" checked="true" truevalue="True" falsevalue="False" label="Dark Background" />
+        <conditional name="th_method">
+            <param name="method_id" type="select" label="Thresholding method">
+                <option value="manual">Manual</option>
+                <option value="otsu" selected="True">Globally adaptive / Otsu</option>
+                <option value="li">Globally adaptive / Li's Minimum Cross Entropy</option>
+                <option value="isodata">Globally adaptive / Isodata</option>
+                <option value="yen">Globally adaptive / Yen</option>
+                <option value="loc_gaussian">Locally adaptive / Gaussian</option>
+                <option value="loc_median">Locally adaptive / Median</option>
+                <option value="loc_mean">Locally adaptive / Mean</option>
+            </param>
+            <when value="manual">
+                <param name="threshold" type="float" value="0" label="Threshold value" />
+                <param name="block_size" type="hidden" value="0" />
+            </when>
+            <when value="otsu">
+                <param name="threshold" type="hidden" value="0" />
+                <param name="block_size" type="hidden" value="0" />
+            </when>
+            <when value="li">
+                <param name="threshold" type="hidden" value="0" />
+                <param name="block_size" type="hidden" value="0" />
+            </when>
+            <when value="isodata">
+                <param name="threshold" type="hidden" value="0" />
+                <param name="block_size" type="hidden" value="0" />
+            </when>
+            <when value="yen">
+                <param name="threshold" type="hidden" value="0" />
+                <param name="block_size" type="hidden" value="0" />
+            </when>
+            <when value="loc_gaussian">
+                <param name="threshold" type="hidden" value="0" />
+                <param name="block_size" type="integer" value="5" label="Odd size of pixel neighborhood for determining the threshold" />
+            </when>
+            <when value="loc_median">
+                <param name="threshold" type="hidden" value="0" />
+                <param name="block_size" type="integer" value="5" label="Odd size of pixel neighborhood for determining the threshold" />
+            </when>
+            <when value="loc_mean">
+                <param name="threshold" type="hidden" value="0" />
+                <param name="block_size" type="integer" value="5" label="Odd size of pixel neighborhood for determining the threshold" />
+            </when>
+        </conditional>
+        <param name="invert_output" type="boolean" checked="false" truevalue="True" falsevalue="False" label="Invert output labels" help="Pixels are usually assigned the label 0 if the pixel value is below (or equal to) the threshold, and 255 if it is above the threshold. If this option is activated, pixels are assigned the label 255 if the pixel value is below (or equal to) the threshold, and 0 if it is above the threshold." />
     </inputs>
     <outputs>
        <data format="tiff" name="output" from_work_dir="out.tif" />
@@ -41,21 +80,34 @@
     <tests>
         <test>
             <param name="input" value="sample.tif"/>
-            <output name="output" value="out.tif" ftype="tiff" compare="sim_size"/>
-            <param name="th_method" value="loc_gaussian"/>
+            <output name="output" value="out.tif" ftype="tiff" compare="sim_size" delta="10"/>
+            <param name="method_id" value="loc_gaussian"/>
             <param name="block_size" value="3"/>
-            <param name="dark_bg" value="True"/>
+            <param name="invert_output" value="False"/>
         </test>
         <test>
             <param name="input" value="sample.tif"/>
-            <output name="output" value="out2.tif" ftype="tiff" compare="sim_size"/>
-            <param name="th_method" value="otsu"/>
+            <output name="output" value="out2.tif" ftype="tiff" compare="sim_size" delta="10"/>
+            <param name="method_id" value="otsu"/>
             <param name="block_size" value="5"/>
-            <param name="dark_bg" value="True"/>
+            <param name="invert_output" value="False"/>
+        </test>
+        <test>
+            <param name="input" value="sample.tif"/>
+            <output name="output" value="out3.tif" ftype="tiff" compare="sim_size" delta="10"/>
+            <param name="method_id" value="manual"/>
+            <param name="threshold" value="64"/>
+            <param name="invert_output" value="True"/>
         </test>
     </tests>
     <help>
         Applies a standard thresholding algorithm to an image.
+
+        The thresholding algorithm automatically determines a threshold value (unless manual thresholding is used).
+        The input image is then thresholded, by assigning white (pixel value 255) to image regions above the determined threshold,
+        and black (pixel value 0) to image regions below or equal to the determined threshold.
+
+        The assignment of black and white to image regions below and above the threshold is inverted, if the corresponding option is set.
     </help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
