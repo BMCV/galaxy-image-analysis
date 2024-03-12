@@ -1,0 +1,8 @@
+categories:
+  - Imaging
+description: Compute image orientation
+long_description: Compute image orientation based on OrientationPy.
+name: orientationpy 
+owner: imgteam
+homepage_url: https://github.com/bmcv
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tree/master/tools/orientationpy
