@@ -1,0 +1,64 @@
+<tool id="colorize_labels" name="Colorize label map" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
+    <description>with SuperDSM</description>
+    <macros>
+        <token name="@TOOL_VERSION@">0.2.0</token>
+        <token name="@VERSION_SUFFIX@">0</token>
+    </macros>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="bio.tools">superdsm</xref>
+        <xref type="biii">superdsm</xref>
+    </xrefs>
+    <requirements>
+        <requirement type="package" version="0.2.0">superdsm</requirement>
+        <requirement type="package" version="1.20">numpy</requirement>
+        <requirement type="package" version="0.18.1">scikit-image</requirement>
+    </requirements>
+    <command><![CDATA[
+    
+    ## Inputs
+    
+    python '$__tool_directory__/colorize_labels.py' '$input'
+    --seed $seed
+    --bg_label $bg_label
+    --bg_color '$bg_color'
+    
+    ## Outputs
+    
+    --output output.png
+    
+    ]]>
+    </command>
+    <inputs>
+        <param name="input" type="data" format="tiff,png" label="Input image (label map)" />
+        <param argument="--seed" type="integer" value="0" label="Randomization seed" />
+        <param argument="--bg_label" type="integer" value="0" label="Background label" />
+        <param argument="--bg_color" type="color" value="#000000" label="Background color"/>
+    </inputs>
+    <outputs>
+       <data format="png" name="output" from_work_dir="output.png" />
+    </outputs>
+    <tests>
+        <test>
+            <param name="input" value="input1.tif"/>
+            <param name="bg_label" value="0"/>
+            <param name="bg_color" value="#5a5a5a"/>
+            <output name="output" value="output1.png" ftype="png" compare="sim_size" delta_frac="0.1"/>
+        </test>
+    </tests>
+    <help>
+        Colorize a 2-D label map for visualization.
+
+        Label maps are produced by segmentation and other image analysis steps.
+        Direct inspection of label maps can be difficult,
+        because labels usually correspond to gray values which are difficult to
+        distinguish visually from each other and from the image background.
+        To facilitate the visual inspection of label maps, this tools converts
+        label maps to color images, by assigning each label a unique color.
+    </help>
+    <citations>
+        <citation type="doi">10.1109/TPAMI.2022.3185583</citation>
+    </citations>
+</tool>
