@@ -2,7 +2,7 @@
     <description>with scikit-image</description>
     <macros>
         <token name="@TOOL_VERSION@">0.18.1</token>
-        <token name="@VERSION_SUFFIX@">0</token>
+        <token name="@VERSION_SUFFIX@">1</token>
     </macros>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
@@ -23,7 +23,9 @@
     '$th_method.method_id'
     '$th_method.block_size'
     '$th_method.threshold'
-    '$invert_output'
+    #if $invert_output:
+        --invert_output
+    #end if
     ]]>
     </command>
     <inputs>
