@@ -1,0 +1,97 @@
+<tool id="orientationpy" name="Compute image orientation" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="23.0">
+    <description>with OrientationPy</description>
+    <macros>
+        <token name="@TOOL_VERSION@">0.2.0.4</token>
+        <token name="@VERSION_SUFFIX@">0</token>
+    </macros>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="biii">orientationj</xref>
+    </xrefs>
+    <requirements>
+        <requirement type="package" version="0.2.0.4">orientationpy</requirement>
+        <requirement type="package" version="0.22.0">scikit-image</requirement>
+    </requirements>
+    <command><![CDATA[
+    
+    ## Inputs
+    
+    python '$__tool_directory__/orientationpy-cli.py' '$image'
+    --mode $mode
+    --sigma $sigma
+    --min_energy $min_energy
+    --min_coherency $min_coherency
+    --max_precision $max_precision
+    
+    ## Outputs
+    
+    --output_angle_tsv '$output_angle_tsv'
+    
+    ]]>
+    </command>
+    <inputs>
+        <param name="image" type="data" format="png,tiff" label="Input image" />
+        <param argument="--mode" type="select" label="Gradient computation">
+            <option value="finite_difference" selected="True">Finite differences</option>
+            <option value="gaussian">Gaussian</option>
+            <option value="splines">Splines</option>
+        </param>
+        <param argument="--sigma" type="float" label="Spatial scale (in pixels)" value="2" />
+        <param argument="--min_energy" type="float" label="Minimum energy" value="0.1" min="0" max="1" />
+        <param argument="--min_coherency" type="float" label="Minimum coherency" value="0.2" min="0" max="1" />
+        <param argument="--max_precision" type="integer" label="Maximum possible precision (in decimals)" value="3" min="0" max="8" help="Governs the histogram bin size (increasing maximum possible precision leads to smaller bin sizes). Note that increasing the maximum possible precision too far may actually decrease the actual precision, because the bin size becomes too small." />
+    </inputs>
+    <outputs>
+        <data format="tsv" name="output_angle_tsv" from_work_dir="output_angle.tsv" />
+    </outputs>
+    <tests>
+        <!-- Test negative angle -->
+        <test>
+            <param name="image" value="input1.tif" />
+            <param name="mode" value="finite_difference" />
+            <param name="sigma" value="2" />
+            <param name="min_energy" value="0.1" />
+            <param name="min_coherency" value="0.2" />
+            <param name="max_precision" value="1" />
+            <output name="output_angle_tsv">
+                <assert_contents>
+                    <has_line line="Angle" />
+                    <has_line line="-45.0" />
+                    <has_n_lines n="2" />
+                    <has_n_columns n="1" />
+                </assert_contents>
+            </output>
+        </test>
+        <!-- Test positive angle -->
+        <test>
+            <param name="image" value="input2.tif" />
+            <param name="mode" value="finite_difference" />
+            <param name="sigma" value="2" />
+            <param name="min_energy" value="0.1" />
+            <param name="min_coherency" value="0.2" />
+            <param name="max_precision" value="1" />
+            <output name="output_angle_tsv">
+                <assert_contents>
+                    <has_line line="Angle" />
+                    <has_line line="45.0" />
+                    <has_n_lines n="2" />
+                    <has_n_columns n="1" />
+                </assert_contents>
+            </output>
+        </test>
+    </tests>
+    <help>
+        Compute the orientation of 2-D images in degrees using OrientationPy.
+
+        OrientationPy is the pythonic successor to the well-loved OrientationJ Fiji Plugin.
+        It is a library that takes in images and computes the orientation of the greylevels.
+        A key step is the computation of image gradients, for a number of different techniques is supported.
+
+        For more information on ``--min_energy`` and ``--min_coherency`` see: https://epfl-center-for-imaging.gitlab.io/orientationpy/orientationpy_examples/plot_fibres_2d.html#plot-hsv-composition
+    </help>
+    <citations>
+        <citation type="doi">10.1007/s10237-011-0325-z</citation>
+    </citations>
+</tool>
