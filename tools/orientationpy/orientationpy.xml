@@ -44,7 +44,7 @@
         <param argument="--max_precision" type="integer" label="Maximum possible precision (in decimals)" value="3" min="0" max="8" help="Governs the histogram bin size (increasing maximum possible precision leads to smaller bin sizes). Note that increasing the maximum possible precision too far may actually decrease the actual precision, because the bin size becomes too small." />
     </inputs>
     <outputs>
-        <data format="tsv" name="output_angle_tsv" from_work_dir="output_angle.tsv" />
+        <data format="tabular" name="output_angle_tsv" from_work_dir="output_angle.tsv" />
     </outputs>
     <tests>
         <!-- Test negative angle -->
