@@ -15,6 +15,7 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 
 - [Apply anisotropic diffusion](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/anisotropic_diffusion/ip_anisotropic_diffusion)
 - [Apply a morphological operation](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/morphological_operations/morphological_operations)
+- [Colorize labels](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/colorize_labels/colorize_labels)
 - [Compute image features](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/mahotas_features/ip_mahotas_features)
 - [Compute image segmentation and object detection performance measures](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/segmetrics/ip_segmetrics)
 - [Compute Voronoi tessellation](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/voronoi_tesselation/voronoi_tessellation)
