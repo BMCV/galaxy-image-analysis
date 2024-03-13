@@ -1,4 +1,4 @@
-<tool id="label_to_binary" name="Convert label map to binary image" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@"> 
+<tool id="label_to_binary" name="Convert label map to binary image" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="22.05">
     <description>with NumPy</description>
     <macros>
         <token name="@TOOL_VERSION@">1.26.4</token>
