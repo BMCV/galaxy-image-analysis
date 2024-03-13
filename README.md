@@ -24,6 +24,7 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 - [Convert binary image to points (center of masses)](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/binaryimage2points/ip_binaryimage_to_points)
 - [Convert binary image to points (point coordinates)](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/coordinates_of_roi/ip_coordinates_of_roi)
 - [Convert image format](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/bfconvert/ip_convertimage)
+- [Convert label map to binary image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/label_to_binary/label_to_binary)
 - [Convert label map to points (center of masses)](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/labelimage2points/ip_labelimage_to_points)
 - [Convert point coordinates to binary image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/points2binaryimage/ip_points_to_binaryimage)
 - [Convert point coordinates to label map](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/points2labelimage/ip_points_to_label)
