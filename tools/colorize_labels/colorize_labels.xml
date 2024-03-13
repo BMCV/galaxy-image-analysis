@@ -1,5 +1,5 @@
 <tool id="colorize_labels" name="Colorize label map" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
-    <description>with networkx</description>
+    <description>with NetworkX</description>
     <macros>
         <token name="@TOOL_VERSION@">3.2.1</token>
         <token name="@VERSION_SUFFIX@">0</token>
