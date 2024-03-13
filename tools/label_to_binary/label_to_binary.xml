@@ -1,0 +1,54 @@
+<tool id="label_to_binary" name="Convert label map to binary image" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@"> 
+    <description>with NumPy</description>
+    <macros>
+        <token name="@TOOL_VERSION@">1.26.4</token>
+        <token name="@VERSION_SUFFIX@">0</token>
+    </macros>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="bio.tools">galaxy_image_analysis</xref>
+    </xrefs>
+    <requirements>
+        <requirement type="package" version="1.26.4">numpy</requirement>
+        <requirement type="package" version="0.18.1">scikit-image</requirement>
+    </requirements>
+    <command><![CDATA[
+    
+    ## Inputs
+    
+    python '$__tool_directory__/label_to_binary.py'
+    '$input'
+    '$bg_label'
+    
+    ## Outputs
+    
+    ./output.tif
+    
+    ]]>
+    </command>
+    <inputs>
+        <param name="input" type="data" format="tiff,png" label="Input image (label map)" />
+        <param argument="--bg_label" type="integer" value="0" label="Background label" />
+    </inputs>
+    <outputs>
+        <data format="tiff" name="output" from_work_dir="output.tif" />
+    </outputs>
+    <tests>
+        <test>
+            <param name="input" value="input1.tif" />
+            <param name="bg_label" value="0" />
+            <output name="output" value="output1.tif" ftype="tiff" compare="sim_size" delta_frac="0.1"/>
+        </test>
+    </tests>
+    <help>
+        This tools converts a label map (objects labeled by different labels/values) to a binary image.
+
+        The input image is converted by assigning white (pixel value 255) to image regions corresponding to labeled objects,
+        and black (pixel value 0) to image regions corresponding to image background (by default, this is label 0).
+    </help>
+    <citations>
+        <citation type="doi">10.1038/s41586-020-2649-2</citation>
+    </citations>
+</tool>
