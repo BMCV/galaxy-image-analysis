@@ -43,7 +43,7 @@ if __name__ == "__main__":
     parser.add_argument('th_method', choices=th_methods.keys(), help='Thresholding method')
     parser.add_argument('block_size', type=int, default=5, help='Odd size of pixel neighborhood for calculating the threshold')
     parser.add_argument('threshold', type=float, default=0, help='Manual thresholding value')
-    parser.add_argument('invert_output', default=False, type=bool, help='Values below/above the threshold are labeled with 0/255 if False, and with 255/0 otherwise')
+    parser.add_argument('--invert_output', default=False, action='store_true', help='Values below/above the threshold are labeled with 0/255 by default, and with 255/0 if this argument is used')
     args = parser.parse_args()
 
     do_thresholding(args.im_in, args.im_out, args.th_method, args.block_size, args.threshold, args.invert_output)
