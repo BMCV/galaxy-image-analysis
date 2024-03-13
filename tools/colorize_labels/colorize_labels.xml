@@ -1,19 +1,15 @@
 <tool id="colorize_labels" name="Colorize label map" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
-    <description>with SuperDSM</description>
+    <description>with networkx</description>
     <macros>
-        <token name="@TOOL_VERSION@">0.2.0</token>
+        <token name="@TOOL_VERSION@">3.2.1</token>
         <token name="@VERSION_SUFFIX@">0</token>
     </macros>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
-    <xrefs>
-        <xref type="bio.tools">superdsm</xref>
-        <xref type="biii">superdsm</xref>
-    </xrefs>
     <requirements>
-        <requirement type="package" version="0.2.0">superdsm</requirement>
-        <requirement type="package" version="1.20">numpy</requirement>
+        <requirement type="package" version="3.2.1">networkx</requirement>
+        <requirement type="package" version="1.22">numpy</requirement>
         <requirement type="package" version="0.18.1">scikit-image</requirement>
     </requirements>
     <command><![CDATA[
@@ -21,7 +17,7 @@
     ## Inputs
     
     python '$__tool_directory__/colorize_labels.py' '$input'
-    --seed $seed
+    --radius $radius
     --bg_label $bg_label
     --bg_color '$bg_color'
     
@@ -33,7 +29,7 @@
     </command>
     <inputs>
         <param name="input" type="data" format="tiff,png" label="Input image (label map)" />
-        <param argument="--seed" type="integer" value="0" label="Randomization seed" />
+        <param argument="--radius" type="integer" min="1" value="10" label="Radius of the neighborhood" help="Defines the neighborhood (in pixels) where labels are considered to be adjacent." />
         <param argument="--bg_label" type="integer" value="0" label="Background label" />
         <param argument="--bg_color" type="color" value="#000000" label="Background color"/>
     </inputs>
@@ -42,14 +38,22 @@
     </outputs>
     <tests>
         <test>
-            <param name="input" value="input1.tif"/>
-            <param name="bg_label" value="0"/>
-            <param name="bg_color" value="#5a5a5a"/>
-            <output name="output" value="output1.png" ftype="png" compare="sim_size" delta_frac="0.1"/>
+            <param name="input" value="input1.tif" />
+            <param name="radius" value="1" />
+            <param name="bg_label" value="0" />
+            <param name="bg_color" value="#5a5a5a" />
+            <output name="output" value="output1.png" ftype="png" compare="sim_size" delta_frac="0.1" />
+        </test>
+        <test>
+            <param name="input" value="input2.tif" />
+            <param name="radius" value="10" />
+            <param name="bg_label" value="0" />
+            <param name="bg_color" value="#ffffff" />
+            <output name="output" value="output2.png" ftype="png" compare="sim_size" delta_frac="0.1" />
         </test>
     </tests>
     <help>
-        Colorize a 2-D label map for visualization.
+        Colorize a 2-D label map for visualization using greedy coloring.
 
         Label maps are produced by segmentation and other image analysis steps.
         Direct inspection of label maps can be difficult,
@@ -59,6 +63,14 @@
         label maps to color images, by assigning each label a unique color.
     </help>
     <citations>
-        <citation type="doi">10.1109/TPAMI.2022.3185583</citation>
+        <citation type="bibtex">
+        @inproceedings{networkx,
+          author = {Hagberg, Aric A. and Schult, Daniel A. and Swart, Pieter J.},
+          title = {Exploring network structure, dynamics, and function using {NetworkX}},
+          booktitle = {Proc. of the 7th Python in Science Conference (SciPy 2008)},
+          pages = {11--15},
+          year = {2008},
+        }
+        </citation>
     </citations>
 </tool>
