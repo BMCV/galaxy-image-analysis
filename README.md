@@ -15,16 +15,16 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 
 ### Image processing
 
-- [Apply anisotropic diffusion](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/anisotropic_diffusion/ip_anisotropic_diffusion)
-- [Apply a morphological operation](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/morphological_operations/morphological_operations)
+- [Apply anisotropic diffusion](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/anisotropic_diffusion/ip_anisotropic_diffusion) with MedPy
+- [Apply a morphological operation](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/morphological_operations/morphological_operations) with SciPy
 - [Concatenate images or channels](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/concat_channels/ip_concat_channels)
-- [Filter 2D image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/2d_simple_filter/ip_filter_standard)
+- [Filter 2D image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/2d_simple_filter/ip_filter_standard) with scikit-image
 - [Perform color decomposition](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/color_deconvolution/ip_color_deconvolution)
-- [Perform histogram equalization](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/2d_histogram_equalization/ip_histogram_equalization)
+- [Perform histogram equalization](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/2d_histogram_equalization/ip_histogram_equalization) with scikit-image
 - [Permutate image axes](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/permutate_axis/ip_permutate_axis)
-- [Process images using arithmetic expressions](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/image_math/image_math)
-- [Scale image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/scale_image/ip_scale_image)
-- [Show image info](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/image_info/ip_imageinfo)
+- [Process images using arithmetic expressions](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/image_math/image_math) with NumPy
+- [Scale image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/scale_image/ip_scale_image) with scikit-image
+- [Show image info](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/image_info/ip_imageinfo) with Bioformats
 - [Slice image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/slice_image/ip_slice_image)
 - [Switch axis coordinates](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/imagecoordinates_flipaxis/imagecoordinates_flipaxis)
 
@@ -33,26 +33,26 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 - [Convert binary image to label map](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/binary2labelimage/ip_binary_to_labelimage)
 - [Convert binary image to points (center of masses)](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/binaryimage2points/ip_binaryimage_to_points)
 - [Convert binary image to points (point coordinates)](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/coordinates_of_roi/ip_coordinates_of_roi)
-- [Convert image format](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/bfconvert/ip_convertimage)
-- [Convert label map to binary image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/label_to_binary/label_to_binary)
+- [Convert image format](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/bfconvert/ip_convertimage) with Bioformats
+- [Convert label map to binary image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/label_to_binary/label_to_binary) with NumPy
 - [Convert label map to points (center of masses)](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/labelimage2points/ip_labelimage_to_points)
 - [Convert point coordinates to binary image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/points2binaryimage/ip_points_to_binaryimage)
 - [Convert point coordinates to label map](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/points2labelimage/ip_points_to_label)
-- [Convert to OME-Zarr](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/bioformats2raw/bf2raw)
+- [Convert to OME-Zarr](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/bioformats2raw/bf2raw) with Bioformats
 
 ### Segmentation, partitioning, and detection
 
-- [Compute Voronoi tessellation](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/voronoi_tesselation/voronoi_tessellation)
+- [Compute Voronoi tessellation](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/voronoi_tesselation/voronoi_tessellation) with scikit-image
 - [Count objects in label map](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/count_objects/ip_count_objects)
-- [Extract 2D features](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/2d_feature_extraction/ip_2d_feature_extraction)
+- [Extract 2D features](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/2d_feature_extraction/ip_2d_feature_extraction) with scikit-image
 - [Filter label map by rules](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/2d_filter_segmentation_by_features/ip_2d_filter_segmentation_by_features)
 - [Merge neighbors in label map](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/mergeneighboursinlabelimage/ip_merge_neighbours_in_label)
 - [Perform 2D spot detection](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/spot_detection_2d/ip_spot_detection_2d)
 - [Perform local thresholding](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/2d_local_threshold/ip_localthreshold)
-- [Perform segmentation using region-based fitting of overlapping ellipses](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/rfove/rfove/2023.11.12+galaxy0)
-- [Perform segmentation using deformable shape models](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/superdsm/ip_superdsm)
+- [Perform segmentation using region-based fitting of overlapping ellipses](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/rfove/rfove/2023.11.12+galaxy0) with RFOVE
+- [Perform segmentation using deformable shape models](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/superdsm/ip_superdsm) with SuperDSM
 - [Split label map using morphological operators](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/split_labelmap/ip_split_labelmap)
-- [Threshold image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/2d_auto_threshold/ip_threshold)
+- [Threshold image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/2d_auto_threshold/ip_threshold) with scikit-image
 
 ### Registration
 
@@ -67,16 +67,16 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 
 ### Visualization and validation
 
-- [Colorize labels](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/colorize_labels/colorize_labels)
-- [Compute image segmentation and object detection performance measures](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/segmetrics/ip_segmetrics)
-- [Evaluate segmentation](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/visceral_evaluatesegmentation/ip_visceral_evaluatesegmentation)
+- [Colorize labels](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/colorize_labels/colorize_labels) with NetworkX
+- [Compute image segmentation and object detection performance measures](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/segmetrics/ip_segmetrics) with SegMetrics
+- [Evaluate segmentation](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/visceral_evaluatesegmentation/ip_visceral_evaluatesegmentation) with EvaluateSegmentation
 - [Overlay images](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/overlay_images/ip_overlay_images)
 - [Visualize detections](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/detection_viz/ip_detection_viz)
 
 ### Miscellaneous
 
-- [Compute image features](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/mahotas_features/ip_mahotas_features)
-- [Extract top view](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/wsi_extract_top_view/ip_wsi_extract_top_view)
+- [Compute image features](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/mahotas_features/ip_mahotas_features) with Mahotas
+- [Extract top view](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/wsi_extract_top_view/ip_wsi_extract_top_view) with OpenSlide
 - [Perform curve fitting](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/curve_fitting/ip_curve_fitting)
 
 ## Acknowledgment
