@@ -48,7 +48,6 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 - [Filter label map by rules](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/2d_filter_segmentation_by_features/ip_2d_filter_segmentation_by_features)
 - [Merge neighbors in label map](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/mergeneighboursinlabelimage/ip_merge_neighbours_in_label)
 - [Perform 2D spot detection](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/spot_detection_2d/ip_spot_detection_2d)
-- [Perform local thresholding](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/2d_local_threshold/ip_localthreshold)
 - [Perform segmentation using region-based fitting of overlapping ellipses](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/rfove/rfove/2023.11.12+galaxy0) with RFOVE
 - [Perform segmentation using deformable shape models](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/superdsm/ip_superdsm) with SuperDSM
 - [Split label map using morphological operators](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/split_labelmap/ip_split_labelmap)
