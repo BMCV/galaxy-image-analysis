@@ -1,5 +1,6 @@
 <macros>
     <xml name="creators/bmcv">
         <organization name="Biomedical Computer Vision Group" alternateName="BMCV" url="http://www.bioquant.uni-heidelberg.de/research/groups/biomedical_computer_vision.html" />
+        <yield />
     </xml>
 </macros>
