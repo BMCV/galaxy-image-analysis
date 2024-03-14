@@ -1,5 +1,9 @@
-<tool id="ip_points_to_binaryimage" name="Convert point coordinates to binary image" version="0.2-1">
+<tool id="ip_points_to_binaryimage" name="Convert point coordinates to binary image" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
     <description></description>
+    <macros>
+        <token name="@TOOL_VERSION@">0.2</token>
+        <token name="@VERSION_SUFFIX@">2</token>
+    </macros>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
@@ -40,9 +44,13 @@
         </test>
     </tests>
     <help>
-    **What it does**
 
-    Converts CSV point file to binary image.
+        This tool converts a CSV list of points to a binary image by rasterizing the point coordinates.
+
+        The created image is a single-channel image with 16 bits per pixel (unsigned integer).
+        The points are rasterized with value 32767 (white).
+        Pixels not corresponding to any points in the CSV are assigned the value 0 (black).
+
     </help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation> 
