@@ -1,5 +1,7 @@
 <macros>
     <xml name="creator">
-        <organization name="Biomedical Computer Vision Group" alternateName="BMCV" url="http://www.bioquant.uni-heidelberg.de/research/groups/biomedical_computer_vision.html" />
+        <creator>
+            <organization name="Biomedical Computer Vision Group" alternateName="BMCV" url="http://www.bioquant.uni-heidelberg.de/research/groups/biomedical_computer_vision.html" />
+        </creator>
     </xml>
 </macros>
