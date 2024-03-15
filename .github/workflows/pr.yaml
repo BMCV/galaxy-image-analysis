@@ -133,6 +133,12 @@ jobs:
       if: ${{ github.event_name != 'pull_request' }}
       run: |
         echo "FAIL_LEVEL=error" >> "$GITHUB_ENV"
+#
+# ---------------------------------------------------------
+# This is a temporary addition to enable the features from
+# - https://github.com/galaxyproject/galaxy/pull/17556
+# - https://github.com/galaxyproject/galaxy/pull/17581
+#
     - name: Planemo setup 
       uses: galaxyproject/planemo-ci-action@v1
       with:
@@ -144,6 +150,9 @@ jobs:
     - run: |
         python -m pip install git+https://git@github.com/galaxyproject/galaxy.git@dev#subdirectory=packages/util
         python -m pip install git+https://git@github.com/galaxyproject/galaxy.git@dev#subdirectory=packages/tool_util
+#
+# ---------------------------------------------------------
+#
     - name: Planemo lint
       uses: galaxyproject/planemo-ci-action@v1
       id: lint
@@ -303,6 +312,26 @@ jobs:
       id: cpu-cores
     - name: Clean dotnet folder for space
       run: rm -Rf /usr/share/dotnet
+#
+# ---------------------------------------------------------
+# This is a temporary addition to enable the features from
+# - https://github.com/galaxyproject/galaxy/pull/17556
+# - https://github.com/galaxyproject/galaxy/pull/17581
+#
+    - name: Planemo setup 
+      uses: galaxyproject/planemo-ci-action@v1
+      with:
+        mode: setup
+        fail-level: ${{ env.FAIL_LEVEL }}
+        repository-list: ${{ needs.setup.outputs.repository-list }}
+        tool-list: ${{ needs.setup.outputs.tool-list }}
+        additional-planemo-options: ${{ env.SKIP }}
+    - run: |
+        python -m pip install git+https://git@github.com/galaxyproject/galaxy.git@dev#subdirectory=packages/util
+        python -m pip install git+https://git@github.com/galaxyproject/galaxy.git@dev#subdirectory=packages/tool_util
+#
+# ---------------------------------------------------------
+#
     - name: Planemo test
       uses: galaxyproject/planemo-ci-action@v1
       id: test
