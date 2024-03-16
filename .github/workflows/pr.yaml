@@ -148,8 +148,8 @@ jobs:
         tool-list: ${{ needs.setup.outputs.tool-list }}
         additional-planemo-options: ${{ env.SKIP }}
     - run: |
-        python -m pip install git+https://git@github.com/galaxyproject/galaxy.git@dev#subdirectory=packages/util
-        python -m pip install git+https://git@github.com/galaxyproject/galaxy.git@dev#subdirectory=packages/tool_util
+        python -m pip install git+https://git@github.com/galaxyproject/galaxy.git@5c1d045ce7b1e45f85608346baed5455324ee967#subdirectory=packages/util
+        python -m pip install git+https://git@github.com/galaxyproject/galaxy.git@5c1d045ce7b1e45f85608346baed5455324ee967#subdirectory=packages/tool_util
 #
 # ---------------------------------------------------------
 #
@@ -327,8 +327,8 @@ jobs:
         tool-list: ${{ needs.setup.outputs.tool-list }}
         additional-planemo-options: ${{ env.SKIP }}
     - run: |
-        python -m pip install git+https://git@github.com/kostrykin/galaxy.git@asserts_image/fix#subdirectory=packages/util
-        python -m pip install git+https://git@github.com/kostrykin/galaxy.git@asserts_image/fix#subdirectory=packages/tool_util
+        python -m pip install git+https://git@github.com/galaxyproject/galaxy.git@5c1d045ce7b1e45f85608346baed5455324ee967#subdirectory=packages/util
+        python -m pip install git+https://git@github.com/galaxyproject/galaxy.git@5c1d045ce7b1e45f85608346baed5455324ee967#subdirectory=packages/tool_util
         python -m pip install pillow
 #
 # ---------------------------------------------------------
