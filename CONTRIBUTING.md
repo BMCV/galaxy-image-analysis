@@ -33,3 +33,4 @@ In addition, instead of running `planemo test`, you should use:
 ```python
 planemo test --galaxy_source https://github.com/kostrykin/galaxy --galaxy_branch galaxy-image-analysis
 ```
+The [galaxy-image-analysis branch](https://github.com/kostrykin/galaxy/tree/galaxy-image-analysis) of the <https://github.com/kostrykin/galaxy> fork is the same as the [23.1 release of Galaxy](https://github.com/galaxyproject/galaxy/tree/release_23.1), plus the support for the image-based verification extensions.
