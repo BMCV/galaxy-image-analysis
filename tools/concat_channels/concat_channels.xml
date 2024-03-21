@@ -1,5 +1,12 @@
-<tool id="ip_concat_channels" name="Concatenate images or channels" version="0.2-2">
+<tool id="ip_concat_channels" name="Concatenate images or channels" version="0.3-0" profile="20.05">
     <description></description>
+    <macros>
+        <import>creators.xml</import>
+        <import>tests.xml</import>
+    </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+    </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
@@ -7,40 +14,71 @@
         <xref type="bio.tools">galaxy_image_analysis</xref>
     </xrefs>
     <requirements>
-        <requirement type="package" version="0.14.2">scikit-image</requirement>
-        <requirement type="package" version="1.15.4">numpy</requirement>
-        <requirement type="package" version="0.15.1">tifffile</requirement>
+        <requirement type="package" version="0.18.3">scikit-image</requirement>
+        <requirement type="package" version="1.24.1">numpy</requirement>
+        <requirement type="package" version="2021.7.2">tifffile</requirement>
     </requirements>
-    <command detect_errors="aggressive">
-    <![CDATA[
-        python '$__tool_directory__/concat_channels.py' 
+    <command detect_errors="aggressive"><![CDATA[
+
+        python '$__tool_directory__/concat_channels.py'
+
         #for $input in $inputs
-            '$input' 
+            '$input'
         #end for
+
+        $mode
+
         -o '$output' --axis '$axis'
-    ]]>
-    </command>
+
+    ]]></command>
     <inputs>
-        <param name="inputs" type="data" multiple="true" format="tiff,png,jpg,bmp" label="Binary Image Files" help="one or multiple binary image fiels"/>
-        <param name="axis" type="select" label="Concatenation Axis">
-            <option value="0">0</option>
-            <option value="2">2</option>
+        <param name="inputs" type="data" multiple="true" format="tiff,png" label="Images to concatenate"/>
+        <param name="axis" type="integer" min="0" value="0" label="Concatenation axis" help="The images will be concatenated along this axis. For a 2-D image, a value of 0 corresponds to horizontal concatenation, and a value of 1 to vertical concatenation. For an RGB image, a value of 2 corresponds to concatenation of the channels of the images."/>
+        <param name="mode" type="select" label="Scaling of values" help="If the brightness is to be preserved (default), then the values will be scaled between 0 and 1, and the pixel type will be float.">
+            <option value="" selected="true">Preserve brightness</option>
+            <option value="--preserve_values">Preserve range of values</option>
         </param>
     </inputs>
     <outputs>
         <data format="tiff" name="output"/>
     </outputs>
     <tests>
+        <!-- Test with "preserve brightness" -->
         <test>
-            <param name="inputs" value="sample1.png,sample2.png"/>
+            <param name="inputs" value="input1_uint8.png,input2_float.tiff"/>
             <param name="axis" value="0"/>
-            <output name="output" value="res.tiff" ftype="tiff" compare="sim_size"/>
+            <param name="mode" value=""/>
+            <expand macro="tests/intensity_image_diff" name="output" value="res_preserve_brightness.tiff" ftype="tiff"/>
+        </test>
+        <!-- Test with "preserve range of values" -->
+        <test>
+            <param name="inputs" value="input1_uint8.png,input2_float.tiff"/>
+            <param name="axis" value="0"/>
+            <param name="mode" value="--preserve_values"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="res_preserve_values.tiff" ftype="tiff">
+                <!--
+
+                The input files have values ranging between 0 and 255.
+
+                Below, we use an assertion in addition to the `image_diff` comparison, to ensure that the range of
+                values is preserved. The motiviation behind this is that the expectation images are usually checked
+                visually, which means that the `image_diff` comparison is likely to ensure that the brightness of
+                the image is correct, thus it's good to double-check the range of values.
+
+                -->
+                <has_image_mean_intensity min="0" max="255"/>
+            </expand>
         </test>
     </tests>
     <help>
-    **What it does**
 
-    This tool concatenates images.
+        **Concatenates images along arbitrary axes.**
+
+        This can be used, for example, to spatially concatenate images, or along their channels.
+
+        This tool either preserves the image brightness, or the range of values.
+        In general, both cannot be preserved when concatenating images of different pixel types (e.g., uint8 and uint16).
+
     </help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>

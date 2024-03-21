@@ -1,14 +1,19 @@
 <tool id="image_math" name="Process images using arithmetic expressions" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="23.0">
     <description>with NumPy</description>
     <macros>
+        <import>creators.xml</import>
+        <import>tests.xml</import>
         <token name="@TOOL_VERSION@">1.26.4</token>
-        <token name="@VERSION_SUFFIX@">0</token>
+        <token name="@VERSION_SUFFIX@">1</token>
     </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+    </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
     <requirements>
-        <requirement type="package" version="1.26.4">numpy</requirement>
+        <requirement type="package" version="@TOOL_VERSION@">numpy</requirement>
         <requirement type="package" version="0.22.0">scikit-image</requirement>
     </requirements>
     <command><![CDATA[
@@ -49,7 +54,7 @@
                 <param name="image" value="input1.tiff" />
                 <param name="name" value="input1" />
             </repeat>
-            <output name="result" value="input1_times_2.tiff" ftype="tiff" compare="sim_size" delta="0" />
+            <expand macro="tests/intensity_image_diff" name="result" value="input1_times_2.tiff" ftype="tiff"/>
         </test>
         <!-- Unary negation operator -->
         <test>
@@ -58,7 +63,7 @@
                 <param name="image" value="input1.tiff" />
                 <param name="name" value="input1" />
             </repeat>
-            <output name="result" value="minus_input1.tiff" ftype="tiff" compare="sim_size" delta="0" />
+            <expand macro="tests/intensity_image_diff" name="result" value="minus_input1.tiff" ftype="tiff"/>
         </test>
         <!-- Binary addition, neutral element, addition with scalar -->
         <test>
@@ -71,7 +76,7 @@
                 <param name="image" value="minus_input1.tiff" />
                 <param name="name" value="input2" />
             </repeat>
-            <output name="result" value="ones.tiff" ftype="tiff" compare="sim_size" delta="0" />
+            <expand macro="tests/intensity_image_diff" name="result" value="ones.tiff" ftype="tiff"/>
         </test>
         <!-- Parentheses -->
         <test>
@@ -84,7 +89,7 @@
                 <param name="image" value="ones.tiff" />
                 <param name="name" value="input2" />
             </repeat>
-            <output name="result" value="half_of_input1_plus_one.tiff" ftype="tiff" compare="sim_size" delta="0" />
+            <expand macro="tests/intensity_image_diff" name="result" value="half_of_input1_plus_one.tiff" ftype="tiff"/>
         </test>
         <!-- Abs -->
         <test>
@@ -93,12 +98,12 @@
                 <param name="image" value="input1.tiff" />
                 <param name="name" value="input" />
             </repeat>
-            <output name="result" value="input1_abs.tiff" ftype="tiff" compare="sim_size" delta="0" />
+            <expand macro="tests/intensity_image_diff" name="result" value="input1_abs.tiff" ftype="tiff"/>
         </test>
     </tests>
     <help>
 
-        This tool processes images according to pixel-wise arithmetic expressions.
+        **Processes images according to pixel-wise arithmetic expressions.**
 
         The supported pixel-wise expressions are:
 

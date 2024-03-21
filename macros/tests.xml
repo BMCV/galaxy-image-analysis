@@ -1,0 +1,93 @@
+<macros>
+
+    <!-- Macros for verification of image outputs -->
+
+    <xml
+        name="tests/binary_image_diff"
+        tokens="name,value,ftype,metric,eps"
+        token_metric="mae"
+        token_eps="0.01">
+
+        <output name="@NAME@" value="@VALUE@" ftype="@FTYPE@" compare="image_diff" metric="@METRIC@" eps="@EPS@">
+            <assert_contents>
+                <has_image_n_labels n="2"/>
+                <yield/>
+            </assert_contents>
+        </output>
+
+    </xml>
+
+    <xml
+        name="tests/label_image_diff"
+        tokens="name,value,ftype,metric,eps"
+        token_metric="iou"
+        token_eps="0.01">
+
+        <output name="@NAME@" value="@VALUE@" ftype="@FTYPE@" compare="image_diff" metric="@METRIC@" eps="@EPS@">
+            <assert_contents>
+                <yield/>
+            </assert_contents>
+        </output>
+
+    </xml>
+
+    <xml
+        name="tests/intensity_image_diff"
+        tokens="name,value,ftype,metric,eps"
+        token_metric="rms"
+        token_eps="0.01">
+
+        <output name="@NAME@" value="@VALUE@" ftype="@FTYPE@" compare="image_diff" metric="@METRIC@" eps="@EPS@">
+            <assert_contents>
+                <yield/>
+            </assert_contents>
+        </output>
+
+    </xml>
+
+    <!-- Variants of the above for verification of collection elements -->
+
+    <xml
+        name="tests/binary_image_diff/element"
+        tokens="name,value,ftype,metric,eps"
+        token_metric="mae"
+        token_eps="0.01">
+
+        <element name="@NAME@" value="@VALUE@" ftype="@FTYPE@" compare="image_diff" metric="@METRIC@" eps="@EPS@">
+            <assert_contents>
+                <has_image_n_labels n="2"/>
+                <yield/>
+            </assert_contents>
+        </element>
+
+    </xml>
+
+    <xml
+        name="tests/label_image_diff/element"
+        tokens="name,value,ftype,metric,eps"
+        token_metric="iou"
+        token_eps="0.01">
+
+        <element name="@NAME@" value="@VALUE@" ftype="@FTYPE@" compare="image_diff" metric="@METRIC@" eps="@EPS@">
+            <assert_contents>
+                <yield/>
+            </assert_contents>
+        </element>
+
+    </xml>
+
+    <xml
+        name="tests/intensity_image_diff/element"
+        tokens="name,value,ftype,metric,eps"
+        token_metric="rms"
+        token_eps="0.01">
+
+        <element name="@NAME@" value="@VALUE@" ftype="@FTYPE@" compare="image_diff" metric="@METRIC@" eps="@EPS@">
+            <assert_contents>
+                <yield/>
+            </assert_contents>
+        </element>
+
+    </xml>
+
+</macros>

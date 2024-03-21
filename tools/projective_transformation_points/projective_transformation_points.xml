@@ -1,5 +1,13 @@
-<tool id="ip_projective_transformation_points" name="Performs projective transformation" license="MIT" version="0.1.1-2" profile="20.05">
+<tool id="ip_projective_transformation_points" name="Perform projective transformation of point coordinates" license="MIT" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
     <description></description>
+    <macros>
+        <import>creators.xml</import>
+        <token name="@TOOL_VERSION@">0.1.1</token>
+        <token name="@VERSION_SUFFIX@">3</token>
+    </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+    </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
@@ -22,8 +30,8 @@
     ]]>
     </command>
     <inputs>
-        <param name="input" type="data" format="tabular" label="ROIs (pixel coordinates) to be transformed (TSV file)" />
-        <param name="tmat" type= "data" format="tabular" label="Transformation matrix (TSV file)" />
+        <param name="input" type="data" format="tabular" label="Point coordinates to be transformed" help="Must be a TSV file." />
+        <param name="tmat" type= "data" format="tabular" label="Transformation matrix" help="Homogeneous transformation matrix (3⨉3)." />
     </inputs>
     <outputs>
        <data format="tabular" name="output" />
@@ -36,15 +44,20 @@
       </test>
     </tests>
     <help>
-    **What it does**
 
-    This tool performs a projective transformation of regions of interest (ROIs) defined by pixel (point) coordinates with/without labels.
+        **Performs projective transformation of point coordinates.**
 
-    About the format of point coordinates (and labels) in the input TSV table: 
-    1st column: x-coordinate; 
-    2nd column: y-coordinate; 
-    (optional) more column(s): point label(s) (numerical or categorical).
-    The top row of the table will be regarded as column headers.
+        This tool performs a projective transformation of point coordinates with/without labels.
+
+        The input point coordinates to be transformed must be in the following format:
+        
+        **Column 1:** The horizontal coordinate.
+
+        **Column 2:** The vertical coordinate.
+
+        **Further columns:** Point labels (numerical or categorical, optional).
+
+        The frist row of the table will be regarded as column headers.
 
     </help>
     <citations>

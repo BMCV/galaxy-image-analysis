@@ -1,5 +1,13 @@
-<tool id="ip_2d_feature_extraction" name="Extract 2D features" version="0.1.1-2">
+<tool id="ip_2d_feature_extraction" name="Extract image features" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
     <description>with scikit-image</description>
+    <macros>
+        <import>creators.xml</import>
+        <token name="@TOOL_VERSION@">0.14.2</token>
+        <token name="@VERSION_SUFFIX@">0</token>
+    </macros>
+    <creator>
+        <expand macro="creators/bmcv" />
+    </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
@@ -8,8 +16,8 @@
         <xref type="biii">scikit-image</xref>
     </xrefs>
     <requirements> 
+        <requirement type="package" version="@TOOL_VERSION@">scikit-image</requirement>
         <requirement type="package" version="0.23.4">pandas</requirement>
-        <requirement type="package" version="0.14.2">scikit-image</requirement>
         <requirement type="package" version="1.15.4">numpy</requirement>
         <requirement type="package" version="0.15.1">tifffile</requirement>
     </requirements>
@@ -28,15 +36,15 @@
     ]]>
     </command>
     <inputs>
-        <param name="input_label" type="data" format="tiff" label="Label file" />
+        <param name="input_label" type="data" format="tiff,png" label="Label map" />
         <conditional name="use_raw_option">
-            <param label="Use original image to compute additional features" name="use_raw" type="select">
-                <option selected="True" value="no_original">No original image</option>
-                <option value="raw_image">Use original image</option>
+            <param label="Use the intensity image to compute additional features" name="use_raw" type="select">
+                <option selected="True" value="no_original">No intensity image</option>
+                <option value="raw_image">Use intensity image</option>
             </param>
             <when value="no_original"></when>
             <when value="raw_image">
-                <param name="input_raw" type="data" format="tiff" label="Original image file" />
+                <param name="input_raw" type="data" format="tiff,png" label="Intensity image" />
             </when>
         </conditional>
         <conditional name="feature_options">
@@ -47,25 +55,25 @@
             <when value="all"> </when>
             <when value="select">
                 <param name="selected_features" type="select" label="Available features" multiple="true" display="checkboxes">
-                    <option value="--label">Add label id of label image</option>
+                    <option value="--label">Label from the label map</option>
                     <option value="--patches">Patches (requires original image)</option>
                     <option value="--max_intensity">Max Intensity (requires original image)</option>
                     <option value="--mean_intensity">Mean Intensity (requires original image)</option>
                     <option value="--min_intensity">Minimum Intensity (requires original image)</option>
                     <option value="--moments_hu">Moments Hu</option>
                     <option value="--centroid">Centroid</option>
-                    <option value="--bbox">Bounding Box</option>
+                    <option value="--bbox">Bounding box</option>
                     <option value="--area">Area</option>
-                    <option value="--filled_area">Filled Area</option>
-                    <option value="--convex_area">Convex Area</option>
+                    <option value="--filled_area">Filled area</option>
+                    <option value="--convex_area">Convex area</option>
                     <option value="--perimeter">Perimeter</option>
                     <option value="--extent">Extent</option>
                     <option value="--eccentricity">Eccentricity</option>
-                    <option value="--equivalent_diameter">Equivalent Diameter</option>
-                    <option value="--euler_number">Euler Number</option>
-                    <option value="--inertia_tensor_eigvals">Inertia Tensor Eigenvalues</option>
-                    <option value="--major_axis_length">Major Axis Length</option>
-                    <option value="--minor_axis_length">Minor Axis Length</option>
+                    <option value="--equivalent_diameter">Equivalent diameter</option>
+                    <option value="--euler_number">Euler number</option>
+                    <option value="--inertia_tensor_eigvals">Inertia tensor eigenvalues</option>
+                    <option value="--major_axis_length">Major axis length</option>
+                    <option value="--minor_axis_length">Minor axis length</option>
                     <option value="--orientation">Orientation</option>
                     <option value="--solidity">Solidity</option>
                     <option value="--moments">Moments</option>
@@ -81,14 +89,19 @@
         <test>
             <param name="input_label" value="input.tiff"/>
             <param name="features" value="select"/>
-            <param name="selected_features" value="--area"/>
+            <param name="selected_features" value="--label,--area"/>
             <output name="output" ftype="tabular" value="out.tsv"/>
         </test>
     </tests>
     <help>
-    **What it does**
 
-    This tool computes several features of a 2D label image and optionally more features using the original image.
+        **Computes features of a label map.**
+
+        The computed features are computed based solely on the properties of the labels in the label map,
+        or, optionally, by also taking the intensities from a corresponding intensity image into account.
+
+        The label map must be a 2-D or 3-D single-channel image.
+    
     </help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
