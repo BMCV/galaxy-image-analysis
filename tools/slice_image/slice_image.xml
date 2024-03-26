@@ -1,5 +1,12 @@
-<tool id="ip_slice_image" name="Slice image" version="0.3-2">
+<tool id="ip_slice_image" name="Slice image into patches" version="0.3-3">
     <description></description>
+    <macros>
+        <import>creators.xml</import>
+        <import>tests.xml</import>
+    </macros>
+    <creator>
+        <expand macro="creators/bmcv" />
+    </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
@@ -12,34 +19,35 @@
         <requirement type="package" version="1.1.0">scipy</requirement>
         <requirement type="package" version="0.15.1">tifffile</requirement>
     </requirements>
-    <command detect_errors="aggressive"> 
-        <![CDATA[
+    <command detect_errors="aggressive"><![CDATA[
+
         mkdir ./out &&
+
         python '$__tool_directory__/slice_image.py'
         '$input_file' ./out
-        --stride $stride --window_size $patch_size --bg_thresh $bg_thresh
-        --limit_slices $limit_slices 
-        #if $limit_slices:
-          --n_thresh $n_thresh
+
+        --stride '$stride'
+        --window_size '$patch_size'
+        --bg_thresh '$bg_thresh'
+
+        #if $n_thresh > 0:
+            --n_thresh '$n_thresh'
         #end if
-        #if $control_rng:
-          --seed $seed
+
+        #if len('$seed') > 0:
+            --seed '$seed'
         #end if
+
         && ls -l ./out
-        ]]> 
-    </command>
+
+    ]]></command>
     <inputs>
-        <param name="input_file" type="data" format="tiff,png,jpg,bmp" label="Input image"/> 
-        <!--<param name="out_folder" type="text" label="Output folder for image slices"/> 
-        <param name="label_file" type="data" format="tiff,png,jpg,bmp" label="Auxiliary label file to split in the same way"/>--> 
-        <param name="stride" type="integer" optional="true" value="16"/>
-        <param name="patch_size" type="integer" optional="true" value="64" label="Size of resulting (quadratic-shaped) slices"/>
-        <param name="bg_thresh" type="float" optional="true" value="0" label="Threshold to not be considered background"/>
-        <param name="limit_slices" type="boolean" checked="true" label="Should the number of slices be limited?"/>
-        <param name="n_thresh" type="integer" optional="true" label="Maximum amount of slices; only needed if limit_slices is selected"/>  
-        <param name="control_rng" type="boolean" checked="false" label="Boolean that controls if a certain seed should be selected for the random number generator"/>
-        <param name="seed" type="integer" value="1"
-            label="Seed chosen for the random number generator of the random choice of limited slices. Only required if cotrol_rng is selected"/>
+        <param name="input_file" type="data" format="tiff,png" label="Input image"/> 
+        <param name="stride" type="integer" optional="true" value="16" min="1" label="Stride" help="Minimum offset between any two patches in pixels."/>
+        <param name="patch_size" type="integer" optional="true" value="64" label="Patch size" help="Width of the patches in pixels (the height is identical)."/>
+        <param name="bg_thresh" type="float" optional="true" value="0" min="0" label="Maximum patch homogeneity" help="If larger than 0, patches with a homogeneity above this threshold will be considered as purely background and discarded."/>
+        <param name="n_thresh" type="integer" optional="true" label="Maximum number of patches" value="0" min="0" help="If larger than 0, only the specified number of patches will be retained (or less). Those will be selected randomly."/>
+        <param name="seed" type="hidden" value=""/>
     </inputs>
     <outputs>
         <collection name="slices" type="list" label="Slices obtained from input">
@@ -47,25 +55,38 @@
         </collection>
     </outputs>
     <tests>
+        <!-- Tests for TIFF input -->
         <test>
             <param name="input_file" value="input.tiff"/>
-            <param name="limit_slices" value="true"/>
             <param name="n_thresh" value="5"/>
-            <param name="control_rng" value="true"/>
             <param name="seed" value="17"/>
             <output_collection name="slices" type="list">
-                <element name="148.tiff" file="input_148.tiff" ftype="tiff" compare="sim_size"/>
-                <element name="155.tiff" file="input_155.tiff" ftype="tiff" compare="sim_size"/>
-                <element name="187.tiff" file="input_187.tiff" ftype="tiff" compare="sim_size"/>
-                <element name="212.tiff" file="input_212.tiff" ftype="tiff" compare="sim_size"/>
-                <element name="267.tiff" file="input_267.tiff" ftype="tiff" compare="sim_size"/>
+                <expand macro="tests/intensity_image_diff/element" name="148.tiff" value="input_148.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="155.tiff" value="input_155.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="187.tiff" value="input_187.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="212.tiff" value="input_212.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="267.tiff" value="input_267.tiff" ftype="tiff"/>
             </output_collection>
         </test>
+        <!-- TODO: Add tests for PNG input -->
     </tests>
     <help>
-    **What it does**
 
-    Slices image into multiple smaller patches.
+        **Slices an image into multiple smaller, square-shaped patches.**
+
+        For overlapping patches, set the stride to a value smaller than the patch size.
+        For non-overlapping patches, set the stride to a value identical to the patch size (or larger).
+        If the stride is set to a value larger than the patch size, parts of the original image will be skipped.
+
+        Optionally, patches entirely corresponding to image background are discarded.
+        To decide whether a patch corresponds to image background, the `homogeneity`_ of its `gray-level co-occurrence matrix`_ is considered.
+
+        .. _homogeneity: https://scikit-image.org/docs/stable/api/skimage.feature.html#skimage.feature.graycoprops
+        .. _gray-level co-occurrence matrix: https://scikit-image.org/docs/stable/api/skimage.feature.html#skimage.feature.graycomatrix
+
+        In addition, the number of the remaining patches can be reduced by specifying a maximum number of patches to retain.
+        Those will be selected randomly.
+
     </help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>

@@ -1,5 +1,12 @@
-<tool id="ip_2d_filter_segmentation_by_features" name="Filter label map by rules" version="0.0.1-2">
-   <description></description>
+<tool id="ip_2d_filter_segmentation_by_features" name="Filter label map by rules" version="0.0.1-3" profile="20.05">
+    <description></description>
+    <macros>
+        <import>creators.xml</import>
+        <import>tests.xml</import>
+    </macros>
+    <creator>
+        <expand macro="creators/bmcv" />
+    </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
@@ -12,15 +19,20 @@
         <requirement type="package" version="0.23.4">pandas</requirement>
         <requirement type="package" version="0.15.1">tifffile</requirement>
     </requirements>
-    <command detect_errors="aggressive">
-    <![CDATA[
-    python '$__tool_directory__/2d_filter_segmentation_by_features.py' '$input' '$output' '$feature_file' '$rule_file'
-    ]]>
-    </command>
+    <command detect_errors="aggressive"><![CDATA[
+
+        python '$__tool_directory__/2d_filter_segmentation_by_features.py'
+
+        '$input'
+        '$output'
+        '$feature_file'
+        '$rule_file'
+
+    ]]></command>
     <inputs>
-        <param name="input" type="data" format="tiff" label="Source file" /> 
-        <param name="feature_file" type="data" format="tabular" label="Feature file" /> 
-        <param name="rule_file" type="data" format="tabular" label="Rules file" /> 
+        <param name="input" type="data" format="tiff" label="Label map" /> 
+        <param name="feature_file" type="data" format="tabular" label="Features" /> 
+        <param name="rule_file" type="data" format="tabular" label="Rules" /> 
     </inputs>
     <outputs>
        <data format="tiff" name="output" />
@@ -30,12 +42,45 @@
             <param name="input" value="in.tif"/>
             <param name="feature_file" value="features.tabular"/>
             <param name="rule_file" value="rules.tabular"/>
-            <output name="output" value="out.tif" ftype="tiff" compare="sim_size"/>
+            <expand macro="tests/label_image_diff" name="output" value="out.tif" ftype="tiff"/>
         </test>
     </tests>
     <help>
-        Filter label image by rules (e.g., remove large or deformed objects).
-        Rules file has a specific format (cols: ,f1,2, rows: feature_name, min, max). The features have to be also profived in a specific format (cols: label, f1, f2).
+
+        **Filters a label map by rules (e.g., remove large or deformed objects).**
+
+        The properties of the labeled image regions (features) must be provided in a specific tabular format
+        (columns: ``label``, ``feature1``, ``feature2``, and so on, where ``feature1`` and ``feature2`` can be arbitrary strings).
+        Each row corresponds to a labeled image region.
+        An example is given below.
+
+        +-------+-------+---------------------+
+        | label | area  | eccentricity        |
+        +-------+-------+---------------------+
+        | 1     | 344   | 0.42521053699241596 |
+        +-------+-------+---------------------+
+        | 2     | 434   | 0.47679001553231926 |
+        +-------+-------+---------------------+
+        | 3     | 907   | 0.9973539531125177  |
+        +-------+-------+---------------------+
+        | 4     | 14320 | 0.17131009631035327 |
+        +-------+-------+---------------------+
+
+        The rules also must be supplied in a specific tabular format with three rows.
+        The top-left cell is empty, and the rest of the first row corresponds to the feature names (such as ``feature1`` or ``feature2``, see above).
+        The rest of the first column corresponds to the two values ``min`` and ``max``.
+        Each of the rows defines the minimum and maximum values for the corresponding features.
+        A labeled image region is retrained if and only if it passes all checks with repsect to the given ``min`` and ``max`` values.
+        An example is given below.
+
+        +-----+--------+--------------+
+        |     | area   | eccentricity |
+        +-----+--------+--------------+
+        | min | 500    | 0.           |
+        +-----+--------+--------------+
+        | max | 100000 | 0.5          |
+        +-----+--------+--------------+
+
     </help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>

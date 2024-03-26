@@ -1,9 +1,14 @@
 <tool id="ip_superdsm" name="Perform segmentation using deformable shape models" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
     <description>with SuperDSM</description>
     <macros>
+        <import>creators.xml</import>
+        <import>tests.xml</import>
         <token name="@TOOL_VERSION@">0.2.0</token>
         <token name="@VERSION_SUFFIX@">0</token>
     </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+    </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
@@ -13,7 +18,7 @@
     </xrefs>
     <requirements>
 
-        <requirement type="package" version="0.2.0">superdsm</requirement>
+        <requirement type="package" version="@TOOL_VERSION@">superdsm</requirement>
 
         <!--
         Pin the dependencies to specific versions for reproducibility:
@@ -159,8 +164,18 @@
             <param name="dataset" value="BBBC033_C2_z28.png" />
             <param name="global_energy_minimization_pruning" value="exact" />
             <param name="outputs" value="overlay,masks,cfg" />
-            <output name="overlay" value="overlay.png" ftype="png" compare="sim_size" />
+            <expand macro="tests/intensity_image_diff" name="overlay" value="overlay.png" ftype="png"/>
             <output name="cfg" value="cfg-full.tsv" ftype="tsv" compare="diff" />
+            <output name="masks" ftype="png">
+                <assert_contents>
+
+                    <has_image_width width="1024"/>
+                    <has_image_height height="1344"/>
+                    <has_image_channels channels="1"/>
+                    <has_image_n_labels n="16"/><!-- 15 objects plus the background -->
+
+                </assert_contents>
+            </output>
         </test>
         <test expect_num_outputs="1">
             <param name="dataset" value="BBBC033_C2_z28.png" />
@@ -170,9 +185,13 @@
         </test>
     </tests>
     <help>
-        This tool permits the segmentation of cell nuclei in 2-D fluorescence microscopy images.
+
+        **Performs segmentation of 2-D fluorescence microscopy images using deformable shape models and superadditivity.**
+
+        SuperDSM is a globally optimal method for cell nuclei segmentation using deformable shape models and their inherent law of superadditivity.
 
         You can either use an individual input image (PNG, TIF) or a collection of such images.
+
     </help>
     <citations>
         <citation type="bibtex">

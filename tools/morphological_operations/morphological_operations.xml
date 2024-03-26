@@ -1,9 +1,14 @@
 <tool id="morphological_operations" name="Apply a morphological operation" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="23.0">
     <description>with SciPy</description>
     <macros>
+        <import>creators.xml</import>
+        <import>tests.xml</import>
         <token name="@TOOL_VERSION@">1.12.0</token>
         <token name="@VERSION_SUFFIX@">0</token>
     </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+    </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
@@ -11,7 +16,7 @@
         <xref type="biii">scipy</xref>
     </xrefs>
     <requirements>
-        <requirement type="package" version="1.12.0">scipy</requirement>
+        <requirement type="package" version="@TOOL_VERSION@">scipy</requirement>
         <requirement type="package" version="0.22.0">scikit-image</requirement>
     </requirements>
     <command><![CDATA[
@@ -54,28 +59,28 @@
             <param name="operation" value="erosion" />
             <param name="selem_shape" value="disk" />
             <param name="selem_size" value="1" />
-            <output name="result" value="output1_erosion.tiff" ftype="tiff" compare="sim_size" delta="10" />
+            <expand macro="tests/binary_image_diff" name="result" value="output1_erosion.tiff" ftype="tiff"/>
         </test>
         <test>
             <param name="image" value="input1.tiff" />
             <param name="operation" value="dilation" />
             <param name="selem_shape" value="disk" />
             <param name="selem_size" value="2" />
-            <output name="result" value="output1_dilation.tiff" ftype="tiff" compare="sim_size" delta="10" />
+            <expand macro="tests/binary_image_diff" name="result" value="output1_dilation.tiff" ftype="tiff"/>
         </test>
         <test>
             <param name="image" value="input1.tiff" />
             <param name="operation" value="opening" />
             <param name="selem_shape" value="square" />
             <param name="selem_size" value="1" />
-            <output name="result" value="output1_opening.tiff" ftype="tiff" compare="sim_size" delta="10" />
+            <expand macro="tests/binary_image_diff" name="result" value="output1_opening.tiff" ftype="tiff"/>
         </test>
         <test>
             <param name="image" value="input1.tiff" />
             <param name="operation" value="closing" />
             <param name="selem_shape" value="square" />
             <param name="selem_size" value="2" />
-            <output name="result" value="output1_closing.tiff" ftype="tiff" compare="sim_size" delta="10" />
+            <expand macro="tests/binary_image_diff" name="result" value="output1_closing.tiff" ftype="tiff"/>
         </test>
         <!-- Test intensity-based operations (more than two distinct values) -->
         <test>
@@ -83,28 +88,28 @@
             <param name="operation" value="erosion" />
             <param name="selem_shape" value="disk" />
             <param name="selem_size" value="1" />
-            <output name="result" value="output3_erosion.tiff" ftype="tiff" compare="sim_size" delta="10" />
+            <expand macro="tests/intensity_image_diff" name="result" value="output3_erosion.tiff" ftype="tiff"/>
         </test>
         <test>
             <param name="image" value="input3.png" />
             <param name="operation" value="dilation" />
             <param name="selem_shape" value="disk" />
             <param name="selem_size" value="2" />
-            <output name="result" value="output3_dilation.tiff" ftype="tiff" compare="sim_size" delta="10" />
+            <expand macro="tests/intensity_image_diff" name="result" value="output3_dilation.tiff" ftype="tiff"/>
         </test>
         <test>
             <param name="image" value="input3.png" />
             <param name="operation" value="opening" />
             <param name="selem_shape" value="square" />
             <param name="selem_size" value="1" />
-            <output name="result" value="output3_opening.tiff" ftype="tiff" compare="sim_size" delta="10" />
+            <expand macro="tests/intensity_image_diff" name="result" value="output3_opening.tiff" ftype="tiff"/>
         </test>
         <test>
             <param name="image" value="input3.png" />
             <param name="operation" value="closing" />
             <param name="selem_shape" value="square" />
             <param name="selem_size" value="2" />
-            <output name="result" value="output3_closing.tiff" ftype="tiff" compare="sim_size" delta="10" />
+            <expand macro="tests/intensity_image_diff" name="result" value="output3_closing.tiff" ftype="tiff"/>
         </test>
         <!-- Test multi-channel image (with two distinct values per channel) -->
         <test>
@@ -112,11 +117,13 @@
             <param name="operation" value="fill_holes" />
             <param name="selem_shape" value="disk" />
             <param name="selem_size" value="1" />
-            <output name="result" value="output2_fill_holes.tiff" ftype="tiff" compare="sim_size" delta="10" />
+            <expand macro="tests/intensity_image_diff" name="result" value="output2_fill_holes.tiff" ftype="tiff"/>
         </test>
     </tests>
     <help>
-        Applies a morphological operation to a 2-D image.
+
+        **Applies a morphological operation to a 2-D image.**
+
         For multi-channel images, the operation is applied to each channel separately.
 
         The following operations are supported:
@@ -126,6 +133,7 @@
         - **Opening:** Erosion followed by Dilation. Erases tiny bright spots.
         - **Closing:** Dilation followed by Erosion. Erases tiny dark holes.
         - **Fill holes:** Fills the holes (dark areas) in binary images.
+
     </help>
     <citations>
         <citation type="doi">10.1038/s41592-019-0686-2</citation>

@@ -1,9 +1,14 @@
 <tool id="rfove" name="Perform segmentation using region-based fitting of overlapping ellipses" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
     <description>with RFOVE</description>
     <macros>
+        <import>creators.xml</import>
+        <import>tests.xml</import>
         <token name="@TOOL_VERSION@">2023.11.12</token>
-        <token name="@VERSION_SUFFIX@">1</token>
+        <token name="@VERSION_SUFFIX@">2</token>
     </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+    </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
@@ -27,7 +32,7 @@
     ]]>
     </command>
     <inputs>
-        <param name="dataset" type="data" format="tiff,png" label="Dataset" />
+        <param name="dataset" type="data" format="tiff,png" label="Input image" />
         <param name="area_ub" type="integer" label="Maximum ellipse area" min="5" value="250" />
         <param name="min_area_max_area_ratio_ub" type="float" min="0" max="1" value="0.1" label="Upper bound of the ratio: minimum area / maximum area" />
 
@@ -40,11 +45,20 @@
     <tests>
         <test>
             <param name="dataset" value="BBBC033_C2_z28.png" />
-            <output name="masks" value="output.tiff" ftype="tiff" compare="sim_size" />
+            <expand macro="tests/label_image_diff" name="masks" value="output.tiff" ftype="tiff"/>
         </test>
     </tests>
     <help>
-    RFOVE is completely unsupervised, operates without any assumption or prior knowledge on the object’s shape and extends and improves the Decremental Ellipse Fitting Algorithm (DEFA). Both RFOVE and DEFA solve the multi-ellipse fitting problem by performing model selection that is guided by the minimization of the Akaike Information Criterion on a suitably defined shape complexity measure. However, in contrast to DEFA, RFOVE minimizes an objective function that allows for ellipses with higher degree of overlap and, thus, achieves better ellipse-based shape approximation.
+
+        **Perform segmentation using shape decomposition based on elliptical models and expectation maximization.**
+
+        RFOVE is completely unsupervised, operates without any assumption or prior knowledge on the object's shape
+        and extends and improves the *Decremental Ellipse Fitting Algorithm* (DEFA). Both RFOVE and DEFA solve the
+        multi-ellipse fitting problem by performing model selection that is guided by the minimization of the
+        *Akaike Information Criterion* on a suitably defined shape complexity measure. However, in contrast to
+        DEFA, RFOVE minimizes an objective function that allows for ellipses with higher degree of overlap and,
+        thus, achieves better ellipse-based shape approximation.
+
     </help>
     <citations>
         <citation type="doi">10.1016/j.imavis.2019.09.001</citation>

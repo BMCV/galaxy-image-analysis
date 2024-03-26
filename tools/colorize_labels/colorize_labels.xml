@@ -1,14 +1,19 @@
 <tool id="colorize_labels" name="Colorize label map" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
     <description>with NetworkX</description>
     <macros>
+        <import>creators.xml</import>
+        <import>tests.xml</import>
         <token name="@TOOL_VERSION@">3.2.1</token>
-        <token name="@VERSION_SUFFIX@">0</token>
+        <token name="@VERSION_SUFFIX@">1</token>
     </macros>
+    <creator>
+        <expand macro="creators/bmcv" />
+    </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
     <requirements>
-        <requirement type="package" version="3.2.1">networkx</requirement>
+        <requirement type="package" version="@TOOL_VERSION@">networkx</requirement>
         <requirement type="package" version="1.22">numpy</requirement>
         <requirement type="package" version="0.18.1">scikit-image</requirement>
     </requirements>
@@ -42,18 +47,23 @@
             <param name="radius" value="1" />
             <param name="bg_label" value="0" />
             <param name="bg_color" value="#5a5a5a" />
-            <output name="output" value="output1.png" ftype="png" compare="sim_size" delta_frac="0.1" />
+            <expand macro="tests/intensity_image_diff" name="output" value="output1.png" ftype="png">
+                <has_image_channels channels="3"/>
+            </expand>
         </test>
         <test>
             <param name="input" value="input2.tif" />
             <param name="radius" value="10" />
             <param name="bg_label" value="0" />
             <param name="bg_color" value="#ffffff" />
-            <output name="output" value="output2.png" ftype="png" compare="sim_size" delta_frac="0.1" />
+            <expand macro="tests/intensity_image_diff" name="output" value="output2.png" ftype="png">
+                <has_image_channels channels="3"/>
+            </expand>
         </test>
     </tests>
     <help>
-        Colorize a 2-D label map for visualization using greedy coloring.
+
+        **Colorizes a 2-D label map for visualization using greedy coloring.**
 
         Label maps are produced by segmentation and other image analysis steps.
         Direct inspection of label maps can be difficult,
@@ -61,6 +71,7 @@
         distinguish visually from each other and from the image background.
         To facilitate the visual inspection of label maps, this tools converts
         label maps to color images, by assigning each label a unique color.
+
     </help>
     <citations>
         <citation type="bibtex">

@@ -1,9 +1,13 @@
 <tool id="orientationpy" name="Compute image orientation" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="23.0">
     <description>with OrientationPy</description>
     <macros>
+        <import>creators.xml</import>
         <token name="@TOOL_VERSION@">0.2.0.4</token>
-        <token name="@VERSION_SUFFIX@">0</token>
+        <token name="@VERSION_SUFFIX@">1</token>
     </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+    </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
@@ -11,7 +15,7 @@
         <xref type="biii">orientationj</xref>
     </xrefs>
     <requirements>
-        <requirement type="package" version="0.2.0.4">orientationpy</requirement>
+        <requirement type="package" version="@TOOL_VERSION@">orientationpy</requirement>
         <requirement type="package" version="0.22.0">scikit-image</requirement>
     </requirements>
     <command><![CDATA[
@@ -83,13 +87,15 @@
         </test>
     </tests>
     <help>
-        Compute the orientation of 2-D images in degrees using OrientationPy.
+
+        **Computes the orientation of 2-D images in degrees using OrientationPy.**
 
         OrientationPy is the pythonic successor to the well-loved OrientationJ Fiji Plugin.
         It is a library that takes in images and computes the orientation of the greylevels.
         A key step is the computation of image gradients, for a number of different techniques is supported.
 
         For more information on ``--min_energy`` and ``--min_coherency`` see: https://epfl-center-for-imaging.gitlab.io/orientationpy/orientationpy_examples/plot_fibres_2d.html#plot-hsv-composition
+
     </help>
     <citations>
         <citation type="doi">10.1007/s10237-011-0325-z</citation>

@@ -1,49 +1,135 @@
-<tool id="ip_filter_standard" name="Filter 2D image" version="0.0.3-3">
-    <description>with scikit-image</description>
+<tool id="ip_filter_standard" name="Filter 2-D image" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
+    <description>with scipy</description>
+    <macros>
+        <import>creators.xml</import>
+        <import>tests.xml</import>
+        <token name="@TOOL_VERSION@">1.12.0</token>
+        <token name="@VERSION_SUFFIX@">0</token>
+    </macros>
+    <creator>
+        <expand macro="creators/bmcv" />
+    </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
     <xrefs>
-        <xref type="bio.tools">scikit-image</xref>
-        <xref type="biii">scikit-image</xref>
+        <xref type="biii">scipy</xref>
     </xrefs>
     <requirements>
-        <requirement type="package" version="0.14.2">scikit-image</requirement>
-        <requirement type="package" version="1.15.4">numpy</requirement>
-        <requirement type="package" version="5.3.0">pillow</requirement>
-        <requirement type="package" version="0.15.1">tifffile</requirement>
+        <requirement type="package" version="@TOOL_VERSION@">scipy</requirement>
+        <requirement type="package" version="1.26.4">numpy</requirement>
+        <requirement type="package" version="0.22.0">scikit-image</requirement>
+        <requirement type="package" version="2024.2.12">tifffile</requirement>
     </requirements>
-    <command detect_errors="aggressive">
-      <![CDATA[
-        python '$__tool_directory__/filter_image.py' '$input' '$output' $filter_type $radius
-      ]]>
-    </command>
+    <command detect_errors="aggressive"><![CDATA[
+
+        python '$__tool_directory__/filter_image.py'
+
+        '$input'
+        '$output'
+
+        $filter_type
+        $size
+
+    ]]></command>
     <inputs>
-        <param name="filter_type" type="select" label="Filter type">
-          <option value="median" selected="True">Median</option>
-          <option value="gaussian">Gaussian Blur</option>
-          <option value="prewitt">Prewitt</option>
-          <option value="sobel">Sobel</option>
-          <option value="scharr">Scharr</option>
-        </param>
-        <param name="radius" type="integer" value="3" label="Radius/Sigma" />
-        <param name="input" type="data" format="tiff" label="Source file" />
+        <param name="input" type="data" format="tiff,png" label="Input image" />
+        <conditional name="filter">
+            <param name="filter_type" type="select" label="Filter type">
+                <option value="gaussian" selected="True">Gaussian</option>
+                <option value="median">Median</option>
+                <option value="prewitt_h">Prewitt horizontal</option>
+                <option value="prewitt_v">Prewitt vertical</option>
+                <option value="sobel_h">Sobel horizontal</option>
+                <option value="sobel_v">Sobel vertical</option>
+            </param>
+            <when value="gaussian">
+                <param name="size" type="float" value="3" min="0.1" label="Sigma" help="The half width of the Gaussian bell (in pixels)." />
+            </when>
+            <when value="median">
+                <param name="size" type="integer" value="3" label="Radius" help="Radius of the neighborhood (in pixels)." />
+            </when>
+            <when value="prewitt_h">
+                <param name="size" type="hidden" value="0" />
+            </when>
+            <when value="prewitt_v">
+                <param name="size" type="hidden" value="0" />
+            </when>
+            <when value="sobel_h">
+                <param name="size" type="hidden" value="0" />
+            </when>
+            <when value="sobel_v">
+                <param name="size" type="hidden" value="0" />
+            </when>
+        </conditional>
     </inputs>
     <outputs>
        <data format="tiff" name="output" />
     </outputs> 
     <tests>
-      <test>
-        <param name="input" value="sample.tif" />
-        <output name="output" value="res.tif" ftype="tiff" compare="sim_size"/>
-        <param name="filter_type" value="prewitt" />
-        <param name="radius" value="4" />
-      </test>
+        <!-- Tests with uint8 TIFF input image -->
+        <test>
+            <param name="input" value="input1_uint8.tif" />
+            <param name="filter_type" value="gaussian" />
+            <expand macro="tests/intensity_image_diff" name="output" value="input1_gaussian.tif" ftype="tiff">
+                <!--
+
+                The input file `input1_uint8.tif` has values ranging between 23 and 254, with a mean value of 63.67.
+
+                Below, we use an assertion in addition to the `image_diff` comparison, to ensure that the range of
+                values is preserved. The motiviation behind this is that the expectation images are usually checked
+                visually, which means that the `image_diff` comparison is likely to ensure that the brightness of
+                the image is correct, thus it's good to double-check the range of values (hence the comparably large
+                value for `eps`). This also concerns the median filter.
+
+                -->
+                <has_image_mean_intensity mean_intensity="63.67" eps="10"/>
+            </expand>
+        </test>
+        <test>
+            <param name="input" value="input1_uint8.tif" />
+            <param name="filter_type" value="median" />
+            <expand macro="tests/intensity_image_diff" name="output" value="input1_median.tif" ftype="tiff">
+                <!-- See note for Gaussian filter above. -->
+                <has_image_mean_intensity mean_intensity="63.67" eps="10"/>
+            </expand>
+        </test>
+        <test>
+            <param name="input" value="input1_uint8.tif" />
+            <param name="filter_type" value="prewitt_h" />
+            <expand macro="tests/intensity_image_diff" name="output" value="input1_prewitt_h.tif" ftype="tiff"/>
+        </test>
+        <test>
+            <param name="input" value="input1_uint8.tif" />
+            <param name="filter_type" value="prewitt_v" />
+            <expand macro="tests/intensity_image_diff" name="output" value="input1_prewitt_v.tif" ftype="tiff"/>
+        </test>
+        <test>
+            <param name="input" value="input1_uint8.tif" />
+            <param name="filter_type" value="sobel_h" />
+            <expand macro="tests/intensity_image_diff" name="output" value="input1_sobel_h.tif" ftype="tiff"/>
+        </test>
+        <test>
+            <param name="input" value="input1_uint8.tif" />
+            <param name="filter_type" value="sobel_v" />
+            <expand macro="tests/intensity_image_diff" name="output" value="input1_sobel_v.tif" ftype="tiff"/>
+        </test>
+        <!-- Tests with float TIFF input image -->
+        <test>
+            <param name="input" value="input2_float.tif" />
+            <param name="filter_type" value="gaussian" />
+            <expand macro="tests/intensity_image_diff" name="output" value="input2_gaussian.tif" ftype="tiff">
+                <!-- See note for Gaussian filter above. -->
+                <has_image_mean_intensity mean_intensity="0.25" eps="0.01"/>
+            </expand>
+        </test>
     </tests>
     <help>
-    **What it does**
 
-    Applies a standard filter to an image.
+        **Applies a standard filter to a single-channel 2-D image.**
+
+        Mean filters like the Gaussian filter or the median filter preserve both the brightness of the image, and the range of values.
+
     </help>
     <citations>
        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>

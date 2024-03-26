@@ -1,5 +1,14 @@
-<tool id="ip_scale_image" name="Scale image" version="0.4-2"> 
+<tool id="ip_scale_image" name="Scale image" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05"> 
     <description>with scikit-image</description>
+    <macros>
+        <import>creators.xml</import>
+        <import>tests.xml</import>
+        <token name="@TOOL_VERSION@">0.18.3</token>
+        <token name="@VERSION_SUFFIX@">0</token>
+    </macros>
+    <creator>
+        <expand macro="creators/bmcv" />
+    </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
@@ -8,64 +17,84 @@
         <xref type="biii">scikit-image</xref>
     </xrefs>
     <requirements>
-        <requirement type="package" version="6.1.0">pillow</requirement>
-        <requirement type="package" version="0.14.2">scikit-image</requirement>
-        <requirement type="package" version="1.15.4">numpy</requirement>
-        <requirement type="package" version="1.1.0">scipy</requirement>
-        <requirement type="package" version="0.15.1">tifffile</requirement>
+        <requirement type="package" version="@TOOL_VERSION@">scikit-image</requirement>
+        <requirement type="package" version="10.0.1">pillow</requirement>
+        <requirement type="package" version="1.24.4">numpy</requirement>
+        <requirement type="package" version="2021.7.2">tifffile</requirement>
     </requirements> 
-    <command detect_errors="aggressive">
-        <![CDATA[
-        python '$__tool_directory__/scale_image.py' '$input' ./out.png
-        #if $use_scale_option.use_scale == 'true'
-          $use_scale_option.scale
-        #else if $use_scale_option.use_scale == 'false'
-          '[$use_scale_option.scale_x, $use_scale_option.scale_y]'
-        #end if
-        $order
+    <command detect_errors="aggressive"><![CDATA[
 
-        ]]>
-    </command>
+        python '$__tool_directory__/scale_image.py' '$input'
+
+        ./output.${input.ext}
+
+        --scale '$scale'
+        --order  $order
+        $antialias
+
+        && mv ./output.${input.ext} ./output
+
+    ]]></command>
     <inputs>
         <param name="input" type="data" format="png" label="Image file"/>
-        <conditional name="use_scale_option"><!--a third option (using one integer as percentage scaling) could still be implemented-->
-            <param label="Lock scaling between image dimensions" name="use_scale" type="select">
-                <option selected="true" value="true">Lock</option>
-                <option value="false">Individual scales</option>
-            </param>
-            <when value="true">
-                <param name="scale" type="float" value="1.0" label="Scaling factor" />
-            </when>
-            <when value="false">
-                <param name="scale_x" type="integer" value="100" label="New height of the image in pixels" />
-                <param name="scale_y" type="integer" value="100" label="New width of the image in pixels" />
-            </when>
-        </conditional>
-        <param name="order" type="select" label="Interpolation method">
+        <param argument="--scale" type="text" value="1" label="Scaling factor" help="Use either a single scaling factor (uniform scaling), or a comma-separated list of scaling factors (anistropic scaling). For a 2-D single-channel or RGB image, the first scaling factor corresponds to the image width and the second corresponds to the image height. For images with 3 or more axes, the last axis is assumed to correspond to the image channels if uniform scaling is used (a single value)."/>
+        <param argument="--order" type="select" label="Interpolation method">
             <option value="0">Nearest-neighbor</option>
             <option value="1" selected="true">Bi-linear</option>
             <option value="2">Bi-cubic</option>
         </param>
+        <param name="antialias" type="boolean" truevalue="--antialias" falsevalue="" checked="true" label="Enable anti-aliasing" help="This should only be used for down-scaling."/>
     </inputs>
     <outputs>
-        <data format="png" name="output" from_work_dir="out.png"/>
+        <data name="output" from_work_dir="output" format_source="input" metadata_source="input"/>
     </outputs>
     <tests>
+        <!-- Test PNG, without antialias -->
         <test>
-            <param name="input" value="sample1.png"/> <!--continue here-->
-            <conditional name="use_scale_option">
-                <param name="use_scale" value="false"/>
-                <param name="scale_x" value="200"/>
-                <param name="scale_y" value="150"/>
-            </conditional>
+            <param name="input" value="input1_binary_rgb.png"/>
+            <param name="scale" value="0.5"/>
+            <param name="antialias" value="false"/>
             <param name="order" value="0"/>
-            <output name="output" value="out2.png" ftype="png" compare="sim_size"/>
+            <expand macro="tests/binary_image_diff" name="output" value="uniform_binary.png" ftype="png"/>
+        </test>
+        <!-- Test PNG, uniform scaling -->
+        <test>
+            <param name="input" value="input1_binary_rgb.png"/>
+            <param name="scale" value="0.5"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="uniform.png" ftype="png"/>
+        </test>
+        <!-- Test PNG, anistropic scaling -->
+        <test>
+            <param name="input" value="input1_binary_rgb.png"/>
+            <param name="scale" value="0.5, 0.8"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="anisotropic.png" ftype="png"/>
+        </test>
+        <test>
+            <param name="input" value="input1_binary_rgb.png"/>
+            <param name="scale" value="0.5, 0.8, 1"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="anisotropic.png" ftype="png"/>
+        </test>
+        <!-- Test TIFF, normalized -->
+        <test>
+            <param name="input" value="input2_normalized.tiff"/>
+            <param name="scale" value="0.5"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="normalized.tiff" ftype="tiff"/>
+        </test>
+        <!-- Test TIFF, not normalized -->
+        <test>
+            <param name="input" value="input3_not_normalized.tiff"/>
+            <param name="scale" value="0.5"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="not_normalized.tiff" ftype="tiff"/>
         </test>
     </tests>
     <help>
-    **What it does**
 
-    This tool scales an image using the scaling factor.
+        **Scales an image using one or more scaling factors.**
+
+        The image is rescaled uniformly along all axes, or anistropically if multiple scale factors are given.
+
+        This operation preserves both the brightness of the image, and the range of values.
+
     </help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>

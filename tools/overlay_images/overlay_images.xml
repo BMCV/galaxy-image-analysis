@@ -1,9 +1,15 @@
 <tool id="ip_overlay_images" name="Overlay images" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
     <description></description>
     <macros>
+        <import>creators.xml</import>
+        <import>tests.xml</import>
         <token name="@TOOL_VERSION@">0.0.4</token>
-        <token name="@VERSION_SUFFIX@">0</token>
+        <token name="@VERSION_SUFFIX@">1</token>
     </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+        <expand macro="creators/thawn"/>
+    </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
@@ -38,10 +44,10 @@
     </command>
     <inputs>
         <conditional name="method_option">
-            <param name="method" type="select" label="How to visualize the overlay?">
+            <param name="method" type="select" label="Type of the overlay">
                 <option value="coloc_vis" selected="True">Colocalization</option>
-                <option value="blending">Blending</option>
-                <option value="seg_contour">Segmentation mask over image</option>
+                <option value="blending">Linear blending</option>
+                <option value="seg_contour">Segmentation contours over image</option>
             </param>
             <when value="coloc_vis">
                 <param name="im1" type="data" format="tiff,png" label="Image #1 (red channel)" />
@@ -53,7 +59,7 @@
                 <param name="alpha" type="float" value="0.5" min="0.0" max="1.0" label="The weight for blending: I_out = (1 - w) * I_1 + w * I_2."/>
             </when>
             <when value="seg_contour">
-                <param name="im1" type="data" format="tiff,png" label="Image" />
+                <param name="im1" type="data" format="tiff,png" label="Intensity image" />
                 <param name="im2" type="data" format="tiff,png" label="Label image" />
                 <param name="thickness" type="integer" value="2" min="1" label="Contour thickness (in pixels)" />
                 <param name="color" type="color" value="#ff0000" label="Contour color"/>
@@ -75,14 +81,14 @@
             <param name="im1" value="mask1.tif"/>
             <param name="im2" value="mask1r.tif"/>
             <param name="method" value="coloc_vis"/>
-            <output name="out_tiff" value="test1.tif" ftype="tiff" compare="sim_size" delta_frac="0.1"/>
+            <expand macro="tests/intensity_image_diff" name="out_tiff" value="test1.tif" ftype="tiff"/>
         </test>
         <test expect_num_outputs="1">
             <param name="im1" value="mask1.tif"/>
             <param name="im2" value="mask1r.tif"/>
             <param name="method" value="blending"/>
             <param name="alpha" value="0.3"/>
-            <output name="out_tiff" value="test2.tif" ftype="tiff" compare="sim_size" delta_frac="0.1"/>
+            <expand macro="tests/intensity_image_diff" name="out_tiff" value="test2.tif" ftype="tiff"/>
         </test>
         <test expect_num_outputs="1">
             <param name="im1" value="sample1_uint8.tif"/>
@@ -91,15 +97,15 @@
             <param name="thickness" value="2"/>
             <param name="color" value="#ff0000"/>
             <param name="show_label" value="--show_label"/>
-            <output name="out_png" value="test3.png" ftype="png" compare="sim_size" delta_frac="0.1"/>
+            <expand macro="tests/intensity_image_diff" name="out_png" value="test3.png" ftype="png"/>
         </test>
-        <test expect_num_outputs="1"><!-- segemtation overlay, 8bit test -->
+        <test expect_num_outputs="1"><!-- segmentation overlay, 8bit test -->
             <param name="im1" value="sample1_uint8.tif"/>
             <param name="im2" value="mask2.tif"/>
             <param name="method" value="seg_contour"/>
             <param name="thickness" value="2"/>
             <param name="color" value="#ff0000"/>
-            <output name="out_png" value="test4.png" ftype="png" compare="sim_size" delta_frac="0.1"/>
+            <expand macro="tests/intensity_image_diff" name="out_png" value="test4.png" ftype="png"/>
         </test>
         <test expect_num_outputs="1"><!-- segmentation overlay, 16bit test -->
             <param name="im1" value="sample1_uint16.tif"/>
@@ -107,14 +113,26 @@
             <param name="method" value="seg_contour"/>
             <param name="thickness" value="2"/>
             <param name="color" value="#ff0000"/>
-            <output name="out_png" value="test4.png" ftype="png" compare="sim_size" delta_frac="0.1"/>
+            <expand macro="tests/intensity_image_diff" name="out_png" value="test4.png" ftype="png" eps="1"/>
+        </test>
+        <test expect_num_outputs="1"><!-- segmentation overlay, 8bit RGB test -->
+            <param name="im1" value="sample1_uint8_rgb.png"/>
+            <param name="im2" value="mask2.tif"/>
+            <param name="method" value="seg_contour"/>
+            <param name="thickness" value="2"/>
+            <param name="color" value="#ff0000"/>
+            <expand macro="tests/intensity_image_diff" name="out_png" value="test5.png" ftype="png"/>
         </test>
     </tests>
-    <help>
-    <![CDATA[
-        This tool overlays two image to visualize 1) image blending, 2) colocalization, or 3) a segmentation mask over an image.
-    ]]>
-    </help>
+    <help><![CDATA[
+
+        **Overlays two images for visualization.**
+
+        This tool overlays two image to visualize *linear image blending*, *colocalization*, or *segmentation contours*
+        over an intensity image. For *image blending* and *colocalization*, the input images must be single-channel 2-D
+        images. For *segmentation contours*, the intensity must be a 2-D single-channel or 2-D RGB image.
+
+    ]]></help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
     </citations>

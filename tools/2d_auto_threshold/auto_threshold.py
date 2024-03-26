@@ -27,23 +27,28 @@ th_methods = {
 }
 
 
-def do_thresholding(in_fn, out_fn, th_method, block_size=5, threshold=0, invert_output=False):
+def do_thresholding(in_fn, out_fn, th_method, block_size, offset, threshold, invert_output=False):
     img = skimage.io.imread(in_fn)
-    th = th_methods[th_method](img_raw=img, bz=block_size, thres=threshold)
+    img = np.squeeze(img)
+    assert img.ndim == 2
+
+    th = offset + th_methods[th_method](img_raw=img, bz=block_size, thres=threshold)
     res = img > th
     if invert_output:
         res = np.logical_not(res)
+
     tifffile.imwrite(out_fn, skimage.util.img_as_ubyte(res))
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Automatic Image Thresholding')
+    parser = argparse.ArgumentParser(description='Automatic image thresholding')
     parser.add_argument('im_in', help='Path to the input image')
-    parser.add_argument('im_out', help='Path to the output image (TIFF)')
+    parser.add_argument('im_out', help='Path to the output image (uint8)')
     parser.add_argument('th_method', choices=th_methods.keys(), help='Thresholding method')
     parser.add_argument('block_size', type=int, default=5, help='Odd size of pixel neighborhood for calculating the threshold')
-    parser.add_argument('threshold', type=float, default=0, help='Manual thresholding value')
+    parser.add_argument('offset', type=float, default=0, help='Offset of automatically determined threshold value')
+    parser.add_argument('threshold', type=float, default=0, help='Manual threshold value')
     parser.add_argument('--invert_output', default=False, action='store_true', help='Values below/above the threshold are labeled with 0/255 by default, and with 255/0 if this argument is used')
     args = parser.parse_args()
 
-    do_thresholding(args.im_in, args.im_out, args.th_method, args.block_size, args.threshold, args.invert_output)
+    do_thresholding(args.im_in, args.im_out, args.th_method, args.block_size, args.offset, args.threshold, args.invert_output)
