@@ -55,6 +55,7 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 
 ### Registration
 
+- [Compute image orientation](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/orientationpy/orientationpy) with OrientationPy
 - [Perform affine image registration (intensity-based)](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/image_registration_affine/ip_image_registration)
 - [Perform affine image registration (landmark-based)](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/landmark_registration/ip_landmark_registration)
 - [Performs projective transformation with/without labels](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/projective_transformation_points/ip_projective_transformation_points)
