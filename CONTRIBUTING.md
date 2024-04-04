@@ -73,12 +73,13 @@ For testing of **binary image outputs** we recommend using the `mae` metric (mea
 ```xml
 <expand macro="tests/binary_image_diff" name="output" value="output.tif" ftype="tiff"/>
 ```
+The macro also ensures that the image contains two distinct label values, which are not interchangable.
 
 For testing of non-binary **label map outputs** with interchangeable labels, we recommend using the `iou` metric (one minus the *intersection over the union*). With the default value of `eps` of 0.01, this asserts that there is no labeled image region with an *intersection over the union* of less than 99%:
 ```xml
 <expand macro="tests/label_image_diff" name="output" value="output.tif" ftype="tiff"/>
 ```
-At the moment it is not possible to *pin* specific labels, for example to verify that the background is assigned the correct label, but this will hopefully be added in the future.
+Label 0 is commonly connotated as the image background, and is not interchangable by default. Use `pin_labels=""` to make it interchangable.
 
 For testing of **intensity image outputs** we recommend the `rms` metric (root mean square), because it is very sensitive to large pixel value differences, but tolerates smaller differences:
 ```xml

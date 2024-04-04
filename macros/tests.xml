@@ -8,7 +8,7 @@
         token_metric="mae"
         token_eps="0.01">
 
-        <output name="@NAME@" value="@VALUE@" ftype="@FTYPE@" compare="image_diff" metric="@METRIC@" eps="@EPS@">
+        <output name="@NAME@" value="@VALUE@" ftype="@FTYPE@" compare="image_diff" metric="@METRIC@" eps="@EPS@" pin_labels="0">
             <assert_contents>
                 <has_image_n_labels n="2"/>
                 <yield/>
@@ -19,11 +19,12 @@
 
     <xml
         name="tests/label_image_diff"
-        tokens="name,value,ftype,metric,eps"
+        tokens="name,value,ftype,metric,eps,pin_labels"
         token_metric="iou"
-        token_eps="0.01">
+        token_eps="0.01"
+        token_pin_labels="0">
 
-        <output name="@NAME@" value="@VALUE@" ftype="@FTYPE@" compare="image_diff" metric="@METRIC@" eps="@EPS@">
+        <output name="@NAME@" value="@VALUE@" ftype="@FTYPE@" compare="image_diff" metric="@METRIC@" eps="@EPS@" pin_labels="@PIN_LABELS@">
             <assert_contents>
                 <yield/>
             </assert_contents>
@@ -53,7 +54,7 @@
         token_metric="mae"
         token_eps="0.01">
 
-        <element name="@NAME@" value="@VALUE@" ftype="@FTYPE@" compare="image_diff" metric="@METRIC@" eps="@EPS@">
+        <element name="@NAME@" value="@VALUE@" ftype="@FTYPE@" compare="image_diff" metric="@METRIC@" eps="@EPS@" pin_labels="0">
             <assert_contents>
                 <has_image_n_labels n="2"/>
                 <yield/>
@@ -66,9 +67,10 @@
         name="tests/label_image_diff/element"
         tokens="name,value,ftype,metric,eps"
         token_metric="iou"
-        token_eps="0.01">
+        token_eps="0.01"
+        token_pin_labels="0">
 
-        <element name="@NAME@" value="@VALUE@" ftype="@FTYPE@" compare="image_diff" metric="@METRIC@" eps="@EPS@">
+        <element name="@NAME@" value="@VALUE@" ftype="@FTYPE@" compare="image_diff" metric="@METRIC@" eps="@EPS@" pin_labels="@PIN_LABELS@">
             <assert_contents>
                 <yield/>
             </assert_contents>
