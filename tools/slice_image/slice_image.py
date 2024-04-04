@@ -9,12 +9,9 @@ import skimage.io
 import skimage.util
 
 
-def slice_image(input_file, out_folder, label=None, label_out_folder=None, window_size=64,
-                stride=1, bg_thresh=1, limit_slices=False, n_thresh=5000, seed=None):
-    # TODO NOT Implemented:process labels
-    # --> label and label_out_folder useless so far
+def slice_image(input_file, out_folder, window_size=64, stride=1, bg_thresh=1, limit_slices=False, n_thresh=5000, seed=None):
 
-    # primarily for testing purposes:
+    # Primarily for testing purposes
     if seed is not None:
         random.seed(seed)
 
@@ -40,7 +37,7 @@ def slice_image(input_file, out_folder, label=None, label_out_folder=None, windo
                 sum_image = skimage.util.img_as_uint(sum_image)
                 g = skimage.feature.greycomatrix(sum_image, [1, 2], [0, np.pi / 2], nnormed=True, symmetric=True)
                 hom = np.var(skimage.feature.greycoprops(g, prop='homogeneity'))
-                if hom > bg_thresh:  # 0.0005
+                if hom > bg_thresh:
                     continue
 
             if limit_slices:
@@ -54,19 +51,22 @@ def slice_image(input_file, out_folder, label=None, label_out_folder=None, windo
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('input_file', type=argparse.FileType('r'), help='input file')
-    parser.add_argument('out_folder', help='out folder')
-    parser.add_argument('--label', dest='label_file', default=None, help='auxiliary label file to split in the same way')
-    parser.add_argument('--label_out_folder', dest='label_out_folder', default=None, help='label out folder')
-    parser.add_argument('--stride', dest='stride', type=int, default=1, help='applied stride')
-    parser.add_argument('--window_size', dest='window_size', type=int, default=64, help='size of resulting patches')
-    parser.add_argument('--bg_thresh', dest='bg_thresh', type=float, default=0, help='skip patches without information using a treshold')
-    parser.add_argument('--limit_slices', dest='limit_slices', type=bool, default=False, help='limit amount of slices')
-    parser.add_argument('--n_thresh', dest='n_thresh', type=int, default=5000, help='amount of slices')
-    parser.add_argument('--seed', dest='seed', type=int, default=None, help='seed for random choice of limited slices')
+    parser.add_argument('input_file', type=argparse.FileType('r'), help='Input file')
+    parser.add_argument('out_folder', help='Output directory')
+    parser.add_argument('--stride', dest='stride', type=int, default=1, help='Applied stride')
+    parser.add_argument('--window_size', dest='window_size', type=int, default=64, help='Size of resulting patches')
+    parser.add_argument('--bg_thresh', dest='bg_thresh', type=float, default=0, help='Skip background patches without information using a treshold')
+    parser.add_argument('--n_thresh', dest='n_thresh', type=int, default=5000, help='Maximum number of slices to retain')
+    parser.add_argument('--seed', dest='seed', type=int, default=None, help='Seed for random choice of slices')
     args = parser.parse_args()
 
-    slice_image(args.input_file.name, args.out_folder,
-                label=args.label_file, label_out_folder=args.label_out_folder,
-                stride=args.stride, window_size=args.window_size, bg_thresh=args.bg_thresh,
-                limit_slices=args.limit_slices, n_thresh=args.n_thresh, seed=args.seed)
+    slice_image(
+        args.input_file.name,
+        args.out_folder,
+        stride=args.stride,
+        window_size=args.window_size,
+        bg_thresh=args.bg_thresh,
+        limit_slices=args.n_thresh > 0,
+        n_thresh=args.n_thresh,
+        seed=args.seed,
+    )

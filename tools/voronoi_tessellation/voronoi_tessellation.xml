@@ -1,8 +1,9 @@
 <tool id="voronoi_tessellation" name="Compute Voronoi tessellation" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="23.0">
     <description>with scikit-image</description>
     <macros>
+        <import>creators.xml</import>
         <token name="@TOOL_VERSION@">0.22.0</token>
-        <token name="@VERSION_SUFFIX@">0</token>
+        <token name="@VERSION_SUFFIX@">1</token>
     </macros>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
@@ -12,9 +13,9 @@
         <xref type="biii">scikit-image</xref>
     </xrefs>
     <requirements>
+        <requirement type="package" version="@TOOL_VERSION@">scikit-image</requirement>
         <requirement type="package" version="1.26.4">numpy</requirement>
         <requirement type="package" version="1.12.0">scipy</requirement>
-        <requirement type="package" version="0.22.0">scikit-image</requirement>
     </requirements>
     <command><![CDATA[
     
@@ -29,7 +30,7 @@
     ]]>
     </command>
     <inputs>
-        <param name="input" type="data" format="png,tiff" label="Labeled image" />
+        <param name="input" type="data" format="png,tiff" label="Input image" help="Must be a label map." />
     </inputs>
     <outputs>
        <data format="tiff" name="result" from_work_dir="result.tiff" />
@@ -37,12 +38,23 @@
     <tests>
         <test>
             <param name="input" value="input1.tiff" />
-            <output name="result" value="input1_result.tiff" ftype="tiff" compare="sim_size" delta="0" />
+            <output name="result" ftype="tiff">
+                <assert_contents>
+
+                    <has_image_width width="10"/>
+                    <has_image_height height="10"/>
+                    <has_image_channels channels="1"/>
+                    <has_image_n_labels n="4"/>
+                    <has_image_n_labels n="0" labels="0"/>
+
+                </assert_contents>
+            </output>
         </test>
     </tests>
     <help>
 
-        This tool computes Voronoi tessellations for labeled images.
+        **Computes Voronoi tessellations for labeled images.**
+
         Voronoi tessellations are also known as Vornoi diagrams, or Dirichlet tessellations.
         Zero labels are treated as image background.
 

@@ -1,13 +1,21 @@
-<tool id="ip_anisotropic_diffusion" name="Apply anisotropic diffusion" version="0.2-2"> 
+<tool id="ip_anisotropic_diffusion" name="Apply anisotropic diffusion" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05"> 
     <description>with MedPy</description>
+    <macros>
+        <import>creators.xml</import>
+        <import>tests.xml</import>
+        <token name="@TOOL_VERSION@">0.4.0</token>
+        <token name="@VERSION_SUFFIX@">0</token>
+    </macros>
+    <creator>
+        <expand macro="creators/bmcv" />
+    </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
     <requirements>
-        <requirement type="package" version="0.14.2">scikit-image</requirement>
-        <requirement type="package" version="0.3.0">medpy</requirement>
-        <requirement type="package" version="1.15.4">numpy</requirement>
-        <requirement type="package" version="0.15.1">tifffile</requirement>
+        <requirement type="package" version="@TOOL_VERSION@">medpy</requirement>
+        <requirement type="package" version="1.20">numpy</requirement>
+        <requirement type="package" version="0.18.1">scikit-image</requirement>
     </requirements> 
     <command detect_errors="aggressive">
         <![CDATA[
@@ -15,13 +23,13 @@
         ]]>
     </command>
     <inputs>
-        <param name="input" type="data" format="tiff" label="Image file"/>
+        <param name="input" type="data" format="tiff" label="Input image"/>
         <param label="Number of iterations" name="niter" optional="true" type="integer" value="50"/>
         <param label="Conduction coefficient" name="kappa" optional="true" type="integer" value="50"/>
         <param label="Speed of diffusion" name="gamma" optional="true" type="float" value="0.1"/>
-        <param name="eqoption" type="select" label="Diffusion Feature" help="Perona Malik diffusion equation">
-            <option value="1" selected="True">Favour high contrast edges</option>
-            <option value="2">Favour wide regions</option>
+        <param name="eqoption" type="select" label="Diffusion feature" help="Perona Malik diffusion equation">
+            <option value="1" selected="True">Favor high contrast edges</option>
+            <option value="2">Favor wide regions</option>
         </param>
     </inputs>
     <outputs>
@@ -34,13 +42,13 @@
             <param name="kappa" value="50" />
             <param name="gamma" value="0.1" />
             <param name="eqoption" value="1" />
-            <output name="output" file="res.tif" ftype="tiff" compare="sim_size"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="res.tif" ftype="tiff"/>
         </test>
     </tests>
     <help>
-    **What it does**
 
-    Edge-preserving, Anisotropic image diffusion
+        **Applies edge-preserving, anisotropic image diffusion.**
+
     </help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>

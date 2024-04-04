@@ -1,5 +1,12 @@
 <tool id="ip_split_labelmap" name="Split label map using morphological operators" version="0.2-2">
     <description></description>
+    <macros>
+        <import>creators.xml</import>
+        <import>tests.xml</import>
+    </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+    </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
@@ -25,14 +32,16 @@
     <tests>
         <test>
             <param name="input" value="sample_seg.tif"/>
-            <output name="output" value="out.tif" ftype="tiff" compare="sim_size"/>
+            <expand macro="tests/label_image_diff" name="output" value="out.tif" ftype="tiff"/>
         </test>
     </tests>
     <help>
-    **What it does**
 
-    Takes a labeled image and outputs a similar file where the labeled parts
-    of the image that touch (or overlap) are separated by at least 1 pixel (at most 2).
+        **Splits label map using morphological operators.**
+
+        Takes a labeled image and outputs a similar file where the labeled parts
+        of the image that touch (or overlap) are separated by at least 1 pixel (at most 2 pixels).
+
     </help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>

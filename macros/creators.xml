@@ -1,0 +1,23 @@
+<macros>
+
+    <xml name="creators/bmcv">
+        <organization name="Biomedical Computer Vision Group, Heidelberg Universtiy" alternateName="BMCV" url="http://www.bioquant.uni-heidelberg.de/research/groups/biomedical_computer_vision.html" />
+        <yield />
+    </xml>
+
+    <xml name="creators/alliecreason">
+        <person givenName="Allison" familyName="Creason"/>
+        <yield/>
+    </xml>
+
+    <xml name="creators/bugraoezdemir">
+        <person givenName="Bugra" familyName="Oezdemir"/>
+        <yield/>
+    </xml>
+
+    <xml name="creators/thawn">
+        <person givenName="Till" familyName="Korten"/>
+        <yield/>
+    </xml>
+    
+</macros>
