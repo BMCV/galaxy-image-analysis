@@ -124,6 +124,13 @@
             <param name="invert_output" value="True"/>
             <expand macro="tests/binary_image_diff" name="output" value="out4.tif" ftype="tiff"/>
         </test>
+        <!-- Tests for irregular files -->
+        <test>
+            <param name="input" value="sample2.tif"/>
+            <param name="method_id" value="otsu"/>
+            <param name="invert_output" value="False"/>
+            <expand macro="tests/binary_image_diff" name="output" value="out5.tif" ftype="tiff"/>
+        </test>
         <!-- Tests for multi-channel images -->
         <test expect_failure="true">
             <param name="input" value="rgb.png"/>
