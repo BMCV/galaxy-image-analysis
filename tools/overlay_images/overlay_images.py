@@ -7,6 +7,7 @@ See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
 
 import argparse
 
+import giatools.io
 import matplotlib.colors
 import matplotlib.pyplot as plt
 import numpy as np
@@ -18,7 +19,7 @@ from contours import ContourPaint
 
 
 def read_im_gray(fn):
-    img = skimage.io.imread(fn)
+    img = giatools.io.imread(fn)
     nDims = len(img.shape)
     assert nDims in [2, 3], 'this tool only supports single 2D images'
     if nDims == 3 and img.shape[-1] in [3, 4]:
@@ -61,8 +62,8 @@ def coloc_vis(in_red_fn, in_green_fn, out_fn):
 
 
 def blending(im1_fn, im2_fn, out_fn, alpha=0.5):
-    im1 = skimage.io.imread(im1_fn)
-    im2 = skimage.io.imread(im2_fn)
+    im1 = giatools.io.imread(im1_fn)
+    im2 = giatools.io.imread(im2_fn)
     assert im1.shape == im2.shape, 'Two images should have the same dimension'
     out_im = (1 - alpha) * im1 + alpha * im2
     if len(im1.shape) > 3:
@@ -72,8 +73,8 @@ def blending(im1_fn, im2_fn, out_fn, alpha=0.5):
 
 
 def seg_contour(im1_fn, im2_fn, out_fn, linewidth, color='#ff0000', show_label=False, label_color='#ffff00'):
-    img = skimage.io.imread(im1_fn)
-    labels = skimage.io.imread(im2_fn)
+    img = giatools.io.imread(im1_fn)
+    labels = giatools.io.imread(im2_fn)
 
     result = get_rgb8_copy(img)
     cp = ContourPaint(labels, linewidth, where='center')
