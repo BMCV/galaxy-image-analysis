@@ -9,6 +9,7 @@ See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
 import argparse
 import warnings
 
+import giatools.io
 import numpy as np
 import pandas as pd
 import skimage.color
@@ -47,7 +48,7 @@ def warp_coords_batch(coord_map, shape, dtype=np.float64, batch_size=1000000):
 
 
 def transform(moving_fn, fixed_fn, warp_mat, output_fn):
-    moving = skimage.io.imread(moving_fn)
+    moving = giatools.io.imread(moving_fn)
     nDims = len(moving.shape)
     assert nDims in [2, 3, 4, 5, 6], 'this tool only supports up to 6 dimensions'
 
@@ -62,7 +63,7 @@ def transform(moving_fn, fixed_fn, warp_mat, output_fn):
     else:
         isMulCh = False
 
-    fixed = skimage.io.imread(fixed_fn)
+    fixed = giatools.io.imread(fixed_fn)
     if fixed.shape[-1] in [3, 4] and len(fixed.shape) > 2:
         hw_fixed = fixed.shape[-3:-1]
     else:
