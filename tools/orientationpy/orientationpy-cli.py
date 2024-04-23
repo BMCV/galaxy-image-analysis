@@ -1,6 +1,7 @@
 import argparse
 import csv
 
+import giatools.io
 import numpy as np
 import orientationpy
 import skimage.io
@@ -19,7 +20,7 @@ if __name__ == '__main__':
     parser.add_argument('--output_angle_tsv', type=str, default=None)
     args = parser.parse_args()
 
-    im = skimage.io.imread(args.input)
+    im = giatools.io.imread(args.input)
     im = skimage.util.img_as_float(im)
     im = np.squeeze(im)
     assert im.ndim == 2

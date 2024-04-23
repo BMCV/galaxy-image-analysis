@@ -3,7 +3,7 @@
     <macros>
         <import>creators.xml</import>
         <token name="@TOOL_VERSION@">0.2.0.4</token>
-        <token name="@VERSION_SUFFIX@">1</token>
+        <token name="@VERSION_SUFFIX@">2</token>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
@@ -17,6 +17,7 @@
     <requirements>
         <requirement type="package" version="@TOOL_VERSION@">orientationpy</requirement>
         <requirement type="package" version="0.22.0">scikit-image</requirement>
+        <requirement type="package" version="0.1">giatools</requirement>
     </requirements>
     <command><![CDATA[
     
