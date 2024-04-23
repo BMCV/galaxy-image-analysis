@@ -7,10 +7,9 @@ See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
 
 import argparse
 
-import giatools
+import giatools.io
 import numpy as np
 import skimage.filters
-import skimage.io
 import skimage.util
 import tifffile
 
@@ -30,7 +29,7 @@ th_methods = {
 
 
 def do_thresholding(in_fn, out_fn, th_method, block_size, offset, threshold, invert_output=False):
-    img = giatools.imread(in_fn)
+    img = giatools.io.imread(in_fn)
     img = np.squeeze(img)
     assert img.ndim == 2
 
