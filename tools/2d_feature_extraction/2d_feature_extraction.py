@@ -1,9 +1,9 @@
 import argparse
 
+import giatools.io
 import numpy as np
 import pandas as pd
 import skimage.feature
-import skimage.io
 import skimage.measure
 import skimage.morphology
 import skimage.segmentation
@@ -57,9 +57,9 @@ if __name__ == '__main__':
 
     raw_image = None
     if args.raw_file is not None:
-        raw_image = skimage.io.imread(args.raw_file.name)
+        raw_image = giatools.io.imread(args.raw_file.name)
 
-    raw_label_image = skimage.io.imread(label_file)
+    raw_label_image = giatools.io.imread(label_file)
 
     df = pd.DataFrame()
     if label_file_binary:
@@ -124,4 +124,4 @@ if __name__ == '__main__':
         df['convexity'] = area / (perimeter * perimeter)
 
     del df['it']
-    df.to_csv(out_file, sep='\t', line_terminator='\n', index=False)
+    df.to_csv(out_file, sep='\t', lineterminator='\n', index=False)
