@@ -1,5 +1,6 @@
 import argparse
 
+import giatools.io
 import numpy as np
 import scipy.ndimage as ndi
 import skimage.io
@@ -13,7 +14,7 @@ if __name__ == '__main__':
     parser.add_argument('output')
     args = parser.parse_args()
 
-    im = skimage.io.imread(args.input)
+    im = giatools.io.imread(args.input)
     im = im.squeeze()
     assert im.ndim == 2
 
