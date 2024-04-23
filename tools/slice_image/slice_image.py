@@ -3,6 +3,7 @@ import os.path
 import random
 import warnings
 
+import giatools.io
 import numpy as np
 import skimage.feature
 import skimage.io
@@ -15,7 +16,7 @@ def slice_image(input_file, out_folder, window_size=64, stride=1, bg_thresh=1, l
     if seed is not None:
         random.seed(seed)
 
-    img_raw = skimage.io.imread(input_file)
+    img_raw = giatools.io.imread(input_file)
     if len(img_raw.shape) == 2:
         img_raw = np.expand_dims(img_raw, 3)
 
