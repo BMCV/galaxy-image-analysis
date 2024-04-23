@@ -1,4 +1,4 @@
-<tool id="ip_split_labelmap" name="Split label map using morphological operators" version="0.2-2">
+<tool id="ip_split_labelmap" name="Split label map using morphological operators" version="0.2-3">
     <description></description>
     <macros>
         <import>creators.xml</import>
@@ -14,9 +14,10 @@
         <xref type="bio.tools">galaxy_image_analysis</xref>
     </xrefs>
     <requirements>  
-        <requirement type="package" version="0.14.2">scikit-image</requirement>
-        <requirement type="package" version="1.15.4">numpy</requirement>
-        <requirement type="package" version="0.15.1">tifffile</requirement>
+        <requirement type="package" version="0.18.1">scikit-image</requirement>
+        <requirement type="package" version="1.23.3">numpy</requirement>
+        <requirement type="package" version="2020.10.1">tifffile</requirement>
+        <requirement type="package" version="0.1">giatools</requirement>
     </requirements>
     <command detect_errors="aggressive"> 
         <![CDATA[

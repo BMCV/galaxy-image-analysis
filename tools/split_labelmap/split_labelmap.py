@@ -1,11 +1,11 @@
 import argparse
 import warnings
 
+import giatools.io
 import numpy as np
 import scipy
 import skimage.draw
 import skimage.io
-from imageio import imread as io_imread
 from skimage.measure import regionprops
 
 # split_label_image takes a label image and outputs a similar file with the given name where the labeled
@@ -15,7 +15,7 @@ from skimage.measure import regionprops
 def split_labelmap(labelmap, outputfile):
 
     # Information from the label map.
-    label_img = io_imread(labelmap)
+    label_img = giatools.io.imread(labelmap)
     xtot, ytot = label_img.shape
     props = regionprops(label_img)
     N = len(props)
