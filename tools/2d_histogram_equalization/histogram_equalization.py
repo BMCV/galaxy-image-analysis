@@ -1,6 +1,7 @@
 import argparse
 import sys
 
+import giatools.io
 import skimage.exposure
 import skimage.io
 import skimage.util
@@ -17,7 +18,7 @@ if __name__ == "__main__":
     parser.add_argument('h_type', choices=hOptions.keys(), help='histogram equalization method')
     args = parser.parse_args()
 
-    img_in = skimage.io.imread(args.input_file.name)
+    img_in = giatools.io.imread(args.input_file.name)
     res = hOptions[args.h_type](img_in)
     res = skimage.util.img_as_uint(res)
     skimage.io.imsave(args.out_file.name, res, plugin="tifffile")
