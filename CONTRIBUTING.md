@@ -22,10 +22,10 @@ This document is the attempt to collect some rough rules for tools to follow in 
 
 ## File types
 
+In tool wrappers which use a Python script, image loading should be performed by using the `giatools` package (see #119).
 If a tool wrapper only supports single-channel 2-D images and uses a Python script, the structure of the input should be verified right after loading the image:
-
 ```python
-im = skimage.io.imread(args.input)
+im = giatools.io.imread(args.input)
 im = np.squeeze(im)  # remove axes with length 1
 assert im.ndim == 2
 ```
@@ -33,7 +33,7 @@ assert im.ndim == 2
 Tools with **label map inputs** should accept PNG and TIFF files. Tools with **label map outputs** should produce either `uint16` single-channel PNG or `uint16` single-channel TIFF. Using `uint8` instead of `uint16` is also acceptable, if there definetely are no more than 256 different labels. Using `uint8` should be preferred for binary images.
 
 > [!NOTE]  
-> It is a common misconception that PNG files must be RGB or RGBA, and that only `uint8` pixel values are supported. For example, the `cv2` module (OpenCV) can be used to create single-channel PNG files, or PNG files with `uint16` pixel values. Such files can then be read by `skimage.io.imread` without issues (however, `skimage.io.imwrite` seems not to be able to write such PNG files).
+> It is a common misconception that PNG files must be RGB or RGBA, and that only `uint8` pixel values are supported. For example, the `cv2` module (OpenCV) can be used to create single-channel PNG files, or PNG files with `uint16` pixel values. Such files can then be read by `giatools.io.imread` or `skimage.io.imread` without issues (however, `skimage.io.imwrite` seems not to be able to write such PNG files).
 
 Tools with **intensity image inputs** should accept PNG and TIFF files. Tools with **intensity image outputs** can be any data type and either PNG or TIFF. Image outputs meant for visualization (e.g., segmentation overlays, charts) should be PNG.
 
