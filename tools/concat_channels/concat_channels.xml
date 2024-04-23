@@ -1,4 +1,4 @@
-<tool id="ip_concat_channels" name="Concatenate images or channels" version="0.3-0" profile="20.05">
+<tool id="ip_concat_channels" name="Concatenate images or channels" version="0.3-1" profile="20.05">
     <description></description>
     <macros>
         <import>creators.xml</import>
@@ -17,6 +17,7 @@
         <requirement type="package" version="0.18.3">scikit-image</requirement>
         <requirement type="package" version="1.24.1">numpy</requirement>
         <requirement type="package" version="2021.7.2">tifffile</requirement>
+        <requirement type="package" version="0.1">giatools</requirement>
     </requirements>
     <command detect_errors="aggressive"><![CDATA[
 
