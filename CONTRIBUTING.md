@@ -23,7 +23,7 @@ This document is the attempt to collect some rough rules for tools to follow in 
 ## File types
 
 In tool wrappers which use a Python script, image loading should be performed by using the `giatools` package (see https://github.com/BMCV/galaxy-image-analysis/pull/119).
-If a tool wrapper only supports single-channel 2-D images and uses a Python script, the structure of the input should be verified right after loading the image:
+If such wrappers only support single-channel 2-D images, the structure of the input should be verified right after loading the image:
 ```python
 im = giatools.io.imread(args.input)
 im = np.squeeze(im)  # remove axes with length 1
