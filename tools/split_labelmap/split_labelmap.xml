@@ -1,4 +1,4 @@
-<tool id="ip_split_labelmap" name="Split label map using morphological operators" version="0.2-3">
+<tool id="ip_split_labelmap" name="Split label map using morphological operators" version="0.2-3" profile="20.05">
     <description></description>
     <macros>
         <import>creators.xml</import>

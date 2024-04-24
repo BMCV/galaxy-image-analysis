@@ -1,4 +1,4 @@
-<tool id="ip_slice_image" name="Slice image into patches" version="0.3-4">
+<tool id="ip_slice_image" name="Slice image into patches" version="0.3-4" profile="20.05">
     <description></description>
     <macros>
         <import>creators.xml</import>
