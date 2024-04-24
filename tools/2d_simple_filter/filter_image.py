@@ -1,5 +1,6 @@
 import argparse
 
+import giatools.io
 import scipy.ndimage as ndi
 import skimage.io
 import skimage.util
@@ -23,6 +24,6 @@ if __name__ == "__main__":
     parser.add_argument('size', type=float, help='Size of the filter (e.g., radius, sigma)')
     args = parser.parse_args()
 
-    im = skimage.io.imread(args.input.name)
+    im = giatools.io.imread(args.input.name)
     res = filters[args.filter](im, args.size)
     skimage.io.imsave(args.output.name, res, plugin='tifffile')

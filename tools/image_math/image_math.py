@@ -2,6 +2,7 @@ import argparse
 import ast
 import operator
 
+import giatools.io
 import numpy as np
 import skimage.io
 
@@ -77,7 +78,7 @@ if __name__ == '__main__':
     im_shape = None
     for input in args.input:
         name, filepath = input.split(':')
-        im = skimage.io.imread(filepath)
+        im = giatools.io.imread(filepath)
         assert name not in inputs, 'Input name "{name}" is ambiguous.'
         inputs[name] = im
         if im_shape is None:

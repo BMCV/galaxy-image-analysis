@@ -4,7 +4,7 @@
         <import>creators.xml</import>
         <import>tests.xml</import>
         <token name="@TOOL_VERSION@">3.2.1</token>
-        <token name="@VERSION_SUFFIX@">1</token>
+        <token name="@VERSION_SUFFIX@">2</token>
     </macros>
     <creator>
         <expand macro="creators/bmcv" />
@@ -16,6 +16,7 @@
         <requirement type="package" version="@TOOL_VERSION@">networkx</requirement>
         <requirement type="package" version="1.22">numpy</requirement>
         <requirement type="package" version="0.18.1">scikit-image</requirement>
+        <requirement type="package" version="0.1">giatools</requirement>
     </requirements>
     <command><![CDATA[
     

@@ -8,7 +8,7 @@ This document is the attempt to collect some rough rules for tools to follow in 
 * Make sure you have git [installed](https://help.github.com/articles/set-up-git)
 * Fork the repository on [GitHub](https://github.com/BMCV/galaxy-image-analysis/fork)
 * Make the desired modifications - consider using a [feature branch](https://github.com/Kunena/Kunena-Forum/wiki/Create-a-new-branch-with-git-and-manage-branches).
-* Try to stick to the [Conventions for Tools in the Image Community](https://github.com/elixir-europe/biohackathon-projects-2023/blob/main/16/paper/paper.md#conventions) and the [IUC standards](http://galaxy-iuc-standards.readthedocs.org/en/latest/) whenever you can
+* Try to stick to the [Conventions for Tools in the Image Community](https://doi.org/10.37044/osf.io/w8dsz) and the [IUC standards](http://galaxy-iuc-standards.readthedocs.org/en/latest/) whenever you can
 * Make sure you have added the necessary tests for your changes and they pass.
 * Open a [pull request](https://help.github.com/articles/using-pull-requests) with these changes.
 
@@ -22,10 +22,10 @@ This document is the attempt to collect some rough rules for tools to follow in 
 
 ## File types
 
-If a tool wrapper only supports single-channel 2-D images and uses a Python script, the structure of the input should be verified right after loading the image:
-
+In tool wrappers which use a Python script, image loading should be performed by using the `giatools` package (see https://github.com/BMCV/galaxy-image-analysis/pull/119).
+If such wrappers only support single-channel 2-D images, the structure of the input should be verified right after loading the image:
 ```python
-im = skimage.io.imread(args.input)
+im = giatools.io.imread(args.input)
 im = np.squeeze(im)  # remove axes with length 1
 assert im.ndim == 2
 ```
@@ -33,7 +33,7 @@ assert im.ndim == 2
 Tools with **label map inputs** should accept PNG and TIFF files. Tools with **label map outputs** should produce either `uint16` single-channel PNG or `uint16` single-channel TIFF. Using `uint8` instead of `uint16` is also acceptable, if there definetely are no more than 256 different labels. Using `uint8` should be preferred for binary images.
 
 > [!NOTE]  
-> It is a common misconception that PNG files must be RGB or RGBA, and that only `uint8` pixel values are supported. For example, the `cv2` module (OpenCV) can be used to create single-channel PNG files, or PNG files with `uint16` pixel values. Such files can then be read by `skimage.io.imread` without issues (however, `skimage.io.imwrite` seems not to be able to write such PNG files).
+> It is a common misconception that PNG files must be RGB or RGBA, and that only `uint8` pixel values are supported. For example, the `cv2` module (OpenCV) can be used to create single-channel PNG files, or PNG files with `uint16` pixel values. Such files can then be read by `giatools.io.imread` or `skimage.io.imread` without issues (however, `skimage.io.imwrite` seems not to be able to write such PNG files).
 
 Tools with **intensity image inputs** should accept PNG and TIFF files. Tools with **intensity image outputs** can be any data type and either PNG or TIFF. Image outputs meant for visualization (e.g., segmentation overlays, charts) should be PNG.
 

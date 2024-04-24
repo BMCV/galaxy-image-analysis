@@ -2,6 +2,7 @@ import argparse
 import sys
 import warnings
 
+import giatools.io
 import skimage.io
 import skimage.util
 from medpy.filter.smoothing import anisotropic_diffusion
@@ -18,7 +19,7 @@ args = parser.parse_args()
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")  # to ignore FutureWarning as well
 
-    img_in = skimage.io.imread(args.input_file.name, plugin='tifffile')
+    img_in = giatools.io.imread(args.input_file.name, plugin='tifffile')
     res = anisotropic_diffusion(img_in, niter=args.niter, kappa=args.kappa, gamma=args.gamma, option=args.eqoption)
     res[res < -1] = -1
     res[res > +1] = +1

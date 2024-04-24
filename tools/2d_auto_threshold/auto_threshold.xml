@@ -4,7 +4,7 @@
         <import>creators.xml</import>
         <import>tests.xml</import>
         <token name="@TOOL_VERSION@">0.18.1</token>
-        <token name="@VERSION_SUFFIX@">2</token>
+        <token name="@VERSION_SUFFIX@">3</token>
         <xml name="inputs/offset">
             <param name="offset" type="float" value="0" label="Offset" help="Offset to be added to the automatically determined threshold value. Positive values will increase the threshold (and thus reduce the amount of values above the threshold)." />
         </xml>
@@ -22,6 +22,7 @@
     <requirements> 
         <requirement type="package" version="@TOOL_VERSION@">scikit-image</requirement>
         <requirement type="package" version="2020.10.1">tifffile</requirement>
+        <requirement type="package" version="0.1">giatools</requirement>
     </requirements>
     <command detect_errors="aggressive">
     <![CDATA[
@@ -123,6 +124,13 @@
             <param name="threshold" value="64"/>
             <param name="invert_output" value="True"/>
             <expand macro="tests/binary_image_diff" name="output" value="out4.tif" ftype="tiff"/>
+        </test>
+        <!-- Tests for irregular files -->
+        <test>
+            <param name="input" value="sample2.tif"/>
+            <param name="method_id" value="otsu"/>
+            <param name="invert_output" value="False"/>
+            <expand macro="tests/binary_image_diff" name="output" value="out5.tif" ftype="tiff"/>
         </test>
         <!-- Tests for multi-channel images -->
         <test expect_failure="true">

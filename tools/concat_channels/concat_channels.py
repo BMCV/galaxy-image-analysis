@@ -1,5 +1,6 @@
 import argparse
 
+import giatools.io
 import numpy as np
 import skimage.io
 import skimage.util
@@ -9,7 +10,7 @@ def concat_channels(input_image_paths, output_image_path, axis, preserve_values)
     images = []
     for image_path in input_image_paths:
 
-        raw_image = skimage.io.imread(image_path)
+        raw_image = giatools.io.imread(image_path)
         if len(raw_image.shape) == 2:
             if axis == 0:
                 raw_image = [raw_image]

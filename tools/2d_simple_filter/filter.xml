@@ -4,7 +4,7 @@
         <import>creators.xml</import>
         <import>tests.xml</import>
         <token name="@TOOL_VERSION@">1.12.0</token>
-        <token name="@VERSION_SUFFIX@">0</token>
+        <token name="@VERSION_SUFFIX@">1</token>
     </macros>
     <creator>
         <expand macro="creators/bmcv" />
@@ -20,6 +20,7 @@
         <requirement type="package" version="1.26.4">numpy</requirement>
         <requirement type="package" version="0.22.0">scikit-image</requirement>
         <requirement type="package" version="2024.2.12">tifffile</requirement>
+        <requirement type="package" version="0.1">giatools</requirement>
     </requirements>
     <command detect_errors="aggressive"><![CDATA[
 

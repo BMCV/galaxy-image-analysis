@@ -1,6 +1,7 @@
 import argparse
 import sys
 
+import giatools.io
 import pandas as pd
 import skimage.io
 import skimage.util
@@ -14,14 +15,14 @@ if __name__ == "__main__":
     parser.add_argument('rule_file', type=argparse.FileType('r'), default=sys.stdin, help='file with rules per feature (cols: ,f1,2, rows: feature_name, min, max)')
     args = parser.parse_args()
 
-    img_in = skimage.io.imread(args.input_file.name)
+    img_in = giatools.io.imread(args.input_file.name)
     features = pd.read_csv(args.feature_file, delimiter="\t")
     rules = pd.read_csv(args.rule_file, delimiter="\t")
 
     cols = [a for a in rules.columns if 'Unnamed' not in a]
     for a_c in cols:
-        a_min = rules[rules.ix[:, 0] == 'min'][a_c]
-        a_max = rules[rules.ix[:, 0] == 'max'][a_c]
+        a_min = rules[rules.iloc[:, 0] == 'min'][a_c]
+        a_max = rules[rules.iloc[:, 0] == 'max'][a_c]
         for a_l in features.label:
             a_val = float(features[features['label'] == a_l][a_c])
             if a_val < float(a_min) or a_val > float(a_max):

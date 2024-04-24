@@ -1,6 +1,7 @@
 import argparse
 import sys
 
+import giatools.io
 import numpy as np
 import skimage.io
 import skimage.transform
@@ -10,7 +11,7 @@ from PIL import Image
 
 def scale_image(input_file, output_file, scale, order, antialias):
     Image.MAX_IMAGE_PIXELS = 50000 * 50000
-    im = skimage.io.imread(input_file)
+    im = giatools.io.imread(input_file)
 
     # Parse `--scale` argument
     if ',' in scale:

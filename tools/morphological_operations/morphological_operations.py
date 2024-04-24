@@ -1,5 +1,6 @@
 import argparse
 
+import giatools.io
 import numpy as np
 import scipy.ndimage as ndi
 import skimage.io
@@ -76,7 +77,7 @@ if __name__ == '__main__':
     parser.add_argument('output', type=str)
     args = parser.parse_args()
 
-    im = skimage.io.imread(args.input)
+    im = giatools.io.imread(args.input)
     assert im.ndim in (2, 3), 'Input image must be two-dimensional and either single-channel or multi-channel.'
 
     if im.ndim == 2:

@@ -4,7 +4,7 @@
         <import>creators.xml</import>
         <import>tests.xml</import>
         <token name="@TOOL_VERSION@">0.2.0</token>
-        <token name="@VERSION_SUFFIX@">0</token>
+        <token name="@VERSION_SUFFIX@">1</token>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
@@ -19,6 +19,7 @@
     <requirements>
 
         <requirement type="package" version="@TOOL_VERSION@">superdsm</requirement>
+        <requirement type="package" version="0.1.1">giatools</requirement>
 
         <!--
         Pin the dependencies to specific versions for reproducibility:

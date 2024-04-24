@@ -1,5 +1,6 @@
 import argparse
 
+import giatools.io
 import matplotlib.colors as mpl
 import networkx as nx
 import numpy as np
@@ -55,7 +56,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # Load image and normalize
-    im = skimage.io.imread(args.input)
+    im = giatools.io.imread(args.input)
     im = np.squeeze(im)
     assert im.ndim == 2
 

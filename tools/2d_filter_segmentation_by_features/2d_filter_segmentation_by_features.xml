@@ -1,4 +1,4 @@
-<tool id="ip_2d_filter_segmentation_by_features" name="Filter label map by rules" version="0.0.1-3" profile="20.05">
+<tool id="ip_2d_filter_segmentation_by_features" name="Filter label map by rules" version="0.0.1-4" profile="20.05">
     <description></description>
     <macros>
         <import>creators.xml</import>
@@ -14,10 +14,10 @@
         <xref type="bio.tools">galaxy_image_analysis</xref>
     </xrefs>
     <requirements>
-        <requirement type="package" version="0.14.2">scikit-image</requirement> 
-        <requirement type="package" version="5.3.0">pillow</requirement>
-        <requirement type="package" version="0.23.4">pandas</requirement>
-        <requirement type="package" version="0.15.1">tifffile</requirement>
+        <requirement type="package" version="0.18.1">scikit-image</requirement> 
+        <requirement type="package" version="2.2.2">pandas</requirement>
+        <requirement type="package" version="2020.10.1">tifffile</requirement>
+        <requirement type="package" version="0.1">giatools</requirement>
     </requirements>
     <command detect_errors="aggressive"><![CDATA[
 
