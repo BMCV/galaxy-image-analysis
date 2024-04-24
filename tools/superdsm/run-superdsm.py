@@ -80,6 +80,7 @@ if __name__ == "__main__":
     os.environ['MKL_NUM_THREADS'] = str(num_threads_per_process)
     os.environ['OPENBLAS_NUM_THREADS'] = str(num_threads_per_process)
 
+    import giatools.io
     import ray
     import superdsm.automation
     import superdsm.io
@@ -95,7 +96,7 @@ if __name__ == "__main__":
 
         pipeline = superdsm.pipeline.create_default_pipeline()
         cfg = create_config(args)
-        img = superdsm.io.imread(img_filepath)
+        img = giatools.io.imread(img_filepath, impl=superdsm.io.imread)
 
         # Create configuration if it is required:
         if args.do_cfg or args.do_overlay or args.do_masks:
