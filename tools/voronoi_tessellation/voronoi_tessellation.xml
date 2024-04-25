@@ -3,7 +3,7 @@
     <macros>
         <import>creators.xml</import>
         <token name="@TOOL_VERSION@">0.22.0</token>
-        <token name="@VERSION_SUFFIX@">2</token>
+        <token name="@VERSION_SUFFIX@">3</token>
     </macros>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
@@ -31,7 +31,7 @@
     ]]>
     </command>
     <inputs>
-        <param name="input" type="data" format="png,tiff" label="Input image" help="Must be a label map." />
+        <param name="input" type="data" format="png,tiff" label="Label map" />
     </inputs>
     <outputs>
        <data format="tiff" name="result" from_work_dir="result.tiff" />
@@ -54,7 +54,7 @@
     </tests>
     <help>
 
-        **Computes Voronoi tessellations for labeled images.**
+        **Computes Voronoi tessellations for label maps (labeled images).**
 
         Voronoi tessellations are also known as Vornoi diagrams, or Dirichlet tessellations.
         Zero labels are treated as image background.
