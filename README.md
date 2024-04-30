@@ -38,6 +38,7 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 - [Convert label map to points (center of masses)](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/labelimage2points/ip_labelimage_to_points)
 - [Convert point coordinates to binary image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/points2binaryimage/ip_points_to_binaryimage)
 - [Convert point coordinates to label map](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/points2labelimage/ip_points_to_label)
+- [Convert single-channel to multi-channel image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/repeat_channels/repeat_channels) with NumPy
 - [Convert to OME-Zarr](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/bioformats2raw/bf2raw) with Bioformats
 
 ### Segmentation, partitioning, and detection
