@@ -69,11 +69,11 @@ We recommend using macros for verification of image outputs. The macros are load
 </macros>
 ```
 
-For testing of **binary image outputs** we recommend using the `mae` metric (mean absolute error). With the default value of `eps` of 0.01, this asserts that at most 1% of the image pixels are labeled differently:
+For testing of **binary image outputs** we recommend using the `mae` metric (mean absolute error). The default value for `eps` of 0.01 is rather strict, and for 0/1 binary images this asserts that at most 1% of the image pixels are labeled differently:
 ```xml
 <expand macro="tests/binary_image_diff" name="output" value="output.tif" ftype="tiff"/>
 ```
-The macro also ensures that the image contains two distinct label values, which are not interchangable.
+For 0/255 binary images, the same tolerance would be achieved by increasing `eps` to 2.25. The macro also ensures that the image contains two distinct label values.
 
 For testing of non-binary **label map outputs** with interchangeable labels, we recommend using the `iou` metric (one minus the *intersection over the union*). With the default value of `eps` of 0.01, this asserts that there is no labeled image region with an *intersection over the union* of less than 99%:
 ```xml
