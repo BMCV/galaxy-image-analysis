@@ -69,17 +69,23 @@ We recommend using macros for verification of image outputs. The macros are load
 </macros>
 ```
 
+#### Testing binary image outputs
+
 For testing of **binary image outputs** we recommend using the `mae` metric (mean absolute error). The default value for `eps` of 0.01 is rather strict, and for 0/1 binary images this asserts that at most 1% of the image pixels are labeled differently:
 ```xml
 <expand macro="tests/binary_image_diff" name="output" value="output.tif" ftype="tiff"/>
 ```
 For 0/255 binary images, the same 1% tolerance would be achieved by increasing `eps` to 2.25. The macro also ensures that the image contains two distinct label values.
 
+#### Testing label map outputs
+
 For testing of non-binary **label map outputs** with interchangeable labels, we recommend using the `iou` metric (one minus the *intersection over the union*). With the default value of `eps` of 0.01, this asserts that there is no labeled image region with an *intersection over the union* of less than 99%:
 ```xml
 <expand macro="tests/label_image_diff" name="output" value="output.tif" ftype="tiff"/>
 ```
 Label 0 is commonly connotated as the image background, and is not interchangable by default. Use `pin_labels=""` to make it interchangable.
+
+#### Testing intensity image outputs
 
 For testing of **intensity image outputs** we recommend the `rms` metric (root mean square), because it is very sensitive to large pixel value differences, but tolerates smaller differences:
 ```xml
