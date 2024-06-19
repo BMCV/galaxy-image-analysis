@@ -20,7 +20,7 @@ if __name__ == '__main__':
     with open(args.inputs, 'r') as fp:
         inputs = json.load(fp)
 
-    cfg = dict(path=args.image)
+    cfg = dict(path=args.img_in)
     for section_name in (
         'preprocessing',
         'cnn_prediction',
