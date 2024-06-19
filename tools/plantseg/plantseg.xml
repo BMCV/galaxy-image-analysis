@@ -28,9 +28,10 @@
         python '$__tool_directory__/create-config.py'
             --config config.yml
             --inputs '$inputs'
-            --img_in ./image.${img_in.ext} &&
+            --img_in ./image.${img_in.ext}
+            --workers \${GALAXY_SLOTS:-4} &&
         plantseg --config config.yml &&
-        ln -s 'PreProcessing/*/MultiCut/*.h5' 'masks.h5'
+        ln -s PreProcessing/*/MultiCut/*.h5 'masks.h5'
 
     ]]>
     </command>
@@ -43,27 +44,44 @@
 
         <section name="preprocessing" title="Pre-processing" expanded="false">
             <param name="state" type="boolean" checked="true" label="Enabled" truevalue="true" falsevalue="false" />
+            <param name="factor" type="text" label="Rescaling factor" value="1.0, 1.0, 1.0" help="Comma-separated list of factors (one per axis). Rescaling the volume is essential for the generalization of the networks. The rescaling factor can be computed as the resolution of the volume at hand divided by the resolution of the dataset used in training. Be careful, if the difference is too large check for a different model." />
+            <param name="order" type="integer" min="0" max="3" value="2" label="Order of spline interpolation for rescaling" />
         </section>
 
         <section name="cnn_prediction" title="CNN prediction" expanded="false">
             <param name="state" type="boolean" checked="true" label="Enabled" truevalue="true" falsevalue="false" />
+            <param name="model_name" type="text" label="Model name" value="generic_confocal_3D_unet" />
+            <param name="patch" type="text" label="Patch size" value="100, 160, 160" help="Comma-separated list of pixel counts (one per axis)." />
+            <param name="stride_ratio" type="float" min="0.5" max="0.75" value="0.75" label="Stride ratio" help="Stride between patches will be computed as the product of this and the patch size above." />
         </section>
 
         <section name="cnn_postprocessing" title="CNN postprocessing" expanded="false">
             <param name="state" type="boolean" checked="false" label="Enabled" truevalue="true" falsevalue="false" />
+            <param name="factor" type="text" label="Rescaling factor" value="1.0, 1.0, 1.0" help="Comma-separated list of factors (one per axis)." />
+            <param name="order" type="integer" min="0" max="3" value="2" label="Order of spline interpolation for rescaling" />
         </section>
 
         <section name="segmentation" title="Segmentation" expanded="false">
             <param name="state" type="boolean" checked="true" label="Enabled" truevalue="true" falsevalue="false" />
+            <param name="beta" type="float" min="0" max="1" value="0.5" label="Beta" help="Balance under-/over-segmentation; 0 - aim for undersegmentation, 1 - aim for oversegmentation." />
+            <param name="run_ws" type="boolean" checked="true" label="Run watershed" truevalue="true" falsevalue="false" />
+            <param name="ws_2D" type="boolean" checked="true" label="Use 2-D instead of 3-D watershed" truevalue="true" falsevalue="false" />
+            <param name="ws_threshold" type="float" min="0" max="1" value="0.5" label="Probability maps threshold" />
+            <param name="ws_minsize" type="integer" min="0" value="50" label="Minimum superpixel size" />
+            <param name="ws_sigma" type="float" min="0" value="2.0" label="Gaussian smoothing of the distance transform" />
+            <param name="ws_w_sigma" type="float" min="0" value="0" label="Gaussian smoothing of boundaries" />
+            <param name="post_minsize" type="integer" min="0" value="50" label="Minimum segment size in the final segmentation" />
         </section>
 
         <section name="segmentation_postprocessing" title="Segmentation postprocessing" expanded="false">
             <param name="state" type="boolean" checked="false" label="Enabled" truevalue="true" falsevalue="false" />
+            <param name="factor" type="text" label="Rescaling factor" value="1.0, 1.0, 1.0" help="Comma-separated list of factors (one per axis)." />
+            <param name="order" type="integer" min="0" max="3" value="0" label="Order of spline interpolation for rescaling" />
         </section>
 
     </inputs>
     <outputs>
-        <data format="png" name="masks" from_work_dir="masks.h5" />
+        <data format="h5" name="masks" from_work_dir="masks.h5" />
     </outputs>
     <tests>
         <test>
