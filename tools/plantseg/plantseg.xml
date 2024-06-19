@@ -1,0 +1,86 @@
+<tool id="plantseg" name="Perform segmentation in densely packed 3-D volumetric images" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
+    <description>with PlantSeg</description>
+    <macros>
+        <import>creators.xml</import>
+        <import>tests.xml</import>
+        <token name="@TOOL_VERSION@">1.8.1</token>
+        <token name="@VERSION_SUFFIX@">0</token>
+    </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+    </creator>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="bio.tools">plantseg</xref>
+    </xrefs>
+    <requirements>
+        <requirement type="package" version="@TOOL_VERSION@">plant-seg</requirement>
+        <requirement type="package" version="2.3.1">pytorch</requirement>
+        <requirement type="package" version="0.5.3">bioimageio.spec</requirement>
+        <requirement type="package" version="6.0.1">pyyaml</requirement>
+    </requirements>
+    <command detect_errors="aggressive">
+    <![CDATA[
+
+        ln -s '${img_in}' ./image.${img_in.ext} &&
+        python '$__tool_directory__/create-config.py'
+            --config config.yml
+            --inputs '$inputs'
+            --img_in ./image.${img_in.ext} &&
+        plantseg --config config.yml &&
+        ln -s 'PreProcessing/*/MultiCut/*.h5' 'masks.h5'
+
+    ]]>
+    </command>
+    <configfiles>
+        <inputs name="inputs" />
+    </configfiles>
+    <inputs>
+
+        <param name="img_in" type="data" format="tiff,png,h5" label="Dataset" />
+
+        <section name="preprocessing" title="Pre-processing" expanded="false">
+            <param name="state" type="boolean" checked="true" label="Enabled" truevalue="true" falsevalue="false" />
+        </section>
+
+        <section name="cnn_prediction" title="CNN prediction" expanded="false">
+            <param name="state" type="boolean" checked="true" label="Enabled" truevalue="true" falsevalue="false" />
+        </section>
+
+        <section name="cnn_postprocessing" title="CNN postprocessing" expanded="false">
+            <param name="state" type="boolean" checked="false" label="Enabled" truevalue="true" falsevalue="false" />
+        </section>
+
+        <section name="segmentation" title="Segmentation" expanded="false">
+            <param name="state" type="boolean" checked="true" label="Enabled" truevalue="true" falsevalue="false" />
+        </section>
+
+        <section name="segmentation_postprocessing" title="Segmentation postprocessing" expanded="false">
+            <param name="state" type="boolean" checked="false" label="Enabled" truevalue="true" falsevalue="false" />
+        </section>
+
+    </inputs>
+    <outputs>
+        <data format="png" name="masks" from_work_dir="masks.h5" />
+    </outputs>
+    <tests>
+        <test>
+            <param name="img_in" value="sample_ovule.h5" />
+            <output name="masks" value="sample_ovule_output.h5" ftype="h5" compare="sim_size" delta="100" delta_frac="0.1" />
+        </test>
+    </tests>
+    <help>
+
+        **Perform segmentation in densely packed 3-D volumetric images.**
+
+        PlantSeg is a tool for cell instance aware segmentation in densely packed 3D volumetric images.
+        The pipeline uses a two stages segmentation strategy (Neural Network + Segmentation).
+        The pipeline is tuned for plant cell tissue acquired with confocal and light sheet microscopy.
+
+    </help>
+    <citations>
+        <citation type="doi">10.7554/eLife.57613</citation>
+    </citations>
+</tool>
