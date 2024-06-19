@@ -40,7 +40,7 @@
     </configfiles>
     <inputs>
 
-        <param name="img_in" type="data" format="tiff,png,h5" label="Dataset" />
+        <param name="img_in" type="data" format="tiff,h5" label="3-D volumetric input image" help="The 2-D slices must be stacked along the first axis." />
 
         <section name="preprocessing" title="Pre-processing" expanded="false">
             <param name="state" type="boolean" checked="true" label="Enabled" truevalue="true" falsevalue="false" />
@@ -84,8 +84,12 @@
         <data format="h5" name="masks" from_work_dir="masks.h5" />
     </outputs>
     <tests>
-        <test>
+        <test><!-- Test H5 input -->
             <param name="img_in" value="sample_ovule.h5" />
+            <output name="masks" value="sample_ovule_output.h5" ftype="h5" compare="sim_size" delta="100" delta_frac="0.1" />
+        </test>
+        <test><!-- Test TIFF input -->
+            <param name="img_in" value="sample_ovule.tiff" />
             <output name="masks" value="sample_ovule_output.h5" ftype="h5" compare="sim_size" delta="100" delta_frac="0.1" />
         </test>
     </tests>
