@@ -1,9 +1,9 @@
 <tool id="ip_points_to_binaryimage" name="Convert point coordinates to binary image" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
     <description></description>
     <macros>
-        <import>bmcv.xml</import>
+        <import>creators.xml</import>
         <token name="@TOOL_VERSION@">0.2</token>
-        <token name="@VERSION_SUFFIX@">2</token>
+        <token name="@VERSION_SUFFIX@">3</token>
     </macros>
     <creator>
         <expand macro="creators/bmcv" />
