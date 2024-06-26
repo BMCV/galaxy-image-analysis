@@ -1,0 +1,8 @@
+categories:
+  - Imaging
+description: Tool for cell instance aware segmentation in densely packed 3D volumetric images
+long_description: PlantSeg is a tool for cell instance aware segmentation in densely packed 3D volumetric images. The pipeline uses a two stages segmentation strategy (Neural Network + Segmentation). The pipeline is tuned for plant cell tissue acquired with confocal and light sheet microscopy.
+name: plantseg
+owner: imgteam
+homepage_url: https://github.com/bmcv
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tree/master/tools/plantseg/

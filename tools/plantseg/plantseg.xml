@@ -1,0 +1,108 @@
+<tool id="plantseg" name="Perform segmentation in densely packed 3-D volumetric images" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
+    <description>with PlantSeg</description>
+    <macros>
+        <import>creators.xml</import>
+        <import>tests.xml</import>
+        <token name="@TOOL_VERSION@">1.8.1</token>
+        <token name="@VERSION_SUFFIX@">0</token>
+    </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+    </creator>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="bio.tools">plantseg</xref>
+    </xrefs>
+    <requirements>
+        <requirement type="package" version="@TOOL_VERSION@">plant-seg</requirement>
+        <requirement type="package" version="2.3.1">pytorch</requirement>
+        <requirement type="package" version="0.5.3">bioimageio.spec</requirement>
+        <requirement type="package" version="6.0.1">pyyaml</requirement>
+    </requirements>
+    <command detect_errors="aggressive">
+    <![CDATA[
+
+        ln -s '${img_in}' ./image.${img_in.ext} &&
+        python '$__tool_directory__/create-config.py'
+            --config config.yml
+            --inputs '$inputs'
+            --img_in ./image.${img_in.ext}
+            --workers \${GALAXY_SLOTS:-4} &&
+        plantseg --config config.yml &&
+        ln -s PreProcessing/*/MultiCut/*.h5 'masks.h5'
+
+    ]]>
+    </command>
+    <configfiles>
+        <inputs name="inputs" />
+    </configfiles>
+    <inputs>
+
+        <param name="img_in" type="data" format="tiff,h5" label="3-D volumetric input image" help="The 2-D slices must be stacked along the first axis." />
+
+        <section name="preprocessing" title="Pre-processing" expanded="false">
+            <param name="state" type="boolean" checked="true" label="Enabled" truevalue="true" falsevalue="false" />
+            <param name="factor" type="text" label="Rescaling factor" value="1.0, 1.0, 1.0" help="Comma-separated list of factors (one per axis). Rescaling the volume is essential for the generalization of the networks. The rescaling factor can be computed as the resolution of the volume at hand divided by the resolution of the dataset used in training. Be careful, if the difference is too large check for a different model." />
+            <param name="order" type="integer" min="0" max="3" value="2" label="Order of spline interpolation for rescaling" />
+        </section>
+
+        <section name="cnn_prediction" title="CNN prediction" expanded="false">
+            <param name="state" type="boolean" checked="true" label="Enabled" truevalue="true" falsevalue="false" />
+            <param name="model_name" type="text" label="Model name" value="generic_confocal_3D_unet" />
+            <param name="patch" type="text" label="Patch size" value="100, 160, 160" help="Comma-separated list of pixel counts (one per axis)." />
+            <param name="stride_ratio" type="float" min="0.5" max="0.75" value="0.75" label="Stride ratio" help="Stride between patches will be computed as the product of this and the patch size above." />
+        </section>
+
+        <section name="cnn_postprocessing" title="CNN postprocessing" expanded="false">
+            <param name="state" type="boolean" checked="false" label="Enabled" truevalue="true" falsevalue="false" />
+            <param name="factor" type="text" label="Rescaling factor" value="1.0, 1.0, 1.0" help="Comma-separated list of factors (one per axis)." />
+            <param name="order" type="integer" min="0" max="3" value="2" label="Order of spline interpolation for rescaling" />
+        </section>
+
+        <section name="segmentation" title="Segmentation" expanded="false">
+            <param name="state" type="boolean" checked="true" label="Enabled" truevalue="true" falsevalue="false" />
+            <param name="beta" type="float" min="0" max="1" value="0.5" label="Beta" help="Balance under-/over-segmentation; 0 - aim for undersegmentation, 1 - aim for oversegmentation." />
+            <param name="run_ws" type="boolean" checked="true" label="Run watershed" truevalue="true" falsevalue="false" />
+            <param name="ws_2D" type="boolean" checked="true" label="Use 2-D instead of 3-D watershed" truevalue="true" falsevalue="false" />
+            <param name="ws_threshold" type="float" min="0" max="1" value="0.5" label="Probability maps threshold" />
+            <param name="ws_minsize" type="integer" min="0" value="50" label="Minimum superpixel size" />
+            <param name="ws_sigma" type="float" min="0" value="2.0" label="Gaussian smoothing of the distance transform" />
+            <param name="ws_w_sigma" type="float" min="0" value="0" label="Gaussian smoothing of boundaries" />
+            <param name="post_minsize" type="integer" min="0" value="50" label="Minimum segment size in the final segmentation" />
+        </section>
+
+        <section name="segmentation_postprocessing" title="Segmentation postprocessing" expanded="false">
+            <param name="state" type="boolean" checked="false" label="Enabled" truevalue="true" falsevalue="false" />
+            <param name="factor" type="text" label="Rescaling factor" value="1.0, 1.0, 1.0" help="Comma-separated list of factors (one per axis)." />
+            <param name="order" type="integer" min="0" max="3" value="0" label="Order of spline interpolation for rescaling" />
+        </section>
+
+    </inputs>
+    <outputs>
+        <data format="h5" name="masks" from_work_dir="masks.h5" />
+    </outputs>
+    <tests>
+        <test><!-- Test H5 input -->
+            <param name="img_in" value="sample_ovule.h5" />
+            <output name="masks" value="sample_ovule_output.h5" ftype="h5" compare="sim_size" delta="100" delta_frac="0.1" />
+        </test>
+        <test><!-- Test TIFF input -->
+            <param name="img_in" value="sample_ovule.tiff" />
+            <output name="masks" value="sample_ovule_output.h5" ftype="h5" compare="sim_size" delta="100" delta_frac="0.1" />
+        </test>
+    </tests>
+    <help>
+
+        **Perform segmentation in densely packed 3-D volumetric images.**
+
+        PlantSeg is a tool for cell instance aware segmentation in densely packed 3D volumetric images.
+        The pipeline uses a two stages segmentation strategy (Neural Network + Segmentation).
+        The pipeline is tuned for plant cell tissue acquired with confocal and light sheet microscopy.
+
+    </help>
+    <citations>
+        <citation type="doi">10.7554/eLife.57613</citation>
+    </citations>
+</tool>
