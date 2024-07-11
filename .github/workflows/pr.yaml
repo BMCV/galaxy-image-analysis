@@ -133,18 +133,7 @@ jobs:
       if: ${{ github.event_name != 'pull_request' }}
       run: |
         echo "FAIL_LEVEL=error" >> "$GITHUB_ENV"
-#
-# ---------------------------------------------------------
-# This is a temporary addition to enable the features from
-# - https://github.com/galaxyproject/galaxy/pull/17556
-# - https://github.com/galaxyproject/galaxy/pull/17581
-#
-    - run: |
-        python -m pip install --no-dependencies git+https://git@github.com/kostrykin/galaxy.git@galaxy-image-analysis#subdirectory=packages/util
-        python -m pip install --no-dependencies git+https://git@github.com/kostrykin/galaxy.git@galaxy-image-analysis#subdirectory=packages/tool_util
-#
-# ---------------------------------------------------------
-#
+
     - name: Planemo lint
       uses: galaxyproject/planemo-ci-action@v1
       id: lint
@@ -304,19 +293,6 @@ jobs:
       id: cpu-cores
     - name: Clean dotnet folder for space
       run: rm -Rf /usr/share/dotnet
-#
-# ---------------------------------------------------------
-# This is a temporary addition to enable the features from
-# - https://github.com/galaxyproject/galaxy/pull/17556
-# - https://github.com/galaxyproject/galaxy/pull/17581
-#
-    - run: |
-        python -m pip install --no-dependencies git+https://git@github.com/kostrykin/galaxy.git@galaxy-image-analysis#subdirectory=packages/util
-        python -m pip install --no-dependencies git+https://git@github.com/kostrykin/galaxy.git@galaxy-image-analysis#subdirectory=packages/tool_util
-        python -m pip install pillow tifffile
-#
-# ---------------------------------------------------------
-#
     - name: Planemo test
       uses: galaxyproject/planemo-ci-action@v1
       id: test
