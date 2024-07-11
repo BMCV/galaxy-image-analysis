@@ -6,8 +6,8 @@ on:
   repository_dispatch:
     types: [run-all-tool-tests-command]
 env:
-  GALAXY_FORK: kostrykin  # Temporary change to enable the features from https://github.com/galaxyproject/galaxy/pull/17556 and https://github.com/galaxyproject/galaxy/pull/17581
-  GALAXY_BRANCH: galaxy-image-analysis  # Temporary change to enable the features from https://github.com/galaxyproject/galaxy/pull/17556 and https://github.com/galaxyproject/galaxy/pull/17581
+  GALAXY_FORK: galaxyproject
+  GALAXY_BRANCH: release_24.1
   MAX_CHUNKS: 40
 jobs:
   setup:
@@ -96,25 +96,6 @@ jobs:
       with:
         path: ~/.cache/pip
         key: pip_cache_py_${{ matrix.python-version }}_gxy_${{ needs.setup.outputs.galaxy-head-sha }}
-#
-# ---------------------------------------------------------
-# This is a temporary addition to enable the features from
-# - https://github.com/galaxyproject/galaxy/pull/17556
-# - https://github.com/galaxyproject/galaxy/pull/17581
-#
-    - name: Planemo setup 
-      uses: galaxyproject/planemo-ci-action@v1
-      with:
-        mode: setup
-        repository-list: ${{ needs.setup.outputs.repository-list }}
-        tool-list: ${{ needs.setup.outputs.tool-list }}
-        additional-planemo-options: --biocontainers -s tests,output,inputs,help,general,command,citations,tool_xsd,xml_order,tool_urls,shed_metadata
-    - run: |
-        python -m pip install git+https://git@github.com/kostrykin/galaxy.git@galaxy-image-analysis#subdirectory=packages/util
-        python -m pip install git+https://git@github.com/kostrykin/galaxy.git@galaxy-image-analysis#subdirectory=packages/tool_util
-#
-# ---------------------------------------------------------
-#
     - name: Planemo lint
       uses: galaxyproject/planemo-ci-action@v1
       id: lint
@@ -169,28 +150,6 @@ jobs:
       id: cpu-cores
     - name: Clean dotnet folder for space
       run: rm -Rf /usr/share/dotnet
-#
-# ---------------------------------------------------------
-# This is a temporary addition to enable the features from
-# - https://github.com/galaxyproject/galaxy/pull/17556
-# - https://github.com/galaxyproject/galaxy/pull/17581
-#
-    - name: Planemo setup 
-      uses: galaxyproject/planemo-ci-action@v1
-      with:
-        mode: setup
-        repository-list: ${{ needs.setup.outputs.repository-list }}
-        galaxy-fork: ${{ needs.setup.outputs.fork }}
-        galaxy-branch: ${{ needs.setup.outputs.branch }}
-        chunk: ${{ matrix.chunk }}
-        chunk-count: ${{ needs.setup.outputs.chunk-count }}
-    - run: |
-        python -m pip install git+https://git@github.com/kostrykin/galaxy.git@galaxy-image-analysis#subdirectory=packages/util
-        python -m pip install git+https://git@github.com/kostrykin/galaxy.git@galaxy-image-analysis#subdirectory=packages/tool_util
-        python -m pip install pillow tifffile
-#
-# ---------------------------------------------------------
-#
     - name: Planemo test
       uses: galaxyproject/planemo-ci-action@v1
       id: test
