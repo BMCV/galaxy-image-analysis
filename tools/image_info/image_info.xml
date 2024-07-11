@@ -1,4 +1,4 @@
-<tool id="ip_imageinfo" name="Show image info" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@">
+<tool id="ip_imageinfo" name="Show image info" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="23.0">
   <description>with Bioformats</description>
   <macros>
     <token name="@TOOL_VERSION@">5.7.1</token>
