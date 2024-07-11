@@ -6,8 +6,8 @@ on:
   repository_dispatch:
     types: [run-all-tool-tests-command]
 env:
-  GALAXY_FORK: kostrykin  # Temporary change to enable the features from https://github.com/galaxyproject/galaxy/pull/17556 and https://github.com/galaxyproject/galaxy/pull/17581
-  GALAXY_BRANCH: galaxy-image-analysis  # Temporary change to enable the features from https://github.com/galaxyproject/galaxy/pull/17556 and https://github.com/galaxyproject/galaxy/pull/17581
+  GALAXY_FORK: galaxyproject
+  GALAXY_BRANCH: release_24.1
   MAX_CHUNKS: 40
 jobs:
   setup:
