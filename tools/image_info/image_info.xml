@@ -1,5 +1,9 @@
-<tool id="ip_imageinfo" name="Show image info" version="5.7.1">
+<tool id="ip_imageinfo" name="Show image info" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@">
   <description>with Bioformats</description>
+  <macros>
+    <token name="@TOOL_VERSION@">5.7.1</token>
+    <token name="@VERSION_SUFFIX@">1</token>
+  </macros>
   <edam_operations>
     <edam_operation>operation_3443</edam_operation>
   </edam_operations>
@@ -7,7 +11,7 @@
     <xref type="biii">python-bioformats</xref>
   </xrefs>
   <requirements>
-        <requirement type="package" version="5.7.1">bftools</requirement>
+        <requirement type="package" version="@TOOL_VERSION@">bftools</requirement>
   </requirements>
   <command> 
         <![CDATA[
