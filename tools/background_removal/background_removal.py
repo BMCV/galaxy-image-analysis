@@ -3,10 +3,11 @@ import warnings
 
 
 import skimage.io
-from skimage.io import imread
 from skimage.filters import difference_of_gaussians
-from skimage.morphology import white_tophat, disk
+from skimage.io import imread
+from skimage.morphology import disk, white_tophat
 from skimage.restoration import rolling_ball
+
 
 def process_image(args):
     image = imread(args.input_image)
@@ -40,3 +41,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+    
