@@ -1,0 +1,8 @@
+categories:
+  - Imaging
+description: Background removal filters using scikit-image
+long_description: Tool to perform a background removal using 1) Rolling-Ball Algorithm, 2) Difference of Gaussians and 3) Top-Hat Filter
+name: background_removal
+owner: ufz
+homepage_url: https://github.com/bmcv
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tools/background_removal

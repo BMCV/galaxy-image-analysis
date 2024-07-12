@@ -1,0 +1,55 @@
+<tool id="background_removal" name="Background Removal" version="0.1">
+    <description>with scikit-image</description>
+    <requirements>
+        <requirement type="package" version="0.24.0">scikit-image</requirement>
+    </requirements>
+    <command detect_errors="aggressive">
+        <![CDATA[
+        python "$__tool_directory__/background_removal.py" $input_image $filter $radius $output
+        ]]>
+    </command>
+    <inputs>
+        <param name="input_image" type="data" format="tiff, jpg, jpeg, png, tif" label="Input Image"/>
+        <param name="filter" type="select" label="Select Filter">
+            <option value="rolling_ball">Rolling-Ball Algorithm</option>
+            <option value="dog">Difference of Gaussians</option>
+            <option value="top_hat">Top-Hat Filter</option>
+        </param>
+        <param name="radius" type="float" label="Radius" value="20"/>
+    </inputs>
+    <outputs>
+        <data name="output" format="tiff" label="Background Substraction Output"/>
+    </outputs>
+    <tests>
+        <test>
+            <param name="input_image" value="img.png"/>
+            <param name="filter" value="rolling_ball"/>
+            <param name="radius" value="20"/>
+            <output name="output" value="out_rolling_ball.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <param name="input_image" value="img.png"/>
+            <param name="filter" value="dog"/>
+            <param name="radius" value="20"/>
+            <output name="output" value="out_dog.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <param name="input_image" value="sample.tif"/>
+            <param name="filter" value="top_hat"/>
+            <param name="radius" value="15"/>
+            <output name="output" value="out_top_hat.tiff" ftype="tiff"/>
+        </test>
+    </tests>
+    <help>
+        This tools applied different background removal algorithm to the image:
+
+        - Rolling-Ball Algorithm
+
+        - Difference of Gaussians
+
+        - Top-Hat Filter
+    </help>
+    <citations>
+        <citation type="doi">https://haesleinhuepf.github.io/BioImageAnalysisNotebooks/18_image_filtering/03_background_removal.html</citation>
+    </citations>
+</tool>
