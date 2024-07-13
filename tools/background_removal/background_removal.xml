@@ -1,5 +1,14 @@
-<tool id="background_removal" name="Background Removal" version="0.1">
-    <description>with scikit-image</description>
+<tool id="background_removal" name="Remove image background" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
+        <description>with scikit-image</description>  
+    <macros>  
+        <import>creators.xml</import>
+        <import>tests.xml</import>
+        <token name="@TOOL_VERSION@">0.24.0</token>  
+        <token name="@VERSION_SUFFIX@">0</token>  
+    </macros>  
+    <creator>
+        <expand macro="creators/rmassei"/>
+    </creator>
     <requirements>
         <requirement type="package" version="0.24.0">scikit-image</requirement>
     </requirements>
@@ -18,26 +27,27 @@
         <param name="radius" type="float" label="Radius" value="20"/>
     </inputs>
     <outputs>
-        <data name="output" format="tiff" label="Background Substraction Output"/>
+        <data name="output" format="tiff" label="Background substraction output"/>
     </outputs>
     <tests>
         <test>
-            <param name="input_image" value="img.png"/>
+            <param name="input_image" value="img.jpg"/>
             <param name="filter" value="rolling_ball"/>
             <param name="radius" value="20"/>
-            <output name="output" value="out_rolling_ball.tiff" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="img_output_rb.tif" ftype="tiff"/>
         </test>
+       </test>
         <test>
             <param name="input_image" value="img.png"/>
             <param name="filter" value="dog"/>
             <param name="radius" value="20"/>
-            <output name="output" value="out_dog.tiff" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="img_output_dog.tif" ftype="tiff"/>
         </test>
         <test>
             <param name="input_image" value="sample.tif"/>
             <param name="filter" value="top_hat"/>
             <param name="radius" value="15"/>
-            <output name="output" value="out_top_hat.tiff" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="img_output_tophat.tif" ftype="tiff"/>
         </test>
     </tests>
     <help>
@@ -50,6 +60,6 @@
         - Top-Hat Filter
     </help>
     <citations>
-        <citation type="doi">https://haesleinhuepf.github.io/BioImageAnalysisNotebooks/18_image_filtering/03_background_removal.html</citation>
+        <citation type="doi">10.1109/MC.1983.1654163</citation>
     </citations>
 </tool>
