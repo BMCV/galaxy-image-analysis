@@ -5,7 +5,7 @@
         <yield />
     </xml>
 
-     <xml name="creators/rmassei">
+    <xml name="creators/rmassei">
         <person givenName="Riccardo" familyName="Massei"/>
         <yield/>
     </xml>
