@@ -26,6 +26,7 @@ def process_image(args):
         output_image = convert_image_to_format_of(output_image, image)
         skimage.io.imsave(args.output, output_image, plugin="tifffile")
 
+
 def convert_image_to_format_of(image, format_image):
     """
     Convert the first image to the format of the second image.
