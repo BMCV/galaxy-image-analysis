@@ -5,6 +5,11 @@
         <yield />
     </xml>
 
+    <xml name="creators/rmassei">
+        <person givenName="Riccardo" familyName="Massei"/>
+        <yield/>
+    </xml>
+
     <xml name="creators/alliecreason">
         <person givenName="Allison" familyName="Creason"/>
         <yield/>
