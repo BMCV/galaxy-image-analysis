@@ -20,9 +20,9 @@
     <inputs>
         <param name="input_image" type="data" format="tiff, jpg, jpeg, png, tif" label="Input Image"/>
         <param name="filter" type="select" label="Select Filter">
-            <option value="rolling_ball">Rolling-Ball Algorithm</option>
+            <option value="rolling_ball">Rolling-ball algorithm</option>
             <option value="dog">Difference of Gaussians</option>
-            <option value="top_hat">Top-Hat Filter</option>
+            <option value="top_hat">Top-hat filter</option>
         </param>
         <param name="radius" type="float" label="Radius" value="20"/>
     </inputs>
@@ -36,7 +36,13 @@
             <param name="filter" value="dog"/>  
             <param name="radius" value="20"/>  
             <expand macro="tests/intensity_image_diff" name="output" value="input1_output_dog.tif" ftype="tiff"/>  
-        </test>  
+        </test> 
+        <test>
+            <param name="input_image" value="input3_uint8.tif"/>
+            <param name="filter" value="top_hat"/>
+            <param name="radius" value="15"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="input3_output_tophat.tif" ftype="tiff"/>
+        </test>
         <!-- uint16 tests -->  
         <test>  
             <param name="input_image" value="input2_uint16.tif"/>
@@ -50,21 +56,15 @@
             <param name="radius" value="20"/>
             <expand macro="tests/intensity_image_diff" name="output" value="input2_output_dog.tif" ftype="tiff"/>
         </test>
-        <test>
-            <param name="input_image" value="input3_uint8.tif"/>
-            <param name="filter" value="top_hat"/>
-            <param name="radius" value="15"/>
-            <expand macro="tests/intensity_image_diff" name="output" value="input3_output_tophat.tif" ftype="tiff"/>
-        </test>
     </tests>
     <help>
-        This tools applied different background removal algorithm to the image:
+        This tool applies different background removal algorithms to an image:
 
-        - Rolling-Ball Algorithm
+        - Rolling-ball algorithm
 
         - Difference of Gaussians
 
-        - Top-Hat Filter
+        - Top-hat filter
     </help>
     <citations>
         <citation type="doi">10.1109/MC.1983.1654163</citation>
