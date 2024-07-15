@@ -1,7 +1,7 @@
 import argparse
 import warnings
 
-
+import numpy as np
 import skimage.io
 from skimage.filters import difference_of_gaussians
 from skimage.io import imread
@@ -23,8 +23,23 @@ def process_image(args):
         output_image = white_tophat(image, disk(args.radius))
 
     with warnings.catch_warnings():
-        output_image = skimage.util.img_as_uint(output_image)
+        output_image = convert_image_to_format_of(output_image, image)
         skimage.io.imsave(args.output, output_image, plugin="tifffile")
+    
+def convert_image_to_format_of(image, format_image):  
+    """  
+    Convert the first image to the format of the second image.  
+    """  
+    if format_image.dtype == image.dtype:  
+        return image  
+    elif format_image.dtype == np.uint8:  
+        return skimage.util.img_as_ubyte(image)  
+    elif format_image.dtype == np.uint16:  
+        return skimage.util.img_as_uint(image)  
+    elif format_image.dtype == np.int16:  
+        return skimage.util.img_as_int(image)  
+    else:  
+        raise ValueError(f'Unsupported image data type: {format_image.dtype}')  
 
 
 def main():

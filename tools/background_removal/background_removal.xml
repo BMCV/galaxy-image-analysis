@@ -30,23 +30,31 @@
         <data name="output" format="tiff" label="Background substraction output"/>
     </outputs>
     <tests>
-        <test>
-            <param name="input_image" value="img.tif"/>
+        <!-- uint8 tests -->  
+        <test>  
+            <param name="input_image" value="input1_uint8.tif"/>  
+            <param name="filter" value="dog"/>  
+            <param name="radius" value="20"/>  
+            <expand macro="tests/intensity_image_diff" name="output" value="input1_output_dog.tif" ftype="tiff"/>  
+        </test>  
+        <!-- uint16 tests -->  
+        <test>  
+            <param name="input_image" value="input2_uint16.tif"/>
             <param name="filter" value="rolling_ball"/>
             <param name="radius" value="20"/>
-            <expand macro="tests/intensity_image_diff" name="output" value="img_output_rb.tif" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="input2_output_rb.tif" ftype="tiff"/>
         </test>
         <test>
-            <param name="input_image" value="img.tif"/>
+            <param name="input_image" value="input2_uint16.tif"/>
             <param name="filter" value="dog"/>
             <param name="radius" value="20"/>
-            <expand macro="tests/intensity_image_diff" name="output" value="img_output_dog.tif" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="input2_output_dog.tif" ftype="tiff"/>
         </test>
         <test>
-            <param name="input_image" value="sample.tif"/>
+            <param name="input_image" value="input3_uint8.tif"/>
             <param name="filter" value="top_hat"/>
             <param name="radius" value="15"/>
-            <expand macro="tests/intensity_image_diff" name="output" value="img_output_tophat.tif" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="input3_output_tophat.tif" ftype="tiff"/>
         </test>
     </tests>
     <help>
