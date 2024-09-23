@@ -21,6 +21,7 @@
         <requirement type="package" version="3.3.4">matplotlib</requirement>
         <requirement type="package" version="2020.10.1">tifffile</requirement>
         <requirement type="package" version="1.21">numpy</requirement>
+        <requirement type="package" version="10.4.0">pillow</requirement>
         <requirement type="package" version="0.1">giatools</requirement>
     </requirements>
     <command detect_errors="aggressive">
