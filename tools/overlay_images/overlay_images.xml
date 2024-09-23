@@ -61,7 +61,7 @@
             </when>
             <when value="seg_contour">
                 <param name="im1" type="data" format="tiff,png" label="Intensity image" />
-                <param name="im2" type="data" format="tiff,png" label="Label image" />
+                <param name="im2" type="data" format="tiff,png" label="Label map" />
                 <param name="thickness" type="integer" value="2" min="1" label="Contour thickness (in pixels)" />
                 <param name="color" type="color" value="#ff0000" label="Contour color"/>
                 <param argument="--show_label" type="boolean" checked='false' truevalue="--show_label" falsevalue="" label="Show labels" />
