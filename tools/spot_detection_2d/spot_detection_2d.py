@@ -87,6 +87,12 @@ def spot_detection(
         blobs = blob_filter(img, threshold=abs_threshold, threshold_rel=rel_threshold, min_sigma=min_scale, max_sigma=max_scale)
         for blob in blobs:
             y, x, scale = blob
+
+            # Skip the detection if it is too close to the boundary of the image
+            if y < boundary or x < boundary or y >= img.shape[0] - boundary or x >= img.shape[1] - boundary:
+                continue
+
+            # Add the detection to the list of detections
             radius = scale * np.sqrt(2) * 2
             intensity = mean_intensity(img, round(y), round(x), round(radius))
             detections.append(
