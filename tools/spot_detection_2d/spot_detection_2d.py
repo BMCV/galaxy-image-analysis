@@ -14,7 +14,6 @@ import giatools.io
 import numpy as np
 import pandas as pd
 import scipy.ndimage as ndi
-import tifffile
 from numpy.typing import NDArray
 from skimage.feature import blob_dog, blob_doh, blob_log
 
@@ -37,18 +36,6 @@ def mean_intensity(img: NDArray, y: int, x: int, radius: int) -> float:
         return img[mask].mean()
 
 
-def load_image(fn_in: str) -> NDArray:
-    """
-    Load the input image using ``tifffile`` if possible.
-
-    This is necessary to properly load multi-page TIFF files.
-    """
-    try:
-        return giatools.io.imread(fn_in, impl=tifffile.imread)
-    except tifffile.TiffFileError:
-        return giatools.io.imread(fn_in)  # Not a TIFF file
-
-
 def spot_detection(
     fn_in: str,
     fn_out: str,
@@ -63,7 +50,7 @@ def spot_detection(
 ) -> None:
 
     # Load the single-channel 2-D input image (or stack thereof)
-    stack = load_image(fn_in)
+    stack = giatools.io.imread(fn_in)
 
     # Normalize input image so that it is a stack of images (possibly a stack of a single image)
     assert stack.ndim in (2, 3)

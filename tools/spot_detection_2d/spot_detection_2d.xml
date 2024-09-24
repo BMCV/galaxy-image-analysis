@@ -15,7 +15,7 @@
         <xref type="bio.tools">galaxy_image_analysis</xref>
     </xrefs>
     <requirements>
-        <requirement type="package" version="0.1.2">giatools</requirement>
+        <requirement type="package" version="0.2.0">giatools</requirement>
         <requirement type="package" version="1.26.4">numpy</requirement>
         <requirement type="package" version="1.2.4">pandas</requirement>
         <requirement type="package" version="0.21">scikit-image</requirement>
