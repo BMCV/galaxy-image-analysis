@@ -11,7 +11,7 @@ import skimage.io
 
 def find_column(df: pd.DataFrame, candidates: List[str]) -> str:
     """
-    Returns tje column name present in `df` and the list of `candidates`.
+    Returns the column name present in `df` and the list of `candidates`.
 
     Raises:
         KeyError: If there is no candidate column name present in `df`, or more than one.
