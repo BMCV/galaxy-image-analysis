@@ -33,10 +33,10 @@
 
     ]]></command>
     <inputs> 
-        <param name="input" type="data" format="tabular" label="Tabular point file"/> 
+        <param name="input" type="data" format="tabular" label="Tabular list of points"/> 
         <param name="shapex" type="integer" value="500" min="1" label="Width of output image" />
         <param name="shapey" type="integer" value="500" min="1" label="Height of output image" />
-        <param name="has_header" type="boolean" checked="false" truevalue="--has_header True" falsevalue="" optional="true" label="Tabular point file has header" /> 
+        <param name="has_header" type="boolean" checked="false" truevalue="--has_header True" falsevalue="" optional="true" label="Tabular list of points has header" /> 
         <param name="swap_xy" type="boolean" checked="false" falsevalue="" truevalue="--swap_xy True" optional="true" label="Swap X and Y coordinates" />
     </inputs>
     <outputs>
