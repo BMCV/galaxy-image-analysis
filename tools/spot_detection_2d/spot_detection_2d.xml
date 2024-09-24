@@ -1,4 +1,4 @@
-<tool id="ip_spot_detection_2d" name="Perform 2-D spot detection" version="0.1" profile="20.05">
+<tool id="ip_spot_detection_2d" name="Perform 2-D spot detection" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
     <description></description>
     <macros>
         <import>creators.xml</import>
@@ -19,6 +19,7 @@
         <requirement type="package" version="1.26.4">numpy</requirement>
         <requirement type="package" version="1.2.4">pandas</requirement>
         <requirement type="package" version="0.21">scikit-image</requirement>
+        <requirement type="package" version="2024.6.18">tifffile</requirement>
     </requirements>
     <command detect_errors="aggressive">
     <![CDATA[
@@ -36,7 +37,7 @@
     ]]>
     </command>
     <inputs>
-        <param name="fn_in" type="data" format="tiff" label="Intensity image or image sequence (stack)" />
+        <param name="fn_in" type="data" format="tiff" label="Intensity image or a stack of images" />
         <param name="frame_1st" type="integer" value="1" label="Starting time point (1 for the first frame of the stack)" />
         <param name="frame_end" type="integer" value="0" label="Ending time point (0 for the last frame of the stack)" />
         <param name="filter_type" type="select" label="Detection filter">
@@ -85,7 +86,7 @@
 
         **Perform spot detection and measure the image intensities.**
 
-        This tool detects spots (blobs) and measures the image intensities in a single-channel 2-D image (or sequence thereof).
+        This tool detects spots (blobs) and measures the image intensities in a single-channel 2-D image (or a stack of such images).
 
         The tool produces a TSV file containing all detections, with the following columns:
 
