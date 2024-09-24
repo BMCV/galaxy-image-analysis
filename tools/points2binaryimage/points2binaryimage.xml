@@ -15,12 +15,10 @@
         <xref type="bio.tools">galaxy_image_analysis</xref>
     </xrefs>
     <requirements> 
-        <requirement type="package" version="0.14.2">scikit-image</requirement> 
-        <requirement type="package" version="1.15.4">numpy</requirement>
-        <requirement type="package" version="0.23.4">pandas</requirement>
-        <requirement type="package" version="2018.7">pytz</requirement><!--pandas seems to have additional requirements that are not automatically installed-->
-        <requirement type="package" version="2.5.2">python-dateutil</requirement>
-        <requirement type="package" version="0.15.1">tifffile</requirement>
+        <requirement type="package" version="0.21">scikit-image</requirement> 
+        <requirement type="package" version="1.26.4">numpy</requirement>
+        <requirement type="package" version="1.2.4">pandas</requirement>
+        <requirement type="package" version="2024.6.18">tifffile</requirement>
     </requirements>
     <command detect_errors="aggressive">
         <![CDATA[
@@ -28,32 +26,34 @@
         ]]>
     </command>
     <inputs> 
-        <param name="input" type="data" format="tabular" label="CSV point file"/> 
+        <param name="input" type="data" format="tabular" label="Tabular point file"/> 
         <param name="shapex" type="integer" value="500" optional="true" min="1" max="2000" label="Width of output image" />
         <param name="shapey" type="integer" value="500" optional="true" min="1" max="2000" label="Height of output image" />
         <param name="has_header" type="boolean" checked="false" truevalue="--has_header True" falsevalue="" optional="true" label="Does point file contain header?" /> 
-        <param name="invert_xy" type="boolean" checked="false" falsevalue="" truevalue="--invert_xy True" optional="true" label="Inverts x and y in CSV point file" />
+        <param name="invert_xy" type="boolean" checked="false" falsevalue="" truevalue="--invert_xy True" optional="true" label="Inverts x and y in tabular point file" />
     </inputs>
     <outputs>
         <data name="output" format="tiff" />
     </outputs>
     <tests>
+        <!-- TSV without header -->
         <test>
-            <param name="input" value="points.tsv" />
+            <param name="input" value="input1.tsv" />
             <param name="shapex" value="20" /> 
             <param name="shapey" value="30" />
             <param name="has_header" value="false" />
             <param name="invert_xy" value="true" />
-            <output name="output" ftype="tiff" file="out.tiff" compare="sim_size"/> 
+            <output name="output" ftype="tiff" file="output1.tif" compare="sim_size"/> 
         </test>
+        <!-- TSV with header -->
     </tests>
     <help>
 
-        This tool converts a CSV list of points to a binary image by rasterizing the point coordinates.
+        **Converts a tabular list of points to a binary image by rasterizing the point coordinates.**
 
         The created image is a single-channel image with 16 bits per pixel (unsigned integer).
         The points are rasterized with value 32767 (white).
-        Pixels not corresponding to any points in the CSV are assigned the value 0 (black).
+        Pixels not corresponding to any points in the tabular file are assigned the value 0 (black).
 
     </help>
     <citations>
