@@ -6,7 +6,6 @@ import networkx as nx
 import numpy as np
 import scipy.ndimage as ndi
 import skimage.io
-import skimage.morphology as morph
 import skimage.util
 
 
@@ -22,7 +21,6 @@ def color_hex_to_rgb_tuple(hex):
 
 def build_label_adjacency_graph(im, radius, bg_label):
     G = nx.Graph()
-    selem = morph.disk(radius)
     for label in np.unique(im):
 
         if label == bg_label:
@@ -31,7 +29,7 @@ def build_label_adjacency_graph(im, radius, bg_label):
         G.add_node(label)
 
         cc = (im == label)
-        neighborhood = ndi.binary_dilation(cc, selem)
+        neighborhood = (ndi.distance_transform_edt(~cc) <= radius)
         adjacent_labels = np.unique(im[neighborhood])
 
         for adjacent_label in adjacent_labels:
@@ -62,6 +60,7 @@ if __name__ == '__main__':
 
     # Build adjacency graph of the labels
     G = build_label_adjacency_graph(im, args.radius, args.bg_label)
+    print('---')
 
     # Apply greedy coloring
     graph_coloring = nx.greedy_color(G)
