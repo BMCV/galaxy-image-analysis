@@ -43,6 +43,7 @@
        <data format="png" name="output" from_work_dir="output.png" />
     </outputs>
     <tests>
+        <!-- int64 -->
         <test>
             <param name="input" value="input1.tif" />
             <param name="radius" value="1" />
@@ -52,12 +53,23 @@
                 <has_image_channels channels="3"/>
             </expand>
         </test>
+        <!-- uint8 -->
         <test>
             <param name="input" value="input2.tif" />
             <param name="radius" value="10" />
             <param name="bg_label" value="0" />
             <param name="bg_color" value="#ffffff" />
             <expand macro="tests/intensity_image_diff" name="output" value="output2.png" ftype="png">
+                <has_image_channels channels="3"/>
+            </expand>
+        </test>
+        <!-- uint16 -->
+        <test>
+            <param name="input" value="input3.tif" />
+            <param name="radius" value="100" />
+            <param name="bg_label" value="0" />
+            <param name="bg_color" value="#ffffff" />
+            <expand macro="tests/intensity_image_diff" name="output" value="output3.png" ftype="png">
                 <has_image_channels channels="3"/>
             </expand>
         </test>
