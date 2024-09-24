@@ -7,7 +7,7 @@ import pandas as pd
 import skimage.io
 
 
-def points2binaryimage(point_file, out_file, shape=[500, 500], has_header=False, invert_xy=False):
+def points2binaryimage(point_file, out_file, shape=[500, 500], has_header=False, swap_xy=False):
 
     img = np.zeros(shape, dtype=np.int16)
     if os.path.exists(point_file) and os.path.getsize(point_file) > 0:
@@ -21,7 +21,7 @@ def points2binaryimage(point_file, out_file, shape=[500, 500], has_header=False,
             if int(a_row[0]) < 0 or int(a_row[1]) < 0:
                 raise IndexError("Point {},{} is out of image with bounds {},{}.".format(int(a_row[0]), int(a_row[1]), shape[0], shape[1]))
 
-            if invert_xy:
+            if swap_xy:
                 if img.shape[0] <= int(a_row[0]) or img.shape[1] <= int(a_row[1]):
                     raise IndexError("Point {},{} is out of image with bounds {},{}.".format(int(a_row[0]), int(a_row[1]), shape[0], shape[1]))
                 else:
@@ -41,14 +41,14 @@ def points2binaryimage(point_file, out_file, shape=[500, 500], has_header=False,
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('point_file', type=argparse.FileType('r'), help='label file')
+    parser.add_argument('point_file', type=argparse.FileType('r'), help='point file')
     parser.add_argument('out_file', type=str, help='out file (TIFF)')
     parser.add_argument('shapex', type=int, help='shapex')
     parser.add_argument('shapey', type=int, help='shapey')
-    parser.add_argument('--has_header', dest='has_header', default=False, help='set True if CSV has header')
-    parser.add_argument('--invert_xy', dest='invert_xy', default=False, help='invert x and y in CSV')
+    parser.add_argument('--has_header', dest='has_header', default=False, help='set True if point file has header')
+    parser.add_argument('--swap_xy', dest='swap_xy', default=False, help='Swap X and Y coordinates')
 
     args = parser.parse_args()
 
     # TOOL
-    points2binaryimage(args.point_file.name, args.out_file, [args.shapey, args.shapex], has_header=args.has_header, invert_xy=args.invert_xy)
+    points2binaryimage(args.point_file.name, args.out_file, [args.shapey, args.shapex], has_header=args.has_header, swap_xy=args.swap_xy)
