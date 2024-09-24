@@ -1,12 +1,11 @@
 import argparse
 
 import giatools.io
-import matplotlib.colors as mpl
+import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 import scipy.ndimage as ndi
 import skimage.io
-import skimage.morphology as morph
 import skimage.util
 
 
@@ -22,7 +21,6 @@ def color_hex_to_rgb_tuple(hex):
 
 def build_label_adjacency_graph(im, radius, bg_label):
     G = nx.Graph()
-    selem = morph.disk(radius)
     for label in np.unique(im):
 
         if label == bg_label:
@@ -31,7 +29,7 @@ def build_label_adjacency_graph(im, radius, bg_label):
         G.add_node(label)
 
         cc = (im == label)
-        neighborhood = ndi.binary_dilation(cc, selem)
+        neighborhood = (ndi.distance_transform_edt(~cc) <= radius)
         adjacent_labels = np.unique(im[neighborhood])
 
         for adjacent_label in adjacent_labels:
@@ -43,6 +41,18 @@ def build_label_adjacency_graph(im, radius, bg_label):
             G.add_edge(adjacent_label, label)
 
     return G
+
+
+def get_n_unique_mpl_colors(n, colormap='jet', cyclic=False):
+    """
+    Yields `n` unique colors from the given `colormap`.
+
+    Set `cyclic` to `True` if the `colormap` is cyclic.
+    """
+    cmap = plt.get_cmap(colormap)
+    m = n if cyclic else n - 1
+    for i in range(n):
+        yield np.multiply(255, cmap(i / m))
 
 
 if __name__ == '__main__':
@@ -68,7 +78,7 @@ if __name__ == '__main__':
     unique_colors = frozenset(graph_coloring.values())
 
     # Assign colors to nodes based on the greedy coloring
-    graph_color_to_mpl_color = dict(zip(unique_colors, mpl.TABLEAU_COLORS.values()))
+    graph_color_to_mpl_color = dict(zip(unique_colors, get_n_unique_mpl_colors(len(unique_colors))))
     node_colors = [graph_color_to_mpl_color[graph_coloring[n]] for n in G.nodes()]
 
     # Render result
@@ -77,7 +87,6 @@ if __name__ == '__main__':
     for label, label_color in zip(G.nodes(), node_colors):
 
         cc = (im == label)
-        label_color = color_hex_to_rgb_tuple(label_color)
         for ch in range(3):
             result[:, :, ch][cc] = label_color[ch]
 
