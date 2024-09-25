@@ -2,8 +2,9 @@
     <description></description>
     <macros>
         <import>creators.xml</import>
-        <token name="@TOOL_VERSION@">0.2</token>
-        <token name="@VERSION_SUFFIX@">3</token>
+        <import>tests.xml</import>
+        <token name="@TOOL_VERSION@">0.3</token>
+        <token name="@VERSION_SUFFIX@">0</token>
     </macros>
     <creator>
         <expand macro="creators/bmcv" />
@@ -15,45 +16,68 @@
         <xref type="bio.tools">galaxy_image_analysis</xref>
     </xrefs>
     <requirements> 
-        <requirement type="package" version="0.14.2">scikit-image</requirement> 
-        <requirement type="package" version="1.15.4">numpy</requirement>
-        <requirement type="package" version="0.23.4">pandas</requirement>
-        <requirement type="package" version="2018.7">pytz</requirement><!--pandas seems to have additional requirements that are not automatically installed-->
-        <requirement type="package" version="2.5.2">python-dateutil</requirement>
-        <requirement type="package" version="0.15.1">tifffile</requirement>
+        <requirement type="package" version="0.21">scikit-image</requirement> 
+        <requirement type="package" version="1.26.4">numpy</requirement>
+        <requirement type="package" version="1.2.4">pandas</requirement>
+        <requirement type="package" version="2024.6.18">tifffile</requirement>
     </requirements>
-    <command detect_errors="aggressive">
-        <![CDATA[
-        python '$__tool_directory__/points2binaryimage.py' '$input' '$output' $shapex $shapey $has_header $invert_xy
-        ]]>
-    </command>
+    <command detect_errors="aggressive"><![CDATA[
+
+        python '$__tool_directory__/points2binaryimage.py'
+        '$input'
+        '$output'
+        $shapex
+        $shapey
+        $has_header
+        $swap_xy
+
+    ]]></command>
     <inputs> 
-        <param name="input" type="data" format="tabular" label="CSV point file"/> 
-        <param name="shapex" type="integer" value="500" optional="true" min="1" max="2000" label="Width of output image" />
-        <param name="shapey" type="integer" value="500" optional="true" min="1" max="2000" label="Height of output image" />
-        <param name="has_header" type="boolean" checked="false" truevalue="--has_header True" falsevalue="" optional="true" label="Does point file contain header?" /> 
-        <param name="invert_xy" type="boolean" checked="false" falsevalue="" truevalue="--invert_xy True" optional="true" label="Inverts x and y in CSV point file" />
+        <param name="input" type="data" format="tabular" label="Tabular list of points"/> 
+        <param name="shapex" type="integer" value="500" min="1" label="Width of output image" />
+        <param name="shapey" type="integer" value="500" min="1" label="Height of output image" />
+        <param name="has_header" type="boolean" checked="false" truevalue="--has_header True" falsevalue="" optional="true" label="Tabular list of points has header" /> 
+        <param name="swap_xy" type="boolean" checked="false" falsevalue="" truevalue="--swap_xy True" optional="true" label="Swap X and Y coordinates" />
     </inputs>
     <outputs>
         <data name="output" format="tiff" />
     </outputs>
     <tests>
+        <!-- TSV without header -->
         <test>
-            <param name="input" value="points.tsv" />
-            <param name="shapex" value="20" /> 
-            <param name="shapey" value="30" />
+            <param name="input" value="input1.tsv" />
+            <param name="shapex" value="30" />
+            <param name="shapey" value="20" />
             <param name="has_header" value="false" />
-            <param name="invert_xy" value="true" />
-            <output name="output" ftype="tiff" file="out.tiff" compare="sim_size"/> 
+            <param name="swap_xy" value="true" />
+            <expand macro="tests/binary_image_diff" name="output" value="output1.tif" ftype="tiff" />
+        </test>
+        <!-- TSV with header -->
+        <test>
+            <param name="input" value="input2.tsv" />
+            <param name="shapex" value="205" />
+            <param name="shapey" value="84" />
+            <param name="has_header" value="true" />
+            <param name="swap_xy" value="false" />
+            <expand macro="tests/binary_image_diff" name="output" value="output2.tif" ftype="tiff" />
         </test>
     </tests>
     <help>
 
-        This tool converts a CSV list of points to a binary image by rasterizing the point coordinates.
+        **Converts a tabular list of points to a binary image by rasterizing the point coordinates.**
 
         The created image is a single-channel image with 16 bits per pixel (unsigned integer).
-        The points are rasterized with value 32767 (white).
-        Pixels not corresponding to any points in the CSV are assigned the value 0 (black).
+        The points are rasterized with value 65535 (white).
+        Pixels not corresponding to any points in the tabular file are assigned the value 0 (black).
+
+        The tabular list of points can either be header-less.
+        In this case, the first and second columns are expected to be the X and Y coordinates, respectively.
+        Otherwise, if a header is present, it is searched for the following column names:
+
+        - ``pos_x`` or ``POS_X``: This column corresponds to the X coordinates.
+        - ``pos_y`` or ``POS_Y``: This column corresponds to the Y coordinates.
+        - If a ``radius`` or ``RADIUS`` column is present,
+          then the points will be rasterized as circles of the corresponding radii.
 
     </help>
     <citations>
