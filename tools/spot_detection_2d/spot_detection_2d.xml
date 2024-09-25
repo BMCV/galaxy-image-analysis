@@ -1,5 +1,13 @@
-<tool id="ip_spot_detection_2d" name="Perform 2D spot detection" version="0.0.3-2" profile="20.05">
+<tool id="ip_spot_detection_2d" name="Perform 2-D spot detection" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
     <description></description>
+    <macros>
+        <import>creators.xml</import>
+        <token name="@TOOL_VERSION@">0.1</token>
+        <token name="@VERSION_SUFFIX@">0</token>
+    </macros>
+    <creator>
+        <expand macro="creators/bmcv" />
+    </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
@@ -7,10 +15,11 @@
         <xref type="bio.tools">galaxy_image_analysis</xref>
     </xrefs>
     <requirements>
-        <requirement type="package" version="2.9.0">imageio</requirement>
-        <requirement type="package" version="1.20.2">numpy</requirement>
+        <requirement type="package" version="0.2.0">giatools</requirement>
+        <requirement type="package" version="1.26.4">numpy</requirement>
         <requirement type="package" version="1.2.4">pandas</requirement>
-        <requirement type="package" version="0.18.1">scikit-image</requirement>
+        <requirement type="package" version="0.21">scikit-image</requirement>
+        <requirement type="package" version="2024.6.18">tifffile</requirement>
     </requirements>
     <command detect_errors="aggressive">
     <![CDATA[
@@ -19,49 +28,75 @@
          '$fn_out'
          '$frame_1st'
          '$frame_end'
-         '$filter'
-         '$ssig'
-         '$thres'
-         '$typ_intens'
-         '$bndy'
+         '$filter_type'
+         '$min_scale'
+         '$max_scale'
+         '$abs_threshold'
+         '$rel_threshold'
+         '$boundary'
     ]]>
     </command>
     <inputs>
-        <param name="fn_in" type="data" format="tiff" label="Image sequence (stack)" />
+        <param name="fn_in" type="data" format="tiff" label="Intensity image or a stack of images" />
         <param name="frame_1st" type="integer" value="1" label="Starting time point (1 for the first frame of the stack)" />
         <param name="frame_end" type="integer" value="0" label="Ending time point (0 for the last frame of the stack)" />
-        <param name="filter" type="select" label="Choose a detection filter">
-            <option value="Gauss" selected="True">Gaussian</option>
-            <option value="LoG">Laplacian-of-Gaussian, LoG (more accurate when spots have similar sizes)</option>
+        <param name="filter_type" type="select" label="Detection filter">
+            <option value="LoG" selected="True">Laplacian of Gaussian</option>
+            <option value="DoG">Difference of Gaussians</option>
+            <option value="DoH">Determinant of Hessian</option>
         </param>
-        <param name="ssig" type="float" value="1.0" min="0.5" max="10" label="Sigma of the Gaussian (for noise suppression)" />
-        <param name="thres" type="float" value="10.0" min="0" max="100" label="Percentage of the global maximal as the threshold for candidate spots" />
-        <param name="typ_intens" type="select" label="How to measure the intensities">
-            <option value="smoothed" selected="True">Smoothed</option>
-            <option value="robust">Robust</option>
-        </param>
-        <param name="bndy" type="integer" value="10" min="0" max="50" label="Width (in pixel) of image boundaries where spots will be ignored" />
+        <param name="min_scale" type="float" value="1.0" min="1.0" label="Minimum scale" />
+        <param name="max_scale" type="float" value="2.0" min="1.0" label="Maximum scale" />
+        <param name="abs_threshold" type="float" value=".25" min="0" label="Minimum filter response (absolute)" help="Filter responses below this threshold will be ignored. Only filter responses above this thresholding will be considered as blobs. This threshold is ignored if the relative threshold (below) corresponds to a higher response." />
+        <param name="rel_threshold" type="float" value="0" min="0" max="1" label="Minimum filter response (relative)" help="Same as the absolute threshold (above), but as a fraction of the overall maximum filter response of an image. This threshold is ignored if it corresponds to a response below the absolute threshold." />
+        <param name="boundary" type="integer" value="10" min="0" label="Image boundary" help="Width of image boundaries (in pixel) where spots will be ignored." />
     </inputs>
     <outputs>
         <data format="tabular" name="fn_out" />
     </outputs>
     <tests>
+        <!-- Multi-frame input -->
         <test>
-            <param name="fn_in" value="test_img1.tif"/>
+            <param name="fn_in" value="input1.tif"/>
             <param name="frame_1st" value="1"/>
             <param name="frame_end" value="0"/>
-            <param name="filter" value="Gauss"/>
-            <param name="ssig" value="1"/>
-            <param name="thres" value="10"/>
-            <param name="typ_intens" value="smoothed"/>
-            <param name="bndy" value="10"/>
-            <output name="fn_out" value="spots_detected.tsv" ftype="tabular" />
+            <param name="filter_type" value="LoG"/>
+            <param name="min_scale" value="1"/>
+            <param name="max_scale" value="2"/>
+            <param name="abs_threshold" value="0"/>
+            <param name="rel_threshold" value="0.1"/>
+            <param name="boundary" value="10"/>
+            <output name="fn_out" value="output1.tsv" ftype="tabular" />
+        </test>
+        <!-- Single-frame input -->
+        <test>
+            <param name="fn_in" value="input2.tif"/>
+            <param name="frame_1st" value="1"/>
+            <param name="frame_end" value="0"/>
+            <param name="filter_type" value="LoG"/>
+            <param name="min_scale" value="1"/>
+            <param name="max_scale" value="2"/>
+            <param name="abs_threshold" value="0.04"/>
+            <param name="rel_threshold" value="0"/>
+            <param name="boundary" value="10"/>
+            <output name="fn_out" value="output2.tsv" ftype="tabular" />
         </test>
     </tests>
     <help>
-    **What it does**
 
-    This tool detects spots and measures the intensities in a 2D image (sequence).
+        **Perform spot detection and measure the image intensities.**
+
+        This tool detects spots (blobs) and measures the image intensities in a single-channel 2-D image (or a stack of such images).
+
+        The tool produces a TSV file containing all detections, with the following columns:
+
+        - ``frame``: The frame of the image stack
+        - ``pos_x``: The horizontal coordinate of the detection
+        - ``pos_y``: The vertical coordinate of the detection
+        - ``scale``: The scale at which the detection was found
+        - ``radius``: The radius of the detected spot
+        - ``intensity``: The mean intensity of the spot
+
     </help>
     <citations>
         <citation type="doi">10.1097/j.pain.0000000000002642</citation>
