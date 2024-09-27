@@ -84,7 +84,7 @@
             <param name="has_header" value="true" />
             <param name="swap_xy" value="false" />
             <param name="binary" value="true" />
-            <expand macro="tests/label_image_diff" name="output" value="output3_binary.tif" ftype="tiff" />
+            <expand macro="tests/binary_image_diff" name="output" value="output3_binary.tif" ftype="tiff" />
         </test>
         <!-- Labeled / TSV with header / TSV with labels -->
         <test>
