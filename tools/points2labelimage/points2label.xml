@@ -76,23 +76,45 @@
             <param name="binary" value="false" />
             <expand macro="tests/label_image_diff" name="output" value="output2.tif" ftype="tiff" />
         </test>
+        <!-- Binary / TSV with header / TSV with labels -->
+        <test>
+            <param name="input" value="input3.tsv" />
+            <param name="shapex" value="200" />
+            <param name="shapey" value="100" />
+            <param name="has_header" value="true" />
+            <param name="swap_xy" value="false" />
+            <param name="binary" value="true" />
+            <expand macro="tests/label_image_diff" name="output" value="output3_binary.tif" ftype="tiff" />
+        </test>
+        <!-- Labeled / TSV with header / TSV with labels -->
+        <test>
+            <param name="input" value="input3.tsv" />
+            <param name="shapex" value="200" />
+            <param name="shapey" value="100" />
+            <param name="has_header" value="true" />
+            <param name="swap_xy" value="false" />
+            <param name="binary" value="false" />
+            <expand macro="tests/label_image_diff" name="output" value="output3.tif" ftype="tiff" />
+        </test>
     </tests>
     <help>
 
         **Converts a tabular list of points to a label map by rasterizing the point coordinates.**
 
-        The created image is a single-channel image with 16 bits per pixel (unsigned integer).
-        The points are rasterized with unique labels, or the value 65535 (white) for binary image output.
-        Pixels not corresponding to any points in the tabular file are assigned the value 0 (black).
+        The created image is a single-channel image with 16 bits per pixel (unsigned integer). The points are
+        rasterized with unique labels, or the value 65535 (white) for binary image output. Pixels not corresponding to
+        any points in the tabular file are assigned the value 0 (black).
 
-        The tabular list of points can either be header-less.
-        In this case, the first and second columns are expected to be the X and Y coordinates, respectively.
-        Otherwise, if a header is present, it is searched for the following column names:
+        The tabular list of points can either be header-less. In this case, the first and second columns are expected
+        to be the X and Y coordinates, respectively. Otherwise, if a header is present, it is searched for the
+        following column names:
 
         - ``pos_x`` or ``POS_X``: This column corresponds to the X coordinates.
         - ``pos_y`` or ``POS_Y``: This column corresponds to the Y coordinates.
-        - If a ``radius`` or ``RADIUS`` column is present,
-          then the points will be rasterized as circles of the corresponding radii.
+        - If a ``radius`` or ``RADIUS`` column is present, then the points will be rasterized as circles of the
+          corresponding radii.
+        - If a ``label`` or ``LABEL`` column is present, then the corresponding labels will be used for rasterization
+          (unless "Produce binary image" is activated).
 
     </help>
     <citations>

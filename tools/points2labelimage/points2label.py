@@ -18,16 +18,26 @@ def rasterize(point_file, out_file, shape, has_header=False, swap_xy=False, bg_v
         # Read the tabular file with information from the header
         if has_header:
             df = pd.read_csv(point_file, delimiter='\t')
+
             pos_x_column = giatools.pandas.find_column(df, ['pos_x', 'POS_X'])
             pos_y_column = giatools.pandas.find_column(df, ['pos_y', 'POS_Y'])
             pos_x_list = df[pos_x_column].round().astype(int)
             pos_y_list = df[pos_y_column].round().astype(int)
             assert len(pos_x_list) == len(pos_y_list)
+
             try:
                 radius_column = giatools.pandas.find_column(df, ['radius', 'RADIUS'])
                 radius_list = df[radius_column]
+                assert len(pos_x_list) == len(radius_list)
             except KeyError:
                 radius_list = [0] * len(pos_x_list)
+
+            try:
+                label_column = giatools.pandas.find_column(df, ['label', 'LABEL'])
+                label_list = df[label_column]
+                assert len(pos_x_list) == len(label_list)
+            except KeyError:
+                label_list = list(range(1, len(pos_x_list) + 1))
 
         # Read the tabular file without header
         else:
@@ -36,14 +46,16 @@ def rasterize(point_file, out_file, shape, has_header=False, swap_xy=False, bg_v
             pos_y_list = df[1].round().astype(int)
             assert len(pos_x_list) == len(pos_y_list)
             radius_list = [0] * len(pos_x_list)
+            label_list = list(range(1, len(pos_x_list) + 1))
 
         # Optionally swap the coordinates
         if swap_xy:
             pos_x_list, pos_y_list = pos_y_list, pos_x_list
 
         # Perform the rasterization
-        for pidx, (y, x, radius) in enumerate(zip(pos_y_list, pos_x_list, radius_list)):
-            label = pidx + 1 if fg_value is None else fg_value
+        for y, x, radius, label in zip(pos_y_list, pos_x_list, radius_list, label_list):
+            if fg_value is not None:
+                label = fg_value
 
             if y < 0 or x < 0 or y >= shape[0] or x >= shape[1]:
                 raise IndexError(f'The point x={x}, y={y} exceeds the bounds of the image (width: {shape[1]}, height: {shape[0]})')
