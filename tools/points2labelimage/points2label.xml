@@ -114,7 +114,7 @@
         - If a ``radius`` or ``RADIUS`` column is present, then the points will be rasterized as circles of the
           corresponding radii.
         - If a ``label`` or ``LABEL`` column is present, then the corresponding labels will be used for rasterization
-          (unless "Produce binary image" is activated).
+          (unless "Produce binary image" is activated). Different points are allowed to use the same label.
 
     </help>
     <citations>
