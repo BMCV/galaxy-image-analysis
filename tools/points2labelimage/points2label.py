@@ -1,29 +1,13 @@
 import argparse
 import os
 import warnings
-from typing import List
 
+import giatools.pandas
 import numpy as np
 import pandas as pd
 import scipy.ndimage as ndi
 import skimage.io
 import skimage.segmentation
-
-
-def find_column(df: pd.DataFrame, candidates: List[str]) -> str:
-    """
-    Returns the column name present in `df` and the list of `candidates`.
-
-    Raises:
-        KeyError: If there is no candidate column name present in `df`, or more than one.
-    """
-    intersection = frozenset(df.columns) & frozenset(candidates)
-    if len(intersection) == 0:
-        raise KeyError(f'No such column: {", ".join(candidates)}')
-    elif len(intersection) > 1:
-        raise KeyError(f'The column names {", ".join(intersection)} are ambiguous')
-    else:
-        return next(iter(intersection))
 
 
 def rasterize(point_file, out_file, shape, has_header=False, swap_xy=False, bg_value=0, fg_value=None):
@@ -34,13 +18,13 @@ def rasterize(point_file, out_file, shape, has_header=False, swap_xy=False, bg_v
         # Read the tabular file with information from the header
         if has_header:
             df = pd.read_csv(point_file, delimiter='\t')
-            pos_x_column = find_column(df, ['pos_x', 'POS_X'])
-            pos_y_column = find_column(df, ['pos_y', 'POS_Y'])
+            pos_x_column = giatools.pandas.find_column(df, ['pos_x', 'POS_X'])
+            pos_y_column = giatools.pandas.find_column(df, ['pos_y', 'POS_Y'])
             pos_x_list = df[pos_x_column].round().astype(int)
             pos_y_list = df[pos_y_column].round().astype(int)
             assert len(pos_x_list) == len(pos_y_list)
             try:
-                radius_column = find_column(df, ['radius', 'RADIUS'])
+                radius_column = giatools.pandas.find_column(df, ['radius', 'RADIUS'])
                 radius_list = df[radius_column]
             except KeyError:
                 radius_list = [0] * len(pos_x_list)

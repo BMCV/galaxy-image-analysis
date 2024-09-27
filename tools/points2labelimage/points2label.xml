@@ -20,6 +20,7 @@
         <requirement type="package" version="1.26.4">numpy</requirement>
         <requirement type="package" version="1.2.4">pandas</requirement>
         <requirement type="package" version="2024.6.18">tifffile</requirement>
+        <requirement type="package" version="0.3.1">giatools</requirement> 
     </requirements>
     <command detect_errors="aggressive"><![CDATA[
 
