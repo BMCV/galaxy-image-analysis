@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import scipy.ndimage as ndi
 import skimage.io
+import skimage.segmentation
 
 
 def find_column(df: pd.DataFrame, candidates: List[str]) -> str:
@@ -25,7 +26,7 @@ def find_column(df: pd.DataFrame, candidates: List[str]) -> str:
         return next(iter(intersection))
 
 
-def points2binaryimage(point_file, out_file, shape, has_header=False, swap_xy=False, bg_value=0, fg_value=None):
+def rasterize(point_file, out_file, shape, has_header=False, swap_xy=False, bg_value=0, fg_value=None):
 
     img = np.full(shape, dtype=np.uint16, fill_value=bg_value)
     if os.path.exists(point_file) and os.path.getsize(point_file) > 0:
@@ -63,11 +64,38 @@ def points2binaryimage(point_file, out_file, shape, has_header=False, swap_xy=Fa
             if y < 0 or x < 0 or y >= shape[0] or x >= shape[1]:
                 raise IndexError(f'The point x={x}, y={y} exceeds the bounds of the image (width: {shape[1]}, height: {shape[0]})')
 
+            # Rasterize circle and distribute overlapping image area
             if radius > 0:
                 mask = np.ones(shape, dtype=bool)
                 mask[y, x] = False
                 mask = (ndi.distance_transform_edt(mask) <= radius)
-                img[mask] = label
+
+                # Compute the overlap (pretend there is none if the rasterization is binary)
+                if fg_value is None:
+                    overlap = np.logical_and(img > 0, mask)
+                else:
+                    overlap = np.zeros(shape, dtype=bool)
+
+                # Rasterize the part of the circle which is disjoint from other foreground.
+                #
+                # In the current implementation, the result depends on the order of the rasterized circles if somewhere
+                # more than two circles overlap. This is probably negligable for most applications. To achieve results
+                # that are invariant to the order, first all circles would need to be rasterized independently, and
+                # then blended together. This, however, would either strongly increase the memory consumption, or
+                # require a more complex implementation which exploits the sparsity of the rasterized masks.
+                #
+                disjoint_mask = np.logical_xor(mask, overlap)
+                if disjoint_mask.any():
+                    img[disjoint_mask] = label
+
+                    # Distribute the remaining part of the circle
+                    if overlap.any():
+                        dist = ndi.distance_transform_edt(overlap)
+                        foreground = (img > 0)
+                        img[overlap] = 0
+                        img = skimage.segmentation.watershed(dist, img, mask=foreground)
+
+            # Rasterize point (there is no overlapping area to be distributed)
             else:
                 img[y, x] = label
 
@@ -91,8 +119,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    # TOOL
-    points2binaryimage(
+    rasterize(
         args.point_file.name,
         args.out_file,
         (args.shapey, args.shapex),
