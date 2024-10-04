@@ -1,5 +1,13 @@
 # Utility scripts
 
+## Check tool directory names
+
+Verify that the path of all tools contains the name of the corresponding tool shed repository or the name of a tool suite.
+
+```bash
+./util/check_directory_names.py
+```
+
 ## Use case: An input TIFF file is too large
 
 Assuming that the TIFF file is an RGB file:
