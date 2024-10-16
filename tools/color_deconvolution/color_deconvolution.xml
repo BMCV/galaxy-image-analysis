@@ -1,4 +1,4 @@
-<tool id="ip_color_deconvolution" name="Perform color decomposition" version="0.8-2"> 
+<tool id="ip_color_deconvolution" name="Perform color decomposition" version="0.8-3"> 
     <description></description>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
