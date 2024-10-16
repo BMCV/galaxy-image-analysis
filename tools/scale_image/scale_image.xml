@@ -4,7 +4,7 @@
         <import>creators.xml</import>
         <import>tests.xml</import>
         <token name="@TOOL_VERSION@">0.18.3</token>
-        <token name="@VERSION_SUFFIX@">1</token>
+        <token name="@VERSION_SUFFIX@">2</token>
     </macros>
     <creator>
         <expand macro="creators/bmcv" />
@@ -37,7 +37,7 @@
 
     ]]></command>
     <inputs>
-        <param name="input" type="data" format="png" label="Image file"/>
+        <param name="input" type="data" format="png,tiff" label="Image file"/>
         <param argument="--scale" type="text" value="1" label="Scaling factor" help="Use either a single scaling factor (uniform scaling), or a comma-separated list of scaling factors (anistropic scaling). For a 2-D single-channel or RGB image, the first scaling factor corresponds to the image width and the second corresponds to the image height. For images with 3 or more axes, the last axis is assumed to correspond to the image channels if uniform scaling is used (a single value)."/>
         <param argument="--order" type="select" label="Interpolation method">
             <option value="0">Nearest-neighbor</option>
