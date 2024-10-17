@@ -1,5 +1,14 @@
-<tool id="ip_color_deconvolution" name="Perform color decomposition" version="0.8-3"> 
+<tool id="ip_color_deconvolution" name="Perform color decomposition" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@"> 
     <description></description>
+    <macros>
+        <import>creators.xml</import>
+        <import>tests.xml</import>
+        <token name="@TOOL_VERSION@">0.8</token>
+        <token name="@VERSION_SUFFIX@">2</token>
+    </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+    </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
@@ -7,11 +16,11 @@
         <xref type="bio.tools">galaxy_image_analysis</xref>
     </xrefs>
     <requirements>
-        <requirement type="package" version="0.14.2">scikit-image</requirement>
-        <requirement type="package" version="4.0.0">pillow</requirement>
-        <requirement type="package" version="0.18.1">scikit-learn</requirement>
-        <requirement type="package" version="1.12">numpy</requirement>
-        <requirement type="package" version="0.15.1">tifffile</requirement>
+        <requirement type="package" version="0.24.0">scikit-image</requirement>
+        <requirement type="package" version="11.0.0">pillow</requirement>
+        <requirement type="package" version="1.5.2">scikit-learn</requirement>
+        <requirement type="package" version="2.1.2">numpy</requirement>
+        <requirement type="package" version="2024.9.20">tifffile</requirement>
     </requirements>
     <command detect_errors="aggressive">
         <![CDATA[ 
@@ -74,7 +83,7 @@
         <test>
             <param name="input" value="galaxyIcon_noText.png" />
             <param name="convtype" value="rgb2hsv" />
-            <output name="output" ftype="tiff" />
+            <expand macro="tests/intensity_image_diff" name="output" value="galaxyIcon_noText.tiff" ftype="tiff"/>
         </test>
     </tests>
     <help>
