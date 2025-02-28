@@ -42,14 +42,30 @@
         <param name="convtype" type="select" label="Transformation type">
 
             <!-- Color deconvolution and recomposition operations -->
-            <option value="he_from_rgb">Deconvolve RGB into Haematoxylin + Eosin</option>
-            <option value="rgb_from_he">Recompose RGB from Haematoxylin + Eosin</option>
-            <option value="hdx_from_rgb">Deconvolve RGB into Haematoxylin + DAB</option>
-            <option value="rgb_from_hdx">Recompose RGB from Haematoxylin + DAB</option>
-            <option value="rgb2hed">Deconvolve RGB into Haematoxylin + Eosin + DAB</option>
-            <option value="hed2rgb">Recompose RGB from Haematoxylin + Eosin + DAB</option>
+            <option value="he_from_rgb">Deconvolve RGB into H&#38;E (Hematoxylin + Eosin)</option>
+            <option value="rgb_from_he">Recompose RGB from H&#38;E (Hematoxylin + Eosin)</option>
+            <option value="hdx_from_rgb">Deconvolve RGB into Hematoxylin + DAB</option>
+            <option value="rgb_from_hdx">Recompose RGB from Hematoxylin + DAB</option>
+            <option value="rgb2hed">Deconvolve RGB into Hematoxylin + Eosin + DAB</option>
+            <option value="hed2rgb">Recompose RGB from Hematoxylin + Eosin + DAB</option>
+            <option value="hpx_from_rgb">Deconvolve RGB into Hematoxylin + PAS</option>
+            <option value="rgb_from_hpx">Recompose RGB from Hematoxylin + PAS</option>
+            <option value="hax_from_rgb">Deconvolve RGB into Hematoxylin + AEC</option>
+            <option value="rgb_from_hax">Recompose RGB from Hematoxylin + AEC</option>
+            <option value="ahx_from_rgb">Deconvolve RGB into Alcian Blue + Hematoxylin</option>
+            <option value="rgb_from_ahx">Recompose RGB from Alcian Blue + Hematoxylin</option>
+            <option value="bro_from_rgb">Deconvolve RGB into Blue matrix Aniline Blue + Red matrix Azocarmine + Orange matrix Orange-G</option>
+            <option value="rgb_from_bro">Recompose RGB from Blue matrix Aniline Blue + Red matrix Azocarmine + Orange matrix Orange-G</option>
+            <option value="rbd_from_rgb">Deconvolve RGB into FastRed + FastBlue + DAB</option>
+            <option value="rgb_from_rbd">Recompose RGB from FastRed + FastBlue + DAB</option>
             <option value="fgx_from_rgb">Deconvolve RGB into Feulgen + Light Green</option>
             <option value="rgb_from_fgx">Recompose RGB from Feulgen + Light Green</option>
+            <option value="bex_from_rgb">Deconvolve RGB into Giemsa stain (Methyl Blue + Eosin)</option>
+            <option value="rgb_from_bex">Recompose RGB from Giemsa stain (Methyl Blue + Eosin)</option>
+            <option value="bpx_from_rgb">Deconvolve RGB into Methyl Blue + Ponceau Fuchsin</option>
+            <option value="rgb_from_bpx">Recompose RGB from Methyl Blue + Ponceau Fuchsin</option>
+            <option value="gdx_from_rgb">Deconvolve RGB into Methyl Green + DAB</option>
+            <option value="rgb_from_gdx">Recompose RGB from Methyl Green + DAB</option>
 
             <!-- Unsupervised machine learning-based operations -->
             <option value="ica">Project onto independent components (ICA)</option>
@@ -74,27 +90,6 @@
             <option value="lab2lch">Convert CIE-LAB to CIE-LCh</option>
             <option value="rgb2rgbcie">Convert RGB to RGB-CIE</option>
             <option value="rgbcie2rgb">Convert RGB-CIE to RGB</option>
-
-            <!-- TODO: sort the operations below -->
-            <option value="rgb_from_rbd">rgb_from_rbd</option>
-            <option value="rgb_from_bro">rgb_from_bro</option>
-            <option value="bpx_from_rgb">bpx_from_rgb</option>
-            <option value="hed_from_rgb">hed_from_rgb</option>
-            <option value="hpx_from_rgb">hpx_from_rgb</option>
-            <option value="rgb_from_gdx">rgb_from_gdx</option>
-            <option value="rgb_from_hpx">rgb_from_hpx</option>
-            <option value="bex_from_rgb">bex_from_rgb</option>
-            <option value="rgb_from_bex">rgb_from_bex</option>
-            <option value="rbd_from_rgb">rbd_from_rgb</option>
-            <option value="ahx_from_rgb">ahx_from_rgb</option>
-            <option value="rgb_from_hax">rgb_from_hax</option>
-            <option value="hax_from_rgb">hax_from_rgb</option>
-            <option value="rgb_from_bpx">rgb_from_bpx</option>
-            <option value="gdx_from_rgb">gdx_from_rgb</option>
-            <option value="rgb_from_ahx">rgb_from_ahx</option>
-            <option value="rgb_from_hed">rgb_from_hed</option>
-            <option value="bro_from_rgb">bro_from_rgb</option>
-            <!-- TODO: sort the operations above -->
 
         </param>
         <param name="isolate_channel" type="integer" optional="true" value="" label="Isolate channel" help="Must be empty or the number of a channel (1 to 3). If used, all other channels are set to zero before performing the chosen transformation." />
