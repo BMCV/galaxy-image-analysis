@@ -40,52 +40,62 @@
     <inputs>
         <param name="input" type="data" format="tiff,png,jpg,bmp" label="Image file with 3 channels"/>
         <param name="convtype" type="select" label="Transformation type">
-            <option value="ica" selected="True">Project onto independent components (ICA)</option>
+
+            <!-- Color deconvolution and recomposition operations -->
+            <option value="he_from_rgb">Deconvolve RGB into Haematoxylin + Eosin</option>
+            <option value="rgb_from_he">Recompose RGB from Haematoxylin + Eosin</option>
+            <option value="hdx_from_rgb">Deconvolve RGB into Haematoxylin + DAB</option>
+            <option value="rgb_from_hdx">Recompose RGB from Haematoxylin + DAB</option>
+            <option value="rgb2hed">Deconvolve RGB into Haematoxylin + Eosin + DAB</option>
+            <option value="hed2rgb">Recompose RGB from Haematoxylin + Eosin + DAB</option>
+            <option value="fgx_from_rgb">Deconvolve RGB into Feulgen + Light Green</option>
+            <option value="rgb_from_fgx">Recompose RGB from Feulgen + Light Green</option>
+
+            <!-- Unsupervised machine learning-based operations -->
+            <option value="ica">Project onto independent components (ICA)</option>
             <option value="pca">Project onto principal components (PCA)</option>
             <option value="nmf">Non-negative matrix factorization</option>
             <option value="fa">Factor analysis</option>
-            <option value="xyz2rgb">xyz2rgb</option>
-            <option value="rgb_from_rbd">rgb_from_rbd</option>
-            <option value="rgb2hsv">Convert RGB to HSV</option>
+
+            <!-- General color space conversion operations -->
+            <option value="rgb2hsv" selected="True">Convert RGB to HSV</option>
             <option value="hsv2rgb">Convert HSV to RGB</option>
+            <option value="rgb2xyz">Convert RGB to XYZ (CIE 1931)</option>
+            <option value="xyz2rgb">Convert XYZ (CIE 1931) to RGB</option>
+            <option value="rgb2luv">Convert RGB to CIE-LUV</option>
+            <option value="luv2rgb">Convert CIE-LUV to RGB</option>
+            <option value="xyz2luv">Convert XYZ (CIE 1931) to CIE-LUV</option>
+            <option value="luv2xyz">Convert CIE-LUV to XYZ (CIE 1931)</option>
+            <option value="rgb2lab">Convert RGB to CIE-LAB (illuminant D65, aperture angle 2&#xb0;)</option>
+            <option value="lab2rgb">Convert CIE-LAB (illuminant D65, aperture angle 2&#xb0;) to RGB</option>
+            <option value="lab2xyz">Convert CIE-LAB (illuminant D65, aperture angle 2&#xb0;) to XYZ (CIE 1931)</option>
+            <option value="xyz2lab">Convert XYZ (CIE 1931) to CIE-LAB (illuminant D65, aperture angle 2&#xb0;)</option>
+            <option value="lch2lab">Convert CIE-LCh to CIE-LAB</option>
+            <option value="lab2lch">Convert CIE-LAB to CIE-LCh</option>
+            <option value="rgb2rgbcie">Convert RGB to RGB-CIE</option>
+            <option value="rgbcie2rgb">Convert RGB-CIE to RGB</option>
+
+            <!-- TODO: sort the operations below -->
+            <option value="rgb_from_rbd">rgb_from_rbd</option>
             <option value="rgb_from_bro">rgb_from_bro</option>
             <option value="bpx_from_rgb">bpx_from_rgb</option>
             <option value="hed_from_rgb">hed_from_rgb</option>
-            <option value="rgbcie2rgb">rgbcie2rgb</option>
-            <option value="hdx_from_rgb">Deconvolve RGB into Haematoxylin + DAB</option>
-            <option value="rgb_from_hdx">Recompose RGB from Haematoxylin + DAB</option>
-            <option value="xyz2luv">xyz2luv</option>
-            <option value="rgb2lab">rgb2lab</option>
             <option value="hpx_from_rgb">hpx_from_rgb</option>
-            <option value="fgx_from_rgb">Deconvolve RGB into Feulgen + Light Green</option>
-            <option value="rgb_from_fgx">Recompose RGB from Feulgen + Light Green</option>
             <option value="rgb_from_gdx">rgb_from_gdx</option>
-            <option value="lab2xyz">lab2xyz</option>
             <option value="rgb_from_hpx">rgb_from_hpx</option>
-            <option value="lab2rgb">lab2rgb</option>
-            <option value="rgb2rgbcie">rgb2rgbcie</option>
             <option value="bex_from_rgb">bex_from_rgb</option>
-            <option value="xyz2lab">xyz2lab</option>
             <option value="rgb_from_bex">rgb_from_bex</option>
             <option value="rbd_from_rgb">rbd_from_rgb</option>
-            <option value="rgb2hed">Deconvolve RGB into Haematoxylin + Eosin + DAB</option>
-            <option value="hed2rgb">Recompose RGB from Haematoxylin + Eosin + DAB</option>
-            <option value="luv2rgb">luv2rgb</option>
-            <option value="luv2xyz">luv2xyz</option>
-            <option value="lch2lab">lch2lab</option>
-            <option value="rgb2luv">rgb2luv</option>
             <option value="ahx_from_rgb">ahx_from_rgb</option>
             <option value="rgb_from_hax">rgb_from_hax</option>
             <option value="hax_from_rgb">hax_from_rgb</option>
             <option value="rgb_from_bpx">rgb_from_bpx</option>
-            <option value="rgb2xyz">rgb2xyz</option>
             <option value="gdx_from_rgb">gdx_from_rgb</option>
             <option value="rgb_from_ahx">rgb_from_ahx</option>
-            <option value="lab2lch">lab2lch</option>
             <option value="rgb_from_hed">rgb_from_hed</option>
             <option value="bro_from_rgb">bro_from_rgb</option>
-            <option value="he_from_rgb">Deconvolve RGB into Haematoxylin + Eosin</option>
-            <option value="rgb_from_he">Recompose RGB from Haematoxylin + Eosin</option>
+            <!-- TODO: sort the operations above -->
+
         </param>
         <param name="isolate_channel" type="integer" optional="true" value="" label="Isolate channel" help="Must be empty or the number of a channel (1 to 3). If used, all other channels are set to zero before performing the chosen transformation." />
     </inputs>
