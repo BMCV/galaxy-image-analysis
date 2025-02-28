@@ -36,18 +36,19 @@
             <option value="fa">Factor analysis</option>
             <option value="xyz2rgb">xyz2rgb</option>
             <option value="rgb_from_rbd">rgb_from_rbd</option>
-            <option value="rgb2hsv">rgb2hsv</option>
+            <option value="rgb2hsv">Convert RGB to HSV</option>
+            <option value="hsv2rgb">Convert HSV to RGB</option>
             <option value="rgb_from_bro">rgb_from_bro</option>
             <option value="bpx_from_rgb">bpx_from_rgb</option>
             <option value="hed_from_rgb">hed_from_rgb</option>
             <option value="rgbcie2rgb">rgbcie2rgb</option>
-            <option value="hdx_from_rgb">Deconvolve Haematoxylin + DAB</option>
-            <option value="rgb_from_hdx">Recompose Haematoxylin + DAB</option>
+            <option value="hdx_from_rgb">Deconvolve RGB into Haematoxylin + DAB</option>
+            <option value="rgb_from_hdx">Recompose RGB from Haematoxylin + DAB</option>
             <option value="xyz2luv">xyz2luv</option>
             <option value="rgb2lab">rgb2lab</option>
             <option value="hpx_from_rgb">hpx_from_rgb</option>
-            <option value="fgx_from_rgb">Deconvolve Feulgen + Light Green</option>
-            <option value="rgb_from_fgx">Recompose Feulgen + Light Green</option>
+            <option value="fgx_from_rgb">Deconvolve RGB into Feulgen + Light Green</option>
+            <option value="rgb_from_fgx">Recompose RGB from Feulgen + Light Green</option>
             <option value="rgb_from_gdx">rgb_from_gdx</option>
             <option value="lab2xyz">lab2xyz</option>
             <option value="rgb_from_hpx">rgb_from_hpx</option>
@@ -57,8 +58,8 @@
             <option value="xyz2lab">xyz2lab</option>
             <option value="rgb_from_bex">rgb_from_bex</option>
             <option value="rbd_from_rgb">rbd_from_rgb</option>
-            <option value="rgb2hed">Deconvolve Haematoxylin + Eosin + DAB</option>
-            <option value="hed2rgb">Recompose Haematoxylin + Eosin + DAB</option>
+            <option value="rgb2hed">Deconvolve RGB into Haematoxylin + Eosin + DAB</option>
+            <option value="hed2rgb">Recompose RGB from Haematoxylin + Eosin + DAB</option>
             <option value="luv2rgb">luv2rgb</option>
             <option value="luv2xyz">luv2xyz</option>
             <option value="lch2lab">lch2lab</option>
@@ -73,7 +74,6 @@
             <option value="lab2lch">lab2lch</option>
             <option value="rgb_from_hed">rgb_from_hed</option>
             <option value="bro_from_rgb">bro_from_rgb</option>
-            <option value="hsv2rgb">hsv2rgb</option>
         </param>
     </inputs>
     <outputs>
