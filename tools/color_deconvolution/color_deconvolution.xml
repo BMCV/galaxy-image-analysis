@@ -88,9 +88,9 @@
     </tests>
     <help>
 
-	**This tool converts the color space of an image.**
+        **This tool converts the color space of an image.**
 
-	Several color deconvolution techniques are also supported.
+        Several color deconvolution techniques are also supported.
 
     </help>
     <citations>
