@@ -1,10 +1,10 @@
-<tool id="ip_color_deconvolution" name="Perform color decomposition" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@"> 
+<tool id="ip_color_deconvolution" name="Convert color space" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@"> 
     <description></description>
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
         <token name="@TOOL_VERSION@">0.8</token>
-        <token name="@VERSION_SUFFIX@">2</token>
+        <token name="@VERSION_SUFFIX@">3</token>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
@@ -30,10 +30,10 @@
     <inputs>
         <param name="input" type="data" format="tiff,png,jpg,bmp" label="Image file with 3 channels"/>
         <param name="convtype" type="select" label="Transformation type">
-            <option value="ica" selected="True">ica</option>
-            <option value="pca">pca</option>
-            <option value="nmf">nmf</option>
-            <option value="fa">fa</option>
+            <option value="ica" selected="True">Project onto independent components (ICA)</option>
+            <option value="pca">Project onto principal components (PCA)</option>
+            <option value="nmf">Non-negative matrix factorization</option>
+            <option value="fa">Factor analysis</option>
             <option value="xyz2rgb">xyz2rgb</option>
             <option value="rgb_from_rbd">rgb_from_rbd</option>
             <option value="rgb_from_hdx">rgb_from_hdx</option>
@@ -57,8 +57,8 @@
             <option value="rgb_from_bex">rgb_from_bex</option>
             <option value="fgx_from_rgb">fgx_from_rgb</option>
             <option value="rbd_from_rgb">rbd_from_rgb</option>
-            <option value="rgb2hed">rgb2hed</option>
-            <option value="hed2rgb">hed2rgb</option>
+            <option value="rgb2hed">Haematoxylin-Eosin-DAB to RGB</option>
+            <option value="hed2rgb">RGB to Haematoxylin-Eosin-DAB</option>
             <option value="luv2rgb">luv2rgb</option>
             <option value="luv2xyz">luv2xyz</option>
             <option value="lch2lab">lch2lab</option>
@@ -88,9 +88,9 @@
     </tests>
     <help>
 
-        **What it does**
+	**This tool converts the color space of an image.**
 
-        This tools performs several color deconvolution techniques.
+	Several color deconvolution techniques are also supported.
 
     </help>
     <citations>
