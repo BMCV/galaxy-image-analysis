@@ -3,8 +3,8 @@
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
-        <token name="@TOOL_VERSION@">0.8</token>
-        <token name="@VERSION_SUFFIX@">3</token>
+        <token name="@TOOL_VERSION@">0.9</token>
+        <token name="@VERSION_SUFFIX@">0</token>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
