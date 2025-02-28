@@ -67,9 +67,17 @@ parser = argparse.ArgumentParser()
 parser.add_argument('input_file', type=argparse.FileType('r'), default=sys.stdin, help='input file')
 parser.add_argument('out_file', type=argparse.FileType('w'), default=sys.stdin, help='out file (TIFF)')
 parser.add_argument('conv_type', choices=convOptions.keys(), help='conversion type')
+parser.add_argument('--isolate_channel', type=int, help='set all other channels to zero (1-3)', default=0)
 args = parser.parse_args()
 
 img_in = skimage.io.imread(args.input_file.name)[:, :, 0:3]
+
+# Apply channel isolation
+if args.isolate_channel:
+    for ch in range(3):
+        if ch + 1 != args.isolate_channel:
+            img_in[:, :, ch] = 0
+
 result = convOptions[args.conv_type](img_in)
 
 # It is sufficient to store 32bit floating point data, the precision loss is tolerable

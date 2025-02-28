@@ -24,7 +24,17 @@
     </requirements>
     <command detect_errors="aggressive">
         <![CDATA[ 
-        python '$__tool_directory__/color_deconvolution.py' '$input' '$output' '$convtype'
+
+        python '$__tool_directory__/color_deconvolution.py'
+
+            '$input'
+            '$output'
+            '$convtype'
+
+            #if str($isolate_channel) != '':
+                --isolate_channel '${isolate_channel}'
+            #end if
+
         ]]>
     </command>
     <inputs>
@@ -75,6 +85,7 @@
             <option value="rgb_from_hed">rgb_from_hed</option>
             <option value="bro_from_rgb">bro_from_rgb</option>
         </param>
+        <param name="isolate_channel" type="integer" optional="true" value="" label="Isolate channel" help="Must be empty or the number of a channel (1 to 3). If used, all other channels are set to zero before performing the chosen transformation." />
     </inputs>
     <outputs>
         <data format="tiff" name="output"/>
@@ -89,6 +100,17 @@
             <param name="input" value="he1.tiff" />
             <param name="convtype" value="rgb2hed" />
             <expand macro="tests/intensity_image_diff" name="output" value="he1_deconv_hed.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <param name="input" value="he1_deconv_hed.tiff" />
+            <param name="convtype" value="hed2rgb" />
+            <expand macro="tests/intensity_image_diff" name="output" value="he1_deconv_hed_recomposed.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <param name="input" value="he1_deconv_hed.tiff" />
+            <param name="convtype" value="hed2rgb" />
+            <param name="isolate_channel" value="1" />
+            <expand macro="tests/intensity_image_diff" name="output" value="he1_deconv_hed_recomposed1.tiff" ftype="tiff"/>
         </test>
         <test>
             <param name="input" value="hdab1.tiff" />
