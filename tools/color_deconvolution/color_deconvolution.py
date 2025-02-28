@@ -9,7 +9,15 @@ import skimage.util
 import tifffile
 from sklearn.decomposition import FactorAnalysis, FastICA, NMF, PCA
 
+# Stain separation matrix for H&E color deconvolution, extracted from ImageJ/FIJI
+rgb_from_he = np.array([
+    [0.64431860, 0.7166757, 0.26688856],
+    [0.09283128, 0.9545457, 0.28324000],
+    [0.63595444, 0.0010000, 0.77172660],
+])
+
 convOptions = {
+    # General color space conversion operations
     'hed2rgb': lambda img_raw: skimage.color.hed2rgb(img_raw),
     'hsv2rgb': lambda img_raw: skimage.color.hsv2rgb(img_raw),
     'lab2lch': lambda img_raw: skimage.color.lab2lch(img_raw),
@@ -29,18 +37,7 @@ convOptions = {
     'xyz2luv': lambda img_raw: skimage.color.xyz2luv(img_raw),
     'xyz2rgb': lambda img_raw: skimage.color.xyz2rgb(img_raw),
 
-    'rgb_from_hed': lambda img_raw: skimage.color.combine_stains(img_raw, skimage.color.rgb_from_hed),
-    'rgb_from_hdx': lambda img_raw: skimage.color.combine_stains(img_raw, skimage.color.rgb_from_hdx),
-    'rgb_from_fgx': lambda img_raw: skimage.color.combine_stains(img_raw, skimage.color.rgb_from_fgx),
-    'rgb_from_bex': lambda img_raw: skimage.color.combine_stains(img_raw, skimage.color.rgb_from_bex),
-    'rgb_from_rbd': lambda img_raw: skimage.color.combine_stains(img_raw, skimage.color.rgb_from_rbd),
-    'rgb_from_gdx': lambda img_raw: skimage.color.combine_stains(img_raw, skimage.color.rgb_from_gdx),
-    'rgb_from_hax': lambda img_raw: skimage.color.combine_stains(img_raw, skimage.color.rgb_from_hax),
-    'rgb_from_bro': lambda img_raw: skimage.color.combine_stains(img_raw, skimage.color.rgb_from_bro),
-    'rgb_from_bpx': lambda img_raw: skimage.color.combine_stains(img_raw, skimage.color.rgb_from_bpx),
-    'rgb_from_ahx': lambda img_raw: skimage.color.combine_stains(img_raw, skimage.color.rgb_from_ahx),
-    'rgb_from_hpx': lambda img_raw: skimage.color.combine_stains(img_raw, skimage.color.rgb_from_hpx),
-
+    # Color deconvolution operations
     'hed_from_rgb': lambda img_raw: skimage.color.separate_stains(img_raw, skimage.color.hed_from_rgb),
     'hdx_from_rgb': lambda img_raw: skimage.color.separate_stains(img_raw, skimage.color.hdx_from_rgb),
     'fgx_from_rgb': lambda img_raw: skimage.color.separate_stains(img_raw, skimage.color.fgx_from_rgb),
@@ -53,6 +50,24 @@ convOptions = {
     'ahx_from_rgb': lambda img_raw: skimage.color.separate_stains(img_raw, skimage.color.ahx_from_rgb),
     'hpx_from_rgb': lambda img_raw: skimage.color.separate_stains(img_raw, skimage.color.hpx_from_rgb),
 
+    # Recomposition operations (reverse color deconvolution)
+    'rgb_from_hed': lambda img_raw: skimage.color.combine_stains(img_raw, skimage.color.rgb_from_hed),
+    'rgb_from_hdx': lambda img_raw: skimage.color.combine_stains(img_raw, skimage.color.rgb_from_hdx),
+    'rgb_from_fgx': lambda img_raw: skimage.color.combine_stains(img_raw, skimage.color.rgb_from_fgx),
+    'rgb_from_bex': lambda img_raw: skimage.color.combine_stains(img_raw, skimage.color.rgb_from_bex),
+    'rgb_from_rbd': lambda img_raw: skimage.color.combine_stains(img_raw, skimage.color.rgb_from_rbd),
+    'rgb_from_gdx': lambda img_raw: skimage.color.combine_stains(img_raw, skimage.color.rgb_from_gdx),
+    'rgb_from_hax': lambda img_raw: skimage.color.combine_stains(img_raw, skimage.color.rgb_from_hax),
+    'rgb_from_bro': lambda img_raw: skimage.color.combine_stains(img_raw, skimage.color.rgb_from_bro),
+    'rgb_from_bpx': lambda img_raw: skimage.color.combine_stains(img_raw, skimage.color.rgb_from_bpx),
+    'rgb_from_ahx': lambda img_raw: skimage.color.combine_stains(img_raw, skimage.color.rgb_from_ahx),
+    'rgb_from_hpx': lambda img_raw: skimage.color.combine_stains(img_raw, skimage.color.rgb_from_hpx),
+
+    # Custom color deconvolution and recomposition operations
+    'rgb_from_he': lambda img_raw: skimage.color.combine_stains(img_raw, rgb_from_he),
+    'he_from_rgb': lambda img_raw: skimage.color.separate_stains(img_raw, np.linalg.inv(rgb_from_he)),
+
+    # Unsupervised machine learning-based operations
     'pca': lambda img_raw: np.reshape(PCA(n_components=3).fit_transform(np.reshape(img_raw, [-1, img_raw.shape[2]])),
                                       [img_raw.shape[0], img_raw.shape[1], -1]),
     'nmf': lambda img_raw: np.reshape(NMF(n_components=3, init='nndsvda').fit_transform(np.reshape(img_raw, [-1, img_raw.shape[2]])),
