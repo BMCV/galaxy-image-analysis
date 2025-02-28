@@ -130,13 +130,22 @@
             <expand macro="tests/intensity_image_diff" name="output" value="hdab1_deconv_hdab.tiff" ftype="tiff"/>
         </test>
     </tests>
-    <help>
+    <help><![CDATA[
 
         **This tool converts the color space of an image.**
 
         Several color deconvolution techniques are also supported.
 
-    </help>
+        Color Deconvolution Example
+        ***************************
+
+        .. image:: he.png
+
+        .. image:: he_deconv.png
+
+        .. image:: he_recomposed.png
+
+    ]]></help>
     <citations>
       <citation type="doi">10.7717/peerj.453</citation>
       <citation type="bibtex">@inproceedings{sklearn_api,
