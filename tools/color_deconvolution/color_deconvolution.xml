@@ -1,4 +1,4 @@
-<tool id="ip_color_deconvolution" name="Convert color space" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@"> 
+<tool id="ip_color_deconvolution" name="Convert image color space" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@"> 
     <description></description>
     <macros>
         <import>creators.xml</import>

@@ -19,7 +19,6 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 - [Apply a morphological operation](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/morphological_operations/morphological_operations) with SciPy
 - [Concatenate images or channels](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/concat_channels/ip_concat_channels)
 - [Filter 2D image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/2d_simple_filter/ip_filter_standard) with scikit-image
-- [Perform color decomposition](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/color_deconvolution/ip_color_deconvolution)
 - [Perform histogram equalization](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/2d_histogram_equalization/ip_histogram_equalization) with scikit-image
 - [Permutate image axes](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/permutate_axis/ip_permutate_axis)
 - [Process images using arithmetic expressions](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/image_math/image_math) with NumPy
@@ -34,6 +33,7 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 - [Convert binary image to label map](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/binary2labelimage/ip_binary_to_labelimage)
 - [Convert binary image to points (center of masses)](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/binaryimage2points/ip_binaryimage_to_points)
 - [Convert binary image to points (point coordinates)](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/coordinates_of_roi/ip_coordinates_of_roi)
+- [Convert image color space](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/color_deconvolution/ip_color_deconvolution)
 - [Convert image format](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/bfconvert/ip_convertimage) with Bioformats
 - [Convert label map to binary image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/label_to_binary/label_to_binary) with NumPy
 - [Convert label map to points (center of masses)](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/labelimage2points/ip_labelimage_to_points)
