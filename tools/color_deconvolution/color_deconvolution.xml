@@ -41,13 +41,13 @@
             <option value="bpx_from_rgb">bpx_from_rgb</option>
             <option value="hed_from_rgb">hed_from_rgb</option>
             <option value="rgbcie2rgb">rgbcie2rgb</option>
-            <option value="hdx_from_rgb">Haematoxylin + DAB to RGB</option>
-            <option value="rgb_from_hdx">RGB to Haematoxylin + DAB</option>
+            <option value="hdx_from_rgb">Deconvolve Haematoxylin + DAB</option>
+            <option value="rgb_from_hdx">Recompose Haematoxylin + DAB</option>
             <option value="xyz2luv">xyz2luv</option>
             <option value="rgb2lab">rgb2lab</option>
             <option value="hpx_from_rgb">hpx_from_rgb</option>
-            <option value="fgx_from_rgb">Feulgen + Light Green to RGB</option>
-            <option value="rgb_from_fgx">RGB to Feulgen + Light Green</option>
+            <option value="fgx_from_rgb">Deconvolve Feulgen + Light Green</option>
+            <option value="rgb_from_fgx">Recompose Feulgen + Light Green</option>
             <option value="rgb_from_gdx">rgb_from_gdx</option>
             <option value="lab2xyz">lab2xyz</option>
             <option value="rgb_from_hpx">rgb_from_hpx</option>
@@ -57,8 +57,8 @@
             <option value="xyz2lab">xyz2lab</option>
             <option value="rgb_from_bex">rgb_from_bex</option>
             <option value="rbd_from_rgb">rbd_from_rgb</option>
-            <option value="rgb2hed">Haematoxylin + Eosin + DAB to RGB</option>
-            <option value="hed2rgb">RGB to Haematoxylin + Eosin + DAB</option>
+            <option value="rgb2hed">Deconvolve Haematoxylin + Eosin + DAB</option>
+            <option value="hed2rgb">Recompose Haematoxylin + Eosin + DAB</option>
             <option value="luv2rgb">luv2rgb</option>
             <option value="luv2xyz">luv2xyz</option>
             <option value="lch2lab">lch2lab</option>
@@ -84,6 +84,16 @@
             <param name="input" value="galaxyIcon_noText.png" />
             <param name="convtype" value="rgb2hsv" />
             <expand macro="tests/intensity_image_diff" name="output" value="galaxyIcon_noText.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <param name="input" value="he1.tiff" />
+            <param name="convtype" value="rgb2hed" />
+            <expand macro="tests/intensity_image_diff" name="output" value="he1_deconv_hed.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <param name="input" value="hdab1.tiff" />
+            <param name="convtype" value="hdx_from_rgb" />
+            <expand macro="tests/intensity_image_diff" name="output" value="hdab1_deconv_hdab.tiff" ftype="tiff"/>
         </test>
     </tests>
     <help>

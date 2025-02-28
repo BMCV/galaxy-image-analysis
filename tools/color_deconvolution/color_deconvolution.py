@@ -6,6 +6,7 @@ import numpy as np
 import skimage.color
 import skimage.io
 import skimage.util
+import tifffile
 from sklearn.decomposition import FactorAnalysis, FastICA, NMF, PCA
 
 convOptions = {
@@ -69,11 +70,12 @@ parser.add_argument('conv_type', choices=convOptions.keys(), help='conversion ty
 args = parser.parse_args()
 
 img_in = skimage.io.imread(args.input_file.name)[:, :, 0:3]
-res = convOptions[args.conv_type](img_in)
-res[res < -1] = -1
-res[res > +1] = +1
+result = convOptions[args.conv_type](img_in)
+
+# It is sufficient to store 32bit floating point data, the precision loss is tolerable
+if result.dtype == np.float64:
+    result = result.astype(np.float32)
 
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
-    res = skimage.util.img_as_uint(res)  # Attention: precision loss
-    skimage.io.imsave(args.out_file.name, res, plugin='tifffile')
+    tifffile.imwrite(args.out_file.name, result)
