@@ -2,6 +2,7 @@ import argparse
 import sys
 import warnings
 
+import giatools.io
 import numpy as np
 import skimage.color
 import skimage.io
@@ -85,9 +86,17 @@ parser.add_argument('conv_type', choices=convOptions.keys(), help='conversion ty
 parser.add_argument('--isolate_channel', type=int, help='set all other channels to zero (1-3)', default=0)
 args = parser.parse_args()
 
-img_in = skimage.io.imread(args.input_file.name)[:, :, 0:3]
-assert img_in.ndim == 3, f'Image must have 3 axes (it has {img_in.ndim})'
-assert img_in.shape[2] == 3, f'Image must have 3 channels (it has {img_in.shape[2]})'
+# Read and normalize the input image as TZYXC
+img_in = giatools.io.imread(args.input_file.name)
+
+# Verify input image
+assert img_in.shape[0] == 1, f'Image must have 1 frame (it has {img_in.shape[0]} frames)'
+assert img_in.shape[1] == 1, f'Image must have 1 slice (it has {img_in.shape[1]} slices)'
+assert img_in.shape[4] == 3, f'Image must have 3 channels (it has {img_in.shape[4]} channels)'
+
+# Normalize the image from TZYXC to YXC
+img_in = img_in.squeeze()
+assert img_in.ndim == 3
 
 # Apply channel isolation
 if args.isolate_channel:

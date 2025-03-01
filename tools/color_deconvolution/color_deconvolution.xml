@@ -21,6 +21,7 @@
         <requirement type="package" version="1.5.2">scikit-learn</requirement>
         <requirement type="package" version="2.1.2">numpy</requirement>
         <requirement type="package" version="2024.9.20">tifffile</requirement>
+        <requirement type="package" version="0.3.1">giatools</requirement>
     </requirements>
     <command detect_errors="aggressive">
         <![CDATA[ 
