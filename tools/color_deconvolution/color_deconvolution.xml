@@ -99,35 +99,46 @@
     </outputs>
     <tests>
         <test>
+            <!-- Test standard color transformation -->
             <param name="input" value="galaxyIcon_noText.png" />
             <param name="convtype" value="rgb2hsv" />
             <expand macro="tests/intensity_image_diff" name="output" value="galaxyIcon_noText.tiff" ftype="tiff"/>
         </test>
         <test>
+            <!-- Test deconvolution using scikit-image (H&E + DAB) -->
             <param name="input" value="he1.tiff" />
             <param name="convtype" value="rgb2hed" />
             <expand macro="tests/intensity_image_diff" name="output" value="he1_deconv_hed.tiff" ftype="tiff"/>
         </test>
         <test>
+            <!-- Test full recomposition -->
             <param name="input" value="he1_deconv_hed.tiff" />
             <param name="convtype" value="hed2rgb" />
             <expand macro="tests/intensity_image_diff" name="output" value="he1_deconv_hed_recomposed.tiff" ftype="tiff"/>
         </test>
         <test>
+            <!-- Test recomposition with isolated channel -->
             <param name="input" value="he1_deconv_hed.tiff" />
             <param name="convtype" value="hed2rgb" />
             <param name="isolate_channel" value="1" />
             <expand macro="tests/intensity_image_diff" name="output" value="he1_deconv_hed_recomposed1.tiff" ftype="tiff"/>
         </test>
         <test>
+            <!-- Test deconvolution using custom stain matrix -->
             <param name="input" value="he1.tiff" />
             <param name="convtype" value="he_from_rgb" />
             <expand macro="tests/intensity_image_diff" name="output" value="he1_deconv_he.tiff" ftype="tiff"/>
         </test>
         <test>
+            <!-- Test deconvolution using scikit-image (Hematoxylin + DAB) -->
             <param name="input" value="hdab1.tiff" />
             <param name="convtype" value="hdx_from_rgb" />
             <expand macro="tests/intensity_image_diff" name="output" value="hdab1_deconv_hdab.tiff" ftype="tiff"/>
+        </test>
+        <test expect_failure="true">
+            <!-- Test with image that only has 2 axes instead of required 3, should fail -->
+            <param name="input" value="im_axes_yx.tif" />
+            <param name="convtype" value="rgb2hsv" />
         </test>
     </tests>
     <help><![CDATA[

@@ -86,6 +86,8 @@ parser.add_argument('--isolate_channel', type=int, help='set all other channels 
 args = parser.parse_args()
 
 img_in = skimage.io.imread(args.input_file.name)[:, :, 0:3]
+assert img_in.ndim == 3, f'Image must have 3 axes (it has {img_in.ndim})'
+assert img_in.shape[2] == 3, f'Image must have 3 channels (it has {img_in.shape[2]})'
 
 # Apply channel isolation
 if args.isolate_channel:
