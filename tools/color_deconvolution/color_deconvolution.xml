@@ -98,8 +98,11 @@
         <data format="tiff" name="output"/>
     </outputs>
     <tests>
+
+        <!-- Tests with compatible input files -->
+
         <test>
-            <!-- Test standard color transformation -->
+            <!-- Test PNG input and standard color transformation -->
             <param name="input" value="galaxyIcon_noText.png" />
             <param name="convtype" value="rgb2hsv" />
             <expand macro="tests/intensity_image_diff" name="output" value="galaxyIcon_noText.tiff" ftype="tiff"/>
@@ -135,11 +138,26 @@
             <param name="convtype" value="hdx_from_rgb" />
             <expand macro="tests/intensity_image_diff" name="output" value="hdab1_deconv_hdab.tiff" ftype="tiff"/>
         </test>
+        <test>
+            <!-- Test with image that has 3 axes but in unusual order (and 3 channels) -->
+            <param name="input" value="he1_axes_cyx.tiff" />
+            <param name="convtype" value="rgb2hsv" />
+            <expand macro="tests/intensity_image_diff" name="output" value="he1_hsv.tiff" ftype="tiff"/>
+        </test>
+
+        <!-- Tests with incompatible input files (should fail) -->
+
         <test expect_failure="true">
-            <!-- Test with image that only has 2 axes instead of required 3, should fail -->
+            <!-- Test with image that only has 2 axes instead of required 3 -->
             <param name="input" value="im_axes_yx.tif" />
             <param name="convtype" value="rgb2hsv" />
         </test>
+        <test expect_failure="true">
+            <!-- Test with image that has 3 axes but YXZ instead of YXC (and 3 slices) -->
+            <param name="input" value="he1_axes_yxz.tiff" />
+            <param name="convtype" value="rgb2hsv" />
+        </test>
+
     </tests>
     <help><![CDATA[
 
