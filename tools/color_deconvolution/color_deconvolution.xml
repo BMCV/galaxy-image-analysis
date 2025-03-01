@@ -38,7 +38,7 @@
         ]]>
     </command>
     <inputs>
-        <param name="input" type="data" format="tiff,png,jpg,bmp" label="Image file with 3 channels"/>
+        <param name="input" type="data" format="tiff,png,jpg,bmp" label="Input image" help="The input image must have 3 axes and 3 channels. The channels must correspond to the last axis."/>
         <param name="convtype" type="select" label="Transformation type">
 
             <!-- Color deconvolution and recomposition operations -->
@@ -132,18 +132,37 @@
     </tests>
     <help><![CDATA[
 
-        **This tool converts the color space of an image.**
+**This tool converts the color space of an image.**
 
-        Several color deconvolution techniques are also supported.
+Several color deconvolution techniques are also supported.
 
-        Color Deconvolution Example
-        ***************************
+Color Deconvolution Example
+===========================
 
-        .. image:: he.png
+In this example, we are going to perform color deconvolution of the following RGB image:
 
-        .. image:: he_deconv.png
+.. image:: https://raw.githubusercontent.com/kostrykin/galaxy-image-analysis/refs/heads/dev/color-deconvolution/tools/color_deconvolution/static/images/he.png
+  :width: 434px
+  :scale: 50%
 
-        .. image:: he_recomposed.png
+Using the option "Deconvolve RGB into H&E (Hematoxylin + Eosin)" for the **Transformation type** performs color deconvolution and yields a new image with three chnnales:
+
+.. image:: https://raw.githubusercontent.com/kostrykin/galaxy-image-analysis/refs/heads/dev/color-deconvolution/tools/color_deconvolution/static/images/he_deconv.png
+  :width: 1305px
+  :scale: 50%
+
+The channels of the deconvolved image are the Hematoxylin intensities (Channel 1), the Eosin intensities (Channel 2), and the residuals (Channel 3). White image regions correspond to high intensities and black image regions correspond to low intensities.
+
+For visual inspection of the color deconvolution results, it may be useful to recompose separate RGB images for the Hematoxylin, Eosin, and residual channels. To create such images, this tool must be run once for each channel of the deconvolved image (i.e. three times), using the following options:
+
+* **Input image:** The result of the color deconvolution (image shown in the figure above)
+* **Transformation type:** Recompose RGB from H&E (Hematoxylin + Eosin)
+
+The **Isolate channel** field must be set to 1, 2, and 3 during the three runs, respectively. This will yield the following recomposed RGB images for better visualization of the color deconvolution results:
+
+.. image:: https://raw.githubusercontent.com/kostrykin/galaxy-image-analysis/refs/heads/dev/color-deconvolution/tools/color_deconvolution/static/images/he_recomposed.png
+  :width: 1305px
+  :scale: 50%
 
     ]]></help>
     <citations>
