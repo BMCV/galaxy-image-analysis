@@ -141,13 +141,13 @@ Color Deconvolution Example
 
 In this example, we are going to perform color deconvolution of the following RGB image:
 
-.. image:: https://raw.githubusercontent.com/kostrykin/galaxy-image-analysis/refs/heads/dev/color-deconvolution/tools/color_deconvolution/static/images/he.png
+.. image:: he.png
   :width: 434px
   :scale: 50%
 
 Using the option "Deconvolve RGB into H&E (Hematoxylin + Eosin)" for the **Transformation type** performs color deconvolution and yields a new image with three chnnales:
 
-.. image:: https://raw.githubusercontent.com/kostrykin/galaxy-image-analysis/refs/heads/dev/color-deconvolution/tools/color_deconvolution/static/images/he_deconv.png
+.. image:: he_deconv.png
   :width: 1305px
   :scale: 50%
 
@@ -160,7 +160,7 @@ For visual inspection of the color deconvolution results, it may be useful to re
 
 The **Isolate channel** field must be set to 1, 2, and 3 during the three runs, respectively. This will yield the following recomposed RGB images for better visualization of the color deconvolution results:
 
-.. image:: https://raw.githubusercontent.com/kostrykin/galaxy-image-analysis/refs/heads/dev/color-deconvolution/tools/color_deconvolution/static/images/he_recomposed.png
+.. image:: he_recomposed.png
   :width: 1305px
   :scale: 50%
 
