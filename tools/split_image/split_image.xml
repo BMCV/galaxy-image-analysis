@@ -1,0 +1,58 @@
+<tool id="ip_split_image" name="Split image along axes" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
+    <description>with NumPy</description>
+    <macros>
+        <import>creators.xml</import>
+        <import>tests.xml</import>
+        <token name="@TOOL_VERSION@">2.2.3</token>
+        <token name="@VERSION_SUFFIX@">0</token>
+    </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+    </creator>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <requirements>
+        <requirement type="package" version="@TOOL_VERSION@">numpy</requirement>
+        <requirement type="package" version="0.3.1">giatools</requirement>
+        <requirement type="package" version="2024.7.24">tifffile</requirement>
+    </requirements>
+    <command detect_errors="aggressive"><![CDATA[
+
+        python '$__tool_directory__/split.py'
+
+        '$input'
+        '$axis'
+        '$output'
+
+        $squeeze
+
+    ]]></command>
+    <inputs>
+        <param name="input" type="data" format="tiff,png" label="Image to split" />
+        <param name="axis" type="select" label="Axis to split along">
+            <option value="T">T-axis (split the frames of a temporal image sequence)</option>
+            <option value="Z">Z-axis (split the slices of a 3-D image or image sequence)</option>
+            <option value="C" selected="true">C-axis (split the channels of an image or image sequence)</option>
+            <option value="S">S-axis (split the samples of an image or image sequence)</option>
+        </param>
+        <param name="squeeze" type="boolean" checked="false" truevalue="--squeeze" falsevalue="" label="Squeeze result imags" help="Only axes with more than one element will be retained in the result images. Does not apply for X and Y axes." />
+    </inputs>
+    <outputs>
+        <collection type="list" name="output" label="Split ${on_string} along ${axis} axis">
+            <discover_datasets pattern="[0-9]+.tiff" format="tiff" />
+        </collection>
+    </outputs>
+    <tests>
+    </tests>
+    <help>
+
+        **Splits an image along a specific axis (e.g., channels).**
+
+        The pixel data type of the split image is preserved (the same as the input image).
+
+    </help>
+    <citations>
+        <citation type="doi">10.1038/s41586-020-2649-2</citation>
+    </citations>
+</tool>
