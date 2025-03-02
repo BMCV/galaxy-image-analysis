@@ -55,8 +55,8 @@
             <option value="rgb_from_hax">Recompose RGB from Hematoxylin + AEC</option>
             <option value="ahx_from_rgb">Deconvolve RGB into Alcian Blue + Hematoxylin</option>
             <option value="rgb_from_ahx">Recompose RGB from Alcian Blue + Hematoxylin</option>
-            <option value="bro_from_rgb">Deconvolve RGB into Blue matrix Aniline Blue + Red matrix Azocarmine + Orange matrix Orange-G</option>
-            <option value="rgb_from_bro">Recompose RGB from Blue matrix Aniline Blue + Red matrix Azocarmine + Orange matrix Orange-G</option>
+            <option value="bro_from_rgb">Deconvolve RGB to AZAN</option>
+            <option value="rgb_from_bro">Recompose RGB from AZAN</option>
             <option value="rbd_from_rgb">Deconvolve RGB into FastRed + FastBlue + DAB</option>
             <option value="rgb_from_rbd">Recompose RGB from FastRed + FastBlue + DAB</option>
             <option value="fgx_from_rgb">Deconvolve RGB into Feulgen + Light Green</option>
