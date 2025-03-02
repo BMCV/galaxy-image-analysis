@@ -19,11 +19,12 @@
     </requirements>
     <command detect_errors="aggressive"><![CDATA[
 
+        mkdir output &&
         python '$__tool_directory__/split.py'
 
         '$input'
         '$axis'
-        '$output'
+        output
 
         $squeeze
 
@@ -40,16 +41,65 @@
     </inputs>
     <outputs>
         <collection type="list" name="output" label="Split ${on_string} along ${axis} axis">
-            <discover_datasets pattern="[0-9]+.tiff" format="tiff" />
+            <discover_datasets directory="output" pattern="__name__" format="tiff" />
         </collection>
     </outputs>
     <tests>
+
+        <!-- PNG tests -->
+        <test>
+            <param name="input" value="rgb1.png" />
+            <param name="axis" value="C" />
+            <param name="squeeze" value="false" />
+            <output_collection name="output" type="list" count="3">
+                <expand macro="tests/intensity_image_diff/element" name="1.tiff" value="rgb1_r.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="2.tiff" value="rgb1_g.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="3.tiff" value="rgb1_b.tiff" ftype="tiff"/>
+            </output_collection>
+        </test>
+
+        <!-- TIFF tests -->
+        <test>
+            <param name="input" value="zcyx.tiff" />
+            <param name="axis" value="Z" />
+            <param name="squeeze" value="false" />
+            <output_collection name="output" type="list" count="25">
+                <expand macro="tests/intensity_image_diff/element" name="01.tiff" value="zcyx_slice01.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="25.tiff" value="zcyx_slice25.tiff" ftype="tiff"/>
+            </output_collection>
+        </test>
+
+        <!-- Test squeezing -->
+        <test>
+            <param name="input" value="rgb1.png" />
+            <param name="axis" value="C" />
+            <param name="squeeze" value="true" />
+            <output_collection name="output" type="list" count="3">
+                <expand macro="tests/intensity_image_diff/element" name="1.tiff" value="rgb1_squeezed_r.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="2.tiff" value="rgb1_squeezed_g.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="3.tiff" value="rgb1_squeezed_b.tiff" ftype="tiff"/>
+            </output_collection>
+        </test>
+
+        <!-- Test with missing axes -->
+        <test>
+            <param name="input" value="rgb1.png" />
+            <param name="axis" value="Z" />
+            <param name="squeeze" value="false" />
+            <output_collection name="output" type="list" count="1">
+                <expand macro="tests/intensity_image_diff/element" name="1.tiff" value="rgb1_split_z.tiff" ftype="tiff"/>
+            </output_collection>
+        </test>
+
     </tests>
     <help>
 
         **Splits an image along a specific axis (e.g., channels).**
 
-        The pixel data type of the split image is preserved (the same as the input image).
+        This tool splits an image along a specifc axis and yields a collection of images.
+        This can be used, for example, to convert a multi-channel image into a collection of single-channel images.
+
+        The pixel data type of the split image is preserved (will be the same as the input image).
 
     </help>
     <citations>
