@@ -1,18 +1,10 @@
 import argparse
 import math
 
-import giatools.io
+import giatools
+import giatools.util
 import numpy as np
 import tifffile
-
-
-def str_without_positions(s: str, positions: list[int]) -> str:
-    """
-    Returns the string `s` with the `characters` removed from it.
-    """
-    for pos in sorted(positions, reverse=True):
-        s = s[:pos] + s[pos + 1:]
-    return s
 
 
 parser = argparse.ArgumentParser()
@@ -27,14 +19,13 @@ assert len(args.axis) == 1
 axis = args.axis.replace('S', 'C')
 
 # Read input image as TZYXC
-img_in = giatools.io.imread(args.input)
-axes = 'TZYXC'
+img_in = giatools.Image.read(args.input)
 
 # Determine the axis to split along
-axis_pos = axes.index(axis)
+axis_pos = img_in.axes.index(axis)
 
 # Perform the splitting
-arr = np.moveaxis(img_in, axis_pos, 0)
+arr = np.moveaxis(img_in.data, axis_pos, 0)
 decimals = math.ceil(math.log10(1 + arr.shape[0]))
 output_filename_pattern = f'{args.output}/%0{decimals}d.tiff'
 for img_idx, img in enumerate(arr):
@@ -42,11 +33,11 @@ for img_idx, img in enumerate(arr):
 
     # Optionally, squeeze the image
     if args.squeeze:
-        s = [axis_pos for axis_pos in range(len(axes)) if img.shape[axis_pos] == 1 and axes[axis_pos] not in 'YX']
+        s = [axis_pos for axis_pos in range(len(img_in.axes)) if img.shape[axis_pos] == 1 and img_in.axes[axis_pos] not in 'YX']
         img = np.squeeze(img, axis=tuple(s))
-        img_axes = str_without_positions(axes, s)
+        img_axes = giatools.util.str_without_positions(img_in.axes, s)
     else:
-        img_axes = axes
+        img_axes = img_in.axes
 
     # Save the result
     filename = output_filename_pattern % (img_idx + 1)
