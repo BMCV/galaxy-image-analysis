@@ -15,7 +15,7 @@ parser.add_argument('--squeeze', action='store_true', default=False)
 args = parser.parse_args()
 
 # Validate and normalize input parameters
-assert len(args.axis) == 1
+assert len(args.axis) == 1, 'Axis input must be a single character.'
 axis = args.axis.replace('S', 'C')
 
 # Read input image as TZYXC
