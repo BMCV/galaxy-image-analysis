@@ -1,10 +1,10 @@
-<tool id="ip_color_deconvolution" name="Perform color decomposition" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@"> 
+<tool id="ip_color_deconvolution" name="Perform color deconvolution or transformation" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@"> 
     <description></description>
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
-        <token name="@TOOL_VERSION@">0.8</token>
-        <token name="@VERSION_SUFFIX@">2</token>
+        <token name="@TOOL_VERSION@">0.9</token>
+        <token name="@VERSION_SUFFIX@">0</token>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
@@ -21,78 +21,180 @@
         <requirement type="package" version="1.5.2">scikit-learn</requirement>
         <requirement type="package" version="2.1.2">numpy</requirement>
         <requirement type="package" version="2024.9.20">tifffile</requirement>
+        <requirement type="package" version="0.3.1">giatools</requirement>
     </requirements>
     <command detect_errors="aggressive">
         <![CDATA[ 
-        python '$__tool_directory__/color_deconvolution.py' '$input' '$output' '$convtype'
+
+        python '$__tool_directory__/color_deconvolution.py'
+
+            '$input'
+            '$output'
+            '$convtype'
+
+            #if str($isolate_channel) != '':
+                --isolate_channel '${isolate_channel}'
+            #end if
+
         ]]>
     </command>
     <inputs>
-        <param name="input" type="data" format="tiff,png,jpg,bmp" label="Image file with 3 channels"/>
+        <param name="input" type="data" format="tiff,png,jpg,bmp" label="Input image" help="The input image must have 3 axes and 3 channels. The channels must correspond to the last axis."/>
         <param name="convtype" type="select" label="Transformation type">
-            <option value="ica" selected="True">ica</option>
-            <option value="pca">pca</option>
-            <option value="nmf">nmf</option>
-            <option value="fa">fa</option>
-            <option value="xyz2rgb">xyz2rgb</option>
-            <option value="rgb_from_rbd">rgb_from_rbd</option>
-            <option value="rgb_from_hdx">rgb_from_hdx</option>
-            <option value="rgb2hsv">rgb2hsv</option>
-            <option value="rgb_from_bro">rgb_from_bro</option>
-            <option value="bpx_from_rgb">bpx_from_rgb</option>
-            <option value="hed_from_rgb">hed_from_rgb</option>
-            <option value="rgbcie2rgb">rgbcie2rgb</option>
-            <option value="hdx_from_rgb">hdx_from_rgb</option>
-            <option value="xyz2luv">xyz2luv</option>
-            <option value="rgb2lab">rgb2lab</option>
-            <option value="hpx_from_rgb">hpx_from_rgb</option>
-            <option value="rgb_from_fgx">rgb_from_fgx</option>
-            <option value="rgb_from_gdx">rgb_from_gdx</option>
-            <option value="lab2xyz">lab2xyz</option>
-            <option value="rgb_from_hpx">rgb_from_hpx</option>
-            <option value="lab2rgb">lab2rgb</option>
-            <option value="rgb2rgbcie">rgb2rgbcie</option>
-            <option value="bex_from_rgb">bex_from_rgb</option>
-            <option value="xyz2lab">xyz2lab</option>
-            <option value="rgb_from_bex">rgb_from_bex</option>
-            <option value="fgx_from_rgb">fgx_from_rgb</option>
-            <option value="rbd_from_rgb">rbd_from_rgb</option>
-            <option value="rgb2hed">rgb2hed</option>
-            <option value="hed2rgb">hed2rgb</option>
-            <option value="luv2rgb">luv2rgb</option>
-            <option value="luv2xyz">luv2xyz</option>
-            <option value="lch2lab">lch2lab</option>
-            <option value="rgb2luv">rgb2luv</option>
-            <option value="ahx_from_rgb">ahx_from_rgb</option>
-            <option value="rgb_from_hax">rgb_from_hax</option>
-            <option value="hax_from_rgb">hax_from_rgb</option>
-            <option value="rgb_from_bpx">rgb_from_bpx</option>
-            <option value="rgb2xyz">rgb2xyz</option>
-            <option value="gdx_from_rgb">gdx_from_rgb</option>
-            <option value="rgb_from_ahx">rgb_from_ahx</option>
-            <option value="lab2lch">lab2lch</option>
-            <option value="rgb_from_hed">rgb_from_hed</option>
-            <option value="bro_from_rgb">bro_from_rgb</option>
-            <option value="hsv2rgb">hsv2rgb</option>
+
+            <!-- Color deconvolution and recomposition operations -->
+            <option value="he_from_rgb">Deconvolve RGB into H&#38;E (Hematoxylin + Eosin)</option>
+            <option value="rgb_from_he">Recompose RGB from H&#38;E (Hematoxylin + Eosin)</option>
+            <option value="hdx_from_rgb">Deconvolve RGB into Hematoxylin + DAB</option>
+            <option value="rgb_from_hdx">Recompose RGB from Hematoxylin + DAB</option>
+            <option value="rgb2hed">Deconvolve RGB into Hematoxylin + Eosin + DAB</option>
+            <option value="hed2rgb">Recompose RGB from Hematoxylin + Eosin + DAB</option>
+            <option value="hpx_from_rgb">Deconvolve RGB into Hematoxylin + PAS</option>
+            <option value="rgb_from_hpx">Recompose RGB from Hematoxylin + PAS</option>
+            <option value="hax_from_rgb">Deconvolve RGB into Hematoxylin + AEC</option>
+            <option value="rgb_from_hax">Recompose RGB from Hematoxylin + AEC</option>
+            <option value="ahx_from_rgb">Deconvolve RGB into Alcian Blue + Hematoxylin</option>
+            <option value="rgb_from_ahx">Recompose RGB from Alcian Blue + Hematoxylin</option>
+            <option value="bro_from_rgb">Deconvolve RGB to AZAN</option>
+            <option value="rgb_from_bro">Recompose RGB from AZAN</option>
+            <option value="rbd_from_rgb">Deconvolve RGB into FastRed + FastBlue + DAB</option>
+            <option value="rgb_from_rbd">Recompose RGB from FastRed + FastBlue + DAB</option>
+            <option value="fgx_from_rgb">Deconvolve RGB into Feulgen + Light Green</option>
+            <option value="rgb_from_fgx">Recompose RGB from Feulgen + Light Green</option>
+            <option value="bex_from_rgb">Deconvolve RGB into Giemsa stain (Methyl Blue + Eosin)</option>
+            <option value="rgb_from_bex">Recompose RGB from Giemsa stain (Methyl Blue + Eosin)</option>
+            <option value="bpx_from_rgb">Deconvolve RGB into Methyl Blue + Ponceau Fuchsin</option>
+            <option value="rgb_from_bpx">Recompose RGB from Methyl Blue + Ponceau Fuchsin</option>
+            <option value="gdx_from_rgb">Deconvolve RGB into Methyl Green + DAB</option>
+            <option value="rgb_from_gdx">Recompose RGB from Methyl Green + DAB</option>
+
+            <!-- Unsupervised machine learning-based operations -->
+            <option value="ica">Project onto independent components (ICA)</option>
+            <option value="pca">Project onto principal components (PCA)</option>
+            <option value="nmf">Non-negative matrix factorization</option>
+            <option value="fa">Factor analysis</option>
+
+            <!-- General color space conversion operations -->
+            <option value="rgb2hsv" selected="True">Convert RGB to HSV</option>
+            <option value="hsv2rgb">Convert HSV to RGB</option>
+            <option value="rgb2xyz">Convert RGB to XYZ (CIE 1931)</option>
+            <option value="xyz2rgb">Convert XYZ (CIE 1931) to RGB</option>
+            <option value="rgb2luv">Convert RGB to CIE-LUV</option>
+            <option value="luv2rgb">Convert CIE-LUV to RGB</option>
+            <option value="xyz2luv">Convert XYZ (CIE 1931) to CIE-LUV</option>
+            <option value="luv2xyz">Convert CIE-LUV to XYZ (CIE 1931)</option>
+            <option value="rgb2lab">Convert RGB to CIE-LAB (illuminant D65, aperture angle 2&#xb0;)</option>
+            <option value="lab2rgb">Convert CIE-LAB (illuminant D65, aperture angle 2&#xb0;) to RGB</option>
+            <option value="lab2xyz">Convert CIE-LAB (illuminant D65, aperture angle 2&#xb0;) to XYZ (CIE 1931)</option>
+            <option value="xyz2lab">Convert XYZ (CIE 1931) to CIE-LAB (illuminant D65, aperture angle 2&#xb0;)</option>
+            <option value="lch2lab">Convert CIE-LCh to CIE-LAB</option>
+            <option value="lab2lch">Convert CIE-LAB to CIE-LCh</option>
+            <option value="rgb2rgbcie">Convert RGB to RGB-CIE</option>
+            <option value="rgbcie2rgb">Convert RGB-CIE to RGB</option>
+
         </param>
+        <param name="isolate_channel" type="integer" optional="true" value="" label="Isolate channel" help="Must be empty or the number of a channel (1 to 3). If used, all other channels are set to zero before performing the chosen transformation." />
     </inputs>
     <outputs>
         <data format="tiff" name="output"/>
     </outputs>
     <tests>
+
+        <!-- Tests with compatible input files -->
+
         <test>
+            <!-- Test PNG input and standard color transformation -->
             <param name="input" value="galaxyIcon_noText.png" />
             <param name="convtype" value="rgb2hsv" />
             <expand macro="tests/intensity_image_diff" name="output" value="galaxyIcon_noText.tiff" ftype="tiff"/>
         </test>
+        <test>
+            <!-- Test deconvolution using scikit-image (H&E + DAB) -->
+            <param name="input" value="he1.tiff" />
+            <param name="convtype" value="rgb2hed" />
+            <expand macro="tests/intensity_image_diff" name="output" value="he1_deconv_hed.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <!-- Test full recomposition -->
+            <param name="input" value="he1_deconv_hed.tiff" />
+            <param name="convtype" value="hed2rgb" />
+            <expand macro="tests/intensity_image_diff" name="output" value="he1_deconv_hed_recomposed.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <!-- Test recomposition with isolated channel -->
+            <param name="input" value="he1_deconv_hed.tiff" />
+            <param name="convtype" value="hed2rgb" />
+            <param name="isolate_channel" value="1" />
+            <expand macro="tests/intensity_image_diff" name="output" value="he1_deconv_hed_recomposed1.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <!-- Test deconvolution using custom stain matrix -->
+            <param name="input" value="he1.tiff" />
+            <param name="convtype" value="he_from_rgb" />
+            <expand macro="tests/intensity_image_diff" name="output" value="he1_deconv_he.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <!-- Test deconvolution using scikit-image (Hematoxylin + DAB) -->
+            <param name="input" value="hdab1.tiff" />
+            <param name="convtype" value="hdx_from_rgb" />
+            <expand macro="tests/intensity_image_diff" name="output" value="hdab1_deconv_hdab.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <!-- Test with image that has 3 axes but in unusual order (and 3 channels) -->
+            <param name="input" value="he1_axes_cyx.tiff" />
+            <param name="convtype" value="rgb2hsv" />
+            <expand macro="tests/intensity_image_diff" name="output" value="he1_hsv.tiff" ftype="tiff"/>
+        </test>
+
+        <!-- Tests with incompatible input files (should fail) -->
+
+        <test expect_failure="true">
+            <!-- Test with image that only has 2 axes instead of required 3 -->
+            <param name="input" value="im_axes_yx.tif" />
+            <param name="convtype" value="rgb2hsv" />
+        </test>
+        <test expect_failure="true">
+            <!-- Test with image that has 3 axes but YXZ instead of YXC (and 3 slices) -->
+            <param name="input" value="he1_axes_yxz.tiff" />
+            <param name="convtype" value="rgb2hsv" />
+        </test>
+
     </tests>
-    <help>
+    <help><![CDATA[
 
-        **What it does**
+**This tool converts the color space of an image.**
 
-        This tools performs several color deconvolution techniques.
+Several color deconvolution techniques are also supported.
 
-    </help>
+Color Deconvolution Example
+===========================
+
+In this example, we are going to perform color deconvolution of the following RGB image:
+
+.. image:: he.png
+  :width: 434px
+  :scale: 50%
+
+Using the option "Deconvolve RGB into H&E (Hematoxylin + Eosin)" for the **Transformation type** performs color deconvolution and yields a new image with three chnnales:
+
+.. image:: he_deconv.png
+  :width: 1305px
+  :scale: 50%
+
+The channels of the deconvolved image are the Hematoxylin intensities (Channel 1), the Eosin intensities (Channel 2), and the residuals (Channel 3). White image regions correspond to high intensities and black image regions correspond to low intensities.
+
+For visual inspection of the color deconvolution results, it may be useful to recompose separate RGB images for the Hematoxylin, Eosin, and residual channels. To create such images, this tool must be run once for each channel of the deconvolved image (i.e. three times), using the following options:
+
+* **Input image:** The result of the color deconvolution (image shown in the figure above)
+* **Transformation type:** Recompose RGB from H&E (Hematoxylin + Eosin)
+
+The **Isolate channel** field must be set to 1, 2, and 3 during the three runs, respectively. This will yield the following recomposed RGB images for better visualization of the color deconvolution results:
+
+.. image:: he_recomposed.png
+  :width: 1305px
+  :scale: 50%
+
+    ]]></help>
     <citations>
       <citation type="doi">10.7717/peerj.453</citation>
       <citation type="bibtex">@inproceedings{sklearn_api,
