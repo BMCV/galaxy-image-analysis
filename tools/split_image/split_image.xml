@@ -73,9 +73,9 @@
             <param name="input" value="qyx.tiff" />
             <param name="axis" value="Q" />
             <param name="squeeze" value="false" />
-            <output_collection name="output" type="list" count="25">
-                <expand macro="tests/intensity_image_diff/element" name="qyx_q1.tiff" value="qyx_q1.tiff" ftype="tiff"/>
-                <expand macro="tests/intensity_image_diff/element" name="qyx_q2.tiff" value="qyx_q2.tiff" ftype="tiff"/>
+            <output_collection name="output" type="list" count="2">
+                <expand macro="tests/intensity_image_diff/element" name="1.tiff" value="qyx_q1.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="2.tiff" value="qyx_q2.tiff" ftype="tiff"/>
             </output_collection>
         </test>
 
