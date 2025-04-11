@@ -18,7 +18,7 @@ args = parser.parse_args()
 assert len(args.axis) == 1, 'Axis input must be a single character.'
 axis = args.axis.replace('S', 'C')
 
-# Read input image as TZYXC
+# Read input image with normalized axes
 img_in = giatools.Image.read(args.input)
 
 # Determine the axis to split along
@@ -31,14 +31,24 @@ output_filename_pattern = f'{args.output}/%0{decimals}d.tiff'
 for img_idx, img in enumerate(arr):
     img = np.moveaxis(img[None], 0, axis_pos)
 
+    # Construct the output image, remove axes added by normalization
+    img_out = giatools.Image(
+        data=img,
+        axes=img_in.axes,
+    ).squeeze_like(
+        img_in.original_axes,
+    )
+
     # Optionally, squeeze the image
     if args.squeeze:
-        s = [axis_pos for axis_pos in range(len(img_in.axes)) if img.shape[axis_pos] == 1 and img_in.axes[axis_pos] not in 'YX']
-        img = np.squeeze(img, axis=tuple(s))
-        img_axes = giatools.util.str_without_positions(img_in.axes, s)
-    else:
-        img_axes = img_in.axes
+        s = [
+            axis_pos for axis_pos in range(len(img_out.axes))
+            if img_out.data.shape[axis_pos] == 1 and img_out.axes[axis_pos] not in 'YX'
+        ]
+        img_out = img_out.squeeze_like(
+            giatools.util.str_without_positions(img_out.axes, s),
+        )
 
     # Save the result
     filename = output_filename_pattern % (img_idx + 1)
-    tifffile.imwrite(filename, img, metadata=dict(axes=img_axes))
+    tifffile.imwrite(filename, img_out.data, metadata=dict(axes=img_out.axes))
