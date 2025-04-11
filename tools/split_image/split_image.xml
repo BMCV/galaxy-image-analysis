@@ -14,7 +14,7 @@
     </edam_operations>
     <requirements>
         <requirement type="package" version="@TOOL_VERSION@">numpy</requirement>
-        <requirement type="package" version="0.3.2">giatools</requirement>
+        <requirement type="package" version="0.4.0">giatools</requirement>
         <requirement type="package" version="2024.7.24">tifffile</requirement>
     </requirements>
     <command detect_errors="aggressive"><![CDATA[
