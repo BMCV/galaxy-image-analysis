@@ -4,7 +4,7 @@
         <import>creators.xml</import>
         <import>tests.xml</import>
         <token name="@TOOL_VERSION@">2.2.3</token>
-        <token name="@VERSION_SUFFIX@">0</token>
+        <token name="@VERSION_SUFFIX@">1</token>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
@@ -14,7 +14,7 @@
     </edam_operations>
     <requirements>
         <requirement type="package" version="@TOOL_VERSION@">numpy</requirement>
-        <requirement type="package" version="0.3.2">giatools</requirement>
+        <requirement type="package" version="0.4.0">giatools</requirement>
         <requirement type="package" version="2024.7.24">tifffile</requirement>
     </requirements>
     <command detect_errors="aggressive"><![CDATA[
@@ -36,6 +36,7 @@
             <option value="Z">Z-axis (split the slices of a 3-D image or image sequence)</option>
             <option value="C" selected="true">C-axis (split the channels of an image or image sequence)</option>
             <option value="S">S-axis (split the samples of an image or image sequence)</option>
+            <option value="Q">Q-axis (other or unknown axis)</option>
         </param>
         <param name="squeeze" type="boolean" checked="false" truevalue="--squeeze" falsevalue="" label="Squeeze result imags" help="Only axes with more than one element will be retained in the result images. Does not apply for X and Y axes." />
     </inputs>
@@ -66,6 +67,15 @@
             <output_collection name="output" type="list" count="25">
                 <expand macro="tests/intensity_image_diff/element" name="01.tiff" value="zcyx_slice01.tiff" ftype="tiff"/>
                 <expand macro="tests/intensity_image_diff/element" name="25.tiff" value="zcyx_slice25.tiff" ftype="tiff"/>
+            </output_collection>
+        </test>
+        <test>
+            <param name="input" value="qyx.tiff" />
+            <param name="axis" value="Q" />
+            <param name="squeeze" value="false" />
+            <output_collection name="output" type="list" count="2">
+                <expand macro="tests/intensity_image_diff/element" name="1.tiff" value="qyx_q1.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="2.tiff" value="qyx_q2.tiff" ftype="tiff"/>
             </output_collection>
         </test>
 
