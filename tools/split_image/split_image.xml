@@ -38,7 +38,7 @@
             <option value="S">S-axis (split the samples of an image or image sequence)</option>
             <option value="Q">Q-axis (other or unknown axis)</option>
         </param>
-        <param name="squeeze" type="boolean" checked="false" truevalue="--squeeze" falsevalue="" label="Squeeze result imags" help="Only axes with more than one element will be retained in the result images. Does not apply for X and Y axes." />
+        <param name="squeeze" type="boolean" checked="false" truevalue="--squeeze" falsevalue="" label="Squeeze result images" help="Only axes with more than one element will be retained in the result images. Does not apply for X and Y axes." />
     </inputs>
     <outputs>
         <collection type="list" name="output" label="Split ${on_string} along ${axis} axis">
