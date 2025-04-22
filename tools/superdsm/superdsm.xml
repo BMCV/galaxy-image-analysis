@@ -191,7 +191,7 @@
 
         SuperDSM is a globally optimal method for cell nuclei segmentation using deformable shape models and their inherent law of superadditivity.
 
-        You can either use an individual input image (PNG, TIF) or a collection of such images.
+        You can either use an individual input image (PNG, TIFF) or a collection of such images.
 
     </help>
     <citations>

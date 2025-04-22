@@ -13,27 +13,27 @@
     <xrefs>
         <xref type="bio.tools">galaxy_image_analysis</xref>
     </xrefs>
-    <requirements>  
+    <requirements>
         <requirement type="package" version="0.18.1">scikit-image</requirement>
         <requirement type="package" version="1.23.3">numpy</requirement>
         <requirement type="package" version="2020.10.1">tifffile</requirement>
         <requirement type="package" version="0.1">giatools</requirement>
     </requirements>
-    <command detect_errors="aggressive"> 
+    <command detect_errors="aggressive">
         <![CDATA[
         python '$__tool_directory__/split_labelmap.py' '$input' '$output'
         ]]>
     </command>
-    <inputs> 
-        <param name="input" type="data" format="tiff,png,jpg,bmp" label="Image containing labels"/> 
+    <inputs>
+        <param name="input" type="data" format="tiff,png,jpg,bmp" label="Image containing labels"/>
     </inputs>
     <outputs>
         <data name="output" format="tiff"/>
     </outputs>
     <tests>
         <test>
-            <param name="input" value="sample_seg.tif"/>
-            <expand macro="tests/label_image_diff" name="output" value="out.tif" ftype="tiff"/>
+            <param name="input" value="sample_seg.tiff"/>
+            <expand macro="tests/label_image_diff" name="output" value="out.tiff" ftype="tiff"/>
         </test>
     </tests>
     <help>

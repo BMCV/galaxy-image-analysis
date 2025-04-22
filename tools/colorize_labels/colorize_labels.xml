@@ -19,18 +19,18 @@
         <requirement type="package" version="0.1">giatools</requirement>
     </requirements>
     <command><![CDATA[
-    
+
     ## Inputs
-    
+
     python '$__tool_directory__/colorize_labels.py' '$input'
     --radius $radius
     --bg_label $bg_label
     --bg_color '$bg_color'
-    
+
     ## Outputs
-    
+
     --output output.png
-    
+
     ]]>
     </command>
     <inputs>
@@ -45,7 +45,7 @@
     <tests>
         <!-- int64 -->
         <test>
-            <param name="input" value="input1.tif" />
+            <param name="input" value="input1.tiff" />
             <param name="radius" value="1" />
             <param name="bg_label" value="0" />
             <param name="bg_color" value="#5a5a5a" />
@@ -55,7 +55,7 @@
         </test>
         <!-- uint8 -->
         <test>
-            <param name="input" value="input2.tif" />
+            <param name="input" value="input2.tiff" />
             <param name="radius" value="10" />
             <param name="bg_label" value="0" />
             <param name="bg_color" value="#ffffff" />
@@ -65,7 +65,7 @@
         </test>
         <!-- uint16 -->
         <test>
-            <param name="input" value="input3.tif" />
+            <param name="input" value="input3.tiff" />
             <param name="radius" value="100" />
             <param name="bg_label" value="0" />
             <param name="bg_color" value="#ffffff" />

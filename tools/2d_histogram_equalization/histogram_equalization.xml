@@ -16,7 +16,7 @@
         <xref type="bio.tools">scikit-image</xref>
         <xref type="biii">scikit-image</xref>
     </xrefs>
-    <requirements> 
+    <requirements>
         <requirement type="package" version="@TOOL_VERSION@">scikit-image</requirement>
         <requirement type="package" version="1.23.3">numpy</requirement>
         <requirement type="package" version="2020.10.1">tifffile</requirement>
@@ -39,9 +39,9 @@
     </outputs>
     <tests>
         <test>
-            <param name="input" value="sample.tif"/>
+            <param name="input" value="sample.tiff"/>
             <param name="h_type" value="default"/>
-            <expand macro="tests/intensity_image_diff" name="output" value="out.tif" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="out.tiff" ftype="tiff"/>
         </test>
     </tests>
     <help>

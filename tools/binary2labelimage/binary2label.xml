@@ -1,4 +1,4 @@
-<tool id="ip_binary_to_labelimage" name="Convert binary image to label map" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@"> 
+<tool id="ip_binary_to_labelimage" name="Convert binary image to label map" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@">
     <description></description>
     <macros>
         <token name="@TOOL_VERSION@">0.5</token>
@@ -11,7 +11,7 @@
         <xref type="bio.tools">galaxy_image_analysis</xref>
     </xrefs>
     <requirements>
-        <requirement type="package" version="0.14.2">scikit-image</requirement> 
+        <requirement type="package" version="0.14.2">scikit-image</requirement>
         <requirement type="package" version="0.15.1">tifffile</requirement>
         <requirement type="package" version="1.15.4">numpy</requirement>
         <requirement type="package" version="5.3.0">pillow</requirement>
@@ -45,19 +45,19 @@
     </outputs>
     <tests>
         <test>
-            <param name="input" value="galaxyIcon_noText.tif" />
+            <param name="input" value="galaxyIcon_noText.tiff" />
             <conditional name="mode">
                 <param name="mode_selector" value="cca" />
             </conditional>
-            <output name="output" value="label.tif" ftype="tiff" compare="sim_size"/>
+            <output name="output" value="label.tiff" ftype="tiff" compare="sim_size"/>
         </test>
         <test>
-            <param name="input" value="in.tif"/>
+            <param name="input" value="in.tiff"/>
             <conditional name="mode">
                 <param name="mode_selector" value="watershed" />
                 <param name="min_distance" value="10" />
             </conditional>
-            <output name="output" value="out.tif" ftype="tiff" compare="sim_size"/>
+            <output name="output" value="out.tiff" ftype="tiff" compare="sim_size"/>
         </test>
     </tests>
     <help>

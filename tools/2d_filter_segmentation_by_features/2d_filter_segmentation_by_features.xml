@@ -14,7 +14,7 @@
         <xref type="bio.tools">galaxy_image_analysis</xref>
     </xrefs>
     <requirements>
-        <requirement type="package" version="0.18.1">scikit-image</requirement> 
+        <requirement type="package" version="0.18.1">scikit-image</requirement>
         <requirement type="package" version="2.2.2">pandas</requirement>
         <requirement type="package" version="2020.10.1">tifffile</requirement>
         <requirement type="package" version="0.1">giatools</requirement>
@@ -30,19 +30,19 @@
 
     ]]></command>
     <inputs>
-        <param name="input" type="data" format="tiff" label="Label map" /> 
-        <param name="feature_file" type="data" format="tabular" label="Features" /> 
-        <param name="rule_file" type="data" format="tabular" label="Rules" /> 
+        <param name="input" type="data" format="tiff" label="Label map" />
+        <param name="feature_file" type="data" format="tabular" label="Features" />
+        <param name="rule_file" type="data" format="tabular" label="Rules" />
     </inputs>
     <outputs>
        <data format="tiff" name="output" />
     </outputs>
     <tests>
         <test>
-            <param name="input" value="in.tif"/>
+            <param name="input" value="in.tiff"/>
             <param name="feature_file" value="features.tabular"/>
             <param name="rule_file" value="rules.tabular"/>
-            <expand macro="tests/label_image_diff" name="output" value="out.tif" ftype="tiff"/>
+            <expand macro="tests/label_image_diff" name="output" value="out.tiff" ftype="tiff"/>
         </test>
     </tests>
     <help>

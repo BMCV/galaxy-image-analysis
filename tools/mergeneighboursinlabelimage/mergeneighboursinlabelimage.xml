@@ -1,4 +1,4 @@
-<tool id="ip_merge_neighbours_in_label" name="Merge neighbors in label map" version="0.3-2"> 
+<tool id="ip_merge_neighbours_in_label" name="Merge neighbors in label map" version="0.3-2">
     <description></description>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
@@ -25,10 +25,10 @@
     </outputs>
     <tests>
         <test>
-          <param name="input" value="galaxyIcon_noText.tif"/>
+          <param name="input" value="galaxyIcon_noText.tiff"/>
           <param name="c" value="10"/>
           <output name="output" file="out.tiff" ftype="tiff" compare="sim_size"/>
-        </test> 
+        </test>
     </tests>
     <help>
     **What it does**

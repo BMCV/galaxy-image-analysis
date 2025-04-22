@@ -1,4 +1,4 @@
-<tool id="ip_color_deconvolution" name="Perform color deconvolution or transformation" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@"> 
+<tool id="ip_color_deconvolution" name="Perform color deconvolution or transformation" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@">
     <description></description>
     <macros>
         <import>creators.xml</import>
@@ -24,7 +24,7 @@
         <requirement type="package" version="0.3.1">giatools</requirement>
     </requirements>
     <command detect_errors="aggressive">
-        <![CDATA[ 
+        <![CDATA[
 
         python '$__tool_directory__/color_deconvolution.py'
 
@@ -150,7 +150,7 @@
 
         <test expect_failure="true">
             <!-- Test with image that only has 2 axes instead of required 3 -->
-            <param name="input" value="im_axes_yx.tif" />
+            <param name="input" value="im_axes_yx.tiff" />
             <param name="convtype" value="rgb2hsv" />
         </test>
         <test expect_failure="true">

@@ -1,4 +1,4 @@
-<tool id="ip_labelimage_to_points" name="Convert label map to points (center of masses)" version="0.2-2"> 
+<tool id="ip_labelimage_to_points" name="Convert label map to points (center of masses)" version="0.2-2">
     <description></description>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
@@ -14,7 +14,7 @@
     <command detect_errors="aggressive">
         <![CDATA[
         python '$__tool_directory__/labelimage2points.py' '$input' '$output'
-        ]]> 
+        ]]>
     </command>
     <inputs>
         <param name="input" type="data" format="tiff,png,jpg,bmp" label="Label image file"/>
@@ -24,7 +24,7 @@
     </outputs>
     <tests>
         <test>
-            <param name="input" value="label.tif" />
+            <param name="input" value="label.tiff" />
             <output name="output" value="points.tsv" ftype="tabular" />
         </test>
     </tests>
@@ -36,4 +36,4 @@
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
     </citations>
-</tool> 
+</tool>

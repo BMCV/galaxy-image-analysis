@@ -57,7 +57,7 @@
     <tests>
         <!-- Multi-frame input -->
         <test>
-            <param name="fn_in" value="input1.tif"/>
+            <param name="fn_in" value="input1.tiff"/>
             <param name="frame_1st" value="1"/>
             <param name="frame_end" value="0"/>
             <param name="filter_type" value="LoG"/>
@@ -70,7 +70,7 @@
         </test>
         <!-- Single-frame input -->
         <test>
-            <param name="fn_in" value="input2.tif"/>
+            <param name="fn_in" value="input2.tiff"/>
             <param name="frame_1st" value="1"/>
             <param name="frame_end" value="0"/>
             <param name="filter_type" value="LoG"/>

@@ -1,4 +1,4 @@
-<tool id="ip_projective_transformation" name="Perform projective transformation of an image" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05"> 
+<tool id="ip_projective_transformation" name="Perform projective transformation of an image" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
     <description></description>
     <macros>
         <import>creators.xml</import>
@@ -25,7 +25,7 @@
     </requirements>
     <command detect_errors="aggressive">
     <![CDATA[
-        ln -s '$moving' ./in.${moving.ext} && 
+        ln -s '$moving' ./in.${moving.ext} &&
         python '$__tool_directory__/projective_transformation.py'
         '$fixed'
         ./in.${moving.ext}
@@ -56,17 +56,17 @@
             <expand macro="tests/intensity_image_diff" name="warped" value="moving_rgb_warped.png" ftype="png"/>
         </test>
         <test>
-            <param name="fixed" value="multi_f.tif"/>
-            <param name="moving" value="multi_m.tif"/>
+            <param name="fixed" value="multi_f.tiff"/>
+            <param name="moving" value="multi_m.tiff"/>
             <param name="tmat" value="tmat.tsv"/>
-            <expand macro="tests/intensity_image_diff" name="warped" value="multi_m_warped.tif" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="warped" value="multi_m_warped.tiff" ftype="tiff"/>
       </test>
     </tests>
     <help>
 
         **Performs projective transformation.**
 
-        This tool performs a projective transformation of 2-D image into the coordinate system of another 2-D image. 
+        This tool performs a projective transformation of 2-D image into the coordinate system of another 2-D image.
         Multi-channel images are supported (e.g., RGB).
 
     </help>
