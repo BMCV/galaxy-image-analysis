@@ -76,18 +76,20 @@ def rasterize(point_file, out_file, shape, has_header=False, swap_xy=False, bg_v
             # Rasterize circle and distribute overlapping image area
             # Rasterize primitive geometry
             if radius > 0 or (width > 0 and height > 0):
-                mask = np.ones(shape, dtype=bool)
 
                 # Rasterize circle
                 if radius > 0:
+                    mask = np.ones(shape, dtype=bool)
                     mask[y, x] = False
                     mask = (ndi.distance_transform_edt(mask) <= radius)
+                else:
+                    mask = np.zeros(shape, dtype=bool)
 
                 # Rasterize rectangle
                 if width > 0 and height > 0:
                     mask[
-                        y:min(shape[0] - 1, y + width),
-                        x:min(shape[1] - 1, x + height)
+                        y:min(shape[0], y + width),
+                        x:min(shape[1], x + height)
                     ] = True
 
                 # Compute the overlap (pretend there is none if the rasterization is binary)

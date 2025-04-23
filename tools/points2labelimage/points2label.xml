@@ -46,7 +46,7 @@
         <data name="output" format="tiff" />
     </outputs>
     <tests>
-        <!-- Binary / TSV without header -->
+        <!-- Binary / TSV without header / Points -->
         <test>
             <param name="input" value="input1.tsv" />
             <param name="shapex" value="30" />
@@ -56,7 +56,7 @@
             <param name="binary" value="true" />
             <expand macro="tests/binary_image_diff" name="output" value="output1_binary.tif" ftype="tiff" />
         </test>
-        <!-- Binary / TSV with header -->
+        <!-- Binary / TSV with header / Circles -->
         <test>
             <param name="input" value="input2.tsv" />
             <param name="shapex" value="205" />
@@ -66,7 +66,7 @@
             <param name="binary" value="true" />
             <expand macro="tests/binary_image_diff" name="output" value="output2_binary.tif" ftype="tiff" />
         </test>
-        <!-- Labeled / TSV with header -->
+        <!-- Labeled / TSV with header / Circles -->
         <test>
             <param name="input" value="input2.tsv" />
             <param name="shapex" value="205" />
@@ -76,7 +76,7 @@
             <param name="binary" value="false" />
             <expand macro="tests/label_image_diff" name="output" value="output2.tif" ftype="tiff" />
         </test>
-        <!-- Binary / TSV with header / TSV with labels -->
+        <!-- Binary / TSV with header / TSV with labels / Circles -->
         <test>
             <param name="input" value="input3.tsv" />
             <param name="shapex" value="200" />
@@ -86,7 +86,7 @@
             <param name="binary" value="true" />
             <expand macro="tests/binary_image_diff" name="output" value="output3_binary.tif" ftype="tiff" />
         </test>
-        <!-- Labeled / TSV with header / TSV with labels -->
+        <!-- Labeled / TSV with header / TSV with labels / Circles -->
         <test>
             <param name="input" value="input3.tsv" />
             <param name="shapex" value="200" />
@@ -95,6 +95,16 @@
             <param name="swap_xy" value="false" />
             <param name="binary" value="false" />
             <expand macro="tests/label_image_diff" name="output" value="output3.tif" ftype="tiff" />
+        </test>
+        <!-- Labeled / TSV with header / TSV with labels / Rectangles -->
+        <test>
+            <param name="input" value="input4.tsv" />
+            <param name="shapex" value="200" />
+            <param name="shapey" value="100" />
+            <param name="has_header" value="true" />
+            <param name="swap_xy" value="false" />
+            <param name="binary" value="false" />
+            <expand macro="tests/label_image_diff" name="output" value="output4.tif" ftype="tiff" />
         </test>
     </tests>
     <help>
