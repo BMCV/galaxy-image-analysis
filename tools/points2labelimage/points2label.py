@@ -33,6 +33,17 @@ def rasterize(point_file, out_file, shape, has_header=False, swap_xy=False, bg_v
                 radius_list = [0] * len(pos_x_list)
 
             try:
+                width_column = giatools.pandas.find_column(df, ['width', 'WIDTH'])
+                height_column = giatools.pandas.find_column(df, ['height', 'HEIGHT'])
+                width_list = df[width_column]
+                height_list = df[height_column]
+                assert len(pos_x_list) == len(width_list)
+                assert len(pos_x_list) == len(height_list)
+            except KeyError:
+                width_list = [0] * len(pos_x_list)
+                height_list = [0] * len(pos_x_list)
+
+            try:
                 label_column = giatools.pandas.find_column(df, ['label', 'LABEL'])
                 label_list = df[label_column]
                 assert len(pos_x_list) == len(label_list)
@@ -45,7 +56,7 @@ def rasterize(point_file, out_file, shape, has_header=False, swap_xy=False, bg_v
             pos_x_list = df[0].round().astype(int)
             pos_y_list = df[1].round().astype(int)
             assert len(pos_x_list) == len(pos_y_list)
-            radius_list = [0] * len(pos_x_list)
+            radius_list, width_list, height_list = [[0] * len(pos_x_list)] * 3
             label_list = list(range(1, len(pos_x_list) + 1))
 
         # Optionally swap the coordinates
@@ -53,7 +64,9 @@ def rasterize(point_file, out_file, shape, has_header=False, swap_xy=False, bg_v
             pos_x_list, pos_y_list = pos_y_list, pos_x_list
 
         # Perform the rasterization
-        for y, x, radius, label in zip(pos_y_list, pos_x_list, radius_list, label_list):
+        for y, x, radius, width, height, label in zip(
+            pos_y_list, pos_x_list, radius_list, width_list, height_list, label_list,
+        ):
             if fg_value is not None:
                 label = fg_value
 
@@ -61,10 +74,23 @@ def rasterize(point_file, out_file, shape, has_header=False, swap_xy=False, bg_v
                 raise IndexError(f'The point x={x}, y={y} exceeds the bounds of the image (width: {shape[1]}, height: {shape[0]})')
 
             # Rasterize circle and distribute overlapping image area
-            if radius > 0:
-                mask = np.ones(shape, dtype=bool)
-                mask[y, x] = False
-                mask = (ndi.distance_transform_edt(mask) <= radius)
+            # Rasterize primitive geometry
+            if radius > 0 or (width > 0 and height > 0):
+
+                # Rasterize circle
+                if radius > 0:
+                    mask = np.ones(shape, dtype=bool)
+                    mask[y, x] = False
+                    mask = (ndi.distance_transform_edt(mask) <= radius)
+                else:
+                    mask = np.zeros(shape, dtype=bool)
+
+                # Rasterize rectangle
+                if width > 0 and height > 0:
+                    mask[
+                        y:min(shape[0], y + width),
+                        x:min(shape[1], x + height)
+                    ] = True
 
                 # Compute the overlap (pretend there is none if the rasterization is binary)
                 if fg_value is None:
