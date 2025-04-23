@@ -3,7 +3,7 @@
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
-        <token name="@TOOL_VERSION@">0.4</token>
+        <token name="@TOOL_VERSION@">0.4.1</token>
         <token name="@VERSION_SUFFIX@">0</token>
     </macros>
     <creator>
@@ -113,6 +113,8 @@
         - ``pos_y`` or ``POS_Y``: This column corresponds to the Y coordinates.
         - If a ``radius`` or ``RADIUS`` column is present, then the points will be rasterized as circles of the
           corresponding radii.
+        - If ``width`` or ``WIDTH`` and ``height`` or ``HEIGHT`` columns are present, then the points will be rasterized
+          as rectangles of the corresponding size.
         - If a ``label`` or ``LABEL`` column is present, then the corresponding labels will be used for rasterization
           (unless "Produce binary image" is activated). Different points are allowed to use the same label.
 
