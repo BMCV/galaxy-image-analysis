@@ -17,7 +17,7 @@
         <xref type="bio.tools">galaxy_image_analysis</xref>
     </xrefs>
     <requirements>
-        <requirement type="package" version="0.18.1">scikit-image</requirement> 
+        <requirement type="package" version="0.18.1">scikit-image</requirement>
         <requirement type="package" version="3.3.4">matplotlib</requirement>
         <requirement type="package" version="2020.10.1">tifffile</requirement>
         <requirement type="package" version="1.21">numpy</requirement>
@@ -31,7 +31,7 @@
         #if $method_option.method == "seg_contour"
             ./output.png
         #else
-            ./output.tif
+            ./output.tiff
         #end if
         --method $method_option.method
         #if $method_option.method == "blending"
@@ -71,7 +71,7 @@
         </conditional>
     </inputs>
     <outputs>
-        <data format="tiff" name="out_tiff" from_work_dir="output.tif" label="${tool.name} on ${on_string} output:tiff">
+        <data format="tiff" name="out_tiff" from_work_dir="output.tiff" label="${tool.name} on ${on_string} output:tiff">
             <filter>method_option['method'] != 'seg_contour'</filter>
         </data>
         <data format="png" name="out_png" from_work_dir="output.png" label="${tool.name} on ${on_string} output:png">
@@ -80,21 +80,21 @@
     </outputs>
     <tests>
         <test expect_num_outputs="1">
-            <param name="im1" value="mask1.tif"/>
-            <param name="im2" value="mask1r.tif"/>
+            <param name="im1" value="mask1.tiff"/>
+            <param name="im2" value="mask1r.tiff"/>
             <param name="method" value="coloc_vis"/>
-            <expand macro="tests/intensity_image_diff" name="out_tiff" value="test1.tif" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="out_tiff" value="test1.tiff" ftype="tiff"/>
         </test>
         <test expect_num_outputs="1">
-            <param name="im1" value="mask1.tif"/>
-            <param name="im2" value="mask1r.tif"/>
+            <param name="im1" value="mask1.tiff"/>
+            <param name="im2" value="mask1r.tiff"/>
             <param name="method" value="blending"/>
             <param name="alpha" value="0.3"/>
-            <expand macro="tests/intensity_image_diff" name="out_tiff" value="test2.tif" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="out_tiff" value="test2.tiff" ftype="tiff"/>
         </test>
         <test expect_num_outputs="1">
-            <param name="im1" value="sample1_uint8.tif"/>
-            <param name="im2" value="mask1.tif"/>
+            <param name="im1" value="sample1_uint8.tiff"/>
+            <param name="im2" value="mask1.tiff"/>
             <param name="method" value="seg_contour"/>
             <param name="thickness" value="2"/>
             <param name="color" value="#ff0000"/>
@@ -102,16 +102,16 @@
             <expand macro="tests/intensity_image_diff" name="out_png" value="test3.png" ftype="png"/>
         </test>
         <test expect_num_outputs="1"><!-- segmentation overlay, 8bit test -->
-            <param name="im1" value="sample1_uint8.tif"/>
-            <param name="im2" value="mask2.tif"/>
+            <param name="im1" value="sample1_uint8.tiff"/>
+            <param name="im2" value="mask2.tiff"/>
             <param name="method" value="seg_contour"/>
             <param name="thickness" value="2"/>
             <param name="color" value="#ff0000"/>
             <expand macro="tests/intensity_image_diff" name="out_png" value="test4.png" ftype="png"/>
         </test>
         <test expect_num_outputs="1"><!-- segmentation overlay, 16bit test -->
-            <param name="im1" value="sample1_uint16.tif"/>
-            <param name="im2" value="mask2.tif"/>
+            <param name="im1" value="sample1_uint16.tiff"/>
+            <param name="im2" value="mask2.tiff"/>
             <param name="method" value="seg_contour"/>
             <param name="thickness" value="2"/>
             <param name="color" value="#ff0000"/>
@@ -119,7 +119,7 @@
         </test>
         <test expect_num_outputs="1"><!-- segmentation overlay, 8bit RGB test -->
             <param name="im1" value="sample1_uint8_rgb.png"/>
-            <param name="im2" value="mask2.tif"/>
+            <param name="im2" value="mask2.tiff"/>
             <param name="method" value="seg_contour"/>
             <param name="thickness" value="2"/>
             <param name="color" value="#ff0000"/>

@@ -15,17 +15,17 @@
         <requirement type="package" version="0.18.1">scikit-image</requirement>
     </requirements>
     <command><![CDATA[
-    
+
     ## Inputs
-    
+
     python '$__tool_directory__/label_to_binary.py'
     '$input'
     '$bg_label'
-    
+
     ## Outputs
-    
-    ./output.tif
-    
+
+    ./output.tiff
+
     ]]>
     </command>
     <inputs>
@@ -33,13 +33,13 @@
         <param argument="--bg_label" type="integer" value="0" label="Background label" />
     </inputs>
     <outputs>
-        <data format="tiff" name="output" from_work_dir="output.tif" />
+        <data format="tiff" name="output" from_work_dir="output.tiff" />
     </outputs>
     <tests>
         <test>
-            <param name="input" value="input1.tif" />
+            <param name="input" value="input1.tiff" />
             <param name="bg_label" value="0" />
-            <output name="output" value="output1.tif" ftype="tiff" compare="sim_size" delta_frac="0.1"/>
+            <output name="output" value="output1.tiff" ftype="tiff" compare="sim_size" delta_frac="0.1"/>
         </test>
     </tests>
     <help>

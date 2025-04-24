@@ -67,7 +67,7 @@ if __name__ == "__main__":
                         help='Label map image.')
     parser.add_argument('outputfile',
                         help='Output file. Without extension (although it corrects if you '
-                             'add it; will always return a .tif')
+                             'add it; will always return a .tiff')
 
     args = parser.parse_args()
     split_labelmap(args.labelmap, args.outputfile)

@@ -8,7 +8,7 @@
     </xrefs>
     <requirements>
         <requirement type="package" version="1.15.4">numpy</requirement><!--https://github.com/numpy/numpy/pull/432 -->
-        <requirement type="package" version="0.14.2">scikit-image</requirement> 
+        <requirement type="package" version="0.14.2">scikit-image</requirement>
         <requirement type="package" version="0.23.4">pandas</requirement>
         <requirement type="package" version="0.15.1">tifffile</requirement>
     </requirements>
@@ -25,7 +25,7 @@
     </outputs>
     <tests>
         <test>
-            <param name="input" value="galaxyIcon_noText.tif" />
+            <param name="input" value="galaxyIcon_noText.tiff" />
             <output name="output" value="points.tsv" ftype="tabular" />
         </test>
     </tests>
@@ -36,4 +36,4 @@
     <citations>
         <citation type="doi">10.7717/peerj.453</citation>
     </citations>
-</tool> 
+</tool>

@@ -15,12 +15,12 @@
     <xrefs>
         <xref type="bio.tools">galaxy_image_analysis</xref>
     </xrefs>
-    <requirements> 
-        <requirement type="package" version="0.21">scikit-image</requirement> 
+    <requirements>
+        <requirement type="package" version="0.21">scikit-image</requirement>
         <requirement type="package" version="1.26.4">numpy</requirement>
         <requirement type="package" version="1.2.4">pandas</requirement>
         <requirement type="package" version="2024.6.18">tifffile</requirement>
-        <requirement type="package" version="0.3.1">giatools</requirement> 
+        <requirement type="package" version="0.3.1">giatools</requirement>
     </requirements>
     <command detect_errors="aggressive"><![CDATA[
 
@@ -34,13 +34,13 @@
         $binary
 
     ]]></command>
-    <inputs> 
-        <param name="input" type="data" format="tabular" label="Tabular list of points"/> 
+    <inputs>
+        <param name="input" type="data" format="tabular" label="Tabular list of points"/>
         <param name="shapex" type="integer" value="500" min="1" label="Width of output image" />
         <param name="shapey" type="integer" value="500" min="1" label="Height of output image" />
-        <param name="has_header" type="boolean" checked="true" truevalue="--has_header True" falsevalue="" optional="true" label="Tabular list of points has header" help="Turning this off will ignore the first row and assume that the X and Y coordinates correspond to the first and second column, respectively." /> 
+        <param name="has_header" type="boolean" checked="true" truevalue="--has_header True" falsevalue="" optional="true" label="Tabular list of points has header" help="Turning this off will ignore the first row and assume that the X and Y coordinates correspond to the first and second column, respectively." />
         <param name="swap_xy" type="boolean" checked="false" falsevalue="" truevalue="--swap_xy True" optional="true" label="Swap X and Y coordinates" help="Swap the X and Y coordinates, regardless of whether the tabular list has a header or not." />
-        <param name="binary" type="boolean" checked="false" truevalue="--binary True" falsevalue="" optional="true" label="Produce binary image" help="Use the same label for all points (65535)." /> 
+        <param name="binary" type="boolean" checked="false" truevalue="--binary True" falsevalue="" optional="true" label="Produce binary image" help="Use the same label for all points (65535)." />
     </inputs>
     <outputs>
         <data name="output" format="tiff" />
@@ -54,7 +54,7 @@
             <param name="has_header" value="false" />
             <param name="swap_xy" value="true" />
             <param name="binary" value="true" />
-            <expand macro="tests/binary_image_diff" name="output" value="output1_binary.tif" ftype="tiff" />
+            <expand macro="tests/binary_image_diff" name="output" value="output1_binary.tiff" ftype="tiff" />
         </test>
         <!-- Binary / TSV with header / Circles -->
         <test>
@@ -64,7 +64,7 @@
             <param name="has_header" value="true" />
             <param name="swap_xy" value="false" />
             <param name="binary" value="true" />
-            <expand macro="tests/binary_image_diff" name="output" value="output2_binary.tif" ftype="tiff" />
+            <expand macro="tests/binary_image_diff" name="output" value="output2_binary.tiff" ftype="tiff" />
         </test>
         <!-- Labeled / TSV with header / Circles -->
         <test>
@@ -74,7 +74,7 @@
             <param name="has_header" value="true" />
             <param name="swap_xy" value="false" />
             <param name="binary" value="false" />
-            <expand macro="tests/label_image_diff" name="output" value="output2.tif" ftype="tiff" />
+            <expand macro="tests/label_image_diff" name="output" value="output2.tiff" ftype="tiff" />
         </test>
         <!-- Binary / TSV with header / TSV with labels / Circles -->
         <test>
@@ -84,7 +84,7 @@
             <param name="has_header" value="true" />
             <param name="swap_xy" value="false" />
             <param name="binary" value="true" />
-            <expand macro="tests/binary_image_diff" name="output" value="output3_binary.tif" ftype="tiff" />
+            <expand macro="tests/binary_image_diff" name="output" value="output3_binary.tiff" ftype="tiff" />
         </test>
         <!-- Labeled / TSV with header / TSV with labels / Circles -->
         <test>
@@ -94,7 +94,7 @@
             <param name="has_header" value="true" />
             <param name="swap_xy" value="false" />
             <param name="binary" value="false" />
-            <expand macro="tests/label_image_diff" name="output" value="output3.tif" ftype="tiff" />
+            <expand macro="tests/label_image_diff" name="output" value="output3.tiff" ftype="tiff" />
         </test>
         <!-- Labeled / TSV with header / TSV with labels / Rectangles -->
         <test>
@@ -130,6 +130,6 @@
 
     </help>
     <citations>
-        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation> 
+        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
     </citations>
 </tool>

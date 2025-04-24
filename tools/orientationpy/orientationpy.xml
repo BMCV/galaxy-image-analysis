@@ -20,20 +20,20 @@
         <requirement type="package" version="0.1">giatools</requirement>
     </requirements>
     <command><![CDATA[
-    
+
     ## Inputs
-    
+
     python '$__tool_directory__/orientationpy-cli.py' '$image'
     --mode $mode
     --sigma $sigma
     --min_energy $min_energy
     --min_coherency $min_coherency
     --max_precision $max_precision
-    
+
     ## Outputs
-    
+
     --output_angle_tsv '$output_angle_tsv'
-    
+
     ]]>
     </command>
     <inputs>
@@ -54,7 +54,7 @@
     <tests>
         <!-- Test negative angle -->
         <test>
-            <param name="image" value="input1.tif" />
+            <param name="image" value="input1.tiff" />
             <param name="mode" value="finite_difference" />
             <param name="sigma" value="2" />
             <param name="min_energy" value="0.1" />
@@ -71,7 +71,7 @@
         </test>
         <!-- Test positive angle -->
         <test>
-            <param name="image" value="input2.tif" />
+            <param name="image" value="input2.tiff" />
             <param name="mode" value="finite_difference" />
             <param name="sigma" value="2" />
             <param name="min_energy" value="0.1" />

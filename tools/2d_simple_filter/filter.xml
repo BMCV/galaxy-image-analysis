@@ -66,16 +66,16 @@
     </inputs>
     <outputs>
        <data format="tiff" name="output" />
-    </outputs> 
+    </outputs>
     <tests>
         <!-- Tests with uint8 TIFF input image -->
         <test>
-            <param name="input" value="input1_uint8.tif" />
+            <param name="input" value="input1_uint8.tiff" />
             <param name="filter_type" value="gaussian" />
-            <expand macro="tests/intensity_image_diff" name="output" value="input1_gaussian.tif" ftype="tiff">
+            <expand macro="tests/intensity_image_diff" name="output" value="input1_gaussian.tiff" ftype="tiff">
                 <!--
 
-                The input file `input1_uint8.tif` has values ranging between 23 and 254, with a mean value of 63.67.
+                The input file `input1_uint8.tiff` has values ranging between 23 and 254, with a mean value of 63.67.
 
                 Below, we use an assertion in addition to the `image_diff` comparison, to ensure that the range of
                 values is preserved. The motiviation behind this is that the expectation images are usually checked
@@ -88,38 +88,38 @@
             </expand>
         </test>
         <test>
-            <param name="input" value="input1_uint8.tif" />
+            <param name="input" value="input1_uint8.tiff" />
             <param name="filter_type" value="median" />
-            <expand macro="tests/intensity_image_diff" name="output" value="input1_median.tif" ftype="tiff">
+            <expand macro="tests/intensity_image_diff" name="output" value="input1_median.tiff" ftype="tiff">
                 <!-- See note for Gaussian filter above. -->
                 <has_image_mean_intensity mean_intensity="63.67" eps="10"/>
             </expand>
         </test>
         <test>
-            <param name="input" value="input1_uint8.tif" />
+            <param name="input" value="input1_uint8.tiff" />
             <param name="filter_type" value="prewitt_h" />
-            <expand macro="tests/intensity_image_diff" name="output" value="input1_prewitt_h.tif" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="input1_prewitt_h.tiff" ftype="tiff"/>
         </test>
         <test>
-            <param name="input" value="input1_uint8.tif" />
+            <param name="input" value="input1_uint8.tiff" />
             <param name="filter_type" value="prewitt_v" />
-            <expand macro="tests/intensity_image_diff" name="output" value="input1_prewitt_v.tif" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="input1_prewitt_v.tiff" ftype="tiff"/>
         </test>
         <test>
-            <param name="input" value="input1_uint8.tif" />
+            <param name="input" value="input1_uint8.tiff" />
             <param name="filter_type" value="sobel_h" />
-            <expand macro="tests/intensity_image_diff" name="output" value="input1_sobel_h.tif" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="input1_sobel_h.tiff" ftype="tiff"/>
         </test>
         <test>
-            <param name="input" value="input1_uint8.tif" />
+            <param name="input" value="input1_uint8.tiff" />
             <param name="filter_type" value="sobel_v" />
-            <expand macro="tests/intensity_image_diff" name="output" value="input1_sobel_v.tif" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="input1_sobel_v.tiff" ftype="tiff"/>
         </test>
         <!-- Tests with float TIFF input image -->
         <test>
-            <param name="input" value="input2_float.tif" />
+            <param name="input" value="input2_float.tiff" />
             <param name="filter_type" value="gaussian" />
-            <expand macro="tests/intensity_image_diff" name="output" value="input2_gaussian.tif" ftype="tiff">
+            <expand macro="tests/intensity_image_diff" name="output" value="input2_gaussian.tiff" ftype="tiff">
                 <!-- See note for Gaussian filter above. -->
                 <has_image_mean_intensity mean_intensity="0.25" eps="0.01"/>
             </expand>

@@ -1,11 +1,11 @@
 <tool id="background_removal" name="Remove image background" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
-        <description>with scikit-image</description>  
-    <macros>  
+        <description>with scikit-image</description>
+    <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
-        <token name="@TOOL_VERSION@">0.24.0</token>  
-        <token name="@VERSION_SUFFIX@">1</token>  
-    </macros>  
+        <token name="@TOOL_VERSION@">0.24.0</token>
+        <token name="@VERSION_SUFFIX@">1</token>
+    </macros>
     <creator>
         <expand macro="creators/rmassei"/>
     </creator>
@@ -30,31 +30,31 @@
         <data name="output" format="tiff" label="Background substraction output"/>
     </outputs>
     <tests>
-        <!-- uint8 tests -->  
-        <test>  
-            <param name="input_image" value="input1_uint8.tif"/>  
-            <param name="filter" value="dog"/>  
-            <param name="radius" value="20"/>  
-            <expand macro="tests/intensity_image_diff" name="output" value="input1_output_dog.tif" ftype="tiff"/>  
-        </test> 
+        <!-- uint8 tests -->
         <test>
-            <param name="input_image" value="input3_uint8.tif"/>
-            <param name="filter" value="top_hat"/>
-            <param name="radius" value="15"/>
-            <expand macro="tests/intensity_image_diff" name="output" value="input3_output_tophat.tif" ftype="tiff"/>
-        </test>
-        <!-- uint16 tests -->  
-        <test>  
-            <param name="input_image" value="input2_uint16.tif"/>
-            <param name="filter" value="rolling_ball"/>
-            <param name="radius" value="20"/>
-            <expand macro="tests/intensity_image_diff" name="output" value="input2_output_rb.tif" ftype="tiff"/>
-        </test>
-        <test>
-            <param name="input_image" value="input2_uint16.tif"/>
+            <param name="input_image" value="input1_uint8.tiff"/>
             <param name="filter" value="dog"/>
             <param name="radius" value="20"/>
-            <expand macro="tests/intensity_image_diff" name="output" value="input2_output_dog.tif" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="input1_output_dog.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <param name="input_image" value="input3_uint8.tiff"/>
+            <param name="filter" value="top_hat"/>
+            <param name="radius" value="15"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="input3_output_tophat.tiff" ftype="tiff"/>
+        </test>
+        <!-- uint16 tests -->
+        <test>
+            <param name="input_image" value="input2_uint16.tiff"/>
+            <param name="filter" value="rolling_ball"/>
+            <param name="radius" value="20"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="input2_output_rb.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <param name="input_image" value="input2_uint16.tiff"/>
+            <param name="filter" value="dog"/>
+            <param name="radius" value="20"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="input2_output_dog.tiff" ftype="tiff"/>
         </test>
     </tests>
     <help>

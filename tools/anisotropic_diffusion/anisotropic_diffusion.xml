@@ -1,4 +1,4 @@
-<tool id="ip_anisotropic_diffusion" name="Apply anisotropic diffusion" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05"> 
+<tool id="ip_anisotropic_diffusion" name="Apply anisotropic diffusion" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
     <description>with MedPy</description>
     <macros>
         <import>creators.xml</import>
@@ -17,7 +17,7 @@
         <requirement type="package" version="1.20">numpy</requirement>
         <requirement type="package" version="0.18.1">scikit-image</requirement>
         <requirement type="package" version="0.1">giatools</requirement>
-    </requirements> 
+    </requirements>
     <command detect_errors="aggressive">
         <![CDATA[
         python '$__tool_directory__/anisotropic_diffusion.py' '$input' '$output' '$niter' '$kappa' '$gamma' '$eqoption'
@@ -38,12 +38,12 @@
     </outputs>
     <tests>
         <test>
-            <param name="input" value="galaxyIcon_noText.tif" />
+            <param name="input" value="galaxyIcon_noText.tiff" />
             <param name="niter" value="100" />
             <param name="kappa" value="50" />
             <param name="gamma" value="0.1" />
             <param name="eqoption" value="1" />
-            <expand macro="tests/intensity_image_diff" name="output" value="res.tif" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="res.tiff" ftype="tiff"/>
         </test>
     </tests>
     <help>
