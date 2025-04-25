@@ -1,6 +1,7 @@
 import argparse
 import os
 import warnings
+import json
 
 import giatools.pandas
 import numpy as np
@@ -8,7 +9,7 @@ import pandas as pd
 import scipy.ndimage as ndi
 import skimage.io
 import skimage.segmentation
-import json
+
 
 def geojson_to_tabular(geojson):
     rows = []
@@ -35,6 +36,7 @@ def geojson_to_tabular(geojson):
     point_file = "./point_file.tabular"
     df.to_csv(point_file, sep="\t", index=False)
     return point_file
+
 
 def rasterize(point_file, out_file, shape, has_header=False, swap_xy=False, bg_value=0, fg_value=None):
 
@@ -168,14 +170,14 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     point_file = args.in_file.name
-    has_header=args.has_header
+    has_header = args.has_header
 
     try:
         with open(args.in_file.name, 'r') as f:
             content = json.load(f)
             if isinstance(content, dict) and content.get("type") == "FeatureCollection" and isinstance(content.get("features"), list):
                 point_file = geojson_to_tabular(content)
-                has_header = True # header included in the converted file
+                has_header = True  # header included in the converted file
             else:
                 raise ValueError("Input is a JSON file but not a valid GeoJSON file")
     except json.JSONDecodeError:
