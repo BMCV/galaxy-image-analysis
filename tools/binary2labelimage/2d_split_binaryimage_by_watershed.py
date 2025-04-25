@@ -1,11 +1,12 @@
 import argparse
 import sys
 
+import numpy as np
 import skimage.io
 import skimage.util
 from scipy import ndimage as ndi
 from skimage.feature import peak_local_max
-from skimage.morphology import watershed
+from skimage.segmentation import watershed
 
 
 if __name__ == "__main__":
@@ -17,11 +18,15 @@ if __name__ == "__main__":
 
     img_in = skimage.io.imread(args.input_file.name)
     distance = ndi.distance_transform_edt(img_in)
-    local_maxi = peak_local_max(distance,
-                                indices=False,
-                                min_distance=args.min_distance,
-                                labels=img_in)
-    markers = ndi.label(local_maxi)[0]
+
+    local_max_indices = peak_local_max(
+        distance,
+        min_distance=args.min_distance,
+        labels=img_in,
+    )
+    local_max_mask = np.zeros(img_in.shape, dtype=bool)
+    local_max_mask[tuple(local_max_indices.T)] = True
+    markers = ndi.label(local_max_mask)[0]
     res = watershed(-distance, markers, mask=img_in)
 
     res = skimage.util.img_as_uint(res)
