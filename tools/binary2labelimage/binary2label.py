@@ -11,8 +11,11 @@ parser.add_argument('input', type=str, help='input file')
 parser.add_argument('output', type=str, help='output file (TIFF)')
 args = parser.parse_args()
 
-# Read the input image
+# Read the input image with the original axes
 img = giatools.Image.read(args.input)
+img = img.normalize_axes_like(
+    img.original_axes,
+)
 
 # Make sure the image is truly binary
 img_arr_bin = (img.data > 0)
