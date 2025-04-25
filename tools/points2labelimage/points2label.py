@@ -8,7 +8,33 @@ import pandas as pd
 import scipy.ndimage as ndi
 import skimage.io
 import skimage.segmentation
+import json
 
+def geojson_to_tabular(geojson):
+    rows = []
+    for feature in geojson["features"]:
+        name = feature["properties"].get("name")
+        coords = feature["geometry"]["coordinates"][0]
+
+        xs = [pt[0] for pt in coords]
+        ys = [pt[1] for pt in coords]
+
+        x = min(xs)
+        y = min(ys)
+        width = max(xs) - x
+        height = max(ys) - y
+
+        rows.append({
+            "pos_x": x,
+            "pos_y": y,
+            "width": width,
+            "height": height,
+            "label": name
+        })
+    df = pd.DataFrame(rows)
+    point_file = "./point_file.tabular"
+    df.to_csv(point_file, sep="\t", index=False)
+    return point_file
 
 def rasterize(point_file, out_file, shape, has_header=False, swap_xy=False, bg_value=0, fg_value=None):
 
@@ -131,7 +157,7 @@ def rasterize(point_file, out_file, shape, has_header=False, swap_xy=False, bg_v
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('point_file', type=argparse.FileType('r'), help='point file')
+    parser.add_argument('in_file', type=argparse.FileType('r'), help='Input point file or GeoJSON file')
     parser.add_argument('out_file', type=str, help='out file (TIFF)')
     parser.add_argument('shapex', type=int, help='shapex')
     parser.add_argument('shapey', type=int, help='shapey')
@@ -141,11 +167,25 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
+    point_file = args.in_file.name
+    has_header=args.has_header
+
+    try:
+        with open(args.in_file.name, 'r') as f:
+            content = json.load(f)
+            if isinstance(content, dict) and content.get("type") == "FeatureCollection" and isinstance(content.get("features"), list):
+                point_file = geojson_to_tabular(content)
+                has_header = True # header included in the converted file
+            else:
+                raise ValueError("Input is a JSON file but not a valid GeoJSON file")
+    except json.JSONDecodeError:
+        print("Input is not a valid JSON file. Assuming it a tabular file")
+
     rasterize(
-        args.point_file.name,
+        point_file,
         args.out_file,
         (args.shapey, args.shapex),
-        has_header=args.has_header,
+        has_header=has_header,
         swap_xy=args.swap_xy,
         fg_value=0xffff if args.binary else None,
     )
