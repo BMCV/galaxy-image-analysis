@@ -1,19 +1,27 @@
 import argparse
-import sys
 
-import skimage.io
-import skimage.util
-from PIL import Image
-from skimage.measure import label
+import giatools
+import scipy.ndimage as ndi
+import tifffile
 
+
+# Parse CLI parameters
 parser = argparse.ArgumentParser()
-parser.add_argument('input_file', type=argparse.FileType('r'), default=sys.stdin, help='input file')
-parser.add_argument('out_file', type=argparse.FileType('w'), default=sys.stdin, help='out file (TIFF)')
+parser.add_argument('input', type=str, help='input file')
+parser.add_argument('output', type=str, help='output file (TIFF)')
 args = parser.parse_args()
 
-img_in = skimage.io.imread(args.input_file.name) > 0
-res = label(img_in)
-res = skimage.util.img_as_uint(res)
+# Read the input image with the original axes
+img = giatools.Image.read(args.input)
+img = img.normalize_axes_like(
+    img.original_axes,
+)
 
-res = Image.fromarray(res)
-res.save(args.out_file.name, "tiff")
+# Make sure the image is truly binary
+img_arr_bin = (img.data > 0)
+
+# Perform the labeling
+img.data = ndi.label(img_arr_bin)[0]
+
+# Write the result image (same axes as input image)
+tifffile.imwrite(args.output, img.data, metadata=dict(axes=img.axes))
