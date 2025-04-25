@@ -1,7 +1,7 @@
 import argparse
+import json
 import os
 import warnings
-import json
 
 import giatools.pandas
 import numpy as np
