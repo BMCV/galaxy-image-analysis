@@ -1,7 +1,7 @@
 <tool id="ip_binary_to_labelimage" name="Convert binary image to label map" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@">
     <description></description>
     <macros>
-        <token name="@TOOL_VERSION@">0.5</token>
+        <token name="@TOOL_VERSION@">0.6</token>
         <token name="@VERSION_SUFFIX@">0</token>
     </macros>
     <edam_operations>
@@ -30,7 +30,7 @@
         <param name="input" type="data" format="tiff,png,jpg,bmp" label="Binary image"/>
         <conditional name="mode">
             <param name="mode_selector" type="select" label="Mode">
-                <option value="cca">Connected component analysis</option>
+                <option value="cca" selected="true">Connected component analysis</option>
                 <option value="watershed">Watershed transform</option>
             </param>
             <when value="cca">
@@ -58,6 +58,13 @@
                 <param name="min_distance" value="10" />
             </conditional>
             <output name="output" value="out.tiff" ftype="tiff" compare="sim_size"/>
+        </test>
+        <test>
+            <param name="input" value="uint8_z12_x11_y10.tiff"/>
+            <conditional name="mode">
+                <param name="mode_selector" value="cca" />
+            </conditional>
+            <output name="output" value="uint8_z12_x11_y10-output.tiff" ftype="tiff" compare="image_diff"/>
         </test>
     </tests>
     <help>
