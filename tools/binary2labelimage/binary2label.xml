@@ -11,11 +11,8 @@
         <xref type="bio.tools">galaxy_image_analysis</xref>
     </xrefs>
     <requirements>
-        <requirement type="package" version="0.14.2">scikit-image</requirement>
-        <requirement type="package" version="0.15.1">tifffile</requirement>
-        <requirement type="package" version="1.15.4">numpy</requirement>
-        <requirement type="package" version="5.3.0">pillow</requirement>
-        <requirement type="package" version="1.2.1">scipy</requirement>
+        <requirement type="package" version="0.4.0">giatools</requirement>
+        <requirement type="package" version="1.12.0">scipy</requirement>
     </requirements>
     <command detect_errors="aggressive">
         <![CDATA[
