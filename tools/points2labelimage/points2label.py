@@ -22,8 +22,8 @@ def geojson_to_tabular(geojson):
 
         x = min(xs)
         y = min(ys)
-        width = max(xs) - x
-        height = max(ys) - y
+        width = max(xs) + 1 - x
+        height = max(ys) + 1 - y
 
         rows.append({
             "pos_x": x,
