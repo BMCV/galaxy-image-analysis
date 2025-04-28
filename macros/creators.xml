@@ -24,5 +24,10 @@
         <person givenName="Till" familyName="Korten"/>
         <yield/>
     </xml>
-    
+
+    <xml name="creators/pavanvidem">
+        <person givenName="Pavan" familyName="Videm"/>
+        <yield/>
+    </xml>
+
 </macros>
