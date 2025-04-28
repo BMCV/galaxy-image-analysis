@@ -1,0 +1,110 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "id": "9ef0487b-29a5-4e53-8eca-5c9dbf7bfc80",
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [
+                            124,
+                            149
+                        ],
+                        [
+                            183,
+                            149
+                        ],
+                        [
+                            183,
+                            275
+                        ],
+                        [
+                            124,
+                            275
+                        ],
+                        [
+                            124,
+                            149
+                        ]
+                    ]
+                ]
+            },
+            "properties": {
+                "objectType": "annotation",
+                "name": "2"
+            }
+        },
+        {
+            "type": "Feature",
+            "id": "a5d9de43-1a4a-4194-b06d-a6c6d0f81f91",
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [
+                            201,
+                            48
+                        ],
+                        [
+                            292,
+                            48
+                        ],
+                        [
+                            292,
+                            184
+                        ],
+                        [
+                            201,
+                            184
+                        ],
+                        [
+                            201,
+                            48
+                        ]
+                    ]
+                ]
+            },
+            "properties": {
+                "objectType": "annotation",
+                "name": "1"
+            }
+        },
+        {
+            "type": "Feature",
+            "id": "b7b348f7-5438-47e3-a4ae-dbc923aa4e3b",
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [
+                            151,
+                            95
+                        ],
+                        [
+                            260,
+                            95
+                        ],
+                        [
+                            260,
+                            162
+                        ],
+                        [
+                            151,
+                            162
+                        ],
+                        [
+                            151,
+                            95
+                        ]
+                    ]
+                ]
+            },
+            "properties": {
+                "objectType": "annotation",
+                "name": "3"
+            }
+        }
+    ]
+}
