@@ -1,10 +1,10 @@
-<tool id="ip_points_to_label" name="Convert point coordinates to label map" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
+<tool id="ip_points_to_label" name="Convert coordinates to label map" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
     <description></description>
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
         <token name="@TOOL_VERSION@">0.4.1</token>
-        <token name="@VERSION_SUFFIX@">0</token>
+        <token name="@VERSION_SUFFIX@">1</token>
     </macros>
     <creator>
         <expand macro="creators/bmcv" />
@@ -35,10 +35,10 @@
 
     ]]></command>
     <inputs>
-        <param name="input" type="data" format="tabular" label="Tabular list of points"/>
+        <param name="input" type="data" format="tabular,geojson" label="List of points in tabular or geojson format"/>
         <param name="shapex" type="integer" value="500" min="1" label="Width of output image" />
         <param name="shapey" type="integer" value="500" min="1" label="Height of output image" />
-        <param name="has_header" type="boolean" checked="true" truevalue="--has_header True" falsevalue="" optional="true" label="Tabular list of points has header" help="Turning this off will ignore the first row and assume that the X and Y coordinates correspond to the first and second column, respectively." />
+        <param name="has_header" type="boolean" checked="true" truevalue="--has_header True" falsevalue="" optional="true" label="Tabular list of points has header" help="Turning this off will ignore the first row and assume that the X and Y coordinates correspond to the first and second column, respectively. Ignored, if GeoJSON is used for input." />
         <param name="swap_xy" type="boolean" checked="false" falsevalue="" truevalue="--swap_xy True" optional="true" label="Swap X and Y coordinates" help="Swap the X and Y coordinates, regardless of whether the tabular list has a header or not." />
         <param name="binary" type="boolean" checked="false" truevalue="--binary True" falsevalue="" optional="true" label="Produce binary image" help="Use the same label for all points (65535)." />
     </inputs>
@@ -104,20 +104,66 @@
             <param name="has_header" value="true" />
             <param name="swap_xy" value="false" />
             <param name="binary" value="false" />
-            <expand macro="tests/label_image_diff" name="output" value="output4.tif" ftype="tiff" />
+            <expand macro="tests/label_image_diff" name="output" value="output4.tiff" ftype="tiff" />
+        </test>
+        <!-- Labeled / ROI / Rectangles -->
+        <test>
+            <param name="input" value="rois.geojson" />
+            <param name="shapex" value="300" />
+            <param name="shapey" value="300" />
+            <param name="has_header" value="false" />
+            <param name="swap_xy" value="false" />
+            <param name="binary" value="false" />
+            <expand macro="tests/label_image_diff" name="output" value="output5.tiff" ftype="tiff" />
+        </test>
+        <test>
+            <param name="input" value="rois-noname.geojson" />
+            <param name="shapex" value="300" />
+            <param name="shapey" value="300" />
+            <param name="has_header" value="false" />
+            <param name="swap_xy" value="false" />
+            <param name="binary" value="false" />
+            <expand macro="tests/label_image_diff" name="output" value="output5.tiff" ftype="tiff" />
+        </test>
+        <test>
+            <param name="input" value="rois.geojson" />
+            <param name="shapex" value="300" />
+            <param name="shapey" value="300" />
+            <param name="has_header" value="false" />
+            <param name="swap_xy" value="true" />
+            <param name="binary" value="false" />
+            <expand macro="tests/label_image_diff" name="output" value="output6.tiff" ftype="tiff" />
+        </test>
+        <test expect_failure="true">
+            <!-- The test should fail because the GeoJSON is not rectangular -->
+            <param name="input" value="rois-illegal1.geojson" />
+            <param name="shapex" value="300" />
+            <param name="shapey" value="300" />
+            <param name="has_header" value="false" />
+            <param name="swap_xy" value="false" />
+            <param name="binary" value="false" />
+        </test>
+        <test expect_failure="true">
+            <!-- The test should fail because the GeoJSON is not of `Polygon` type -->
+            <param name="input" value="rois-illegal2.geojson" />
+            <param name="shapex" value="300" />
+            <param name="shapey" value="300" />
+            <param name="has_header" value="false" />
+            <param name="swap_xy" value="false" />
+            <param name="binary" value="false" />
         </test>
     </tests>
     <help>
 
-        **Converts a tabular list of points to a label map by rasterizing the point coordinates.**
+        **Converts a list of points to a label map by rasterizing the coordinates.**
 
         The created image is a single-channel image with 16 bits per pixel (unsigned integer). The points are
         rasterized with unique labels, or the value 65535 (white) for binary image output. Pixels not corresponding to
         any points in the tabular file are assigned the value 0 (black).
 
-        The tabular list of points can either be header-less. In this case, the first and second columns are expected
-        to be the X and Y coordinates, respectively. Otherwise, if a header is present, it is searched for the
-        following column names:
+        **Using a tabular input file:** The tabular list of points can either be header-less. In this case, the first
+        and second columns are expected to be the X and Y coordinates, respectively. Otherwise, if a header is present,
+        it is searched for the following column names:
 
         - ``pos_x`` or ``POS_X``: This column corresponds to the X coordinates.
         - ``pos_y`` or ``POS_Y``: This column corresponds to the Y coordinates.
@@ -126,7 +172,10 @@
         - If ``width`` or ``WIDTH`` and ``height`` or ``HEIGHT`` columns are present, then the points will be rasterized
           as rectangles of the corresponding size.
         - If a ``label`` or ``LABEL`` column is present, then the corresponding labels will be used for rasterization
-          (unless "Produce binary image" is activated). Different points are allowed to use the same label.
+          (unless "Produce binary image" is activated). Different points are allowed to use the same label. If used, the
+          label must be numeric and integer.
+
+        **Using a GeoJSON input file:** Only rectangular specifications of `Polygon` type geometry is supported.
 
     </help>
     <citations>
