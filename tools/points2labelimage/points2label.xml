@@ -127,7 +127,7 @@
         </test>
         <test expect_failure="true">
             <!-- The test should fail because the GeoJSON is not rectangular -->
-            <param name="input" value="rois-illegal.geojson" />
+            <param name="input" value="rois-illegal1.geojson" />
             <param name="shapex" value="300" />
             <param name="shapey" value="300" />
             <param name="has_header" value="false" />
@@ -136,7 +136,7 @@
         </test>
         <test expect_failure="true">
             <!-- The test should fail because the GeoJSON is not of `Polygon` type -->
-            <param name="input" value="rois-illegal.geojson" />
+            <param name="input" value="rois-illegal2.geojson" />
             <param name="shapex" value="300" />
             <param name="shapey" value="300" />
             <param name="has_header" value="false" />
