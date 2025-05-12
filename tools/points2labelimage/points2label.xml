@@ -1,4 +1,4 @@
-<tool id="ip_points_to_label" name="Convert point coordinates to label map" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
+<tool id="ip_points_to_label" name="Convert coordinates to label map" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
     <description></description>
     <macros>
         <import>creators.xml</import>
