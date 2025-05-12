@@ -117,6 +117,15 @@
             <expand macro="tests/label_image_diff" name="output" value="output5.tiff" ftype="tiff" />
         </test>
         <test>
+            <param name="input" value="rois-noname.geojson" />
+            <param name="shapex" value="300" />
+            <param name="shapey" value="300" />
+            <param name="has_header" value="false" />
+            <param name="swap_xy" value="false" />
+            <param name="binary" value="false" />
+            <expand macro="tests/label_image_diff" name="output" value="output5.tiff" ftype="tiff" />
+        </test>
+        <test>
             <param name="input" value="rois.geojson" />
             <param name="shapex" value="300" />
             <param name="shapey" value="300" />
@@ -163,7 +172,8 @@
         - If ``width`` or ``WIDTH`` and ``height`` or ``HEIGHT`` columns are present, then the points will be rasterized
           as rectangles of the corresponding size.
         - If a ``label`` or ``LABEL`` column is present, then the corresponding labels will be used for rasterization
-          (unless "Produce binary image" is activated). Different points are allowed to use the same label.
+          (unless "Produce binary image" is activated). Different points are allowed to use the same label. If used, the
+          label must be numeric and integer.
 
         **Using a GeoJSON input file:** Only rectangular specifications of `Polygon` type geometry is supported.
 

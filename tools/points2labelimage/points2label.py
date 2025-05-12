@@ -2,39 +2,78 @@ import argparse
 import json
 import os
 import warnings
+from typing import (
+    Dict,
+    List,
+    Tuple,
+    Union,
+)
 
 import giatools.pandas
 import numpy as np
+import numpy.typing as npt
 import pandas as pd
 import scipy.ndimage as ndi
 import skimage.io
 import skimage.segmentation
 
 
-def geojson_to_tabular(geojson):
-    rows = []
-    for feature in geojson["features"]:
-        name = feature["properties"].get("name")
-        coords = feature["geometry"]["coordinates"][0]
+def is_rectangular(points: Union[List[Tuple[float, float]], npt.NDArray]) -> bool:
+    points = np.asarray(points)
 
+    # Rectangle must have 5 points, where first and last are identical
+    if len(points) != 5 or not (points[0] == points[-1]).all():
+        return False
+
+    # Check that all edges align with the axes
+    edges = points[1:] - points[:-1]
+    if any((edge == 0).sum() != 1 for edge in edges):
+        return False
+
+    # All checks have passed, the geometry is rectangular
+    return True
+
+
+def geojson_to_tabular(geojson: Dict):
+    rows = []
+    labels = []
+    for feature in geojson['features']:
+        assert feature['geometry']['type'].lower() == 'polygon', (
+            f'Unsupported geometry type: "{feature["geometry"]["type"]}"'
+        )
+        coords = feature['geometry']['coordinates'][0]
+
+        # Properties and name (label) are optional
+        try:
+            label = feature['properties']['name']
+        except KeyError:
+            label = max(labels, default=0) + 1
+        labels.append(label)
+
+        # Read geometry
         xs = [pt[0] for pt in coords]
         ys = [pt[1] for pt in coords]
 
         x = min(xs)
         y = min(ys)
+
         width = max(xs) + 1 - x
         height = max(ys) + 1 - y
 
+        # Validate geometry (must be rectangular)
+        assert is_rectangular(list(zip(xs, ys)))
+
+        # Append the rectangle
         rows.append({
-            "pos_x": x,
-            "pos_y": y,
-            "width": width,
-            "height": height,
-            "label": name
+            'pos_x': x,
+            'pos_y': y,
+            'width': width,
+            'height': height,
+            'label': label,
         })
     df = pd.DataFrame(rows)
-    point_file = "./point_file.tabular"
-    df.to_csv(point_file, sep="\t", index=False)
+    point_file = './point_file.tabular'
+    df.to_csv(point_file, sep='\t', index=False)
     return point_file
 
 
@@ -150,14 +189,14 @@ def rasterize(point_file, out_file, shape, has_header=False, swap_xy=False, bg_v
                 img[y, x] = label
 
     else:
-        raise Exception("{} is empty or does not exist.".format(point_file))  # appropriate built-in error?
+        raise Exception('{} is empty or does not exist.'.format(point_file))  # appropriate built-in error?
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         skimage.io.imsave(out_file, img, plugin='tifffile')  # otherwise we get problems with the .dat extension
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('in_file', type=argparse.FileType('r'), help='Input point file or GeoJSON file')
     parser.add_argument('out_file', type=str, help='out file (TIFF)')
@@ -175,13 +214,13 @@ if __name__ == "__main__":
     try:
         with open(args.in_file.name, 'r') as f:
             content = json.load(f)
-            if isinstance(content, dict) and content.get("type") == "FeatureCollection" and isinstance(content.get("features"), list):
+            if isinstance(content, dict) and content.get('type') == 'FeatureCollection' and isinstance(content.get('features'), list):
                 point_file = geojson_to_tabular(content)
                 has_header = True  # header included in the converted file
             else:
-                raise ValueError("Input is a JSON file but not a valid GeoJSON file")
+                raise ValueError('Input is a JSON file but not a valid GeoJSON file')
     except json.JSONDecodeError:
-        print("Input is not a valid JSON file. Assuming it a tabular file")
+        print('Input is not a valid JSON file. Assuming it a tabular file.')
 
     rasterize(
         point_file,
