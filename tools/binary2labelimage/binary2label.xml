@@ -1,9 +1,13 @@
 <tool id="ip_binary_to_labelimage" name="Convert binary image to label map" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@">
     <description></description>
     <macros>
-        <token name="@TOOL_VERSION@">0.5</token>
+        <import>creators.xml</import>
+        <token name="@TOOL_VERSION@">0.6</token>
         <token name="@VERSION_SUFFIX@">0</token>
     </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+    </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
@@ -11,11 +15,8 @@
         <xref type="bio.tools">galaxy_image_analysis</xref>
     </xrefs>
     <requirements>
-        <requirement type="package" version="0.14.2">scikit-image</requirement>
-        <requirement type="package" version="0.15.1">tifffile</requirement>
-        <requirement type="package" version="1.15.4">numpy</requirement>
-        <requirement type="package" version="5.3.0">pillow</requirement>
-        <requirement type="package" version="1.2.1">scipy</requirement>
+        <requirement type="package" version="0.4.0">giatools</requirement>
+        <requirement type="package" version="1.12.0">scipy</requirement>
     </requirements>
     <command detect_errors="aggressive">
         <![CDATA[
@@ -30,7 +31,7 @@
         <param name="input" type="data" format="tiff,png,jpg,bmp" label="Binary image"/>
         <conditional name="mode">
             <param name="mode_selector" type="select" label="Mode">
-                <option value="cca">Connected component analysis</option>
+                <option value="cca" selected="true">Connected component analysis</option>
                 <option value="watershed">Watershed transform</option>
             </param>
             <when value="cca">
@@ -49,7 +50,7 @@
             <conditional name="mode">
                 <param name="mode_selector" value="cca" />
             </conditional>
-            <output name="output" value="label.tiff" ftype="tiff" compare="sim_size"/>
+            <output name="output" value="label.tiff" ftype="tiff" compare="image_diff"/>
         </test>
         <test>
             <param name="input" value="in.tiff"/>
@@ -57,7 +58,20 @@
                 <param name="mode_selector" value="watershed" />
                 <param name="min_distance" value="10" />
             </conditional>
-            <output name="output" value="out.tiff" ftype="tiff" compare="sim_size"/>
+            <output name="output" value="out.tiff" ftype="tiff" compare="image_diff"/>
+        </test>
+        <test>
+            <param name="input" value="uint8_z12_x11_y10.tiff"/>
+            <conditional name="mode">
+                <param name="mode_selector" value="cca" />
+            </conditional>
+            <output name="output" value="uint8_z12_x11_y10-output.tiff" ftype="tiff" compare="image_diff">
+                <assert_contents>
+                    <has_image_width width="11"/>
+                    <has_image_height height="10"/>
+                    <has_image_depth depth="12"/>
+                </assert_contents>
+            </output>
         </test>
     </tests>
     <help>
