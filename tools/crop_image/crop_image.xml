@@ -1,0 +1,68 @@
+<tool id="ip_crop_image" name="Crop image" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05"> 
+    <description>with giatools</description>
+    <macros>
+        <import>creators.xml</import>
+        <import>tests.xml</import>
+        <token name="@TOOL_VERSION@">0.4.1</token>
+        <token name="@VERSION_SUFFIX@">0</token>
+    </macros>
+    <creator>
+        <expand macro="creators/bmcv" />
+    </creator>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="bio.tools">giatools</xref>
+    </xrefs>
+    <requirements>
+        <requirement type="package" version="@TOOL_VERSION@">giatools</requirement>
+    </requirements> 
+    <command detect_errors="aggressive"><![CDATA[
+
+        mkdir ./output &&
+        python '$__tool_directory__/crop_image.py'
+
+        '$image'
+        '$labelmap'
+        '$skip_labels'
+        '${image.ext}'
+
+        ./output
+
+    ]]></command>
+    <inputs>
+        <param name="image" type="data" format="png,tiff" label="Image file" help="The image to be cropped."/>
+        <param name="labelmap" type="data" format="png,tiff" label="Label map" help="Each label identifies an individual region of interest, for which a cropped image is produced."/>
+        <param name="skip_labels" type="text" label="Skip labels" value="0" optional="true" help="Comma-separated list of labels for which no cropped image shall be produced.">
+            <validator type="regex">^\d+(,\d+)*$|^$</validator>
+        </param>
+    </inputs>
+    <outputs>
+        <collection type="list" name="output" label="Crop ${on_string}" format_source="image">
+            <discover_datasets directory="output" pattern="__name_and_ext__"/>
+        </collection>
+    </outputs>
+    <tests>
+        <test>
+            <param name="image" value="yx_float32.tiff" ftype="tiff"/>
+            <param name="labelmap" value="yx_uint8.tiff"/>
+            <output_collection name="output" type="list" count="2">
+                <expand macro="tests/intensity_image_diff/element" name="1" value="yx_float32_uint8_1.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="2" value="yx_float32_uint8_2.tiff" ftype="tiff"/>
+            </output_collection>
+        </test>
+    </tests>
+    <help>
+
+        **Crops an image using one or more regions of interest.**
+
+        The image is cropped using a label map that identifies individual regions of interest.
+
+        This operation preserves the file type of the image, the brightness, and the range of values.
+
+    </help>
+    <citations>
+        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
+    </citations>
+</tool>
