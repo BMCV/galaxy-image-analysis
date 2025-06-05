@@ -2,6 +2,7 @@
     <description></description>
     <requirements></requirements> 
     <command detect_errors="aggressive"><![CDATA[
+        echo "${image.ext}" &&
         mkdir ./output &&
         cp "$image" "./output/1.tiff" &&
         cp "$image" "./output/2.tiff"
@@ -11,15 +12,15 @@
     </inputs>
     <outputs>
         <collection type="list" name="output" format_source="image">
-            <discover_datasets directory="output" pattern="__name__"/>
+            <discover_datasets directory="output" pattern="__name_and_ext__"/>
         </collection>
     </outputs>
     <tests>
         <test>
             <param name="image" value="test.tiff" ftype="tiff"/>
             <output_collection name="output" type="list" count="2">
-                <element name="1.tiff" ftype="tiff" file="test.tiff" compare="image_diff"/>
-                <element name="2.tiff" ftype="tiff" file="test.tiff" compare="image_diff"/>
+                <element name="1" ftype="tiff" file="test.tiff" compare="image_diff"/>
+                <element name="2" ftype="tiff" file="test.tiff" compare="image_diff"/>
             </output_collection>
         </test>
     </tests>
