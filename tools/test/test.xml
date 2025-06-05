@@ -1,0 +1,26 @@
+<tool id="ip_test" name="Test" version="0.1.0" profile="20.05"> 
+    <description></description>
+    <requirements></requirements> 
+    <command detect_errors="aggressive"><![CDATA[
+        mkdir ./output &&
+        cp "$image" "./output/1.tiff" &&
+        cp "$image" "./output/2.tiff"
+    ]]></command>
+    <inputs>
+        <param name="image" type="data" format="tiff" label="Image file"/>
+    </inputs>
+    <outputs>
+        <collection type="list" name="output" format_source="image">
+            <discover_datasets directory="output" pattern="__name__"/>
+        </collection>
+    </outputs>
+    <tests>
+        <test>
+            <param name="image" value="test.tiff" ftype="tiff"/>
+            <output_collection name="output" type="list" count="2">
+                <element name="1.tiff" ftype="tiff" file="test.tiff" compare="image_diff"/>
+                <element name="2.tiff" ftype="tiff" file="test.tiff" compare="image_diff"/>
+            </output_collection>
+        </test>
+    </tests>
+</tool>
