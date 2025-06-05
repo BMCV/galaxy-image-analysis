@@ -44,11 +44,21 @@
         </collection>
     </outputs>
     <tests>
+        <!-- Test 2D TIFF -->
         <test>
             <param name="image" value="yx_float32.tiff" ftype="tiff"/>
             <param name="labelmap" value="yx_uint8.tiff"/>
             <output_collection name="output" type="list" count="2">
                 <expand macro="tests/intensity_image_diff/element" name="1" value="yx_float32_uint8_1.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="2" value="yx_float32_uint8_2.tiff" ftype="tiff"/>
+            </output_collection>
+        </test>
+        <!-- Test with `skip_labels` -->
+        <test>
+            <param name="image" value="yx_float32.tiff" ftype="tiff"/>
+            <param name="labelmap" value="yx_uint8.tiff"/>
+            <param name="skip_labels" value="0,1"/>
+            <output_collection name="output" type="list" count="1">
                 <expand macro="tests/intensity_image_diff/element" name="2" value="yx_float32_uint8_2.tiff" ftype="tiff"/>
             </output_collection>
         </test>
