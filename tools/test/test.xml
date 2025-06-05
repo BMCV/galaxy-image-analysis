@@ -1,0 +1,25 @@
+<tool id="ip_test" name="Test" version="0.1.0" profile="20.05"> 
+    <description></description>
+    <requirements></requirements> 
+    <command detect_errors="aggressive"><![CDATA[
+
+        echo "${image.ext}" > ./output.txt
+
+    ]]></command>
+    <inputs>
+        <param name="image" type="data" format="tiff" label="Image file"/>
+    </inputs>
+    <outputs>
+        <data format="txt" name="output" from_work_dir="output.txt" />
+    </outputs>
+    <tests>
+        <test>
+            <param name="image" value="test.tiff"/>
+            <output name="output" value="output.txt" ftype="txt">
+                <assert_contents>
+                    <has_text text="tiff"/>
+                </assert_contents>
+            </output>
+        </test>
+    </tests>
+</tool>
