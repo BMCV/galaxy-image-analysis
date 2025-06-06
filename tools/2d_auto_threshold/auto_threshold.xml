@@ -3,8 +3,8 @@
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
-        <token name="@TOOL_VERSION@">0.18.1</token>
-        <token name="@VERSION_SUFFIX@">3</token>
+        <token name="@TOOL_VERSION@">0.25.0</token>
+        <token name="@VERSION_SUFFIX@">1</token>
         <xml name="inputs/offset">
             <param name="offset" type="float" value="0" label="Offset" help="Offset to be added to the automatically determined threshold value. Positive values will increase the threshold (and thus reduce the amount of values above the threshold)." />
         </xml>
@@ -21,19 +21,23 @@
     </xrefs>
     <requirements>
         <requirement type="package" version="@TOOL_VERSION@">scikit-image</requirement>
-        <requirement type="package" version="2020.10.1">tifffile</requirement>
-        <requirement type="package" version="0.1">giatools</requirement>
+        <requirement type="package" version="0.4.1">giatools</requirement>
     </requirements>
     <command detect_errors="aggressive">
     <![CDATA[
-    python '$__tool_directory__/auto_threshold.py'
-    '$input'
-    ./out.tiff
-    '$th_method.method_id'
-    '$th_method.block_size'
-    '$th_method.offset'
-    '$th_method.threshold'
-    $invert_output
+
+        python '$__tool_directory__/auto_threshold.py'
+
+        '$input'
+        ./out.tiff
+
+        '$th_method.method_id'
+        '$th_method.block_size'
+        '$th_method.offset'
+        '$th_method.threshold'
+
+        $invert_output
+
     ]]>
     </command>
     <inputs>
