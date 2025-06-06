@@ -58,7 +58,7 @@
             </param>
             <when value="manual">
                 <param name="threshold1" type="float" value="0" label="Threshold value" />
-                <param name="threshold2" type="float" value="" optional="true" label="Second threshold value for hysterisis thresholding" />
+                <param name="threshold2" type="float" value="" optional="true" label="Second threshold value for hysteresis thresholding" />
                 <param name="block_size" type="hidden" value="0" />
                 <param name="offset" type="hidden" value="0" />
             </when>
