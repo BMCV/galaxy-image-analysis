@@ -62,5 +62,7 @@ if __name__ == "__main__":
         labelmap_filepath=args.labelmap,
         output_ext=args.output_ext,
         output_dir=args.output_dir,
-        skip_labels=frozenset((int(label.strip()) for label in args.skip_labels.split(','))),
+        skip_labels=frozenset(
+            int(label.strip()) for label in args.skip_labels.split(',') if label.strip()
+        ) if args.skip_labels.strip() else frozenset(),
     )
