@@ -71,6 +71,13 @@
             </output_collection>
         </test>
         <!-- Test PNG -->
+        <test>
+            <param name="image" value="yxc_uint8.png" ftype="png"/>
+            <param name="labelmap" value="yxc_uint8_mask.png"/>
+            <output_collection name="output" type="list" count="1">
+                <expand macro="tests/intensity_image_diff/element" name="2" value="yxc_uint8_uint8_2.png" ftype="png"/>
+            </output_collection>
+        </test>
     </tests>
     <help>
 
