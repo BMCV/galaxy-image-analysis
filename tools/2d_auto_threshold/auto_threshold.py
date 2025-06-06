@@ -13,17 +13,43 @@ import skimage.util
 from giatools.image import Image
 
 
+class DefaultThresholdingMethod:
+
+    def __init__(self, thres, accept: list[str] | None = None, **kwargs):
+        self.thres = thres
+        self.accept = accept if accept else []
+        self.kwargs = kwargs
+
+    def __call__(self, image, *args, offset=0, **kwargs):
+        accepted_kwargs = self.kwargs
+        for key, val in kwargs.items():
+            if key in self.accept:
+                accepted_kwargs[key] = val
+        thres = self.thres(image, *args, **accepted_kwargs)
+        return image > thres + offset
+
+
+class ManualThresholding:
+
+    def __call__(self, image, thres1: float, thres2: float | None, **kwargs):
+        if thres2 is None:
+            return image > thres1
+        else:
+            thres1, thres2 = sorted((thres1, thres2))
+            return skimage.filters.apply_hysteresis_threshold(image, thres1, thres2)
+
+
 th_methods = {
-    'manual': lambda thres, **kwargs: thres,
+    'manual': ManualThresholding(),
 
-    'otsu': lambda img_raw, **kwargs: skimage.filters.threshold_otsu(img_raw),
-    'li': lambda img_raw, **kwargs: skimage.filters.threshold_li(img_raw),
-    'yen': lambda img_raw, **kwargs: skimage.filters.threshold_yen(img_raw),
-    'isodata': lambda img_raw, **kwargs: skimage.filters.threshold_isodata(img_raw),
+    'otsu': DefaultThresholdingMethod(skimage.filters.threshold_otsu),
+    'li': DefaultThresholdingMethod(skimage.filters.threshold_li),
+    'yen': DefaultThresholdingMethod(skimage.filters.threshold_yen),
+    'isodata': DefaultThresholdingMethod(skimage.filters.threshold_isodata),
 
-    'loc_gaussian': lambda img_raw, bz, **kwargs: skimage.filters.threshold_local(img_raw, bz, method='gaussian'),
-    'loc_median': lambda img_raw, bz, **kwargs: skimage.filters.threshold_local(img_raw, bz, method='median'),
-    'loc_mean': lambda img_raw, bz, **kwargs: skimage.filters.threshold_local(img_raw, bz, method='mean')
+    'loc_gaussian': DefaultThresholdingMethod(skimage.filters.threshold_local, accept=['block_size'], method='gaussian'),
+    'loc_median': DefaultThresholdingMethod(skimage.filters.threshold_local, accept=['block_size'], method='median'),
+    'loc_mean': DefaultThresholdingMethod(skimage.filters.threshold_local, accept=['block_size'], method='mean'),
 }
 
 
@@ -33,8 +59,9 @@ def do_thresholding(
     th_method: str,
     block_size: int,
     offset: float,
-    threshold: float,
-    invert_output: bool = False,
+    threshold1: float,
+    threshold2: float | None,
+    invert_output: bool,
 ):
     assert th_method in th_methods, f'Unknown method "{th_method}"'
 
@@ -42,14 +69,18 @@ def do_thresholding(
     img_in = Image.read(input_filepath)
 
     # Perform thresholding
-    threshold = offset + th_methods[th_method](
-        img_raw=img_in.data,
-        bz=block_size,
-        thres=threshold,
+    result = th_methods[th_method](
+        image=img_in.data,
+        block_size=block_size,
+        offset=offset,
+        thres1=threshold1,
+        thres2=threshold2,
     )
-    result = img_in.data > threshold
     if invert_output:
         result = np.logical_not(result)
+
+    # Convert to canonical representation for binary images
+    result = (result * 255).astype(np.uint8)
 
     # Write result
     Image(
@@ -67,9 +98,10 @@ if __name__ == "__main__":
     parser.add_argument('input', type=str, help='Path to the input image')
     parser.add_argument('output', type=str, help='Path to the output image (uint8)')
     parser.add_argument('th_method', choices=th_methods.keys(), help='Thresholding method')
-    parser.add_argument('block_size', type=int, default=5, help='Odd size of pixel neighborhood for calculating the threshold')
-    parser.add_argument('offset', type=float, default=0, help='Offset of automatically determined threshold value')
-    parser.add_argument('threshold', type=float, default=0, help='Manual threshold value')
+    parser.add_argument('block_size', type=int, help='Odd size of pixel neighborhood for calculating the threshold')
+    parser.add_argument('offset', type=float, help='Offset of automatically determined threshold value')
+    parser.add_argument('threshold1', type=float, help='Manual threshold value')
+    parser.add_argument('--threshold2', type=float, help='Second manual threshold value (for hysterisis thresholding)')
     parser.add_argument('--invert_output', default=False, action='store_true', help='Values below/above the threshold are labeled with 0/255 by default, and with 255/0 if this argument is used')
     args = parser.parse_args()
 
@@ -79,6 +111,7 @@ if __name__ == "__main__":
         args.th_method,
         args.block_size,
         args.offset,
-        args.threshold,
+        args.threshold1,
+        args.threshold2,
         args.invert_output,
     )
