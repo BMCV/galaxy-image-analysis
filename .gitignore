@@ -8,3 +8,4 @@ template_shed.yml
 .DS_Store
 ._*
 .devcontainer
+*.swp
