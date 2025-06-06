@@ -100,7 +100,7 @@
        <data format="tiff" name="output" from_work_dir="out.tiff" />
     </outputs>
     <tests>
-        <!-- Tests for single-channel images -->
+        <!-- Tests for single-channel images (TIFF) -->
         <test>
             <param name="input" value="sample.tiff"/>
             <param name="method_id" value="loc_gaussian"/>
@@ -129,16 +129,19 @@
             <param name="invert_output" value="True"/>
             <expand macro="tests/binary_image_diff" name="output" value="out4.tiff" ftype="tiff"/>
         </test>
+        <!-- Tests for multi-channel images (PNG) -->
+        <test>
+            <param name="input" value="rgb.png"/>
+            <param name="method_id" value="otsu"/>
+            <param name="invert_output" value="False"/>
+            <expand macro="tests/binary_image_diff" name="output" value="rgb_otsu.tiff" ftype="tiff"/>
+        </test>
         <!-- Tests for irregular files -->
         <test>
             <param name="input" value="sample2.tiff"/>
             <param name="method_id" value="otsu"/>
             <param name="invert_output" value="False"/>
             <expand macro="tests/binary_image_diff" name="output" value="out5.tiff" ftype="tiff"/>
-        </test>
-        <!-- Tests for multi-channel images -->
-        <test expect_failure="true">
-            <param name="input" value="rgb.png"/>
         </test>
     </tests>
     <help>
