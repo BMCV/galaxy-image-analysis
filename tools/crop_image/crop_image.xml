@@ -83,7 +83,7 @@
 
         **Crops an image using one or more regions of interest.**
 
-        The image is cropped using a label map that identifies individual regions of interest.
+        The image is cropped using a label map that identifies individual regions of interest. The image and the label map must be of equal size.
 
         This operation preserves the file type of the image, the brightness, and the range of values.
 
