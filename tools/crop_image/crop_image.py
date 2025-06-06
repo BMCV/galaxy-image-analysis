@@ -40,7 +40,7 @@ def crop_image_to_mask(data: np.ndarray, mask: np.ndarray) -> np.ndarray:
 
     # Crop `data` to the convex hull of the mask in each dimension
     for dim in range(data.ndim):
-        mask1d = mask.any(axis=tuple((i for i in range(mask.ndim) if i != dim)))
+        mask1d = mask.any(axis=tuple(i for i in range(mask.ndim) if i != dim))
         mask1d_indices = np.where(mask1d)[0]
         mask1d_indices_cvxhull = np.arange(min(mask1d_indices), max(mask1d_indices) + 1)
         data = data.take(axis=dim, indices=mask1d_indices_cvxhull)
