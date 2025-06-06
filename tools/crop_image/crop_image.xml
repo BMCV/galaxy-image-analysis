@@ -62,6 +62,15 @@
                 <expand macro="tests/intensity_image_diff/element" name="2" value="yx_float32_uint8_2.tiff" ftype="tiff"/>
             </output_collection>
         </test>
+        <!-- Test 3D TIFF (multi-frame) -->
+        <test>
+            <param name="image" value="zyx_uint16.tiff" ftype="tiff"/>
+            <param name="labelmap" value="yxz_uint8.tiff"/>
+            <output_collection name="output" type="list" count="1">
+                <expand macro="tests/intensity_image_diff/element" name="1" value="zyx_uint16_uint8_1.tiff" ftype="tiff"/>
+            </output_collection>
+        </test>
+        <!-- Test PNG -->
     </tests>
     <help>
 

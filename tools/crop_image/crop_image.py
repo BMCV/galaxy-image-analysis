@@ -25,20 +25,20 @@ def crop_image(
         if label in skip_labels:
             continue
         roi_mask = (labelmap.data == label)
-        roi = trim(image.data, roi_mask)
+        roi = crop_image_to_mask(image.data, roi_mask)
         roi_image = Image(roi, image.axes).normalize_axes_like(image.original_axes)
         roi_image.write(os.path.join(output_dir, f'{label}.{output_ext}'))
 
 
-def trim(data: np.ndarray, mask: np.ndarray) -> np.ndarray:
+def crop_image_to_mask(data: np.ndarray, mask: np.ndarray) -> np.ndarray:
     """
-    Trim the `data` array to the minimal bounding box in `mask`.
+    Crop the `data` array to the minimal bounding box in `mask`.
 
     The arguments are not modified.
     """
     assert data.shape == mask.shape
 
-    # Trim `data` to the convex hull of the mask in each dimension
+    # Crop `data` to the convex hull of the mask in each dimension
     for dim in range(data.ndim):
         mask1d = mask.any(axis=tuple((i for i in range(mask.ndim) if i != dim)))
         mask1d_indices = np.where(mask1d)[0]
