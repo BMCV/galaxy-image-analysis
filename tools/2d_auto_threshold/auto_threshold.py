@@ -21,7 +21,7 @@ class DefaultThresholdingMethod:
         self.kwargs = kwargs
 
     def __call__(self, image, *args, offset=0, **kwargs):
-        accepted_kwargs = self.kwargs
+        accepted_kwargs = self.kwargs.copy()
         for key, val in kwargs.items():
             if key in self.accept:
                 accepted_kwargs[key] = val
