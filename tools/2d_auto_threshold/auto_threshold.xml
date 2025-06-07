@@ -4,7 +4,7 @@
         <import>creators.xml</import>
         <import>tests.xml</import>
         <token name="@TOOL_VERSION@">0.25.0</token>
-        <token name="@VERSION_SUFFIX@">1</token>
+        <token name="@VERSION_SUFFIX@">0</token>
         <xml name="inputs/offset">
             <param name="offset" type="float" value="0" label="Offset" help="Offset to be added to the automatically determined threshold value. Positive values will increase the threshold (and thus reduce the amount of values above the threshold)." />
         </xml>
