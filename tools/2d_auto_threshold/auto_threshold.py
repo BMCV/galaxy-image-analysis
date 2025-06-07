@@ -21,7 +21,7 @@ class DefaultThresholdingMethod:
         self.kwargs = kwargs
 
     def __call__(self, image, *args, offset=0, **kwargs):
-        accepted_kwargs = self.kwargs
+        accepted_kwargs = self.kwargs.copy()
         for key, val in kwargs.items():
             if key in self.accept:
                 accepted_kwargs[key] = val
@@ -101,7 +101,7 @@ if __name__ == "__main__":
     parser.add_argument('block_size', type=int, help='Odd size of pixel neighborhood for calculating the threshold')
     parser.add_argument('offset', type=float, help='Offset of automatically determined threshold value')
     parser.add_argument('threshold1', type=float, help='Manual threshold value')
-    parser.add_argument('--threshold2', type=float, help='Second manual threshold value (for hysterisis thresholding)')
+    parser.add_argument('--threshold2', type=float, help='Second manual threshold value (for hysteresis thresholding)')
     parser.add_argument('--invert_output', default=False, action='store_true', help='Values below/above the threshold are labeled with 0/255 by default, and with 255/0 if this argument is used')
     args = parser.parse_args()
 
