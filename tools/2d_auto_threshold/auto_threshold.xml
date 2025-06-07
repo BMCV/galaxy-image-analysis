@@ -114,46 +114,60 @@
         <!-- Tests for single-channel images (TIFF) -->
         <test>
             <param name="input" value="sample.tiff"/>
-            <param name="method_id" value="loc_gaussian"/>
-            <param name="block_size" value="51"/>
+            <conditional name="th_method">
+                <param name="method_id" value="loc_gaussian"/>
+                <param name="block_size" value="51"/>
+            </conditional>
             <expand macro="tests/binary_image_diff" name="output" value="out1.tiff" ftype="tiff"/>
         </test>
         <test>
             <param name="input" value="sample.tiff"/>
-            <param name="method_id" value="loc_gaussian"/>
-            <param name="block_size" value="51"/>
-            <param name="offset" value="1"/>
+            <conditional name="th_method">
+                <param name="method_id" value="loc_gaussian"/>
+                <param name="block_size" value="51"/>
+                <param name="offset" value="1"/>
+            </conditional>
             <expand macro="tests/binary_image_diff" name="output" value="out2.tiff" ftype="tiff"/>
         </test>
         <test>
             <param name="input" value="sample.tiff"/>
-            <param name="method_id" value="otsu"/>
+            <conditional name="th_method">
+                <param name="method_id" value="otsu"/>
+            </conditional>
             <expand macro="tests/binary_image_diff" name="output" value="out3.tiff" ftype="tiff"/>
         </test>
         <test>
             <param name="input" value="sample.tiff"/>
-            <param name="method_id" value="manual"/>
-            <param name="threshold1" value="64"/>
             <param name="invert_output" value="True"/>
+            <conditional name="th_method">
+                <param name="method_id" value="manual"/>
+                <param name="threshold1" value="64"/>
+            </conditional>
             <expand macro="tests/binary_image_diff" name="output" value="out4.tiff" ftype="tiff"/>
         </test>
         <test>
             <param name="input" value="sample.tiff"/>
-            <param name="method_id" value="manual"/>
-            <param name="threshold1" value="180"/>
-            <param name="threshold2" value="240"/>
+            <conditional name="th_method">
+                <param name="method_id" value="manual"/>
+                <param name="threshold1" value="180"/>
+                <param name="threshold2" value="240"/>
+            </conditional>
             <expand macro="tests/binary_image_diff" name="output" value="sample_manual_180_240.tiff" ftype="tiff"/>
         </test>
         <!-- Tests for multi-channel images (PNG) -->
         <test>
             <param name="input" value="rgb.png"/>
-            <param name="method_id" value="otsu"/>
+            <conditional name="th_method">
+                <param name="method_id" value="otsu"/>
+            </conditional>
             <expand macro="tests/binary_image_diff" name="output" value="rgb_otsu.tiff" ftype="tiff"/>
         </test>
         <!-- Tests for irregular files -->
         <test>
             <param name="input" value="sample2.tiff"/>
-            <param name="method_id" value="otsu"/>
+            <conditional name="th_method">
+                <param name="method_id" value="otsu"/>
+            </conditional>
             <expand macro="tests/binary_image_diff" name="output" value="out5.tiff" ftype="tiff"/>
         </test>
     </tests>
