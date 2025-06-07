@@ -3,8 +3,8 @@
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
-        <token name="@TOOL_VERSION@">0.18.1</token>
-        <token name="@VERSION_SUFFIX@">3</token>
+        <token name="@TOOL_VERSION@">0.25.0</token>
+        <token name="@VERSION_SUFFIX@">0</token>
         <xml name="inputs/offset">
             <param name="offset" type="float" value="0" label="Offset" help="Offset to be added to the automatically determined threshold value. Positive values will increase the threshold (and thus reduce the amount of values above the threshold)." />
         </xml>
@@ -21,19 +21,26 @@
     </xrefs>
     <requirements>
         <requirement type="package" version="@TOOL_VERSION@">scikit-image</requirement>
-        <requirement type="package" version="2020.10.1">tifffile</requirement>
-        <requirement type="package" version="0.1">giatools</requirement>
+        <requirement type="package" version="0.4.1">giatools</requirement>
     </requirements>
     <command detect_errors="aggressive">
     <![CDATA[
-    python '$__tool_directory__/auto_threshold.py'
-    '$input'
-    ./out.tiff
-    '$th_method.method_id'
-    '$th_method.block_size'
-    '$th_method.offset'
-    '$th_method.threshold'
-    $invert_output
+
+        python '$__tool_directory__/auto_threshold.py'
+
+        '$input'
+        ./out.tiff
+
+        '$th_method.method_id'
+        '$th_method.block_size'
+        '$th_method.offset'
+        '$th_method.threshold1'
+         $invert_output
+
+        #if str($th_method.threshold2) != '':
+            --threshold2 '$th_method.threshold2'
+        #end if
+
     ]]>
     </command>
     <inputs>
@@ -50,42 +57,50 @@
                 <option value="loc_mean">Locally adaptive / Mean</option>
             </param>
             <when value="manual">
-                <param name="threshold" type="float" value="0" label="Threshold value" />
+                <param name="threshold1" type="float" value="0" label="Threshold value" />
+                <param name="threshold2" type="float" value="" optional="true" label="Second threshold value for hysteresis thresholding" />
                 <param name="block_size" type="hidden" value="0" />
                 <param name="offset" type="hidden" value="0" />
             </when>
             <when value="otsu">
-                <param name="threshold" type="hidden" value="0" />
+                <param name="threshold1" type="hidden" value="0" />
+                <param name="threshold2" type="hidden" value="" />
                 <param name="block_size" type="hidden" value="0" />
                 <expand macro="inputs/offset" />
             </when>
             <when value="li">
-                <param name="threshold" type="hidden" value="0" />
+                <param name="threshold1" type="hidden" value="0" />
+                <param name="threshold2" type="hidden" value="" />
                 <param name="block_size" type="hidden" value="0" />
                 <expand macro="inputs/offset" />
             </when>
             <when value="isodata">
-                <param name="threshold" type="hidden" value="0" />
+                <param name="threshold1" type="hidden" value="0" />
+                <param name="threshold2" type="hidden" value="" />
                 <param name="block_size" type="hidden" value="0" />
                 <expand macro="inputs/offset" />
             </when>
             <when value="yen">
-                <param name="threshold" type="hidden" value="0" />
+                <param name="threshold1" type="hidden" value="0" />
+                <param name="threshold2" type="hidden" value="" />
                 <param name="block_size" type="hidden" value="0" />
                 <expand macro="inputs/offset" />
             </when>
             <when value="loc_gaussian">
-                <param name="threshold" type="hidden" value="0" />
+                <param name="threshold1" type="hidden" value="0" />
+                <param name="threshold2" type="hidden" value="" />
                 <param name="block_size" type="integer" value="5" label="Odd size of pixel neighborhood for determining the threshold" />
                 <expand macro="inputs/offset" />
             </when>
             <when value="loc_median">
-                <param name="threshold" type="hidden" value="0" />
+                <param name="threshold1" type="hidden" value="0" />
+                <param name="threshold2" type="hidden" value="" />
                 <param name="block_size" type="integer" value="5" label="Odd size of pixel neighborhood for determining the threshold" />
                 <expand macro="inputs/offset" />
             </when>
             <when value="loc_mean">
-                <param name="threshold" type="hidden" value="0" />
+                <param name="threshold1" type="hidden" value="0" />
+                <param name="threshold2" type="hidden" value="" />
                 <param name="block_size" type="integer" value="5" label="Odd size of pixel neighborhood for determining the threshold" />
                 <expand macro="inputs/offset" />
             </when>
@@ -96,45 +111,64 @@
        <data format="tiff" name="output" from_work_dir="out.tiff" />
     </outputs>
     <tests>
-        <!-- Tests for single-channel images -->
+        <!-- Tests for single-channel images (TIFF) -->
         <test>
             <param name="input" value="sample.tiff"/>
-            <param name="method_id" value="loc_gaussian"/>
-            <param name="block_size" value="51"/>
-            <param name="invert_output" value="False"/>
+            <conditional name="th_method">
+                <param name="method_id" value="loc_gaussian"/>
+                <param name="block_size" value="51"/>
+            </conditional>
             <expand macro="tests/binary_image_diff" name="output" value="out1.tiff" ftype="tiff"/>
         </test>
         <test>
             <param name="input" value="sample.tiff"/>
-            <param name="method_id" value="loc_gaussian"/>
-            <param name="block_size" value="51"/>
-            <param name="offset" value="1"/>
-            <param name="invert_output" value="False"/>
+            <conditional name="th_method">
+                <param name="method_id" value="loc_gaussian"/>
+                <param name="block_size" value="51"/>
+                <param name="offset" value="1"/>
+            </conditional>
             <expand macro="tests/binary_image_diff" name="output" value="out2.tiff" ftype="tiff"/>
         </test>
         <test>
             <param name="input" value="sample.tiff"/>
-            <param name="method_id" value="otsu"/>
-            <param name="invert_output" value="False"/>
+            <conditional name="th_method">
+                <param name="method_id" value="otsu"/>
+            </conditional>
             <expand macro="tests/binary_image_diff" name="output" value="out3.tiff" ftype="tiff"/>
         </test>
         <test>
             <param name="input" value="sample.tiff"/>
-            <param name="method_id" value="manual"/>
-            <param name="threshold" value="64"/>
             <param name="invert_output" value="True"/>
+            <conditional name="th_method">
+                <param name="method_id" value="manual"/>
+                <param name="threshold1" value="64"/>
+            </conditional>
             <expand macro="tests/binary_image_diff" name="output" value="out4.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <param name="input" value="sample.tiff"/>
+            <conditional name="th_method">
+                <param name="method_id" value="manual"/>
+                <param name="threshold1" value="180"/>
+                <param name="threshold2" value="240"/>
+            </conditional>
+            <expand macro="tests/binary_image_diff" name="output" value="sample_manual_180_240.tiff" ftype="tiff"/>
+        </test>
+        <!-- Tests for multi-channel images (PNG) -->
+        <test>
+            <param name="input" value="rgb.png"/>
+            <conditional name="th_method">
+                <param name="method_id" value="otsu"/>
+            </conditional>
+            <expand macro="tests/binary_image_diff" name="output" value="rgb_otsu.tiff" ftype="tiff"/>
         </test>
         <!-- Tests for irregular files -->
         <test>
             <param name="input" value="sample2.tiff"/>
-            <param name="method_id" value="otsu"/>
-            <param name="invert_output" value="False"/>
+            <conditional name="th_method">
+                <param name="method_id" value="otsu"/>
+            </conditional>
             <expand macro="tests/binary_image_diff" name="output" value="out5.tiff" ftype="tiff"/>
-        </test>
-        <!-- Tests for multi-channel images -->
-        <test expect_failure="true">
-            <param name="input" value="rgb.png"/>
         </test>
     </tests>
     <help>
