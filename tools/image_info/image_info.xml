@@ -19,7 +19,7 @@
         ]]>
   </command>
   <inputs>
-    <param label="Input Image" name="input_file" type="data" format="scn,ndpi,tf8,mnc,vms,mng,xml,pcx,img,pct,ims,bip,ome.xml,bin,flex,his,hdr,mov,psd,spi,ipl,dv,aiix,j2kr,pst,mod,ome.tif,tif,obf,dib,dic,im3,tga,pbm,c01,crw,mrcs,l2d,seq,mdb,cfg,htm,mvd2,arf,vsi,companion.ome,htd,aim,fts,ndpis,r3d.log,nef,res,jpx,ics,rec,nd2,cr2,dcm,mea,ome,lei,lms,j2k,oib,mtb,ima,ets,wlz,pict,sm3,sm2,nrrd,xdce,acff,al3d,zvi,1sc,xys,tiff,pgm,pcoraw,ppm,ipm,set,cxd,ipw,apl,fake,tnb,txt,xv,tf2,ps,log,zip,epsi,j2ki,dicom,top,msr,frm,hed,gif,dm2,dm3,dm4,zpo,wav,wat,2fl,sdt,liff,hx,pic,ome.btf,am,bmp,pnl,r3d_d3d,jpf,png,gz,cif,fli,btf,jpg,avi,html,sif,tif,csv,ome.tiff,par,fits,jp2,eps,nhdr,svs,mrc"/>
+    <param label="Input Image" name="input_file" type="data" format="scn,ndpi,tf8,vms,xml,pcx,binary,hdr,mov,psd,pbm,nrrd,tiff,pgm,ppm,txt,tf2,zip,top,gif,wav,bmp,png,gz,cif,fli,btf,jpg,avi,html,sif,tif,csv,ome.tiff,par,fits,jp2,eps,nhdr,svs,mrc"/>
   </inputs>
   <outputs>
      <data format="txt" name="output"/>

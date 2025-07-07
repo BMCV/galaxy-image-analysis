@@ -50,7 +50,7 @@ $bf2raw_params.droptop
     ]]></command>
     <inputs>
         <section name="io_options" title="Input-output paths" expanded="true">
-            <param name="input" type="data" format="scn,ndpi,tf8,vms,xml,pcx,binary,hdr,mov,psd,pbm,arf,vsi,companion.ome,htd,aim,fts,ndpis,r3d.log,nef,res,jpx,ics,rec,nd2,cr2,dcm,mea,ome,lei,lms,j2k,oib,mtb,ima,ets,wlz,pict,sm3,sm2,nrrd,xdce,acff,al3d,zvi,1sc,xys,tiff,pgm,pcoraw,ppm,ipm,set,cxd,ipw,apl,fake,tnb,txt,xv,tf2,ps,log,zip,epsi,j2ki,dicom,top,msr,gif,wav,btf,bmp,png,gz,cif,df3,fli,btf,jpg,avi,html,sif,csv,ome.tiff,par,fits,jp2,eps,nhdr,svs,mrc" label="Input image located in Galaxy history"/>
+            <param name="input" type="data" format="scn,ndpi,tf8,vms,xml,pcx,binary,hdr,mov,psd,pbm,nrrd,tiff,pgm,ppm,txt,tf2,zip,top,gif,wav,btf,bmp,png,gz,cif,fli,btf,jpg,avi,html,sif,csv,ome.tiff,par,fits,jp2,eps,nhdr,svs,mrc" label="Input image located in Galaxy history"/>
             <param name="output_name" type="text" value="output.ome.zarr" label="Name of the generated OME-Zarr"/>
         </section>
         <section name="bf2raw_params" title="Parameters fed to file conversion module">
