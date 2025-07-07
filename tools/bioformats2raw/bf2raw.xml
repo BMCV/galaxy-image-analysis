@@ -101,22 +101,28 @@ $bf2raw_params.droptop
     </outputs>
     <tests>
         <test expect_num_outputs="1">
-            <param name="input" value="xyz_8bit__mitotic_plate_calibrated.tif"/>
-            <param name="output_name" value="xyz_8bit__mitotic_plate_calibrated.ome.zarr" />
+            <section name="io_options">
+                <param name="input" value="xyz_8bit__mitotic_plate_calibrated.tif"/>
+                <param name="output_name" value="xyz_8bit__mitotic_plate_calibrated.ome.zarr" />
+            </section>
             <output name="output" ftype="html">
                 <extra_files type="file" name="xyz_8bit__mitotic_plate_calibrated.ome.zarr/.zattrs" value="xyz_8bit__mitotic_plate_calibrated.ome.zarr/.zattrs" />
             </output>
         </test>
         <test expect_num_outputs="1">
-            <param name="input" value="coins.png"/>
-            <param name="output_name" value="coins.ome.zarr" />
+            <section name="io_options">
+                <param name="input" value="coins.png"/>
+                <param name="output_name" value="coins.ome.zarr" />
+            </section>
             <output name="output" ftype="html">
                 <extra_files type="file" name="coins.ome.zarr/.zgroup" value="coins.ome.zarr/.zgroup" />
             </output>
         </test>
         <test expect_num_outputs="1">
-            <param name="input" value="camera.jpg"/>
-            <param name="output_name" value="camera.ome.zarr" />
+            <section name="io_options">
+                <param name="input" value="camera.jpg"/>
+                <param name="output_name" value="camera.ome.zarr" />
+            </section>
             <output name="output" ftype="html">
                 <extra_files type="file" name="camera.ome.zarr/.zattrs" value="camera.ome.zarr/.zattrs" />
             </output>
