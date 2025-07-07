@@ -5,6 +5,7 @@ on:
     - cron: '0 0 * * 1'
   repository_dispatch:
     types: [run-all-tool-tests-command]
+  workflow_dispatch:
 env:
   GALAXY_FORK: galaxyproject
   GALAXY_BRANCH: release_25.0
