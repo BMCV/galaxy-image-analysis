@@ -50,7 +50,7 @@ $bf2raw_params.droptop
     ]]></command>
     <inputs>
         <section name="io_options" title="Input-output paths" expanded="true">
-            <param name="input" type="data" format="atsf,scn,ali,labels,ffr,jpeg,ndpi,tf8,pty,fff,mnc,vms,mng,xml,pcx,img,pct,ims,bip,ome.xml,bin,flex,his,hdr,mov,psd,spi,ipl,dv,aiix,j2kr,pst,mod,ome.tif,tif,obf,dib,dic,im3,tga,pbm,c01,crw,mrcs,l2d,seq,mdb,cfg,htm,mvd2,arf,vsi,companion.ome,htd,aim,fts,ndpis,r3d.log,nef,res,jpx,ics,rec,nd2,cr2,dcm,mea,ome,lei,lms,j2k,oib,mtb,ima,ets,wlz,pict,sm3,sm2,nrrd,xdce,acff,al3d,zvi,1sc,xys,tiff,pgm,pcoraw,ppm,ipm,set,cxd,ipw,apl,fake,tnb,txt,xv,tf2,ps,log,zip,epsi,j2ki,dicom,top,msr,frm,hed,gif,dm2,dm3,dm4,zpo,wav,wat,2fl,sdt,liff,hx,pic,ome.btf,am,bmp,pnl,r3d_d3d,jpf,png,tfr,dti,nii.gz,cif,fdf,grey,df3,stk,fli,hdf,btf,stp,ch5,v,sld,ids,dv.log,jpk,mrw,r3d,xlog,ano,jpe,sxm,jpg,vws,raw,czi,spl,avi,ome.tf8,inf,spc,ome.tf2,spe,lsm,afm,lif,naf,afi,inr,lim,nd,tim,html,sif,env,tif,csv,map,nii,gel,ome.tiff,oif,par,amiramesh,pr3,fits,lut,jp2,oir,dat,aisf,zfr,zfp,xqd,eps,xqf,st,nhdr,i2i,thm,exp,svs,mrc" label="Input image located in Galaxy history"/>
+            <param name="input" type="data" format="scn,ndpi,tf8,vms,xml,pcx,binary,hdr,mov,psd,pbm,nrrd,tiff,pgm,ppm,txt,tf2,zip,top,gif,wav,btf,bmp,png,gz,cif,fli,btf,jpg,avi,html,sif,csv,ome.tiff,par,fits,jp2,eps,nhdr,svs,mrc" label="Input image located in Galaxy history"/>
             <param name="output_name" type="text" value="output.ome.zarr" label="Name of the generated OME-Zarr"/>
         </section>
         <section name="bf2raw_params" title="Parameters fed to file conversion module">
@@ -101,22 +101,28 @@ $bf2raw_params.droptop
     </outputs>
     <tests>
         <test expect_num_outputs="1">
-            <param name="input" value="xyz_8bit__mitotic_plate_calibrated.tif"/>
-            <param name="output_name" value="xyz_8bit__mitotic_plate_calibrated.ome.zarr" />
+            <section name="io_options">
+                <param name="input" value="xyz_8bit__mitotic_plate_calibrated.tif"/>
+                <param name="output_name" value="xyz_8bit__mitotic_plate_calibrated.ome.zarr" />
+            </section>
             <output name="output" ftype="html">
                 <extra_files type="file" name="xyz_8bit__mitotic_plate_calibrated.ome.zarr/.zattrs" value="xyz_8bit__mitotic_plate_calibrated.ome.zarr/.zattrs" />
             </output>
         </test>
         <test expect_num_outputs="1">
-            <param name="input" value="coins.png"/>
-            <param name="output_name" value="coins.ome.zarr" />
+            <section name="io_options">
+                <param name="input" value="coins.png"/>
+                <param name="output_name" value="coins.ome.zarr" />
+            </section>
             <output name="output" ftype="html">
                 <extra_files type="file" name="coins.ome.zarr/.zgroup" value="coins.ome.zarr/.zgroup" />
             </output>
         </test>
         <test expect_num_outputs="1">
-            <param name="input" value="camera.jpg"/>
-            <param name="output_name" value="camera.ome.zarr" />
+            <section name="io_options">
+                <param name="input" value="camera.jpg"/>
+                <param name="output_name" value="camera.ome.zarr" />
+            </section>
             <output name="output" ftype="html">
                 <extra_files type="file" name="camera.ome.zarr/.zattrs" value="camera.ome.zarr/.zattrs" />
             </output>
