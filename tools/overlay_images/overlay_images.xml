@@ -103,8 +103,9 @@
                 <param name="method" value="seg_contour"/>
                 <param name="thickness" value="2"/>
                 <param name="color" value="#ff0000"/>
+                <param name="label_color" value="#ffff00"/>
+                <param name="show_label" value="true"/>
             </conditional>
-            <param name="show_label" value="--show_label"/>
             <expand macro="tests/intensity_image_diff" name="out_png" value="test3.png" ftype="png"/>
         </test>
         <test expect_num_outputs="1">
@@ -115,6 +116,7 @@
                 <param name="method" value="seg_contour"/>
                 <param name="thickness" value="2"/>
                 <param name="color" value="#ff0000"/>
+                <param name="label_color" value="#ffff00"/>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="out_png" value="test4.png" ftype="png"/>
         </test>
@@ -126,6 +128,7 @@
                 <param name="method" value="seg_contour"/>
                 <param name="thickness" value="2"/>
                 <param name="color" value="#ff0000"/>
+                <param name="label_color" value="#ffff00"/>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="out_png" value="test4.png" ftype="png" eps="1"/>
         </test>
@@ -137,6 +140,7 @@
                 <param name="method" value="seg_contour"/>
                 <param name="thickness" value="2"/>
                 <param name="color" value="#ff0000"/>
+                <param name="label_color" value="#ffff00"/>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="out_png" value="test5.png" ftype="png"/>
         </test>
