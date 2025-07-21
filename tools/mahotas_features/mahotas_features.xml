@@ -12,22 +12,24 @@
         <requirement type="package" version="1.12">numpy</requirement>
         <requirement type="package" version="0.15.1">tifffile</requirement>
     </requirements>
-    <command detect_errors="aggressive"><![CDATA[mahotas-features.py
-#set files = '" "'.join( [ str( $file ) for $file in $inputs ] )
-"${files}"
+    <command detect_errors="aggressive"><![CDATA[
+        /usr/local/bin/mahotas-features.py
+        #set files = '" "'.join( [ str( $file ) for $file in $inputs ] )
+        "${files}"
 
---output $output
---convert-to-bw $convertbw
-$haralick 
-$lbp 
---clobber
-#if $lbpradius and $lbpradius is not None:
---lbp-radius $lbpradius
-#end if
+        --output $output
+        --convert-to-bw $convertbw
+        $haralick 
+        $lbp 
+        --clobber
+        #if $lbpradius and $lbpradius is not None:
+        --lbp-radius $lbpradius
+        #end if
 
-#if $lbppoints and $lbppoints is not None:
---lbp-points $lbppoints
-#end if]]></command>
+        #if $lbppoints and $lbppoints is not None:
+        --lbp-points $lbppoints
+        #end if]]>
+    </command>
     <inputs>
         <param name="inputs" type="data" format="tiff,png,jpg,bmp" multiple="True" label="Image files"/>
         <param name="convertbw" type="select" label="Convert color images to greyscale">
