@@ -7,7 +7,7 @@
         <token name="@VERSION_SUFFIX@">1</token>
     </macros>
     <creator>
-        <expand macro="creators/bmcv" />
+        <expand macro="creators/bmcv"/>
     </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
@@ -34,7 +34,7 @@
 
     ]]></command>
     <inputs>
-        <param name="input" type="data" format="tiff,png" label="Input image" />
+        <param name="input" type="data" format="tiff,png" label="Input image"/>
         <conditional name="filter">
             <param name="filter_type" type="select" label="Filter type">
                 <option value="gaussian" selected="True">Gaussian</option>
@@ -45,33 +45,35 @@
                 <option value="sobel_v">Sobel vertical</option>
             </param>
             <when value="gaussian">
-                <param name="size" type="float" value="3" min="0.1" label="Sigma" help="The half width of the Gaussian bell (in pixels)." />
+                <param name="size" type="float" value="3" min="0.1" label="Sigma" help="The half width of the Gaussian bell (in pixels)."/>
             </when>
             <when value="median">
-                <param name="size" type="integer" value="3" label="Radius" help="Radius of the neighborhood (in pixels)." />
+                <param name="size" type="integer" value="3" label="Radius" help="Radius of the neighborhood (in pixels)."/>
             </when>
             <when value="prewitt_h">
-                <param name="size" type="hidden" value="0" />
+                <param name="size" type="hidden" value="0"/>
             </when>
             <when value="prewitt_v">
-                <param name="size" type="hidden" value="0" />
+                <param name="size" type="hidden" value="0"/>
             </when>
             <when value="sobel_h">
-                <param name="size" type="hidden" value="0" />
+                <param name="size" type="hidden" value="0"/>
             </when>
             <when value="sobel_v">
-                <param name="size" type="hidden" value="0" />
+                <param name="size" type="hidden" value="0"/>
             </when>
         </conditional>
     </inputs>
     <outputs>
-       <data format="tiff" name="output" />
+        <data format="tiff" name="output"/>
     </outputs>
     <tests>
         <!-- Tests with uint8 TIFF input image -->
         <test>
-            <param name="input" value="input1_uint8.tiff" />
-            <param name="filter_type" value="gaussian" />
+            <param name="input" value="input1_uint8.tiff"/>
+            <conditional name="filter">
+                <param name="filter_type" value="gaussian"/>
+            </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="input1_gaussian.tiff" ftype="tiff">
                 <!--
 
@@ -88,37 +90,49 @@
             </expand>
         </test>
         <test>
-            <param name="input" value="input1_uint8.tiff" />
-            <param name="filter_type" value="median" />
+            <param name="input" value="input1_uint8.tiff"/>
+            <conditional name="filter">
+                <param name="filter_type" value="median"/>
+            </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="input1_median.tiff" ftype="tiff">
                 <!-- See note for Gaussian filter above. -->
                 <has_image_mean_intensity mean_intensity="63.67" eps="10"/>
             </expand>
         </test>
         <test>
-            <param name="input" value="input1_uint8.tiff" />
-            <param name="filter_type" value="prewitt_h" />
+            <param name="input" value="input1_uint8.tiff"/>
+            <conditional name="filter">
+                <param name="filter_type" value="prewitt_h"/>
+            </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="input1_prewitt_h.tiff" ftype="tiff"/>
         </test>
         <test>
-            <param name="input" value="input1_uint8.tiff" />
-            <param name="filter_type" value="prewitt_v" />
+            <param name="input" value="input1_uint8.tiff"/>
+            <conditional name="filter">
+                <param name="filter_type" value="prewitt_v"/>
+            </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="input1_prewitt_v.tiff" ftype="tiff"/>
         </test>
         <test>
-            <param name="input" value="input1_uint8.tiff" />
-            <param name="filter_type" value="sobel_h" />
+            <param name="input" value="input1_uint8.tiff"/>
+            <conditional name="filter">
+                <param name="filter_type" value="sobel_h"/>
+            </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="input1_sobel_h.tiff" ftype="tiff"/>
         </test>
         <test>
-            <param name="input" value="input1_uint8.tiff" />
-            <param name="filter_type" value="sobel_v" />
+            <param name="input" value="input1_uint8.tiff"/>
+            <conditional name="filter">
+                <param name="filter_type" value="sobel_v"/>
+            </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="input1_sobel_v.tiff" ftype="tiff"/>
         </test>
         <!-- Tests with float TIFF input image -->
         <test>
-            <param name="input" value="input2_float.tiff" />
-            <param name="filter_type" value="gaussian" />
+            <param name="input" value="input2_float.tiff"/>
+            <conditional name="filter">
+                <param name="filter_type" value="gaussian"/>
+            </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="input2_gaussian.tiff" ftype="tiff">
                 <!-- See note for Gaussian filter above. -->
                 <has_image_mean_intensity mean_intensity="0.25" eps="0.01"/>
@@ -133,6 +147,6 @@
 
     </help>
     <citations>
-       <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
+        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
     </citations>
 </tool>
