@@ -2,7 +2,7 @@
     <description>Unzip a file</description>
     <macros>
         <token name="@TOOL_VERSION@">6.0</token>
-        <token name="@VERSION_SUFFIX@">0</token>
+        <token name="@VERSION_SUFFIX@">1</token>
         <token name="@PROFILE@">22.01</token>
     </macros>
     <requirements>
