@@ -58,8 +58,7 @@
             <filter>extract_options['extract_all'] == 'False'</filter>
         </data>
         <collection name="unzipped" type="list" label="${tool.name} on ${on_string} all files as collection">
-            <discover_datasets directory="out" pattern="(?P&lt;designation&gt;.+?)(\.(?P&lt;ext&gt;[^\._]+))?$" visible="false" format="auto"/>
-            <!--      pattern=__designation_and_ext__ = (?P&lt;designation&gt;.*)\.(?P&lt;ext&gt;[^\._]+)? would discard files without extensions -->
+            <discover_datasets directory="out" pattern="(?P&lt;designation&gt;\.*[^\.]+)\.?(?P&lt;ext&gt;.*)" visible="false" format="auto"/>
             <filter>extract_options['extract_all'] == 'True'</filter>
         </collection>
     </outputs>
