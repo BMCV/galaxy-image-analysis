@@ -1,5 +1,5 @@
 <tool id="ip_landmark_registration" name="Perform affine image registration (landmark-based)" version="0.1.0-2" profile="20.05">
-    <description></description>
+    <description/>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
@@ -27,8 +27,8 @@
     ]]>
     </command>
     <inputs>
-        <param name="fn_lmkmov" type="data" format="tabular" label="Coordinates of moving landmarks (tsv file)" />
-        <param name="fn_lmkfix" type="data" format="tabular" label="Coordinates of fixed landmarks (tsv file)" />
+        <param name="fn_lmkmov" type="data" format="tabular" label="Coordinates of moving landmarks (tsv file)"/>
+        <param name="fn_lmkfix" type="data" format="tabular" label="Coordinates of fixed landmarks (tsv file)"/>
         <conditional name="algo_option">
             <param name="algo" type="select" label="Select the algorithm">
                 <option value="ransac">Affine Transformation (based on RANSAC)</option>
@@ -36,38 +36,44 @@
                 <option value="pwat" selected="True">Piecewise Affine Transformation</option>
             </param>
             <when value="ransac">
-                <param name="res_th" type="float" value="2.0" label="Maximum distance for a data point to be classified as an inlier." />
-                <param name="max_ite" type="integer" value="100" label="Maximum number of iterations for random sample selection." />
+                <param name="res_th" type="float" value="2.0" label="Maximum distance for a data point to be classified as an inlier."/>
+                <param name="max_ite" type="integer" value="100" label="Maximum number of iterations for random sample selection."/>
             </when>
-            <when value="ls"></when>
+            <when value="ls"/>
             <when value="pwat">
-                <param name="fn_ptsmov" type="data" format="tabular" label="Coordinates of points to be transformed (tsv file)" />
+                <param name="fn_ptsmov" type="data" format="tabular" label="Coordinates of points to be transformed (tsv file)"/>
             </when>
         </conditional>
     </inputs>
     <outputs>
-        <data format="tabular" name="fn_out" />
+        <data format="tabular" name="fn_out"/>
     </outputs>
     <tests>
         <test>
             <param name="fn_lmkmov" value="points_moving.tsv"/>
             <param name="fn_lmkfix" value="points_fixed.tsv"/>
-            <param name="algo" value="ls"/>
+            <conditional name="algo_option">
+                <param name="algo" value="ls"/>
+            </conditional>
             <output name="fn_out" value="tmat.tsv" ftype="tabular" compare="diff" lines_diff="6"/>
         </test>
         <test>
             <param name="fn_lmkmov" value="points_moving.tsv"/>
             <param name="fn_lmkfix" value="points_fixed.tsv"/>
-            <param name="algo" value="ransac"/>
-            <param name="res_th" value="2.0"/>
-            <param name="max_ite" value="100"/>
+            <conditional name="algo_option">
+                <param name="algo" value="ransac"/>
+                <param name="res_th" value="2.0"/>
+                <param name="max_ite" value="100"/>
+            </conditional>
             <output name="fn_out" value="tmat.tsv" ftype="tabular" compare="diff" lines_diff="6"/>
         </test>
         <test>
             <param name="fn_lmkmov" value="lmk_mov.tsv"/>
             <param name="fn_lmkfix" value="lmk_fix.tsv"/>
-            <param name="algo" value="pwat"/>
-            <param name="fn_ptsmov" value="points.tsv"/>
+            <conditional name="algo_option">
+                <param name="algo" value="pwat"/>
+                <param name="fn_ptsmov" value="points.tsv"/>
+            </conditional>
             <output name="fn_out" value="points_pwlt.tsv" ftype="tabular"/>
         </test>
     </tests>
