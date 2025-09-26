@@ -32,7 +32,10 @@
 
         ## Filter out files that do not match the regex
         #if $extract_options['target'] != 'single'
+            find out -regextype posix-extended -type f -not -regex '$extract_options["keep_regex"]' -delete
+            &&
         #end if
+        ls -al out &&
 
         ## Flatten any potential directory structure, e.g.
         ## out/sub1/subsub2/fileA.ext -> out/sub1_subsub2_fileA.ext
@@ -44,9 +47,27 @@
         <conditional name="extract_options">
             <param label="What to extract" name="target" type="select">
                 <option selected="True" value="all">All files</option>
+                <option value="all_nondot">All files except dotfiles</option>
                 <option value="single">Single file</option>
             </param>
-            <when value="all"/>
+            <when value="all">
+                <param name="keep_regex" type="hidden" value=".*"/>
+            </when>
+            <when value="all_nondot">
+                <param name="keep_regex" type="hidden" value=".*/[^.][^/]*">
+                    <sanitizer>
+                        <valid>
+                            <add preset="string.printable"/>
+                            <remove value="\"/>
+                            <remove value="'"/>
+                        </valid>
+                        <mapping initial="none">
+                            <add source="\" target="__backslash__"/>
+                            <add source="'" target="__sq__"/>
+                        </mapping>
+                    </sanitizer>
+                </param>
+            </when>
             <when value="single">
                 <param name="pathtofile" type="text" value="" label="Filepath">
                     <validator type="expression" message="No two dots (..) allowed">'..' not in value</validator>
@@ -125,6 +146,53 @@
             <output_collection name="unzipped" type="list" count="2">
                 <element name="input" file="input.png" ftype="png" compare="sim_size"/>
                 <element name="res" file="res.tiff" ftype="tiff" compare="sim_size"/>
+            </output_collection>
+        </test>
+        <!-- ZIP containing dotfiles and non-dotfiles -->
+        <test expect_num_outputs="1">
+            <param name="input_file" value="input_with_dotfiles.zip" ftype="zip"/>
+            <conditional name="extract_options">
+                <param name="target" value="all"/>
+            </conditional>
+            <output_collection name="unzipped" type="list" count="4">
+                <element name=".dotfile">
+                    <assert_contents>
+                        <has_size value="0"/>
+                    </assert_contents>
+                </element>
+                <element name="nondotfile">
+                    <assert_contents>
+                        <has_size value="0"/>
+                    </assert_contents>
+                </element>
+                <element name="subdir_"><!-- The suffix `.dotfile` is recognized as the extension -->
+                    <assert_contents>
+                        <has_size value="0"/>
+                    </assert_contents>
+                </element>
+                <element name="subdir_nondotfile">
+                    <assert_contents>
+                        <has_size value="0"/>
+                    </assert_contents>
+                </element>
+            </output_collection>
+        </test>
+        <test expect_num_outputs="1">
+            <param name="input_file" value="input_with_dotfiles.zip" ftype="zip"/>
+            <conditional name="extract_options">
+                <param name="target" value="all_nondot"/>
+            </conditional>
+            <output_collection name="unzipped" type="list" count="2">
+                <element name="nondotfile">
+                    <assert_contents>
+                        <has_size value="0"/>
+                    </assert_contents>
+                </element>
+                <element name="subdir_nondotfile">
+                    <assert_contents>
+                        <has_size value="0"/>
+                    </assert_contents>
+                </element>
             </output_collection>
         </test>
     </tests>
