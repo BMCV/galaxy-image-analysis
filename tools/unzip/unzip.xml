@@ -4,6 +4,19 @@
         <token name="@TOOL_VERSION@">6.0</token>
         <token name="@VERSION_SUFFIX@">2</token>
         <token name="@PROFILE@">22.01</token>
+        <xml name="regex_sanitizer">
+            <sanitizer>
+                <valid>
+                    <add preset="string.printable"/>
+                    <remove value="\"/>
+                    <remove value="'"/>
+                </valid>
+                <mapping initial="none">
+                    <add source="\" target="__backslash__"/>
+                    <add source="'" target="__sq__"/>
+                </mapping>
+            </sanitizer>
+        </xml>
     </macros>
     <requirements>
         <requirement type="package" version="@TOOL_VERSION@">unzip</requirement>
@@ -32,10 +45,10 @@
 
         ## Filter out files that do not match the regex
         #if $extract_options['target'] != 'single'
-            find out -regextype posix-extended -type f -not -regex '$extract_options["keep_regex"]' -delete
-            &&
+            cd out &&
+            find . -regextype posix-extended -type f -not -regex '$extract_options["keep_regex"]' -delete &&
+            cd .. &&
         #end if
-        ls -al out &&
 
         ## Flatten any potential directory structure, e.g.
         ## out/sub1/subsub2/fileA.ext -> out/sub1_subsub2_fileA.ext
@@ -48,6 +61,7 @@
             <param label="What to extract" name="target" type="select">
                 <option selected="True" value="all">All files</option>
                 <option value="all_nondot">All files except dotfiles</option>
+                <option value="all_regex">All files matching a regex</option>
                 <option value="single">Single file</option>
             </param>
             <when value="all">
@@ -55,17 +69,12 @@
             </when>
             <when value="all_nondot">
                 <param name="keep_regex" type="hidden" value=".*/[^.][^/]*">
-                    <sanitizer>
-                        <valid>
-                            <add preset="string.printable"/>
-                            <remove value="\"/>
-                            <remove value="'"/>
-                        </valid>
-                        <mapping initial="none">
-                            <add source="\" target="__backslash__"/>
-                            <add source="'" target="__sq__"/>
-                        </mapping>
-                    </sanitizer>
+                    <expand macro="regex_sanitizer"/>
+                </param>
+            </when>
+            <when value="all_regex">
+                <param name="keep_regex" type="text" value=".*" optional="False" label="Regular expression" help="POSIX regular expression, that will be used for filtering the extracted files. Only files that match this expression will be retained. Example: To only retain files from a sub-directory &lt;tt&gt;subdir&lt;/tt&gt;, use &lt;tt&gt;./subdir/.*&lt;/tt&gt; as the regular expression.">
+                    <expand macro="regex_sanitizer"/>
                 </param>
             </when>
             <when value="single">
@@ -193,6 +202,18 @@
                         <has_size value="0"/>
                     </assert_contents>
                 </element>
+            </output_collection>
+        </test>
+        <!-- Custom Regex -->
+        <test expect_num_outputs="1">
+            <param name="input_file" value="subfolders.zip" ftype="zip"/>
+            <conditional name="extract_options">
+                <param name="target" value="all_regex"/>
+                <param name="keep_regex" value="./images/.*"/>
+            </conditional>
+            <output_collection name="unzipped" type="list" count="2">
+                <element name="images_input" file="input.png" ftype="png" compare="sim_size"/>
+                <element name="images_res" file="res.tiff" ftype="tiff" compare="sim_size"/>
             </output_collection>
         </test>
     </tests>
