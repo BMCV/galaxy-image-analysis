@@ -100,18 +100,19 @@ jobs:
       run: |
         echo 'Using ${{ steps.discover.outputs.chunk-count }} chunks (${{ steps.discover.outputs.chunk-list }})'
 
-  # Check latest commit for potential switches
+  # Check latest commit for potential switches (only for pull_request events)
   commit_switches:
     name: Check latest commit
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' }}
     outputs:
       skip_version_check: ${{ steps.checks.outputs.skip_version_check }}
     steps:
     - name: Get latest commit SHA
+      if: ${{ github.event_name == 'pull_request' }}
       id: pr
       run: echo "sha=$(jq -r .pull_request.head.sha < $GITHUB_EVENT_PATH)" >> $GITHUB_OUTPUT
     - name: Get commit message
+      if: ${{ github.event_name == 'pull_request' }}
       id: commit
       run: |
         COMMIT_MSG=$(gh api repos/${{ github.repository }}/commits/${{ steps.pr.outputs.sha }} --jq .commit.message)
@@ -121,13 +122,17 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
     - name: Check for "[skip-version-check]" in commit message
-      id: checks
+      if: ${{ github.event_name == 'pull_request' }}
       run: |
         echo "Commit Message: ${{ steps.commit.outputs.commit_message }}"
         shopt -s nocasematch
         if [[ "${{ steps.commit.outputs.commit_message }}" == *"[skip-version-check]"* ]]; then
-          echo "skip_version_check=true" >> $GITHUB_OUTPUT
+          echo "SKIP_VERSION_CHECK=true" >> $GITHUB_ENV
         fi
+    - name: Set job outputs
+      id: checks
+      run: |
+          echo "skip_version_check=${SKIP_VERSION_CHECK}" >> $GITHUB_OUTPUT
 
   # Planemo lint the changed repositories
   lint:
