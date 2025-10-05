@@ -46,9 +46,9 @@
 
         ## Filter out files that do not match the regex
         #if $extract_options['target'] != 'single'
-            cd out &&
+            pushd out &&
             find . -regextype posix-extended -type f -not -regex '$extract_options["keep_regex"]' -delete &&
-            cd .. &&
+            popd &&
         #end if
 
         ## Flatten any potential directory structure, e.g.
