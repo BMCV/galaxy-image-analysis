@@ -19,9 +19,11 @@
         </xml>
     </macros>
     <requirements>
-        <requirement type="package" version="@TOOL_VERSION@">unzip</requirement>
-        <requirement type="package" version="1.34">tar</requirement>
-        <requirement type="package" version="4.10.0">findutils</requirement>
+        <!--
+            BioContainer for: unzip=6.0,tar=1.34,findutils=4.10.0
+            Enforced containerization to minimize potential security issues due to regex hacking.
+        -->
+        <container type="docker">quay.io/biocontainers/mulled-v2-6a2891161dcf5f35b38c6a49fff923163de7a66d:159a5b483a078f27b97a401b0626abac09e5f2d1-0</container>
     </requirements>
     <command> 
     <![CDATA[
