@@ -64,7 +64,7 @@
     ]]>
     </command>
     <inputs>
-        <param label="input_file" name="input_file" type="data" format="zip,tar"/>
+        <param label="Input file" name="input_file" type="data" format="zip,tar"/>
         <conditional name="extract_options">
             <param label="What to extract" name="target" type="select">
                 <option selected="True" value="all">All files</option>
@@ -86,7 +86,7 @@
                 </param>
             </when>
             <when value="single">
-                <param name="pathtofile" type="text" value="" label="Filepath">
+                <param name="pathtofile" type="text" value="" label="File path">
                     <validator type="expression" message="No two dots (..) allowed">'..' not in value</validator>
                     <validator type="expression" message="No comma (,) allowed">',' not in value</validator>
                     <validator type="expression" message="No asterisk (*) allowed">'*' not in value</validator>
