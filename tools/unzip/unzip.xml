@@ -1,20 +1,41 @@
 <tool id="unzip" name="Unzip" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="@PROFILE@">
     <description>Unzip a file</description>
     <macros>
+        <import>creators.xml</import>
         <token name="@TOOL_VERSION@">6.0</token>
-        <token name="@VERSION_SUFFIX@">1</token>
+        <token name="@VERSION_SUFFIX@">2</token>
         <token name="@PROFILE@">22.01</token>
+        <xml name="regex_sanitizer">
+            <sanitizer>
+                <valid>
+                    <add preset="string.printable"/>
+                    <remove value="\"/>
+                    <remove value="'"/>
+                </valid>
+                <mapping initial="none">
+                    <add source="\" target="__backslash__"/>
+                    <add source="'" target="__sq__"/>
+                </mapping>
+            </sanitizer>
+        </xml>
     </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+        <expand macro="creators/tuncK"/>
+    </creator>
     <requirements>
-        <requirement type="package" version="@TOOL_VERSION@">unzip</requirement>
-        <requirement type="package" version="1.34">tar</requirement>
+        <!--
+            BioContainer for: unzip=6.0,tar=1.34,findutils=4.10.0
+            Enforced containerization to minimize potential security issues due to regex hacking.
+        -->
+        <container type="docker">quay.io/biocontainers/mulled-v2-6a2891161dcf5f35b38c6a49fff923163de7a66d:159a5b483a078f27b97a401b0626abac09e5f2d1-0</container>
     </requirements>
     <command> 
     <![CDATA[
         mkdir ./out &&
         #if $input_file.is_of_type("zip"):
             unzip
-            #if $extract_options['extract_all'] == 'False'
+            #if $extract_options['target'] == 'single'
                 -p '$input_file' '$extract_options["pathtofile"]' > out.data
             #else
                 '$input_file' -d out/
@@ -22,7 +43,7 @@
         #end if
         #if $input_file.is_of_type("tar"):
             tar
-            #if $extract_options['extract_all'] == 'False'
+            #if $extract_options['target'] == 'single'
               xfO '$input_file' '$extract_options["pathtofile"]' > out.data
             #else
               -xf '$input_file' -C ./out/
@@ -30,21 +51,42 @@
         #end if
         &&
 
+        ## Filter out files that do not match the regex
+        #if $extract_options['target'] != 'single'
+            pushd out &&
+            find . -regextype posix-extended -type f -not -regex '$extract_options["keep_regex"]' -delete &&
+            popd &&
+        #end if
+
         ## Flatten any potential directory structure, e.g.
         ## out/sub1/subsub2/fileA.ext -> out/sub1_subsub2_fileA.ext
         find out -type f | cut -d '/' -f 2- | grep '/' | xargs -I % sh -c "mv out/% out/\\$(echo % | tr / _)"
     ]]>
     </command>
     <inputs>
-        <param label="input_file" name="input_file" type="data" format="zip,tar"/>
+        <param label="Input file" name="input_file" type="data" format="zip,tar"/>
         <conditional name="extract_options">
-            <param label="Extract single file" name="extract_all" type="select">
-                <option selected="True" value="True">All files</option>
-                <option value="False">Single file</option>
+            <param label="What to extract" name="target" type="select">
+                <option selected="True" value="all">All files</option>
+                <option value="all_nondot">All files except dotfiles</option>
+                <option value="all_regex">All files matching a regex</option>
+                <option value="single">Single file</option>
             </param>
-            <when value="True"/>
-            <when value="False">
-                <param name="pathtofile" type="text" value="" label="Filepath">
+            <when value="all">
+                <param name="keep_regex" type="hidden" value=".*"/>
+            </when>
+            <when value="all_nondot">
+                <param name="keep_regex" type="hidden" value=".*/[^.][^/]*">
+                    <expand macro="regex_sanitizer"/>
+                </param>
+            </when>
+            <when value="all_regex">
+                <param name="keep_regex" type="text" value=".*" optional="False" label="Regular expression" help="POSIX regular expression, that will be used for filtering the extracted files. Only files that match this expression will be retained. Example: To only retain files from a sub-directory &lt;tt&gt;subdir&lt;/tt&gt;, use &lt;tt&gt;./subdir/.*&lt;/tt&gt; as the regular expression.">
+                    <expand macro="regex_sanitizer"/>
+                </param>
+            </when>
+            <when value="single">
+                <param name="pathtofile" type="text" value="" label="File path">
                     <validator type="expression" message="No two dots (..) allowed">'..' not in value</validator>
                     <validator type="expression" message="No comma (,) allowed">',' not in value</validator>
                     <validator type="expression" message="No asterisk (*) allowed">'*' not in value</validator>
@@ -55,18 +97,18 @@
     </inputs>
     <outputs>
         <data auto_format="true" name="unzipped_single" from_work_dir="out.data" label="${tool.name} on ${on_string}">
-            <filter>extract_options['extract_all'] == 'False'</filter>
+            <filter>extract_options['target'] == 'single'</filter>
         </data>
         <collection name="unzipped" type="list" label="${tool.name} on ${on_string} all files as collection">
             <discover_datasets directory="out" pattern="(?P&lt;designation&gt;\.*[^\.]+)\.?(?P&lt;ext&gt;.*)" visible="false" format="auto"/>
-            <filter>extract_options['extract_all'] == 'True'</filter>
+            <filter>extract_options['target'] != 'single'</filter>
         </collection>
     </outputs>
     <tests>
         <test expect_num_outputs="1">
             <param name="input_file" value="input.zip" ftype="zip"/>
             <conditional name="extract_options">
-                <param name="extract_all" value="False"/>
+                <param name="target" value="single"/>
                 <param name="pathtofile" value="input.png"/>
             </conditional>
             <output name="unzipped_single" file="input.png" ftype="png" compare="sim_size"/>
@@ -74,7 +116,7 @@
         <test expect_num_outputs="1">
             <param name="input_file" value="input.zip" ftype="zip"/>
             <conditional name="extract_options">
-                <param name="extract_all" value="True"/>
+                <param name="target" value="all"/>
             </conditional>
             <output_collection name="unzipped" type="list" count="2">
                 <element name="input" file="input.png" ftype="png" compare="sim_size"/>
@@ -85,7 +127,7 @@
         <test expect_num_outputs="1">
             <param name="input_file" value="input_binary.zip" ftype="zip"/>
             <conditional name="extract_options">
-                <param name="extract_all" value="True"/>
+                <param name="target" value="all"/>
             </conditional>
             <output_collection name="unzipped" type="list" count="2">
                 <element name="yelp" file="yelp" compare="sim_size"/>
@@ -96,7 +138,7 @@
         <test expect_num_outputs="1">
             <param name="input_file" value="subfolders.zip" ftype="zip"/>
             <conditional name="extract_options">
-                <param name="extract_all" value="True"/>
+                <param name="target" value="all"/>
             </conditional>
             <output_collection name="unzipped" type="list" count="4">
                 <element name="binaries_yelp" file="yelp" compare="sim_size"/>
@@ -108,7 +150,7 @@
         <test expect_num_outputs="1">
             <param name="input_file" value="input.tar" ftype="tar"/>
             <conditional name="extract_options">
-                <param name="extract_all" value="False"/>
+                <param name="target" value="single"/>
                 <param name="pathtofile" value="input.png"/>
             </conditional>
             <output name="unzipped_single" file="input.png" ftype="png" compare="sim_size"/>
@@ -116,11 +158,70 @@
         <test expect_num_outputs="1">
             <param name="input_file" value="input.tar" ftype="tar"/>
             <conditional name="extract_options">
-                <param name="extract_all" value="True"/>
+                <param name="target" value="all"/>
             </conditional>
             <output_collection name="unzipped" type="list" count="2">
                 <element name="input" file="input.png" ftype="png" compare="sim_size"/>
                 <element name="res" file="res.tiff" ftype="tiff" compare="sim_size"/>
+            </output_collection>
+        </test>
+        <!-- ZIP containing dotfiles and non-dotfiles -->
+        <test expect_num_outputs="1">
+            <param name="input_file" value="input_with_dotfiles.zip" ftype="zip"/>
+            <conditional name="extract_options">
+                <param name="target" value="all"/>
+            </conditional>
+            <output_collection name="unzipped" type="list" count="4">
+                <element name=".dotfile">
+                    <assert_contents>
+                        <has_size value="0"/>
+                    </assert_contents>
+                </element>
+                <element name="nondotfile">
+                    <assert_contents>
+                        <has_size value="0"/>
+                    </assert_contents>
+                </element>
+                <element name="subdir_"><!-- The suffix `.dotfile` is recognized as the extension -->
+                    <assert_contents>
+                        <has_size value="0"/>
+                    </assert_contents>
+                </element>
+                <element name="subdir_nondotfile">
+                    <assert_contents>
+                        <has_size value="0"/>
+                    </assert_contents>
+                </element>
+            </output_collection>
+        </test>
+        <test expect_num_outputs="1">
+            <param name="input_file" value="input_with_dotfiles.zip" ftype="zip"/>
+            <conditional name="extract_options">
+                <param name="target" value="all_nondot"/>
+            </conditional>
+            <output_collection name="unzipped" type="list" count="2">
+                <element name="nondotfile">
+                    <assert_contents>
+                        <has_size value="0"/>
+                    </assert_contents>
+                </element>
+                <element name="subdir_nondotfile">
+                    <assert_contents>
+                        <has_size value="0"/>
+                    </assert_contents>
+                </element>
+            </output_collection>
+        </test>
+        <!-- Custom Regex -->
+        <test expect_num_outputs="1">
+            <param name="input_file" value="subfolders.zip" ftype="zip"/>
+            <conditional name="extract_options">
+                <param name="target" value="all_regex"/>
+                <param name="keep_regex" value="./images/.*"/>
+            </conditional>
+            <output_collection name="unzipped" type="list" count="2">
+                <element name="images_input" file="input.png" ftype="png" compare="sim_size"/>
+                <element name="images_res" file="res.tiff" ftype="tiff" compare="sim_size"/>
             </output_collection>
         </test>
     </tests>
