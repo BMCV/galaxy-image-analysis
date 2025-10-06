@@ -1,6 +1,7 @@
 <tool id="unzip" name="Unzip" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="@PROFILE@">
     <description>Unzip a file</description>
     <macros>
+        <import>creators.xml</import>
         <token name="@TOOL_VERSION@">6.0</token>
         <token name="@VERSION_SUFFIX@">2</token>
         <token name="@PROFILE@">22.01</token>
@@ -18,6 +19,10 @@
             </sanitizer>
         </xml>
     </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+        <expand macro="creators/tuncK"/>
+    </creator>
     <requirements>
         <!--
             BioContainer for: unzip=6.0,tar=1.34,findutils=4.10.0
