@@ -13,25 +13,21 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 
 ## List of Tools on Galaxy Europe
 
-### Image processing
+### Image processing [[…]](https://github.com/BMCV/galaxy-image-analysis/issues?q=label%3A%22Image%20Processing%22)
 
 - [Apply anisotropic diffusion](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/anisotropic_diffusion/ip_anisotropic_diffusion) with MedPy
 - [Apply a morphological operation](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/morphological_operations/morphological_operations) with SciPy
-- [Concatenate images or channels](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/concat_channels/ip_concat_channels)
 - [Crop image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/crop_image/ip_crop_image) with giatools
 - [Filter 2D image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/2d_simple_filter/ip_filter_standard) with scikit-image
 - [Perform histogram equalization](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/2d_histogram_equalization/ip_histogram_equalization) with scikit-image
-- [Permutate image axes](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/permutate_axis/ip_permutate_axis)
 - [Process images using arithmetic expressions](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/image_math/image_math) with NumPy
 - [Remove image background](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/background_removal/background_removal/0.24.0+galaxy0) with scikit-image
 - [Scale image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/scale_image/ip_scale_image) with scikit-image
 - [Show image info](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/image_info/ip_imageinfo) with Bioformats
-- [Slice image into patches](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/slice_image/ip_slice_image)
-- [Split image along axes](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/split_image/ip_split_image) with NumPy
-- [Switch axis coordinates](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/imagecoordinates_flipaxis/imagecoordinates_flipaxis)
 
-### Image conversion
+### Image conversion [[…]](https://github.com/BMCV/galaxy-image-analysis/issues?q=label%3A%22Image%20Conversion%22)
 
+- [Concatenate images or channels](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/concat_channels/ip_concat_channels)
 - [Convert binary image to label map](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/binary2labelimage/ip_binary_to_labelimage)
 - [Convert binary image to points (center of masses)](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/binaryimage2points/ip_binaryimage_to_points)
 - [Convert binary image to points (point coordinates)](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/coordinates_of_roi/ip_coordinates_of_roi)
@@ -42,8 +38,12 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 - [Convert single-channel to multi-channel image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/repeat_channels/repeat_channels) with NumPy
 - [Convert to OME-Zarr](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/bioformats2raw/bf2raw) with Bioformats
 - [Perform color deconvolution or transformation](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/color_deconvolution/ip_color_deconvolution)
+- [Permutate image axes](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/permutate_axis/ip_permutate_axis)
+- [Slice image into patches](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/slice_image/ip_slice_image)
+- [Split image along axes](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/split_image/ip_split_image) with NumPy
+- [Switch axis coordinates](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/imagecoordinates_flipaxis/imagecoordinates_flipaxis)
 
-### Segmentation, partitioning, and detection
+### Segmentation, partitioning, and detection [[…]](https://github.com/BMCV/galaxy-image-analysis/issues?q=label%3A%22Partitioning%20and%20Detection%22)
 
 - [Compute Voronoi tessellation](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/voronoi_tesselation/voronoi_tessellation) with scikit-image
 - [Count objects in label map](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/count_objects/ip_count_objects)
@@ -57,7 +57,7 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 - [Split label map using morphological operators](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/split_labelmap/ip_split_labelmap)
 - [Threshold image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/2d_auto_threshold/ip_threshold) with scikit-image
 
-### Registration
+### Registration [[…]](https://github.com/BMCV/galaxy-image-analysis/issues?q=label%3A%22Image%20Registration%22)
 
 - [Compute image orientation](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/orientationpy/orientationpy) with OrientationPy
 - [Perform affine image registration (intensity-based)](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/image_registration_affine/ip_image_registration)
@@ -65,11 +65,11 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 - [Performs projective transformation with/without labels](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/projective_transformation_points/ip_projective_transformation_points)
 - [Performs projective transformation](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/projective_transformation/ip_projective_transformation)
 
-### Tracking
+### Tracking [[…]](https://github.com/BMCV/galaxy-image-analysis/issues?q=label%3A%22Tracking%22)
 
 - [Perform linking in time series (nearest neighbors)](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/points_association_nn/ip_points_association_nn)
 
-### Visualization and validation
+### Visualization and validation [[…]](https://github.com/BMCV/galaxy-image-analysis/issues?q=label%3A%22Visualization%20and%20Validation%22)
 
 - [Colorize labels](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/colorize_labels/colorize_labels) with NetworkX
 - [Compute image segmentation and object detection performance measures](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/segmetrics/ip_segmetrics) with SegMetrics
@@ -87,4 +87,5 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 ## Acknowledgment
 
 This work has been supported by the BMBF-funded Heidelberg Center for Human Bioinformatics (HD-HuB) within the German Network for Bioinformatics Infrastructure (de.NBI) #031A537C.
+
 
