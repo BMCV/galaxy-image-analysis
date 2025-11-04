@@ -1,10 +1,9 @@
-<tool id="ip_points_to_label" name="Convert coordinates to label map" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
+<tool id="ip_points_to_label" name="Convert coordinates to label map" version="@TOOL_VERSION@" profile="20.05">
     <description></description>
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
-        <token name="@TOOL_VERSION@">0.4.1</token>
-        <token name="@VERSION_SUFFIX@">1</token>
+        <token name="@TOOL_VERSION@">0.5.0</token>
     </macros>
     <creator>
         <expand macro="creators/bmcv" />
@@ -25,6 +24,7 @@
     <command detect_errors="aggressive"><![CDATA[
 
         python '$__tool_directory__/points2label.py'
+        '$input.file_ext'
         '$input'
         '$output'
         $shapex
@@ -35,7 +35,7 @@
 
     ]]></command>
     <inputs>
-        <param name="input" type="data" format="tabular,geojson" label="List of points in tabular or geojson format"/>
+        <param name="input" type="data" format="tabular,geojson" label="List of points in tabular or GeoJSON format"/>
         <param name="shapex" type="integer" value="500" min="1" label="Width of output image" />
         <param name="shapey" type="integer" value="500" min="1" label="Height of output image" />
         <param name="has_header" type="boolean" checked="true" truevalue="--has_header True" falsevalue="" optional="true" label="Tabular list of points has header" help="Turning this off will ignore the first row and assume that the X and Y coordinates correspond to the first and second column, respectively. Ignored, if GeoJSON is used for input." />
@@ -133,15 +133,6 @@
             <param name="swap_xy" value="true" />
             <param name="binary" value="false" />
             <expand macro="tests/label_image_diff" name="output" value="output6.tiff" ftype="tiff" />
-        </test>
-        <test expect_failure="true">
-            <!-- The test should fail because the GeoJSON is not rectangular -->
-            <param name="input" value="rois-illegal1.geojson" />
-            <param name="shapex" value="300" />
-            <param name="shapey" value="300" />
-            <param name="has_header" value="false" />
-            <param name="swap_xy" value="false" />
-            <param name="binary" value="false" />
         </test>
         <test expect_failure="true">
             <!-- The test should fail because the GeoJSON is not of `Polygon` type -->
