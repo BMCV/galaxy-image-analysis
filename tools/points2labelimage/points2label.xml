@@ -1,4 +1,4 @@
-<tool id="ip_points_to_label" name="Convert coordinates to label map" version="@TOOL_VERSION@" profile="20.05">
+<tool id="ip_points_to_label" name="Rasterize shapes as label map" version="@TOOL_VERSION@" profile="20.05">
     <description></description>
     <macros>
         <import>creators.xml</import>
@@ -35,12 +35,12 @@
 
     ]]></command>
     <inputs>
-        <param name="input" type="data" format="tabular,geojson" label="List of points in tabular or GeoJSON format"/>
-        <param name="shapex" type="integer" value="500" min="1" label="Width of output image" />
-        <param name="shapey" type="integer" value="500" min="1" label="Height of output image" />
-        <param name="has_header" type="boolean" checked="true" truevalue="--has_header True" falsevalue="" optional="true" label="Tabular list of points has header" help="Turning this off will ignore the first row and assume that the X and Y coordinates correspond to the first and second column, respectively. Ignored, if GeoJSON is used for input." />
-        <param name="swap_xy" type="boolean" checked="false" falsevalue="" truevalue="--swap_xy True" optional="true" label="Swap X and Y coordinates" help="Swap the X and Y coordinates, regardless of whether the tabular list has a header or not." />
-        <param name="binary" type="boolean" checked="false" truevalue="--binary True" falsevalue="" optional="true" label="Produce binary image" help="Use the same label for all points (65535)." />
+        <param name="input" type="data" format="tabular,geojson" label="Shapes to be rasterized"/>
+        <param name="shapex" type="integer" value="500" min="1" label="Width of the output image" />
+        <param name="shapey" type="integer" value="500" min="1" label="Height of the output image" />
+        <param name="has_header" type="boolean" checked="true" truevalue="--has_header True" falsevalue="" optional="true" label="Tabular list of shapes has header" help="Only used if the input is a tabular file (ignored for GeoJSON). Turning this off will assume that each row corresponds to a single point, and that the X and Y coordinates correspond to the first and second column, respectively." />
+        <param name="swap_xy" type="boolean" checked="false" falsevalue="" truevalue="--swap_xy True" optional="true" label="Swap X and Y coordinates" help="Swap the X and Y coordinates before rasterization. The width and height of the output image is not affected." />
+        <param name="binary" type="boolean" checked="false" truevalue="--binary True" falsevalue="" optional="true" label="Produce binary image" help="Use the same label for all shapes (65535)." />
     </inputs>
     <outputs>
         <data name="output" format="tiff" />
@@ -147,27 +147,32 @@
     </tests>
     <help>
 
-        **Converts a list of points to a label map by rasterizing the coordinates.**
+        **Converts a list of shapes to a label map via rasterization.**
 
-        The created image is a single-channel image with 16 bits per pixel (unsigned integer). The points are
-        rasterized with unique labels, or the value 65535 (white) for binary image output. Pixels not corresponding to
-        any points in the tabular file are assigned the value 0 (black).
+        The created image is a single-channel image with 16 bits per pixel (unsigned integers). The shapes are
+        rasterized with unique labels, explicitly given labels (custom), or the value 65535 (white) for binary image
+        output. Pixels not corresponding to any shapes are assigned the value 0 (black).
 
-        **Using a tabular input file:** The tabular list of points can either be header-less. In this case, the first
-        and second columns are expected to be the X and Y coordinates, respectively. Otherwise, if a header is present,
-        it is searched for the following column names:
+        **Using a GeoJSON input file (recommended).** Only features (shape specifications) of `Polygon` and `Point`
+        type are supported. In conjunction with the `radius` property, a `Point` type feature can also be used to
+        represent circles. Custom labels can be encoded in the `name` property (must be numeric and integer), and
+        different features are allowed to use the same labels.
 
-        - ``pos_x`` or ``POS_X``: This column corresponds to the X coordinates.
-        - ``pos_y`` or ``POS_Y``: This column corresponds to the Y coordinates.
-        - If a ``radius`` or ``RADIUS`` column is present, then the points will be rasterized as circles of the
-          corresponding radii.
-        - If ``width`` or ``WIDTH`` and ``height`` or ``HEIGHT`` columns are present, then the points will be rasterized
-          as rectangles of the corresponding size.
+        **Using a tabular input file (deprecated).** The tabular list of points can either be header-less. In this
+        case, the first and second columns are expected to be the X and Y coordinates, respectively, and each row
+        corresponds to a single point. Otherwise, if a header is present, it is searched for the following column
+        names:
+
+        - Column ``pos_x`` or ``POS_X`` is mandatory and corresponds to the X coordinates.
+        - Column ``pos_y`` or ``POS_Y`` is mandatory and corresponds to the Y coordinates.
+        - If a ``radius`` or ``RADIUS`` column is present and the value in a row is positive, then the row will be
+          rasterized as a circle of the corresponding size, centered at the given X and Y coordinates.
+        - If ``width`` or ``WIDTH`` and ``height`` or ``HEIGHT`` columns are present and the values in a row are
+          positive, then the rows will be rasterized as rectangles of the corresponding size, with the upper-left
+          corner given by the X and Y coordinates.
         - If a ``label`` or ``LABEL`` column is present, then the corresponding labels will be used for rasterization
-          (unless "Produce binary image" is activated). Different points are allowed to use the same label. If used, the
-          label must be numeric and integer.
-
-        **Using a GeoJSON input file:** Only rectangular specifications of `Polygon` type geometry is supported.
+          (unless "Produce binary image" is activated). Different rows are allowed to use the same label. If used,
+          the label must be numeric and integer.
 
     </help>
     <citations>
