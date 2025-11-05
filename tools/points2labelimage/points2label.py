@@ -131,7 +131,7 @@ def rasterize(
 
         # Determine the `label` for the current `mask`
         if fg_value is None:
-            label = feature.get('properties', {}).get('label', None)
+            label = feature.get('properties', {}).get('name', None)
             if label is None or not isinstance(label, int) or label < 0:
                 label = autolabel.next()
         else:
@@ -232,9 +232,11 @@ def convert_tabular_to_geojson(
                 'type': geom_type,
                 'coordinates': coords,
             },
+            'properties': {
+                'name': label,
+            },
         }
         if radius > 0:
-            feature.setdefault('properties', {})
             feature['properties']['radius'] = radius
             feature['properties']['subType'] = 'Circle'
         features.append(feature)
