@@ -1,4 +1,24 @@
 <macros>
     <token name="@TOOL_VERSION@">0.1.0</token>
     <token name="@VERSION_SUFFIX@">0</token>
+    <xml name="citations">
+        <citations>
+            <citation type="bibtex">
+    @misc{iscc_sum,
+        title={ISCC - Similarity Hash for Digital Media},
+        url={https://iscc.codes/},
+        note={Accessed: 2025}
+    }
+            </citation>
+        </citations>
+    </xml>
+    <xml name="requirements">
+        <requirements>
+            <requirement type="package" version="@TOOL_VERSION@">iscc-sum</requirement>
+        </requirements>
+    </xml>
+    <xml name="version_command">    
+        <version_command>iscc-sum --version</version_command>
+    </xml>
 </macros>
+

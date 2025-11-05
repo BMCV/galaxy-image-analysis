@@ -4,13 +4,9 @@
     <macros>
         <import>macros.xml</import>
     </macros>
-    
-    <requirements>
-        <requirement type="package" version="@TOOL_VERSION@">iscc-sum</requirement>
-    </requirements>
-    
-    <version_command>iscc-sum --version</version_command>
-    
+    <expand macro="requirements" />
+    <expand macro="version_command" />
+        
     <command detect_errors="exit_code"><![CDATA[
         iscc-sum '$input_file' | cut -d':' -f2 | cut -d' ' -f1 > '${output_file}'
     ]]></command>
@@ -73,14 +69,7 @@ A text file containing the ISCC-SUM code for the input file.
 
 For more details about ISCC, visit: https://iscc.codes/
     ]]></help>
+
+    <expand macro="citations" />
     
-    <citations>
-        <citation type="bibtex">
-@misc{iscc_sum,
-    title={ISCC - Similarity Hash for Digital Media},
-    url={https://iscc.codes/},
-    note={Accessed: 2025}
-}
-        </citation>
-    </citations>
 </tool>
