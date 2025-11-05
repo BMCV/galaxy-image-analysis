@@ -1,4 +1,4 @@
-<tool id="iscc_sum" name="Generate ISCC-SUM" version="0.1.0+galaxy0" python_template_version="3.5" profile="21.05">
+<tool id="iscc_sum" name="Generate ISCC-SUM" version="0.1.0+galaxy0" profile="24.1">
     <description>Generate content code and similarity hash from any file</description>
     
     <requirements>
