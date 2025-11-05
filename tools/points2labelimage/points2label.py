@@ -3,7 +3,6 @@ import json
 import os
 import warnings
 from typing import (
-    Any,
     Dict,
     List,
     Optional,
@@ -19,25 +18,7 @@ import scipy.ndimage as ndi
 import skimage.draw
 import skimage.io
 import skimage.segmentation
-
-
-def get_list_depth(nested_list: Any) -> int:
-    if isinstance(nested_list, list):
-        if len(nested_list) > 0:
-            return 1 + max(map(get_list_depth, nested_list))
-        else:
-            return 1
-    else:
-        return 0
-
-
-# some sanity checks -->
-assert get_list_depth(1234) == 0
-assert get_list_depth([]) == 1
-assert get_list_depth([1, 2, 3]) == 1
-assert get_list_depth([1, [2, 3]]) == 2
-assert get_list_depth([[1], [2, 3]]) == 2
-# <--
+from utils import get_list_depth
 
 
 class AutoLabel:
