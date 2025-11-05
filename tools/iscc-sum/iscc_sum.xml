@@ -1,0 +1,71 @@
+<tool id="iscc_sum" name="Generate ISCC-SUM" version="0.1.0+galaxy0" python_template_version="3.5" profile="21.05">
+    <description>Generate content code and similarity hash from any file</description>
+    
+    <requirements>
+        <requirement type="package" version="0.7.3">iscc-sum</requirement>
+    </requirements>
+    
+    <version_command>iscc-sum --version</version_command>
+    
+    <command detect_errors="exit_code"><![CDATA[
+        ln -s '${input_file}' ./input.${input_file.ext} &&
+        iscc-sum ./input.${input_file.ext} > '${output_file}'
+    ]]></command>
+    
+    <inputs>
+        <param name="input_file" type="data" format="data" label="Input File" 
+               help="Any file type - ISCC-SUM will generate a checksum and similarity hash"/>
+    </inputs>
+    
+    <outputs>
+        <data name="output_file" format="txt" label="${tool.name} on ${on_string}"/>
+    </outputs>
+    
+    <tests>
+        <test>
+            <param name="input_file" value="test1.png"/>
+            <output name="output_file" file="test1_png.txt"/>
+        </test>
+        <test>
+            <param name="input_file" value="test2.tif"/>
+            <output name="output_file" file="test2_tif.txt"/>
+        </test>
+        <test>
+            <param name="input_file" value="test3.fasta"/>
+            <output name="output_file" file="test3_fasta.txt"/>
+        </test>
+    </tests>
+    
+    <help><![CDATA[
+**What it does**
+
+Generates an International Standard Content Code (ISCC) based checksum and similarity hash from any input file.
+
+The ISCC-SUM is a content-derived identifier that:    
+- Creates a unique checksum based on file content    
+- Generates a similarity hash for content comparison    
+- Works with any file format    
+
+**Input**
+
+Any file format is accepted as input.
+
+**Output**
+
+A text file containing the ISCC-SUM code for the input file.
+
+**More Information**
+
+For more details about ISCC, visit: https://iscc.codes/
+    ]]></help>
+    
+    <citations>
+        <citation type="bibtex">
+@misc{iscc_sum,
+    title={ISCC - Similarity Hash for Digital Media},
+    url={https://iscc.codes/},
+    note={Accessed: 2025}
+}
+        </citation>
+    </citations>
+</tool>
