@@ -126,10 +126,6 @@ def rasterize(
             # Rasterize each polygon separately, then join via XOR
             mask = np.zeros(shape, dtype=bool)
             for polygon_coords in coords:
-                #xs = [pt[0] for pt in polygon_coords]
-                #ys = [pt[1] for pt in polygon_coords]
-                #polygon = skimage.draw.polygon(ys, xs, shape)
-                #polygon_mask = skimage.draw.polygon2mask(shape, polygon)
                 polygon_mask = skimage.draw.polygon2mask(
                     shape,
                     [point[::-1] for point in polygon_coords],
@@ -142,9 +138,6 @@ def rasterize(
             radius = feature.get('properties', {}).get('radius', 0)
             if radius > 0:
                 mask = (ndi.distance_transform_edt(~mask) <= radius)
-
-#        elif geom_type == 'linestring':
-#            ...
 
         else:
             raise ValueError(

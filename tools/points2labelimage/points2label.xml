@@ -135,7 +135,7 @@
             <expand macro="tests/label_image_diff" name="output" value="output6.tiff" ftype="tiff" />
         </test>
         <test expect_failure="true">
-            <!-- The test should fail because the GeoJSON uses the `MultiLineString` primitive type that is not supported yet -->
+            <!-- The test should fail because the GeoJSON uses the `LineString` primitive type that is not supported yet -->
             <param name="input" value="rois-illegal2.geojson" />
             <param name="shapex" value="300" />
             <param name="shapey" value="300" />
