@@ -1,13 +1,10 @@
 import argparse
 import json
-import os
 import warnings
 from typing import (
     Dict,
-    List,
     Optional,
     Tuple,
-    Union,
 )
 
 import giatools.pandas
@@ -72,7 +69,7 @@ def rasterize(
     shape: Tuple[int, int],
     bg_value: int = 0,
     fg_value: Optional[int] = None,
-) -> np.ndarray:
+) -> npt.NDArray:
     """
     Rasterize GeoJSON into a pixel image, that is returned as a NumPy array.
     """

@@ -1,5 +1,6 @@
-import utils
 import unittest
+
+import utils
 
 
 class get_list_depth(unittest.TestCase):
