@@ -34,7 +34,7 @@
             </output>
         </test>
         <test expect_num_outputs="1">
-            <param name="input_file" value="test2.tif"/>
+            <param name="input_file" value="test2.tiff"/>
             <output name="output_file">
                 <assert_contents>
                     <has_line line="K4AGSPOSB5SS2X427WZ27QASTSBVTS55DXLMFDF7WOJKEOSTDEI3OXQ" />
