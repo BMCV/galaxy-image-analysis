@@ -29,7 +29,7 @@
                 </assert_contents>
             </output>
         </test>
-        <test>
+        <test expect_num_outputs="1">
             <param name="input_file" value="test2.tif"/>
             <output name="output_file">
                 <assert_contents>
