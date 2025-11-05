@@ -106,18 +106,9 @@
             <param name="binary" value="false" />
             <expand macro="tests/label_image_diff" name="output" value="output4.tiff" ftype="tiff" />
         </test>
-        <!-- Labeled / ROI / Rectangles -->
+        <!-- Labeled / GeoJSON / mixed name and no-name -->
         <test>
             <param name="input" value="rois.geojson" />
-            <param name="shapex" value="300" />
-            <param name="shapey" value="300" />
-            <param name="has_header" value="false" />
-            <param name="swap_xy" value="false" />
-            <param name="binary" value="false" />
-            <expand macro="tests/label_image_diff" name="output" value="output5.tiff" ftype="tiff" />
-        </test>
-        <test>
-            <param name="input" value="rois-noname.geojson" />
             <param name="shapex" value="300" />
             <param name="shapey" value="300" />
             <param name="has_header" value="false" />
@@ -133,6 +124,16 @@
             <param name="swap_xy" value="true" />
             <param name="binary" value="false" />
             <expand macro="tests/label_image_diff" name="output" value="output6.tiff" ftype="tiff" />
+        </test>
+        <!-- Labeled / GeoJSON / no-name -->
+        <test>
+            <param name="input" value="rois-noname.geojson" />
+            <param name="shapex" value="300" />
+            <param name="shapey" value="300" />
+            <param name="has_header" value="false" />
+            <param name="swap_xy" value="false" />
+            <param name="binary" value="false" />
+            <expand macro="tests/label_image_diff" name="output" value="output7.tiff" ftype="tiff" />
         </test>
         <test expect_failure="true">
             <!-- The test should fail because the GeoJSON uses the `LineString` primitive type that is not supported yet -->
