@@ -2,6 +2,7 @@ import argparse
 import json
 import warnings
 from typing import (
+    Any,
     Dict,
     Optional,
     Tuple,
@@ -15,7 +16,16 @@ import scipy.ndimage as ndi
 import skimage.draw
 import skimage.io
 import skimage.segmentation
-from utils import get_list_depth
+
+
+def get_list_depth(nested_list: Any) -> int:
+    if isinstance(nested_list, list):
+        if len(nested_list) > 0:
+            return 1 + max(map(get_list_depth, nested_list))
+        else:
+            return 1
+    else:
+        return 0
 
 
 class AutoLabel:
