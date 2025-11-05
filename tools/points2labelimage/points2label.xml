@@ -106,6 +106,16 @@
             <param name="binary" value="false" />
             <expand macro="tests/label_image_diff" name="output" value="output4.tiff" ftype="tiff" />
         </test>
+        <!-- Labeled / TSV with header / TSV with labels / Circles + Rectangles -->
+        <test>
+            <param name="input" value="input5.tsv" />
+            <param name="shapex" value="200" />
+            <param name="shapey" value="100" />
+            <param name="has_header" value="true" />
+            <param name="swap_xy" value="false" />
+            <param name="binary" value="false" />
+            <expand macro="tests/label_image_diff" name="output" value="output8.tiff" ftype="tiff" />
+        </test>
         <!-- Labeled / GeoJSON / mixed name and no-name -->
         <test>
             <param name="input" value="rois.geojson" />
