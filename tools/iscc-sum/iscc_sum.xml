@@ -35,7 +35,11 @@
         </test>
         <test>
             <param name="input_file" value="test3.fasta"/>
-            <output name="output_file" file="test3_fasta.txt"/>
+            <output name="output_file">
+                <assert_contents>
+                    <has_line line="K4AKF7PTZ7JTAAYZ7YZHZPR5RETKYXXE7RTBTJA4JX5GQQMSLZRC6QQ" />
+                </assert_contents>
+            </output>
         </test>
     </tests>
     
