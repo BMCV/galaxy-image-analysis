@@ -116,6 +116,15 @@
             <param name="binary" value="false" />
             <expand macro="tests/label_image_diff" name="output" value="output8.tiff" ftype="tiff" />
         </test>
+        <test expect_failure="true">
+            <!-- The test should fail because simultaneous usage of radius and width/height on a row is forbidden -->
+            <param name="input" value="input6.tsv" />
+            <param name="shapex" value="200" />
+            <param name="shapey" value="100" />
+            <param name="has_header" value="true" />
+            <param name="swap_xy" value="false" />
+            <param name="binary" value="false" />
+        </test>
         <!-- Labeled / GeoJSON / mixed name and no-name -->
         <test>
             <param name="input" value="rois.geojson" />
