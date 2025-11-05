@@ -1,5 +1,5 @@
 <tool id="iscc_sum" name="Generate ISCC-SUM" version="0.1.0+galaxy0" profile="24.1">
-    <description>Generate content code and similarity hash from any file</description>
+    <description>and similarity hash from any file</description>
     
     <requirements>
         <requirement type="package" version="0.1.0">iscc-sum</requirement>
