@@ -1,8 +1,8 @@
-<tool id="iscc_sum" name="Generate ISCC-SUM" version="0.1.0+galaxy0" profile="24.1">
-    <description>Generate content code and similarity hash from any file</description>
+<tool id="iscc_sum" name="Generate ISCC hash" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="24.1">
+    <description>with ISCC-SUM</description>
     
     <requirements>
-        <requirement type="package" version="0.1.0">iscc-sum</requirement>
+        <requirement type="package" version="@PACKAGE_VERSION@">iscc-sum</requirement>
     </requirements>
     
     <version_command>iscc-sum --version</version_command>
