@@ -8,7 +8,7 @@
     <version_command>iscc-sum --version</version_command>
     
     <command detect_errors="exit_code"><![CDATA[
-        iscc-sum '$input_file' | cut -d ' ' -f 1 > '${output_file}'
+        iscc-sum '$input_file' | cut -d':' -f2 | cut -d' ' -f1 > '${output_file}'
     ]]></command>
     
     <inputs>
