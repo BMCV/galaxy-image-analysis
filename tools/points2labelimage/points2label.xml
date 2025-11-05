@@ -38,7 +38,7 @@
         <param name="input" type="data" format="tabular,geojson" label="Shapes to be rasterized"/>
         <param name="shapex" type="integer" value="500" min="1" label="Width of the output image" />
         <param name="shapey" type="integer" value="500" min="1" label="Height of the output image" />
-        <param name="has_header" type="boolean" checked="true" truevalue="--has_header True" falsevalue="" optional="true" label="Tabular list of shapes has header" help="Only used if the input is a tabular file (ignored for GeoJSON). Turning this off will assume that each row corresponds to a single point, and that the X and Y coordinates correspond to the first and second column, respectively." />
+        <param name="has_header" type="boolean" checked="true" truevalue="--has_header True" falsevalue="" optional="true" label="Tabular list of shapes has header" help="Only used if the input is a tabular file (ignored for GeoJSON). Turning this off will interpret the tabular file as a list of points, where the X and Y coordinates correspond to the first and second column, respectively." />
         <param name="swap_xy" type="boolean" checked="false" falsevalue="" truevalue="--swap_xy True" optional="true" label="Swap X and Y coordinates" help="Swap the X and Y coordinates before rasterization. The width and height of the output image is not affected." />
         <param name="binary" type="boolean" checked="false" truevalue="--binary True" falsevalue="" optional="true" label="Produce binary image" help="Use the same label for all shapes (65535)." />
     </inputs>
