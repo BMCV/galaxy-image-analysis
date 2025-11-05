@@ -2,14 +2,13 @@
     <description>Generate content code and similarity hash from any file</description>
     
     <requirements>
-        <requirement type="package" version="0.7.3">iscc-sum</requirement>
+        <requirement type="package" version="0.1.0">iscc-sum</requirement>
     </requirements>
     
     <version_command>iscc-sum --version</version_command>
     
     <command detect_errors="exit_code"><![CDATA[
-        ln -s '${input_file}' ./input.${input_file.ext} &&
-        iscc-sum ./input.${input_file.ext} > '${output_file}'
+        iscc-sum '$input_file' | cut -d ' ' -f 1 > '${output_file}'
     ]]></command>
     
     <inputs>
