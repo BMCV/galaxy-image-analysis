@@ -64,6 +64,28 @@ class AutoLabel:
             self.next_autolabel += 1
 
 
+def get_feature_label(feature: Dict) -> Optional[int]:
+    """
+    Get the label of a GeoJSON feature, or `None` if there is no proper label.
+    """
+    label = feature.get('properties', {}).get('name', None)
+    if label is None:
+        return None
+
+    # If the `label` is given as a string, try to parse as integer
+    if isinstance(label, str):
+        try:
+            label = int(label)
+        except ValueError:
+            pass
+
+    # Finally, if `label` is an integer, only use it if it is non-negative
+    if isinstance(label, int) and label >= 0:
+        return label
+    else:
+        return None
+
+
 def rasterize(
     geojson: Dict,
     shape: Tuple[int, int],
@@ -78,7 +100,7 @@ def rasterize(
     reserved_labels = [bg_value]
     if fg_value is None:
         for feature in geojson['features']:
-            label = feature.get('properties', {}).get('name', None)
+            label = get_feature_label(feature)
             if label is not None:
                 reserved_labels.append(label)
 
@@ -131,8 +153,8 @@ def rasterize(
 
         # Determine the `label` for the current `mask`
         if fg_value is None:
-            label = feature.get('properties', {}).get('name', None)
-            if label is None or not isinstance(label, int) or label < 0:
+            label = get_feature_label(feature)
+            if label is None:
                 label = autolabel.next()
         else:
             label = fg_value

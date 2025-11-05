@@ -5,7 +5,7 @@
             "type": "Feature",
             "id": "a5d9de43-1a4a-4194-b06d-a6c6d0f81f91",
             "geometry": {
-                "type": "Point",
+                "type": "MultiLineString",
                 "coordinates": [
                     [
                         [
