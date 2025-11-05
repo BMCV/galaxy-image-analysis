@@ -21,7 +21,7 @@
     </outputs>
     
     <tests>
-        <test>
+        <test expect_num_outputs="1">
             <param name="input_file" value="test1.png"/>
             <output name="output_file">
                 <assert_contents>
