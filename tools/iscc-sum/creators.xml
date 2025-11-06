@@ -1,0 +1,21 @@
+<macros>
+
+    <xml name="creators/iscc">
+        <organization name="ISCC Foundation" url="https://iscc.foundation"/>
+        <yield />
+    </xml>
+    <xml name="creators/lco">
+        <organization name="Leiden Cell Observatory, Leiden University" url="https://www.universiteitleiden.nl/en/research/research-facilities/science/cell-observatory"/>
+        <yield />
+    </xml>
+    <xml name="creators/maartenpaul">
+        <person givenName="Maarten" familyName="Paul"/>
+        <yield/>
+    </xml>
+    <xml name="creators/etzm">
+        <person givenName="Martin" familyName="Etzrodt"/>
+        <yield/>
+    </xml>
+ 
+
+</macros>

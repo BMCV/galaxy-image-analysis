@@ -1,0 +1,82 @@
+<tool id="iscc_sum" name="Generate ISCC hash" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="24.1">
+    <description>with ISCC-SUM</description>
+
+    <macros>
+        <import>macros.xml</import>
+        <import>creators.xml</import>
+    </macros>
+    <expand macro="requirements" />
+    <expand macro="version_command" />
+    <creator>
+        <expand macro="creators/iscc" />
+        <expand macro="creators/lco" />
+        <expand macro="creators/maartenpaul" />
+        <expand macro="creators/etzm" />
+    </creator>
+        
+    <command detect_errors="exit_code"><![CDATA[
+        iscc-sum '$input_file' | cut -d':' -f2 | cut -d' ' -f1 > '${output_file}'
+    ]]></command>
+    
+    <inputs>
+        <param name="input_file" type="data" format="data" label="Input File" 
+               help="Any file type - ISCC-SUM will generate a checksum and similarity hash"/>
+    </inputs>
+    
+    <outputs>
+        <data name="output_file" format="txt" label="${tool.name} on ${on_string}"/>
+    </outputs>
+    
+    <tests>
+        <test expect_num_outputs="1">
+            <param name="input_file" value="test1.png"/>
+            <output name="output_file">
+                <assert_contents>
+                    <has_line line="K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY" />
+                </assert_contents>
+            </output>
+        </test>
+        <test expect_num_outputs="1">
+            <param name="input_file" value="test2.tiff"/>
+            <output name="output_file">
+                <assert_contents>
+                    <has_line line="K4AGSPOSB5SS2X427WZ27QASTSBVTS55DXLMFDF7WOJKEOSTDEI3OXQ" />
+                </assert_contents>
+            </output>
+        </test>
+        <test expect_num_outputs="1">
+            <param name="input_file" value="test3.fasta"/>
+            <output name="output_file">
+                <assert_contents>
+                    <has_line line="K4AKF7PTZ7JTAAYZ7YZHZPR5RETKYXXE7RTBTJA4JX5GQQMSLZRC6QQ" />
+                </assert_contents>
+            </output>
+        </test>
+    </tests>
+    
+    <help><![CDATA[
+**What it does**
+
+Generates an International Standard Content Code (ISCC) based checksum and similarity hash from any input file.
+
+The ISCC-SUM is a content-derived identifier that:    
+- Creates a unique checksum based on file content    
+- Generates a similarity hash for content comparison    
+- Works with any file format    
+
+**Input**
+
+Any file format is accepted as input.
+
+**Output**
+
+A text file containing the ISCC-SUM code for the input file.
+
+**More Information**
+
+For more details about ISCC, visit: https://iscc.codes/
+    ]]></help>
+
+    <expand macro="citations" />
+    
+</tool>
