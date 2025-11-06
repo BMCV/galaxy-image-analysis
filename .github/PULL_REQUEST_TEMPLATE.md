@@ -3,17 +3,17 @@
 
 ### Check-list for the contributor
 
-**Please fill out if applicable:**
-
 Please make sure you have read the [CONTRIBUTING.md](https://github.com/BMCV/galaxy-image-analysis/blob/master/CONTRIBUTING.md) document (last updated: 2024/04/23).
+
+**Please fill out if applicable:**
 
 * [ ] License permits unrestricted use (educational + commercial).
 
-If this PR adds or updates a tool or tool collection:
+**If this PR adds or updates a tool or tool collection:**
 
 * [ ] This PR adds a new tool or tool collection.
 * [ ] This PR updates an existing tool or tool collection.
-* [ ] Tools added/updated by this PR comply with the guidelines below (or explain why they do not).
+* [ ] Tools added/updated by this PR comply with the Guidelines below (or explain why they do not).
 
 ### Guidelines for the contributor
 
