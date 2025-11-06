@@ -1,4 +1,4 @@
-<tool id="iscc_sum_verify" name="Verify ISCC checksum" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="24.1">
+<tool id="iscc_sum_verify" name="Verify ISCC hash" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="24.1">
     <description>with ISCC-SUM</description>
     <macros>
         <import>macros.xml</import>
@@ -72,9 +72,9 @@
         </test>
         <!-- Test verification with text input - mismatch -->
         <test expect_num_outputs="1">
+            <param name="input_file" value="test1.png"/>
             <conditional name="expected_code_source">
                 <param name="source_type" value="text"/>
-                <param name="input_file" value="test1.png"/>
                 <param name="expected_code_text" value="K4AGSPOSB5SS2X427WZ27QASTSBVTS55DXLMFDF7WOJKEOSTDEI3OXQ"/>
             </conditional>
             <output name="output_file">
