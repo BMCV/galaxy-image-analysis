@@ -124,6 +124,9 @@
             <param name="has_header" value="true" />
             <param name="swap_xy" value="false" />
             <param name="binary" value="false" />
+            <assert_stderr>
+                <has_text text="Ambiguous shape type (circle or rectangle)" />
+            </assert_stderr>
         </test>
         <!-- Labeled / GeoJSON / mixed name and no-name -->
         <test>
@@ -162,6 +165,9 @@
             <param name="has_header" value="false" />
             <param name="swap_xy" value="false" />
             <param name="binary" value="false" />
+            <assert_stderr>
+                <has_text text='Unsupported geometry type: "LineString"' />
+            </assert_stderr>
         </test>
     </tests>
     <help>

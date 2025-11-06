@@ -211,7 +211,7 @@ def convert_tabular_to_geojson(
         pos_y_list, pos_x_list, radius_list, width_list, height_list, label_list,
     ):
         if radius > 0 and width > 0 and height > 0:
-            raise ValueError('Ambiguous primitive (circle or rectangle)')
+            raise ValueError('Ambiguous shape type (circle or rectangle)')
 
         # Create a rectangle
         if width > 0 and height > 0:
