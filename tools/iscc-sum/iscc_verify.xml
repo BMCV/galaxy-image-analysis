@@ -15,7 +15,13 @@
         
     <command detect_errors="exit_code"><![CDATA[
         GENERATED=\$(iscc-sum '$input_file' | cut -d':' -f2 | cut -d' ' -f1) &&
-        EXPECTED='$expected_code' &&
+        #if $expected_code_source.source_type == "text":
+            EXPECTED='$expected_code_source.expected_code_text'
+        #else:
+            ## Read file and remove all whitespace including newlines
+            EXPECTED=\$(cat '$expected_code_source.expected_code_file' | head -n 1 | tr -d '[:space:]')
+        #end if
+        &&
         echo "File: $input_file.element_identifier" > '${output_file}' &&
         echo "Expected: \$EXPECTED" >> '${output_file}' &&
         echo "Generated: \$GENERATED" >> '${output_file}' &&
@@ -28,10 +34,22 @@
     
     <inputs>
         <param name="input_file" type="data" format="data" label="File to verify"/>
-        <param name="expected_code" type="text" label="Expected ISCC code" 
-               help="The 55-character ISCC-SUM code to verify against">
-            <validator type="length" min="55" max="55" message="ISCC code must be exactly 55 characters"/>
-        </param>
+        <conditional name="expected_code_source">
+            <param name="source_type" type="select" label="Source of expected ISCC code">
+                <option value="text">Enter manually</option>
+                <option value="file">From file (workflow input)</option>
+            </param>
+            <when value="text">
+                <param name="expected_code_text" type="text" label="Expected ISCC code" 
+                       help="The 55-character ISCC-SUM code to verify against">
+                    <validator type="length" min="55" max="55" message="ISCC code must be exactly 55 characters"/>
+                </param>
+            </when>
+            <when value="file">
+                <param name="expected_code_file" type="data" format="txt" label="File containing expected ISCC code"
+                       help="Text file containing the ISCC code from a previous step"/>
+            </when>
+        </conditional>
     </inputs>
     
     <outputs>
@@ -39,23 +57,42 @@
     </outputs>
     
     <tests>
-        <!-- Test verification - match -->
+        <!-- Test verification with text input - match -->
         <test expect_num_outputs="1">
             <param name="input_file" value="test1.png"/>
-            <param name="expected_code" value="K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY"/>
+            <conditional name="expected_code_source">
+                <param name="source_type" value="text"/>
+                <param name="expected_code_text" value="K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY"/>
+            </conditional>
             <output name="output_file">
                 <assert_contents>
                     <has_text text="Status: OK"/>
                 </assert_contents>
             </output>
         </test>
-        <!-- Test verification - mismatch -->
+        <!-- Test verification with text input - mismatch -->
         <test expect_num_outputs="1">
-            <param name="input_file" value="test1.png"/>
-            <param name="expected_code" value="K4AGSPOSB5SS2X427WZ27QASTSBVTS55DXLMFDF7WOJKEOSTDEI3OXQ"/>
+            <conditional name="expected_code_source">
+                <param name="source_type" value="text"/>
+                <param name="input_file" value="test1.png"/>
+                <param name="expected_code_text" value="K4AGSPOSB5SS2X427WZ27QASTSBVTS55DXLMFDF7WOJKEOSTDEI3OXQ"/>
+            </conditional>
             <output name="output_file">
                 <assert_contents>
                     <has_text text="Status: FAILED"/>
+                </assert_contents>
+            </output>
+        </test>
+        <!-- Test verification with file input -->
+        <test expect_num_outputs="1">
+            <param name="input_file" value="test1.png"/>
+            <conditional name="expected_code_source">
+                <param name="source_type" value="file"/>
+                <param name="expected_code_file" value="test1_iscc.txt"/>
+            </conditional>
+            <output name="output_file">
+                <assert_contents>
+                    <has_text text="Status: OK"/>
                 </assert_contents>
             </output>
         </test>
@@ -74,11 +111,14 @@ the provided expected code. It reports whether the codes match (OK) or don't mat
 - Verify file integrity after transfer or storage
 - Confirm you have the correct version of a file
 - Validate that a file hasn't been modified
+- Workflow verification: Generate ISCC code in one step, verify in another
 
 **Input**
 
 - A file to verify
-- The expected ISCC-SUM code (55-character string)
+- The expected ISCC-SUM code, either:
+  - Entered manually as text (55-character string)
+  - From a file output from a previous workflow step
 
 **Output**
 
@@ -89,7 +129,15 @@ A verification report showing:
 - Generated ISCC code from the file
 - Status: OK (codes match) or FAILED (codes don't match)
 
-The tool will exit with code 0 if verification succeeds, or code 1 if it fails.
+**Workflow Usage**
+
+In a workflow, you can:
+
+1. Use "Generate ISCC hash" tool to create an ISCC code for a reference file
+2. Connect that output to this tool's "expected code file" input
+3. Provide a test file to verify
+
+This allows automated verification within Galaxy workflows.
 
 **More Information**
 
