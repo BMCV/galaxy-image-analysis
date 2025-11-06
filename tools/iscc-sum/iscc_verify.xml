@@ -1,0 +1,99 @@
+<tool id="iscc_sum_verify" name="Verify ISCC checksum" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="24.1">
+    <description>with ISCC-SUM</description>
+    <macros>
+        <import>macros.xml</import>
+        <import>creators.xml</import>
+    </macros>
+    <expand macro="requirements" />
+    <expand macro="version_command" />
+    <creator>
+        <expand macro="creators/iscc" />
+        <expand macro="creators/lco" />
+        <expand macro="creators/maartenpaul" />
+        <expand macro="creators/etzm" />
+    </creator>
+        
+    <command detect_errors="exit_code"><![CDATA[
+        GENERATED=\$(iscc-sum '$input_file' | cut -d':' -f2 | cut -d' ' -f1) &&
+        EXPECTED='$expected_code' &&
+        echo "File: $input_file.element_identifier" > '${output_file}' &&
+        echo "Expected: \$EXPECTED" >> '${output_file}' &&
+        echo "Generated: \$GENERATED" >> '${output_file}' &&
+        if [ "\$GENERATED" = "\$EXPECTED" ]; then
+            echo "Status: OK" >> '${output_file}';
+        else
+            echo "Status: FAILED" >> '${output_file}';
+        fi
+    ]]></command>
+    
+    <inputs>
+        <param name="input_file" type="data" format="data" label="File to verify"/>
+        <param name="expected_code" type="text" label="Expected ISCC code" 
+               help="The 55-character ISCC-SUM code to verify against">
+            <validator type="length" min="55" max="55" message="ISCC code must be exactly 55 characters"/>
+        </param>
+    </inputs>
+    
+    <outputs>
+        <data name="output_file" format="txt" label="${tool.name} on ${on_string}"/>
+    </outputs>
+    
+    <tests>
+        <!-- Test verification - match -->
+        <test expect_num_outputs="1">
+            <param name="input_file" value="test1.png"/>
+            <param name="expected_code" value="K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY"/>
+            <output name="output_file">
+                <assert_contents>
+                    <has_text text="Status: OK"/>
+                </assert_contents>
+            </output>
+        </test>
+        <!-- Test verification - mismatch -->
+        <test expect_num_outputs="1">
+            <param name="input_file" value="test1.png"/>
+            <param name="expected_code" value="K4AGSPOSB5SS2X427WZ27QASTSBVTS55DXLMFDF7WOJKEOSTDEI3OXQ"/>
+            <output name="output_file">
+                <assert_contents>
+                    <has_text text="Status: FAILED"/>
+                </assert_contents>
+            </output>
+        </test>
+    </tests>
+    
+    <help><![CDATA[
+**What it does**
+
+Verifies that a file matches an expected ISCC code for checksum verification.
+
+This tool generates an ISCC code for the input file and compares it against 
+the provided expected code. It reports whether the codes match (OK) or don't match (FAILED).
+
+**Use Cases**
+
+- Verify file integrity after transfer or storage
+- Confirm you have the correct version of a file
+- Validate that a file hasn't been modified
+
+**Input**
+
+- A file to verify
+- The expected ISCC-SUM code (55-character string)
+
+**Output**
+
+A verification report showing:
+
+- The filename
+- Expected ISCC code
+- Generated ISCC code from the file
+- Status: OK (codes match) or FAILED (codes don't match)
+
+The tool will exit with code 0 if verification succeeds, or code 1 if it fails.
+
+**More Information**
+
+For more details about ISCC, visit: https://iscc.codes/
+    ]]></help>
+    <expand macro="citations" />
+</tool>

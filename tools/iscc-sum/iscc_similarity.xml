@@ -1,0 +1,131 @@
+<tool id="iscc_sum_compare" name="Compare ISCC similarity" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="24.1">
+    <description>with ISCC-SUM</description>
+    <macros>
+        <import>macros.xml</import>
+        <import>creators.xml</import>
+    </macros>
+    <expand macro="requirements" />
+    <expand macro="version_command" />
+    <creator>
+        <expand macro="creators/iscc" />
+        <expand macro="creators/lco" />
+        <expand macro="creators/maartenpaul" />
+        <expand macro="creators/etzm" />
+    </creator>
+        
+    <command detect_errors="exit_code"><![CDATA[
+        #if $input_type.input_selector == "two_files":
+            ## Pairwise comparison
+            iscc-sum --similar --threshold $threshold '$input_type.file1' '$input_type.file2' > '${output_file}'
+        #else:
+            ## Collection comparison
+            mkdir -p input_files &&
+            #for $file in $input_type.file_collection:
+                ln -s '$file' 'input_files/$file.element_identifier' &&
+            #end for
+            iscc-sum --similar --threshold $threshold input_files/* > '${output_file}'
+        #end if
+    ]]></command>
+    
+    <inputs>
+        <conditional name="input_type">
+            <param name="input_selector" type="select" label="Input type">
+                <option value="two_files">Compare two files</option>
+                <option value="collection">Find similar files in collection</option>
+            </param>
+            <when value="two_files">
+                <param name="file1" type="data" format="data" label="First file"/>
+                <param name="file2" type="data" format="data" label="Second file"/>
+            </when>
+            <when value="collection">
+                <param name="file_collection" type="data_collection" collection_type="list" 
+                       format="data" label="File collection to compare"/>
+            </when>
+        </conditional>
+        <param name="threshold" type="integer" value="12" min="0" max="256" 
+               label="Similarity threshold (Hamming distance)"
+               help="Maximum Hamming distance for similarity matching. 0-5: Nearly identical, 6-12: Likely similar (default), 13-20: Probably somewhat similar"/>
+    </inputs>
+    
+    <outputs>
+        <data name="output_file" format="txt" label="${tool.name} on ${on_string}"/>
+    </outputs>
+    
+    <tests>
+        <!-- Test pairwise comparison -->
+        <test expect_num_outputs="1">
+            <conditional name="input_type">
+                <param name="input_selector" value="two_files"/>
+                <param name="file1" value="test1.png"/>
+                <param name="file2" value="test1.png"/>
+            </conditional>
+            <param name="threshold" value="12"/>
+            <output name="output_file">
+                <assert_contents>
+                    <has_text text="~00"/>
+                </assert_contents>
+            </output>
+        </test>
+        <!-- Test collection comparison -->
+        <test expect_num_outputs="1">
+            <conditional name="input_type">
+                <param name="input_selector" value="collection"/>
+                <param name="file_collection">
+                    <collection type="list">
+                        <element name="file1" value="test1.png"/>
+                        <element name="file2" value="test2.tiff"/>
+                        <element name="file3" value="test2.tiff"/>
+                    </collection>
+                </param>
+            </conditional>
+            <param name="threshold" value="12"/>
+            <output name="output_file">
+                <assert_contents>
+                    <has_text text="test"/>
+                </assert_contents>
+            </output>
+        </test>
+    </tests>
+    
+    <help><![CDATA[
+**What it does**
+
+Compares files by their ISCC codes to detect content similarity.
+
+This tool can operate in two modes:
+
+1. **Pairwise comparison**: Compare two specific files to determine their similarity
+2. **Collection comparison**: Find all similar files within a collection
+
+**Similarity Measurement**
+
+Similarity is measured using Hamming distance on the Data-Code component of ISCC codes. 
+Lower numbers indicate higher similarity:
+
+- **0-5**: Nearly identical files
+- **6-12**: Likely similar content (default threshold)
+- **13-20**: Probably somewhat similar
+
+**Input**
+
+Either:
+- Two individual files for pairwise comparison
+- A dataset collection containing multiple files
+
+**Output**
+
+A text report showing similarity relationships. Files are grouped by similarity, with 
+reference files listed first and similar files indented below with their Hamming distance (~N).
+
+Example output::
+
+    document_v1.txt
+      ~08 document_v2.txt
+      ~12 document_draft.txt
+
+**More Information**
+
+For more details about ISCC, visit: https://iscc.codes/
+    ]]></help>
+    <expand macro="citations" />
+</tool>
