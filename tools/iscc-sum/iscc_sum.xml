@@ -10,6 +10,8 @@
     <creator>
         <expand macro="creators/iscc" />
         <expand macro="creators/lco" />
+        <expand macro="creators/maartenpaul" />
+        <expand macro="creators/etzm" />
     </creator>
         
     <command detect_errors="exit_code"><![CDATA[
