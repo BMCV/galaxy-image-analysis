@@ -3,6 +3,18 @@
     "features": [
         {
             "type": "Feature",
+            "id": "9ef0487b-29a5-4e53-8eca-5c9dbf7bfc81",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [100, 50]
+            },
+            "properties": {
+                "objectType": "annotation",
+                "radius": 100
+            }
+        },
+        {
+            "type": "Feature",
             "id": "9ef0487b-29a5-4e53-8eca-5c9dbf7bfc80",
             "geometry": {
                 "type": "Polygon",
@@ -17,11 +29,11 @@
                             149
                         ],
                         [
-                            183,
+                            163,
                             275
                         ],
                         [
-                            124,
+                            104,
                             275
                         ],
                         [
@@ -78,26 +90,16 @@
                 "type": "Polygon",
                 "coordinates": [
                     [
-                        [
-                            151,
-                            95
-                        ],
-                        [
-                            260,
-                            95
-                        ],
-                        [
-                            260,
-                            162
-                        ],
-                        [
-                            151,
-                            162
-                        ],
-                        [
-                            151,
-                            95
-                        ]
+                        [151, 95],
+                        [260, 95],
+                        [260, 162],
+                        [151, 162]
+                    ],
+                    [
+                        [156, 100],
+                        [255, 100],
+                        [255, 157],
+                        [156, 157]
                     ]
                 ]
             },
