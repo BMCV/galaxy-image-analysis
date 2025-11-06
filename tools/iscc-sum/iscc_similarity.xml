@@ -1,4 +1,4 @@
-<tool id="iscc_sum_compare" name="Compare ISCC similarity" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="24.1">
+<tool id="iscc_sum_compare" name="Compare ISCC hash similarity" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="24.1">
     <description>with ISCC-SUM</description>
     <macros>
         <import>macros.xml</import>
@@ -81,7 +81,7 @@
             <param name="threshold" value="12"/>
             <output name="output_file">
                 <assert_contents>
-                    <has_text text="test"/>
+                    <has_text text="~00"/>
                 </assert_contents>
             </output>
         </test>
