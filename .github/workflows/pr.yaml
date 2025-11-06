@@ -124,9 +124,9 @@ jobs:
     - name: Check for "[skip-version-check]" in commit message
       if: ${{ github.event_name == 'pull_request' }}
       run: |
-        echo "Commit Message: ${{ steps.commit.outputs.commit_message }}"
+        echo 'Commit Message: ${{ steps.commit.outputs.commit_message }}'
         shopt -s nocasematch
-        if [[ "${{ steps.commit.outputs.commit_message }}" == *"[skip-version-check]"* ]]; then
+        if [[ '${{ steps.commit.outputs.commit_message }}' == *"[skip-version-check]"* ]]; then
           echo "SKIP_VERSION_CHECK=true" >> $GITHUB_ENV
         fi
     - name: Set job outputs
