@@ -1,4 +1,4 @@
-categories:
+categories: 
   - Imaging
 description: Automatic thresholding
 long_description: Applying a standard thresholding method to an image.
