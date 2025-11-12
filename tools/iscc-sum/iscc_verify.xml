@@ -35,19 +35,19 @@
     <inputs>
         <param name="input_file" type="data" format="data" label="File to verify"/>
         <conditional name="expected_code_source">
-            <param name="source_type" type="select" label="Source of expected ISCC code">
+            <param name="source_type" type="select" label="Source of expected ISCC hash">
                 <option value="text">Enter manually</option>
                 <option value="file">From file (workflow input)</option>
             </param>
             <when value="text">
-                <param name="expected_code_text" type="text" label="Expected ISCC code" 
-                       help="The 55-character ISCC-SUM code to verify against">
-                    <validator type="length" min="55" max="55" message="ISCC code must be exactly 55 characters"/>
+                <param name="expected_code_text" type="text" label="Expected ISCC" 
+                       help="The 55-character ISCC-SUM hash to verify against">
+                    <validator type="length" min="55" max="55" message="ISCC must be exactly 55 characters"/>
                 </param>
             </when>
             <when value="file">
-                <param name="expected_code_file" type="data" format="txt" label="File containing expected ISCC code"
-                       help="Text file containing the ISCC code from a previous step"/>
+                <param name="expected_code_file" type="data" format="txt" label="File containing expected ISCC"
+                       help="Text file containing the ISCC from a previous step"/>
             </when>
         </conditional>
     </inputs>
@@ -101,9 +101,9 @@
     <help><![CDATA[
 **What it does**
 
-Verifies that a file matches an expected ISCC code for checksum verification.
+Verifies that a file matches an expected ISCC hash for checksum verification.
 
-This tool generates an ISCC code for the input file and compares it against 
+This tool generates an ISCC for the input file and compares it against 
 the provided expected code. It reports whether the codes match (OK) or don't match (FAILED).
 
 **Use Cases**
@@ -111,7 +111,7 @@ the provided expected code. It reports whether the codes match (OK) or don't mat
 - Verify file integrity after transfer or storage
 - Confirm you have the correct version of a file
 - Validate that a file hasn't been modified
-- Workflow verification: Generate ISCC code in one step, verify in another
+- Workflow verification: Generate ISCC in one step, verify in another
 
 **Input**
 
@@ -125,16 +125,16 @@ the provided expected code. It reports whether the codes match (OK) or don't mat
 A verification report showing:
 
 - The filename
-- Expected ISCC code
-- Generated ISCC code from the file
-- Status: OK (codes match) or FAILED (codes don't match)
+- Expected ISCC hash
+- Generated ISCC from the file
+- Status: OK (hashes match) or FAILED (hashes don't match)
 
 **Workflow Usage**
 
 In a workflow, you can:
 
-1. Use "Generate ISCC hash" tool to create an ISCC code for a reference file
-2. Connect that output to this tool's "expected code file" input
+1. Use "Generate ISCC hash" tool to create an ISCC hash for a reference file
+2. Connect that output to this tool's "expected hash file" input
 3. Provide a test file to verify
 
 This allows automated verification within Galaxy workflows.
