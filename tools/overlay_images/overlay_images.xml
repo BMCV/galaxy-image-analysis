@@ -145,6 +145,66 @@
             <param name="color" value="#ff0000"/>
             <expand macro="tests/intensity_image_diff" name="out_png" value="test5.png" ftype="png"/>
         </test>
+        <test expect_num_outputs="1"><!-- segmentation overlay, floating point conversion test 0/1 -->
+            <param name="im1" value="sample2.tiff"/>
+            <param name="im2" value="mask3.tiff"/>
+            <param name="method" value="seg_contour"/>
+            <param name="thickness" value="1"/>
+            <param name="color" value="#ff0000"/>
+            <section name="fp_conversion">
+                <param name="lower" value="0"/>
+                <param name="upper" value="1"/>
+            </section>
+            <expand macro="tests/intensity_image_diff" name="out_png" value="test6.png" ftype="png"/>
+        </test>
+        <test expect_num_outputs="1"><!-- segmentation overlay, floating point conversion test -1/1 -->
+            <param name="im1" value="sample2.tiff"/>
+            <param name="im2" value="mask3.tiff"/>
+            <param name="method" value="seg_contour"/>
+            <param name="thickness" value="1"/>
+            <param name="color" value="#ff0000"/>
+            <section name="fp_conversion">
+                <param name="lower" value="-1"/>
+                <param name="upper" value="1"/>
+            </section>
+            <expand macro="tests/intensity_image_diff" name="out_png" value="test7.png" ftype="png"/>
+        </test>
+        <test expect_num_outputs="1"><!-- segmentation overlay, floating point conversion test min/1 -->
+            <param name="im1" value="sample2.tiff"/>
+            <param name="im2" value="mask3.tiff"/>
+            <param name="method" value="seg_contour"/>
+            <param name="thickness" value="1"/>
+            <param name="color" value="#ff0000"/>
+            <section name="fp_conversion">
+                <param name="lower" value="min"/>
+                <param name="upper" value="1"/>
+            </section>
+            <expand macro="tests/intensity_image_diff" name="out_png" value="test8.png" ftype="png"/>
+        </test>
+        <test expect_num_outputs="1"><!-- segmentation overlay, floating point conversion test 0/max -->
+            <param name="im1" value="sample2.tiff"/>
+            <param name="im2" value="mask3.tiff"/>
+            <param name="method" value="seg_contour"/>
+            <param name="thickness" value="1"/>
+            <param name="color" value="#ff0000"/>
+            <section name="fp_conversion">
+                <param name="lower" value="0"/>
+                <param name="upper" value="max"/>
+            </section>
+            <expand macro="tests/intensity_image_diff" name="out_png" value="test9.png" ftype="png"/>
+        </test>
+        <test expect_num_outputs="1"><!-- segmentation overlay, floating point conversion test min/max -->
+            <param name="im1" value="sample2.tiff"/>
+            <param name="im2" value="mask3.tiff"/>
+            <param name="method" value="seg_contour"/>
+            <param name="thickness" value="1"/>
+            <param name="color" value="#ff0000"/>
+            <section name="fp_conversion">
+                <param name="lower" value="min"/>
+                <param name="upper" value="max"/>
+            </section>
+            <expand macro="tests/intensity_image_diff" name="out_png" value="test10.png" ftype="png"/>
+        </test>
     </tests>
     <help><![CDATA[
 
