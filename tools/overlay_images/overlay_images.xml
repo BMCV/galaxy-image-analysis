@@ -69,13 +69,13 @@
             <when value="seg_contour">
                 <param name="im1" type="data" format="tiff,png" label="Intensity image" />
 
-                <section name="fp_conversion" title="Floating point conversion" expanded="false" help="Overlay images are created as PNG files, that does not support floating point values (but only integer values between 0 and 255). Conversion of floating point to integer values via linear mapping is generally ambiguous and can be adapted here.">
-                    <param name="lower" type="select" label="Lower bound conversion" help="Choose which value will be mapped to 0 (i.e. black if grayscale).">
+                <section name="fp_conversion" title="Intensity image floating point conversion" expanded="false" help="This is only used if the values of the intensity image have a floating point format. Overlay images are created as PNG files, that do not support floating point values (but only integer values between 0 and 255). Conversion of floating point intensity values to integer values via linear mapping is generally ambiguous and can be adapted here.">
+                    <param name="lower" type="select" label="Lower bound conversion" help="Choose which floating point intensity value will be mapped to 0 (i.e. black if grayscale).">
                         <option value="0" selected="True">0</option>
                         <option value="-1">-1</option>
                         <option value="min">Minimum value of the image</option>
                     </param>
-                    <param name="upper" type="select" label="Upper bound conversion" help="Choose which value will be mapped to 255 (i.e. white if grayscale).">
+                    <param name="upper" type="select" label="Upper bound conversion" help="Choose which floating point intensity value will be mapped to 255 (i.e. white if grayscale).">
                         <option value="1" selected="True">1</option>
                         <option value="max">Maximum value of the image</option>
                     </param>
