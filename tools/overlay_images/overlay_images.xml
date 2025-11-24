@@ -1,13 +1,13 @@
-<tool id="ip_overlay_images" name="Overlay images" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
+<tool id="ip_overlay_images" name="Overlay images" version="@TOOL_VERSION@" profile="20.05">
     <description></description>
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
-        <token name="@TOOL_VERSION@">0.0.4</token>
-        <token name="@VERSION_SUFFIX@">4</token>
+        <token name="@TOOL_VERSION@">0.0.5</token>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
+        <expand macro="creators/kostrykin"/>
         <expand macro="creators/thawn"/>
     </creator>
     <edam_operations>
@@ -37,6 +37,8 @@
         #if $method_option.method == "blending"
             --alpha $method_option.alpha
         #elif $method_option.method == "seg_contour"
+            --fp_lower '${fp_conversion.lower}'
+            --fp_upper '${fp_conversion.upper}'
             --thickness $method_option.thickness
             --color '$method_option.color'
             $method_option.show_label
@@ -46,28 +48,46 @@
     </command>
     <inputs>
         <conditional name="method_option">
+
             <param name="method" type="select" label="Type of the overlay">
                 <option value="coloc_vis" selected="True">Colocalization</option>
                 <option value="blending">Linear blending</option>
                 <option value="seg_contour">Segmentation contours over image</option>
             </param>
+
             <when value="coloc_vis">
                 <param name="im1" type="data" format="tiff,png" label="Image 1 (red channel)" />
                 <param name="im2" type="data" format="tiff,png" label="Image 2 (green channel)" />
             </when>
+
             <when value="blending">
                 <param name="im1" type="data" format="tiff,png" label="Image 1" />
                 <param name="im2" type="data" format="tiff,png" label="Image 2" />
                 <param name="alpha" type="float" value="0.5" min="0.0" max="1.0" label="The weight for blending: result = (1 - weight) * image1 + weight * image2." />
             </when>
+
             <when value="seg_contour">
                 <param name="im1" type="data" format="tiff,png" label="Intensity image" />
+
+                <section name="fp_conversion" title="Floating point conversion" expanded="false" help="Overlay images are created as PNG files, that does not support floating point values (but only integer values between 0 and 255). Conversion of floating point to integer values via linear mapping is generally ambiguous and can be adapted here.">
+                    <param name="lower" type="select" label="Lower bound conversion" help="Choose which value will be mapped to 0 (i.e. black if grayscale).">
+                        <option value="0" selected="True">0</option>
+                        <option value="-1">-1</option>
+                        <option value="min">Minimum value of the image</option>
+                    </param>
+                    <param name="upper" type="select" label="Upper bound conversion" help="Choose which value will be mapped to 255 (i.e. white if grayscale).">
+                        <option value="1" selected="True">1</option>
+                        <option value="max">Maximum value of the image</option>
+                    </param>
+                </section>
+
                 <param name="im2" type="data" format="tiff,png" label="Label map" />
                 <param name="thickness" type="integer" value="2" min="1" label="Contour thickness (in pixels)" />
                 <param name="color" type="color" value="#ff0000" label="Contour color"/>
                 <param argument="--show_label" type="boolean" checked='false' truevalue="--show_label" falsevalue="" label="Show labels" />
                 <param name="label_color" type="color" value="#ffff00" label="Label color"/>
             </when>
+
         </conditional>
     </inputs>
     <outputs>

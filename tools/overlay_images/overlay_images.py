@@ -30,15 +30,38 @@ def read_im_gray(fn):
         return img
 
 
-def get_rgb8_copy(img):
+def get_rgb8_copy(img, fp_lower, fp_upper):
     img = np.squeeze(img)
     assert img.ndim == 2 or (img.ndim == 3 and img.shape[-1] in (3, 4))
+    assert fp_lower == 'min' or abs(float(fp_lower)) < np.inf  # 'min' or number
+    assert fp_upper == 'max' or abs(float(fp_upper)) < np.inf  # 'max' or number
+
+    # Convert from floating point
     if str(img.dtype).startswith('float'):
+        a = img.min() if fp_lower == 'min' else float(fp_lower)
+        b = img.max() if fp_upper == 'max' else float(fp_upper)
+
+        if a == b:
+            raise ValueError(
+                'Floating point conversion is undefined'
+                ' because lower and upper bounds are identical.'
+            )
+
+        # Perform linear mapping to [0, 1]
+        img = img.clip(a, b)
+        img = (img - a) / (b - a)
+
+        # Convert to uint8
         img = np.round(img * 255).astype(np.uint8)
+
+    # Convert from uint16
     elif img.dtype == np.uint16:
         img = (img // 256).astype(np.uint8)
+
+    # Other dtypes than float, uint8, uint16 are not supported
     elif img.dtype != np.uint8:
         raise ValueError(f'unknown dtype: {img.dtype}')
+
     if img.ndim == 2:
         result = np.dstack([img] * 3).copy()
     else:
@@ -72,11 +95,11 @@ def blending(im1_fn, im2_fn, out_fn, alpha=0.5):
         skimage.io.imsave(out_fn, out_im.astype(im1.dtype))  # format of output is the same as input
 
 
-def seg_contour(im1_fn, im2_fn, out_fn, linewidth, color='#ff0000', show_label=False, label_color='#ffff00'):
+def seg_contour(im1_fn, im2_fn, out_fn, fp_lower, fp_upper, linewidth, color='#ff0000', show_label=False, label_color='#ffff00'):
     img = giatools.io.imread(im1_fn)
     labels = giatools.io.imread(im2_fn)
 
-    result = get_rgb8_copy(img)
+    result = get_rgb8_copy(img, fp_lower, fp_upper)
     cp = ContourPaint(labels, linewidth, where='center')
     color_rgb = np.multiply(255, matplotlib.colors.to_rgb(color))
 
@@ -106,6 +129,8 @@ if __name__ == "__main__":
     parser.add_argument("im2", help="The second image")
     parser.add_argument("out", help="Output image")
     parser.add_argument('--method', dest='method', default='coloc_vis', help='How to overlay images')
+    parser.add_argument('--fp_lower', default='0', type=str, help='Lower bound for floating point conversion')
+    parser.add_argument('--fp_upper', default='1', type=str, help='Upper bound for floating point conversion')
     parser.add_argument('--alpha', dest='alpha', default=0.5, type=float, help='Blending weight')
     parser.add_argument('--thickness', dest='thickness', default=2, type=int, help='Contour thickness')
     parser.add_argument('--color', dest='color', default='#FF0000', help='Contour color')
@@ -118,8 +143,14 @@ if __name__ == "__main__":
     elif args.method == 'blending':
         blending(args.im1, args.im2, args.out, alpha=args.alpha)
     elif args.method == 'seg_contour':
-        seg_contour(args.im1, args.im2, args.out,
-                    linewidth=args.thickness,
-                    color=args.color,
-                    show_label=args.show_label,
-                    label_color=args.label_color)
+        seg_contour(
+            args.im1,
+            args.im2,
+            args.out,
+            fp_lower=args.fp_lower,
+            fp_upper=args.fp_upper,
+            linewidth=args.thickness,
+            color=args.color,
+            show_label=args.show_label,
+            label_color=args.label_color,
+        )
