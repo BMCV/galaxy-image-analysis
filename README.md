@@ -96,12 +96,4 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 
 This work has been supported by the BMBF-funded Heidelberg Center for Human Bioinformatics (HD-HuB) within the German Network for Bioinformatics Infrastructure (de.NBI) #031A537C.
 
-
-
-
-
-
-
-
-
-
+<img width="4198" height="371" alt="logos" src="https://github.com/user-attachments/assets/2012dc62-5daf-4c9f-8ae9-61756c68a70c" />
