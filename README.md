@@ -11,7 +11,7 @@
 The goal is to provide all necessary tools to perform image analysis directly within the Galaxy platform.
 
 **Contributions are welcome.** Please see [our contribution instructions](CONTRIBUTING.md) if you would like to contribute.
-Galaxy Image Analysis was initiated and is maintained by the [Biomedical Computer Vision (BMCV) Group](http://www.bioquant.uni-heidelberg.de/research/groups/biomedical_computer_vision.html) at Heidelberg University.
+Galaxy Image Analysis was initiated and is maintained by the [Biomedical Computer Vision (BMCV) Group](https://www.bioquant.uni-heidelberg.de/groups/rohr) at Heidelberg University.
 
 **Community.** Galaxy Image Analysis is used within the [Image Analysis Community in Galaxy](https://galaxyproject.org/community/sig/image-analysis).
 Tutorials are available on the [Galaxy Training Network](https://training.galaxyproject.org/training-material/topics/imaging).
