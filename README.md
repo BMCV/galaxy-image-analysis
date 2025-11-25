@@ -94,6 +94,6 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 
 ## Acknowledgment
 
-This work has been supported by the BMBF-funded Heidelberg Center for Human Bioinformatics (HD-HuB) within the German Network for Bioinformatics Infrastructure (de.NBI) #031A537C.
+This work has been funded by the BMFTR (Federal Ministry of Research, Technology and Space), Heidelberg Center for Human Bioinformatics (HD-HuB) within the German Network for Bioinformatics Infrastructure (de.NBI) & ELIXIR-DE, and LiBiS (Baden-Württemberg Institute for Bioinformatics Infrastructure).
 
-<img width="4198" height="371" alt="logos" src="https://github.com/user-attachments/assets/2012dc62-5daf-4c9f-8ae9-61756c68a70c" />
+<img width="4198" height="371" alt="GIA Logos" src="https://github.com/user-attachments/assets/5724b1d7-d9ae-40c1-9c50-9d129d11d8de" />
