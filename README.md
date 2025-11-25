@@ -5,10 +5,17 @@
 
 # Galaxy Image Analysis
 
-Galaxy Image Analysis is mainly developed by the [Biomedical Computer Vision (BMCV) Group](http://www.bioquant.uni-heidelberg.de/research/groups/biomedical_computer_vision.html) at Heidelberg University. If you would like to contribute, please see [our contribution instructions](CONTRIBUTING.md).
+<img align="right" width="304" height="257" alt="ELIXIR" src="https://github.com/user-attachments/assets/39d493b1-5903-4f2f-8136-b4337dd90c34" />
 
-Galaxy Image Analysis is part of the [Image Community in Galaxy](https://imaging.usegalaxy.eu).
+**ELIXIR Service.** Galaxy Image Analysis is an ELIXIR Service for computer-based image analysis in Galaxy.
+The goal is to provide all necessary tools to perform image analysis directly within the Galaxy platform.
 
+**Contributions are welcome.** Please see [our contribution instructions](CONTRIBUTING.md) if you would like to contribute.
+Galaxy Image Analysis was initiated and is maintained by the [Biomedical Computer Vision (BMCV) Group](https://www.bioquant.uni-heidelberg.de/groups/rohr) at Heidelberg University.
+
+**Community.** Galaxy Image Analysis is used within the [Image Analysis Community in Galaxy](https://galaxyproject.org/community/sig/image-analysis).
+Tutorials are available on the [Galaxy Training Network](https://training.galaxyproject.org/training-material/topics/imaging).
+A hands-on video tutorial is available on [YouTube (Image Segmentation using Galaxy Workflows)](https://www.youtube.com/watch?v=PN9I0PgBbwY).
 If Galaxy Image Analysis helped with the analysis of your data, please do not forget to cite: <https://doi.org/10.1016/j.jbiotec.2017.07.019>
 
 ## List of Tools on Galaxy Europe
@@ -87,8 +94,6 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 
 ## Acknowledgment
 
-This work has been supported by the BMBF-funded Heidelberg Center for Human Bioinformatics (HD-HuB) within the German Network for Bioinformatics Infrastructure (de.NBI) #031A537C.
+This work has been funded by the BMFTR (Federal Ministry of Research, Technology and Space), Heidelberg Center for Human Bioinformatics (HD-HuB) within the German Network for Bioinformatics Infrastructure (de.NBI) & ELIXIR-DE, and LiBiS (Baden-Württemberg Institute for Bioinformatics Infrastructure).
 
-
-
-
+<img width="4198" height="371" alt="GIA Logos" src="https://github.com/user-attachments/assets/5724b1d7-d9ae-40c1-9c50-9d129d11d8de" />
