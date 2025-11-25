@@ -12,7 +12,6 @@ Galaxy Image Analysis is an ELIXIR Service for image analysis in Galaxy. The goa
 Contributions are welcome. Please see [our contribution instructions](CONTRIBUTING.md) if you would like to contribute. Galaxy Image Analysis is mainly developed by the [Biomedical Computer Vision (BMCV) Group](http://www.bioquant.uni-heidelberg.de/research/groups/biomedical_computer_vision.html) at Heidelberg University.
 
 Galaxy Image Analysis is used within the [Image Analysis Community in Galaxy](https://galaxyproject.org/community/sig/image-analysis).
-
 If Galaxy Image Analysis helped with the analysis of your data, please do not forget to cite: <https://doi.org/10.1016/j.jbiotec.2017.07.019>
 
 ## List of Tools on Galaxy Europe
@@ -92,6 +91,7 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 ## Acknowledgment
 
 This work has been supported by the BMBF-funded Heidelberg Center for Human Bioinformatics (HD-HuB) within the German Network for Bioinformatics Infrastructure (de.NBI) #031A537C.
+
 
 
 
