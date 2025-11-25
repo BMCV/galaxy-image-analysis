@@ -433,7 +433,7 @@ jobs:
   deploy-report:
     name: Report deploy status
     needs: [deploy]
-    if: ${{ always() && needs.deploy.result != 'success' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' ) && github.repository_owner == 'BMCV' }}
+    if: ${{ always() && needs.setup.outputs.repository-list != '' && needs.deploy.result != 'success' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') && github.repository_owner == 'BMCV' }}
     runs-on: ubuntu-latest
     steps:
     # report to the PR if deployment failed
