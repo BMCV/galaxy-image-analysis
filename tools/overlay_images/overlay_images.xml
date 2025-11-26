@@ -236,6 +236,23 @@
             </conditional>
             <expand macro="tests/intensity_image_diff" name="out_png" value="test10.png" ftype="png"/>
         </test>
+        <test expect_failure="true"><!-- segmentation overlay, floating point conversion test with illegal settings -->
+            <conditional name="method_option">
+                <param name="method" value="seg_contour"/>
+                <param name="im1" value="sample3.tiff"/>
+                <param name="im2" value="mask3.tiff"/>
+                <param name="thickness" value="1"/>
+                <param name="color" value="#ff0000"/>
+                <param name="label_color" value="#ffff00"/>
+                <section name="fp_conversion">
+                    <param name="lower" value="0"/>
+                    <param name="upper" value="max"/>
+                </section>
+            </conditional>
+            <assert_stderr>
+                <has_text text="Lower bound (0) must be less than upper bound (-10)." />
+            </assert_stderr>
+        </test>
     </tests>
     <help><![CDATA[
 

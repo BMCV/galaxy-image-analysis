@@ -41,6 +41,10 @@ def get_rgb8_copy(img, fp_lower, fp_upper):
         a = img.min() if fp_lower == 'min' else float(fp_lower)
         b = img.max() if fp_upper == 'max' else float(fp_upper)
 
+        if a > b:
+            raise ValueError(
+                f'Lower bound ({a:g}) must be less than upper bound ({b:g}).'
+            )
         if a == b:
             raise ValueError(
                 'Floating point conversion is undefined'
