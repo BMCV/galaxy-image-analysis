@@ -37,8 +37,8 @@
         #if $method_option.method == "blending"
             --alpha $method_option.alpha
         #elif $method_option.method == "seg_contour"
-            --fp_lower '${fp_conversion.lower}'
-            --fp_upper '${fp_conversion.upper}'
+            --fp_lower '${method_option.fp_conversion.lower}'
+            --fp_upper '${method_option.fp_conversion.upper}'
             --thickness $method_option.thickness
             --color '$method_option.color'
             $method_option.show_label
