@@ -49,21 +49,21 @@ A suite of Galaxy tools for generating, verifying, and comparing ISCC (Internati
 
 ## Usage Scenarios
 
-### Scenario 1: Data Integrity Verification
-**Goal**: Ensure received dataset matches reference exactly
+### Scenario 1: Quick Collection Integrity Check
+**Goal**: Quickly verify if an entire collection has changed
 
 ```
 Workflow:
-1. Generate ISCC → Input: Reference collection (100 files)
-                  Output: reference_hashes.txt
+1. Generate ISCC (combined mode) → Input: Reference collection (100 files)
+                                   Output: Single ISCC hash
 
 2. [Transfer/storage/time passes]
 
-3. Verify ISCC → Input: New collection (100 files) + reference_hashes.txt
-                 Output: "Passed: 95, Failed: 5"
+3. Verify ISCC → Input: New collection (100 files) + reference hash
+                 Output: "Status: OK" or "Status: FAILED"
 ```
 
-**Result**: You know exactly which 5 files were modified/corrupted
+**Result**: You know instantly if the collection as a whole has changed (but not which specific files)
 
 ---
 
@@ -100,25 +100,7 @@ Workflow:
 
 ---
 
-### Scenario 3: Finding Modified Files
-**Goal**: Identify which files changed and by how much
-
-```
-Workflow:
-1. Verify ISCC → Shows 5 files failed verification
-
-2. Compare similarity → Input: Collection with all 200 files (reference + new)
-                        Output: Similarity report showing:
-                        - file_023: ~03 (nearly identical, minor edit)
-                        - file_045: ~48 (completely different)
-                        - file_067: ~12 (moderate changes)
-```
-
-**Result**: You can prioritize which files need attention based on similarity scores
-
----
-
-### Scenario 4: Duplicate Detection in Large Dataset
+### Scenario 3: Duplicate Detection in Large Dataset
 **Goal**: Find duplicate and near-duplicate files in large collection
 
 **Why ISCC-SUM excels here**: Traditional hash functions (MD5, SHA) only detect exact duplicates. ISCC-SUM detects **content similarity**, making it ideal for:
@@ -153,38 +135,18 @@ Example output:
 Galaxy Workflow:
 1. [Data arrives] → Collection of files
 
-2. Generate ISCC (individual mode) → Create hashes for all files
+2. Generate ISCC (combined mode) → Create hash for collection
 
 3. Verify ISCC → Compare against expected reference
                  ↓
     PASS: Continue workflow
-    FAIL: → 4. Compare similarity
+    FAIL: → 4. Compare similarity (two collections)
               ↓
-              Report discrepancies and similarity scores
-              Stop or flag for manual review
+              Report similarity score (~08 = very similar, ~48 = very different)
+              Decide: Accept if similar enough, or reject and investigate
 ```
 
-**Result**: Automated QC catches data integrity issues early
-
----
-
-### Scenario 5: Collection Completeness Check
-**Goal**: Verify you have all expected files
-
-```
-Workflow:
-1. Generate ISCC → Input: Expected complete collection
-                  Output: complete_reference.txt (100 files)
-
-2. Verify ISCC → Input: Received collection (95 files) + complete_reference.txt
-                 Output:
-                 - Passed: 92
-                 - Failed: 3
-                 - NOT FOUND in reference: 0
-                 - Missing from collection: 5
-```
-
-**Result**: Immediately identify missing or modified files
+**Result**: Automated QC catches data integrity issues and helps determine if differences are acceptable
 
 ---
 
