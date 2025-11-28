@@ -37,13 +37,13 @@
 
         ## Validate expected hash length
         if [ \${#EXPECTED} -ne 55 ]; then
-            echo "ERROR: Expected ISCC hash must be exactly 55 characters" >&2 &&
-            echo "Found: \${#EXPECTED} characters" >&2 &&
-            echo "Content: \$EXPECTED" >&2 &&
-            echo "" >&2 &&
-            echo "Make sure you're providing a file containing ONLY the ISCC hash," >&2 &&
-            echo "not the original data file. Use the output from 'Generate ISCC' tool." >&2 &&
-            exit 1
+            echo "ERROR: Expected ISCC hash must be exactly 55 characters" >&2;
+            echo "Found: \${#EXPECTED} characters" >&2;
+            echo "Content: \$EXPECTED" >&2;
+            echo "" >&2;
+            echo "Make sure you're providing a file containing ONLY the ISCC hash," >&2;
+            echo "not the original data file. Use the output from 'Generate ISCC' tool." >&2;
+            exit 1;
         fi &&
 
         ## Output verification report
