@@ -19,32 +19,24 @@
             iscc-sum --similar --threshold $threshold '$input_type.file1' '$input_type.file2' > '${output_file}'
         #elif $input_type.input_selector == "two_collections":
             ## Two collections comparison - generate combined ISCC for each
-            echo "Generating combined ISCC for Collection 1..." > '${output_file}' &&
             ISCC1=\$(cat
             #for $file in $input_type.collection1:
                 '$file'
             #end for
             | iscc-sum - | cut -d':' -f2 | cut -d' ' -f1) &&
 
-            echo "Generating combined ISCC for Collection 2..." >> '${output_file}' &&
             ISCC2=\$(cat
             #for $file in $input_type.collection2:
                 '$file'
             #end for
             | iscc-sum - | cut -d':' -f2 | cut -d' ' -f1) &&
 
-            echo "" >> '${output_file}' &&
-            echo "Collection 1 ISCC: \$ISCC1" >> '${output_file}' &&
-            echo "Collection 2 ISCC: \$ISCC2" >> '${output_file}' &&
-            echo "" >> '${output_file}' &&
-
             ## Create temp files for comparison
             echo \$ISCC1 > temp1.txt &&
             echo \$ISCC2 > temp2.txt &&
 
-            ## Use iscc-sum to compare similarity
-            echo "Similarity Analysis:" >> '${output_file}' &&
-            iscc-sum --similar --threshold $threshold temp1.txt temp2.txt >> '${output_file}' || true
+            ## Use iscc-sum to compare similarity and output directly
+            iscc-sum --similar --threshold $threshold temp1.txt temp2.txt > '${output_file}' || true
         #else:
             ## Single collection - find similar files within
             mkdir -p input_files &&
@@ -142,9 +134,7 @@
             <param name="threshold" value="12"/>
             <output name="output_file">
                 <assert_contents>
-                    <has_text text="Collection 1 ISCC:"/>
-                    <has_text text="Collection 2 ISCC:"/>
-                    <has_text text="Similarity Analysis:"/>
+                    <has_text text="~00"/>
                 </assert_contents>
             </output>
         </test>
@@ -165,17 +155,16 @@ This tool can operate in three modes:
 
 Similarity is measured using Hamming distance on the Data-Code component of ISCC codes. 
 Lower numbers indicate higher similarity:
-
-- **0-5**: Nearly identical files
-- **6-12**: Likely similar content (default threshold)
-- **13-20**: Probably somewhat similar
+  - **0-5**: Nearly identical files
+  - **6-12**: Likely similar content (default threshold)
+  - **13-20**: Probably somewhat similar
 
 **Input**
 
 Choose one of:
-- **Two files**: Individual files for pairwise comparison
-- **One collection**: Find similar files within the collection
-- **Two collections**: Compare collections as complete units
+  - **Two files**: Individual files for pairwise comparison
+  - **One collection**: Find similar files within the collection
+  - **Two collections**: Compare collections as complete units
 
 **Output**
 
@@ -187,13 +176,12 @@ Example::
       ~08 document_v2.txt
       ~12 document_draft.txt
 
-**Mode 3** (Two collections): Combined ISCC for each collection plus similarity score
+**Mode 3** (Two collections): Similarity comparison of combined ISCCs
 
 Example::
 
-    Collection 1 ISCC: K4A...
-    Collection 2 ISCC: K4A...
-    Similarity Analysis: ~08
+    ISCC:K4A... *temp1.txt
+      ~08 ISCC:K4A... *temp2.txt
 
 **Use Cases**
 

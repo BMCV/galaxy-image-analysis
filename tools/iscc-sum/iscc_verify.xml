@@ -35,6 +35,17 @@
         #end if
         &&
 
+        ## Validate expected hash length
+        if [ \${#EXPECTED} -ne 55 ]; then
+            echo "ERROR: Expected ISCC hash must be exactly 55 characters" >&2 &&
+            echo "Found: \${#EXPECTED} characters" >&2 &&
+            echo "Content: \$EXPECTED" >&2 &&
+            echo "" >&2 &&
+            echo "Make sure you're providing a file containing ONLY the ISCC hash," >&2 &&
+            echo "not the original data file. Use the output from 'Generate ISCC' tool." >&2 &&
+            exit 1
+        fi &&
+
         ## Output verification report
         #if $input_type.input_selector == "single":
             echo "File: ${input_type.input_file.element_identifier}" > '${output_file}' &&
@@ -78,8 +89,8 @@
                 </param>
             </when>
             <when value="file">
-                <param name="expected_code_file" type="data" format="txt" label="File containing expected ISCC"
-                       help="Text file containing the ISCC from a previous step"/>
+                <param name="expected_code_file" type="data" format="txt" label="File containing expected ISCC hash"
+                       help="Text file containing ONLY a single 55-character ISCC hash (e.g., output from 'Generate ISCC' tool in combined mode or single file mode). The file should contain just one hash, not multiple hashes or the original data file."/>
             </when>
         </conditional>
     </inputs>
@@ -174,8 +185,13 @@ This tool generates one ISCC hash (from a single file OR combined collection) an
 
 **Expected Hash Source**
 
-- Enter manually (59-character string)
-- From file (output from previous workflow step)
+- **Enter manually**: Type or paste the 55-character ISCC hash
+- **From file**: Provide a text file containing ONLY a single ISCC hash
+
+  - Use output from "Generate ISCC" tool in **single file** or **combined mode**
+  - Do NOT use output from **individual mode** (which contains multiple hashes)
+
+  **IMPORTANT**: The file must contain only ONE hash string (e.g., "K4AXYZ..."), not the original data file!
 
 **Use Cases**
 

@@ -161,9 +161,9 @@
 Generates an International Standard Content Code (ISCC) based checksum and similarity hash from a single file or collection of files.
 
 The ISCC-SUM is a content-derived identifier that:
-- Creates a unique checksum based on file content
-- Generates a similarity hash for content comparison
-- Works with any file format
+- Creates a unique checksum based on file content   
+- Generates a similarity hash for content comparison   
+- Works with any file format   
 
 **Input Options**
 
@@ -174,20 +174,20 @@ The ISCC-SUM is a content-derived identifier that:
 
 When using a collection, you can choose:
 
-1. **Individual Mode** (default): Calculates a separate ISCC hash for each file in the collection
-   - Output includes the element identifier and its corresponding ISCC hash
-   - Useful for tracking individual files in a collection
+  1. **Individual Mode** (default): Calculates a separate ISCC hash for each file in the collection   
+    - Output includes the element identifier and its corresponding ISCC hash   
+    - Useful for tracking individual files in a collection   
 
-2. **Combined Mode**: Calculates a single ISCC hash for all files together
-   - Concatenates all files in the collection and generates one unified ISCC hash
-   - Useful for verifying integrity of file sets or detecting changes across multiple files
+  2. **Combined Mode**: Calculates a single ISCC hash for all files together   
+    - Concatenates all files in the collection and generates one unified ISCC hash   
+    - Useful for verifying integrity of file sets or detecting changes across multiple files   
 
 **Output**
 
-A text file containing:
-- Single file: Single ISCC-SUM code
-- Collection (individual mode): List of element identifiers and their ISCC-SUM codes
-- Collection (combined mode): Single ISCC-SUM code for all files in the collection
+A text file containing:   
+  - Single file: Single ISCC-SUM code   
+  - Collection (individual mode): List of element identifiers and their ISCC-SUM codes   
+  - Collection (combined mode): Single ISCC-SUM code for all files in the collection   
 
 **More Information**
 
