@@ -1,0 +1,211 @@
+<tool id="iscc_sum_compare" name="Compare ISCC hash similarity" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="24.1">
+    <description>with ISCC-SUM</description>
+    <macros>
+        <import>macros.xml</import>
+        <import>creators.xml</import>
+    </macros>
+    <expand macro="requirements" />
+    <expand macro="version_command" />
+    <creator>
+        <expand macro="creators/iscc" />
+        <expand macro="creators/lco" />
+        <expand macro="creators/maartenpaul" />
+        <expand macro="creators/etzm" />
+    </creator>
+        
+    <command detect_errors="exit_code"><![CDATA[
+        #if $input_type.input_selector == "two_files":
+            ## Pairwise file comparison
+            iscc-sum --similar --threshold $threshold '$input_type.file1' '$input_type.file2' > '${output_file}'
+        #elif $input_type.input_selector == "two_collections":
+            ## Two collections comparison - generate combined ISCC for each
+            ISCC1=\$(cat
+            #for $file in $input_type.collection1:
+                '$file'
+            #end for
+            | iscc-sum - | cut -d':' -f2 | cut -d' ' -f1) &&
+
+            ISCC2=\$(cat
+            #for $file in $input_type.collection2:
+                '$file'
+            #end for
+            | iscc-sum - | cut -d':' -f2 | cut -d' ' -f1) &&
+
+            ## Create temp files for comparison
+            echo \$ISCC1 > temp1.txt &&
+            echo \$ISCC2 > temp2.txt &&
+
+            ## Use iscc-sum to compare similarity and output directly
+            iscc-sum --similar --threshold $threshold temp1.txt temp2.txt > '${output_file}' || true
+        #else:
+            ## Single collection - find similar files within
+            mkdir -p input_files &&
+            #for $file in $input_type.file_collection:
+                ln -s '$file' 'input_files/$file.element_identifier' &&
+            #end for
+            iscc-sum --similar --threshold $threshold input_files/* > '${output_file}'
+        #end if
+    ]]></command>
+
+    <inputs>
+        <conditional name="input_type">
+            <param name="input_selector" type="select" label="Input type">
+                <option value="two_files">Compare two files</option>
+                <option value="collection">Find similar files in collection</option>
+                <option value="two_collections">Compare two collections</option>
+            </param>
+            <when value="two_files">
+                <param name="file1" type="data" format="data" label="First file"/>
+                <param name="file2" type="data" format="data" label="Second file"/>
+            </when>
+            <when value="collection">
+                <param name="file_collection" type="data_collection" collection_type="list"
+                       format="data" label="File collection to compare"/>
+            </when>
+            <when value="two_collections">
+                <param name="collection1" type="data_collection" collection_type="list" format="data"
+                       label="First collection (reference)"
+                       help="Reference collection - will generate combined ISCC"/>
+                <param name="collection2" type="data_collection" collection_type="list" format="data"
+                       label="Second collection (to compare)"
+                       help="Collection to compare against reference - will generate combined ISCC"/>
+            </when>
+        </conditional>
+        <param name="threshold" type="integer" value="12" min="0" max="256"
+               label="Similarity threshold (Hamming distance)"
+               help="Maximum Hamming distance for similarity matching. 0-5: Nearly identical, 6-12: Likely similar (default), 13-20: Probably somewhat similar"/>
+    </inputs>
+    
+    <outputs>
+        <data name="output_file" format="txt" label="${tool.name} on ${on_string}"/>
+    </outputs>
+    
+    <tests>
+        <!-- Test 1: Pairwise file comparison -->
+        <test expect_num_outputs="1">
+            <conditional name="input_type">
+                <param name="input_selector" value="two_files"/>
+                <param name="file1" value="test1.png"/>
+                <param name="file2" value="test1.png"/>
+            </conditional>
+            <param name="threshold" value="12"/>
+            <output name="output_file">
+                <assert_contents>
+                    <has_text text="~00"/>
+                </assert_contents>
+            </output>
+        </test>
+        <!-- Test 2: Single collection comparison -->
+        <test expect_num_outputs="1">
+            <conditional name="input_type">
+                <param name="input_selector" value="collection"/>
+                <param name="file_collection">
+                    <collection type="list">
+                        <element name="file1" value="test1.png"/>
+                        <element name="file2" value="test2.tiff"/>
+                        <element name="file3" value="test2.tiff"/>
+                    </collection>
+                </param>
+            </conditional>
+            <param name="threshold" value="12"/>
+            <output name="output_file">
+                <assert_contents>
+                    <has_text text="~00"/>
+                </assert_contents>
+            </output>
+        </test>
+        <!-- Test 3: Two collections comparison -->
+        <test expect_num_outputs="1">
+            <conditional name="input_type">
+                <param name="input_selector" value="two_collections"/>
+                <param name="collection1">
+                    <collection type="list">
+                        <element name="sample1" value="test1.png"/>
+                        <element name="sample2" value="test2.tiff"/>
+                    </collection>
+                </param>
+                <param name="collection2">
+                    <collection type="list">
+                        <element name="sample1" value="test1.png"/>
+                        <element name="sample2" value="test2.tiff"/>
+                    </collection>
+                </param>
+            </conditional>
+            <param name="threshold" value="12"/>
+            <output name="output_file">
+                <assert_contents>
+                    <has_text text="~00"/>
+                </assert_contents>
+            </output>
+        </test>
+    </tests>
+    
+    <help><![CDATA[
+**What it does**
+
+Compares files or collections by their ISCC codes to detect content similarity.
+
+This tool can operate in three modes:
+
+1. **Pairwise file comparison**: Compare two specific files
+2. **Collection analysis**: Find all similar files within a collection
+3. **Two collections comparison**: Compare two complete collections as units
+
+**Similarity Measurement**
+
+Similarity is measured using Hamming distance on the Data-Code component of ISCC codes.
+Lower numbers indicate higher similarity:
+
+- **0-5**: Nearly identical files
+- **6-12**: Likely similar content (default threshold)
+- **13-20**: Probably somewhat similar
+
+**Input**
+
+Choose one of:
+
+- **Two files**: Individual files for pairwise comparison
+- **One collection**: Find similar files within the collection
+- **Two collections**: Compare collections as complete units
+
+**Output**
+
+**Mode 1 & 2** (Files/Collection): Similarity relationships showing reference files and similar matches with Hamming distance (~N)
+
+Example::
+
+    document_v1.txt
+      ~08 document_v2.txt
+      ~12 document_draft.txt
+
+**Mode 3** (Two collections): Similarity comparison of combined ISCCs
+
+Example::
+
+    ISCC:K4A... *temp1.txt
+      ~08 ISCC:K4A... *temp2.txt
+
+**Use Cases**
+
+- **Mode 1**: Compare two specific files for similarity
+- **Mode 2**: Find duplicates/near-duplicates in large dataset (ISCC-SUM excels here!)
+- **Mode 3**: Check if two collections are similar (but not exactly the same)
+
+**Workflow: Verify then Compare**
+
+Step 1: Verify ISCC
+  Input: New collection + reference hash
+  Output: FAILED
+
+Step 2: Compare Similarity (two collections mode)
+  Input: Reference collection + new collection
+  Output: ~08 (very similar, minor differences)
+
+This tells you: "Not exact match, but content is very similar"
+
+**More Information**
+
+For more details about ISCC, visit: https://sum.iscc.codes/
+    ]]></help>
+    <expand macro="citations" />
+</tool>
