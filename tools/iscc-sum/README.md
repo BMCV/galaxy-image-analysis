@@ -70,7 +70,7 @@ Workflow:
 ### Scenario 2: Dataset Similarity When Verification Fails
 **Goal**: Check if a large dataset matches reference exactly, and if not, how similar it is
 
-**Why this is important**: Sometimes you receive a dataset that's been modified but want to know if it's still usable or how much it differs from the reference.
+**Why this is important**: Sometimes you receive a dataset that's been modified but want to know if it's still what you expect it to be or how much it differs from the reference.
 
 ```
 Workflow:
@@ -185,29 +185,6 @@ Workflow:
 ```
 
 **Result**: Immediately identify missing or modified files
-
----
-
-
-## Combined Mode Use Case
-
-The "combined mode" in Generate ISCC creates a single hash for entire collection:
-
-```
-Use when:
-- Verifying a multi-file dataset as a unit
-- Creating checksum for entire directory
-- Detecting if ANY file in collection changed
-
-Example:
-Reference collection: 10 files → Combined ISCC: K4AXYZ...
-Later check: 10 files → Combined ISCC: K4AXYZ... (match!)
-
-If even ONE file changed → Combined ISCC will be different
-```
-
-**Note**: This doesn't tell you WHICH file changed, only that collection changed. Use individual mode for per-file tracking.
-
 
 ---
 
