@@ -21,7 +21,7 @@ A suite of Galaxy tools for generating, verifying, and comparing ISCC (Internati
 
 **Modes**:
 - **Single file**: Verify one file against expected hash
-- **Collection**: Verify all files in collection against reference
+- **Collection**: Verify entire collection as one unit (generates combined ISCC)
 
 **Use when**: You need to confirm files are EXACTLY the same (bit-for-bit)
 
