@@ -153,18 +153,20 @@ This tool can operate in three modes:
 
 **Similarity Measurement**
 
-Similarity is measured using Hamming distance on the Data-Code component of ISCC codes. 
+Similarity is measured using Hamming distance on the Data-Code component of ISCC codes.
 Lower numbers indicate higher similarity:
-  - **0-5**: Nearly identical files
-  - **6-12**: Likely similar content (default threshold)
-  - **13-20**: Probably somewhat similar
+
+- **0-5**: Nearly identical files
+- **6-12**: Likely similar content (default threshold)
+- **13-20**: Probably somewhat similar
 
 **Input**
 
 Choose one of:
-  - **Two files**: Individual files for pairwise comparison
-  - **One collection**: Find similar files within the collection
-  - **Two collections**: Compare collections as complete units
+
+- **Two files**: Individual files for pairwise comparison
+- **One collection**: Find similar files within the collection
+- **Two collections**: Compare collections as complete units
 
 **Output**
 
