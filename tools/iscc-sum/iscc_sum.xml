@@ -15,12 +15,49 @@
     </creator>
         
     <command detect_errors="exit_code"><![CDATA[
-        iscc-sum '$input_file' | cut -d':' -f2 | cut -d' ' -f1 > '${output_file}'
+        #if $input_type.input_selector == "single":
+            ## Single file mode
+            iscc-sum '${input_type.input_file}' | cut -d':' -f2 | cut -d' ' -f1 > '${output_file}'
+        #else:
+            ## Collection mode
+            #if $input_type.calculate_individual:
+                ## Calculate ISCC hash for each file individually
+                #for $input in $input_type.input_collection:
+                    echo '${input.element_identifier}' >> '${output_file}' &&
+                    iscc-sum '$input' | cut -d':' -f2 | cut -d' ' -f1 >> '${output_file}' &&
+                    echo '' >> '${output_file}' &&
+                #end for
+                true
+            #else:
+                ## Calculate single ISCC hash for all files together
+                cat
+                #for $input in $input_type.input_collection:
+                    '$input'
+                #end for
+                | iscc-sum - | cut -d':' -f2 | cut -d' ' -f1 > '${output_file}'
+            #end if
+        #end if
     ]]></command>
-    
+
     <inputs>
-        <param name="input_file" type="data" format="data" label="Input File" 
-               help="Any file type - ISCC-SUM will generate a checksum and similarity hash"/>
+        <conditional name="input_type">
+            <param name="input_selector" type="select" label="Input type">
+                <option value="single">Single file</option>
+                <option value="collection">Collection of files</option>
+            </param>
+            <when value="single">
+                <param name="input_file" type="data" format="data" label="Input File"
+                       help="Any file type - ISCC-SUM will generate a checksum and similarity hash"/>
+            </when>
+            <when value="collection">
+                <param name="input_collection" type="data_collection" collection_type="list" format="data"
+                       label="Input File Collection"
+                       help="A collection of files - ISCC-SUM will generate checksum and similarity hash"/>
+                <param name="calculate_individual" type="boolean" truevalue="true" falsevalue="false" checked="true"
+                       label="Calculate ISCC hash for each file individually"
+                       help="If selected, generates one ISCC hash per file. If not selected, calculates a single ISCC hash for all files combined."/>
+            </when>
+        </conditional>
     </inputs>
     
     <outputs>
@@ -28,27 +65,91 @@
     </outputs>
     
     <tests>
+        <!-- Test 1: Single file -->
         <test expect_num_outputs="1">
-            <param name="input_file" value="test1.png"/>
+            <conditional name="input_type">
+                <param name="input_selector" value="single"/>
+                <param name="input_file" value="test1.png"/>
+            </conditional>
             <output name="output_file">
                 <assert_contents>
+                    <has_line line="K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY" />
+                    <has_n_lines n="1" />
+                </assert_contents>
+            </output>
+        </test>
+        <!-- Test 2: Single file (different format) -->
+        <test expect_num_outputs="1">
+            <conditional name="input_type">
+                <param name="input_selector" value="single"/>
+                <param name="input_file" value="test3.fasta"/>
+            </conditional>
+            <output name="output_file">
+                <assert_contents>
+                    <has_line line="K4AKF7PTZ7JTAAYZ7YZHZPR5RETKYXXE7RTBTJA4JX5GQQMSLZRC6QQ" />
+                    <has_n_lines n="1" />
+                </assert_contents>
+            </output>
+        </test>
+        <!-- Test 3: Collection with single element, individual mode -->
+        <test expect_num_outputs="1">
+            <conditional name="input_type">
+                <param name="input_selector" value="collection"/>
+                <param name="input_collection">
+                    <collection type="list">
+                        <element name="sample1" value="test1.png"/>
+                    </collection>
+                </param>
+                <param name="calculate_individual" value="true"/>
+            </conditional>
+            <output name="output_file">
+                <assert_contents>
+                    <has_line line="sample1" />
                     <has_line line="K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY" />
                 </assert_contents>
             </output>
         </test>
+        <!-- Test 4: Collection with multiple files, individual mode -->
         <test expect_num_outputs="1">
-            <param name="input_file" value="test2.tiff"/>
+            <conditional name="input_type">
+                <param name="input_selector" value="collection"/>
+                <param name="input_collection">
+                    <collection type="list">
+                        <element name="sample1" value="test1.png"/>
+                        <element name="sample2" value="test2.tiff"/>
+                        <element name="sample3" value="test3.fasta"/>
+                    </collection>
+                </param>
+                <param name="calculate_individual" value="true"/>
+            </conditional>
             <output name="output_file">
                 <assert_contents>
+                    <has_line line="sample1" />
+                    <has_line line="K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY" />
+                    <has_line line="sample2" />
                     <has_line line="K4AGSPOSB5SS2X427WZ27QASTSBVTS55DXLMFDF7WOJKEOSTDEI3OXQ" />
+                    <has_line line="sample3" />
+                    <has_line line="K4AKF7PTZ7JTAAYZ7YZHZPR5RETKYXXE7RTBTJA4JX5GQQMSLZRC6QQ" />
                 </assert_contents>
             </output>
         </test>
+        <!-- Test 5: Collection with multiple files, combined mode -->
         <test expect_num_outputs="1">
-            <param name="input_file" value="test3.fasta"/>
+            <conditional name="input_type">
+                <param name="input_selector" value="collection"/>
+                <param name="input_collection">
+                    <collection type="list">
+                        <element name="sample1" value="test1.png"/>
+                        <element name="sample2" value="test2.tiff"/>
+                    </collection>
+                </param>
+                <param name="calculate_individual" value="false"/>
+            </conditional>
             <output name="output_file">
                 <assert_contents>
-                    <has_line line="K4AKF7PTZ7JTAAYZ7YZHZPR5RETKYXXE7RTBTJA4JX5GQQMSLZRC6QQ" />
+                    <!-- Combined hash will be different from individual hashes -->
+                    <has_line line="K4AOQPOGAJC42V42HS427TA23SJXXHWY4A7OBRVST5EIUGITM7XKOQA" />
+                    <has_n_lines n="1" />
                 </assert_contents>
             </output>
         </test>
@@ -57,20 +158,36 @@
     <help><![CDATA[
 **What it does**
 
-Generates an International Standard Content Code (ISCC) based checksum and similarity hash from any input file.
+Generates an International Standard Content Code (ISCC) based checksum and similarity hash from a single file or collection of files.
 
-The ISCC-SUM is a content-derived identifier that:    
-- Creates a unique checksum based on file content    
-- Generates a similarity hash for content comparison    
-- Works with any file format    
+The ISCC-SUM is a content-derived identifier that:
+- Creates a unique checksum based on file content
+- Generates a similarity hash for content comparison
+- Works with any file format
 
-**Input**
+**Input Options**
 
-Any file format is accepted as input.
+1. **Single File**: Calculate ISCC hash for one file
+2. **Collection of Files**: Calculate ISCC hash for multiple files in a collection
+
+**Processing Modes (Collection only)**
+
+When using a collection, you can choose:
+
+1. **Individual Mode** (default): Calculates a separate ISCC hash for each file in the collection
+   - Output includes the element identifier and its corresponding ISCC hash
+   - Useful for tracking individual files in a collection
+
+2. **Combined Mode**: Calculates a single ISCC hash for all files together
+   - Concatenates all files in the collection and generates one unified ISCC hash
+   - Useful for verifying integrity of file sets or detecting changes across multiple files
 
 **Output**
 
-A text file containing the ISCC-SUM code for the input file.
+A text file containing:
+- Single file: Single ISCC-SUM code
+- Collection (individual mode): List of element identifiers and their ISCC-SUM codes
+- Collection (combined mode): Single ISCC-SUM code for all files in the collection
 
 **More Information**
 
