@@ -174,13 +174,15 @@ The ISCC-SUM is a content-derived identifier that:
 
 When using a collection, you can choose:
 
-  1. **Individual Mode** (default): Calculates a separate ISCC hash for each file in the collection   
-    - Output includes the element identifier and its corresponding ISCC hash   
-    - Useful for tracking individual files in a collection   
+1. **Individual Mode** (default): Calculates a separate ISCC hash for each file in the collection
 
-  2. **Combined Mode**: Calculates a single ISCC hash for all files together   
-    - Concatenates all files in the collection and generates one unified ISCC hash   
-    - Useful for verifying integrity of file sets or detecting changes across multiple files   
+   - Output includes the element identifier and its corresponding ISCC hash
+   - Useful for tracking individual files in a collection
+
+2. **Combined Mode**: Calculates a single ISCC hash for all files together
+
+   - Concatenates all files in the collection and generates one unified ISCC hash
+   - Useful for verifying integrity of file sets or detecting changes across multiple files
 
 **Output**
 
