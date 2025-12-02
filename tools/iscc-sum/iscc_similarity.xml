@@ -50,8 +50,8 @@
     <inputs>
         <conditional name="input_type">
             <param name="input_selector" type="select" label="Input type">
-                <option value="two_files">Compare two files</option>
-                <option value="collection">Find similar files in collection</option>
+                <option value="two_files">Compare two datasets</option>
+                <option value="collection">Find similar datasets in collection</option>
                 <option value="two_collections">Compare two collections</option>
             </param>
             <when value="two_files">
