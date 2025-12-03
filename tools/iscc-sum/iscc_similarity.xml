@@ -193,7 +193,9 @@ Example::
 
 **Workflow: Verify then Compare**
 
-Step 1: Verify ISCC
+Step 1: `Verify ISCC hash`_
+
+.. _Verify ISCC hash: ?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/iscc_sum/iscc_sum_verify
   Input: New collection + reference hash
   Output: FAILED
 
