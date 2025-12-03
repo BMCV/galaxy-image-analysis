@@ -24,7 +24,10 @@
     ./output.tiff
 
     '$multiframe_axis'
-    '$dtype'
+    '$target.dtype'
+
+    $target.normalize_label_maps
+    $apply_voi_transform
 
     ]]>
     </command>
@@ -35,18 +38,50 @@
             <option value="Z">Z-axis (slices of a 3-D image or image sequence)</option>
             <option value="Q">Q-axis (other or unknown axis)</option>
         </param>
-        <param name="dtype" type="select" label="Data type of the produced TIFF image">
-            <option value="" selected="true">Determine automatically</option>
-            <option value="float16">16-bit floating point</option>
-            <option value="float32">32-bit floating point</option>
-            <option value="float64">64-bit floating point</option>
-            <option value="int8">8-bit signed integer</option>
-            <option value="int16">16-bit signed integer</option>
-            <option value="int32">32-bit signed integer</option>
-            <option value="uint8">8-bit unsigned integer</option>
-            <option value="uint16">16-bit unsigned integer</option>
-            <option value="uint32">32-bit unsigned integer</option>
-        </param>
+        <conditional name="target">
+            <param name="dtype" type="select" label="Data type of the produced TIFF image">
+                <option value="" selected="true">Determine automatically</option>
+                <option value="float16">16-bit floating point</option>
+                <option value="float32">32-bit floating point</option>
+                <option value="float64">64-bit floating point</option>
+                <option value="int8">8-bit signed integer</option>
+                <option value="int16">16-bit signed integer</option>
+                <option value="int32">32-bit signed integer</option>
+                <option value="uint8">8-bit unsigned integer</option>
+                <option value="uint16">16-bit unsigned integer</option>
+                <option value="uint32">32-bit unsigned integer</option>
+            </param>
+            <when value="">
+                <param name="normalize_label_maps" type="boolean" checked="true" label="Normalize label maps" truevalue="--normalize_label_maps" falsevalue="" help="If a DICOM dataset is recognized as a label map, a suitable data type will be chosen and the labels will be normalized to improve visual perception."/>
+            </when>
+            <when value="float16">
+                <param name="normalize_label_maps" type="hidden" value=""/>
+            </when>
+            <when value="float32">
+                <param name="normalize_label_maps" type="hidden" value=""/>
+            </when>
+            <when value="float64">
+                <param name="normalize_label_maps" type="hidden" value=""/>
+            </when>
+            <when value="int8">
+                <param name="normalize_label_maps" type="hidden" value=""/>
+            </when>
+            <when value="int16">
+                <param name="normalize_label_maps" type="hidden" value=""/>
+            </when>
+            <when value="int32">
+                <param name="normalize_label_maps" type="hidden" value=""/>
+            </when>
+            <when value="uint8">
+                <param name="normalize_label_maps" type="hidden" value=""/>
+            </when>
+            <when value="uint16">
+                <param name="normalize_label_maps" type="hidden" value=""/>
+            </when>
+            <when value="uint32">
+                <param name="normalize_label_maps" type="hidden" value=""/>
+            </when>
+        </conditional>
         <param name="apply_voi_transform" type="boolean" checked="false" label="Apply VOI transform" truevalue="--apply_voi_transform" falsevalue="" help="Apply the value-of-interest (VOI) transform (if present in the dataset) which limits the range of pixel values to a particular range of interest, using either a windowing operation or a LUT. Applying the VOI transform yields a TIFF image that is optimized for visual inspection, but probably less suited for subsequent analysis."/>
     </inputs>
     <outputs>
@@ -56,6 +91,17 @@
         <test>
             <param name="input" value="highdicom/ct_image.dcm"/>
             <expand macro="tests/intensity_image_diff" name="output" value="ct_image.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Output TIFF shape: (128, 128)" />
+                <has_line line="Output TIFF axes: YX" />
+            </assert_stdout>
+        </test>
+        <test>
+            <param name="input" value="highdicom/ct_image.dcm"/>
+            <conditional name="target">
+                <param name="dtype" value="float16"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="ct_image_float16.tiff" ftype="tiff"/>
             <assert_stdout>
                 <has_line line="Output TIFF shape: (128, 128)" />
                 <has_line line="Output TIFF axes: YX" />
@@ -75,6 +121,21 @@
             <expand macro="tests/intensity_image_diff" name="output" value="seg_image_ct_binary.tiff" ftype="tiff"/>
             <assert_stdout>
                 <has_line line="DICOM dataset is a 3-D volume" />
+                <has_line line="DICOM dataset is a label map" />
+                <has_line line="Output TIFF shape: (3, 16, 16)" />
+                <has_line line="Output TIFF axes: ZYX" />
+            </assert_stdout>
+        </test>
+        <test>
+            <param name="input" value="highdicom/seg_image_ct_binary.dcm"/>
+            <conditional name="target">
+                <param name="dtype" value=""/>
+                <param name="normalize_label_maps" value="false"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="seg_image_ct_binary_unnormalized.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="DICOM dataset is a 3-D volume" />
+                <has_line line="DICOM dataset is a label map" />
                 <has_line line="Output TIFF shape: (3, 16, 16)" />
                 <has_line line="Output TIFF axes: ZYX" />
             </assert_stdout>
