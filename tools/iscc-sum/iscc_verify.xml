@@ -128,7 +128,8 @@
     </tests>
     
     <help><![CDATA[
-**What it does**
+What it does
+============
 
 Verifies that a file or collection matches an expected ISCC hash for exact checksum verification.
 
@@ -139,20 +140,23 @@ This tool generates one ISCC hash (from a single file OR combined collection) an
 1. **Single File**: Verify one file against expected hash
 2. **Collection**: Verify entire collection as one unit (generates combined ISCC)
 
-**Expected Hash Input**
+Expected Hash Input
+===================
 
 Type or paste the 55-character ISCC hash to verify against.
 
 **In workflows**: Use the 🔧 **Parse parameter value** tool (available in the workflow editor) to pipe the contents of a hash file into this text field. This allows you to connect the output from "Generate ISCC" directly to the verification step.
 
-**Use Cases**
+Use Cases
+=========
 
 - Verify file integrity after transfer or storage
 - Confirm exact match for a dataset/collection
 - Validate that nothing in a collection has been modified
 - Quality control: Ensure received data matches reference exactly
 
-**Output**
+Output
+======
 
 A verification report showing:
 - Input (file or collection name)
@@ -160,7 +164,8 @@ A verification report showing:
 - Generated ISCC hash
 - Status: OK (exact match) or FAILED (different)
 
-**Workflow Example**
+Workflow Example
+================
 
 Step 1: Generate ISCC (combined mode)
 Input: Reference collection
@@ -172,7 +177,8 @@ Step 3: Verify ISCC
 Input: New collection + reference hash
 Output: OK or FAILED
 
-**Important Notes**
+Important Notes
+===============
 
 - **Exact match only**: Even one bit changed = FAILED
 - **Collection mode**: Treats entire collection as unit
@@ -181,12 +187,14 @@ Output: OK or FAILED
 - **For per-file tracking**: Use "Generate ISCC" (individual mode) instead
 - **For similarity detection**: Use "Compare ISCC similarity" tool
 
-**When to Use This Tool vs Generate ISCC**
+When to Use This Tool vs Generate ISCC
+======================================
 
 - Use **Verify** when: You have a reference hash and want to check if current matches
 - Use **Generate** (individual) when: You need hashes for each file separately
 
-**More Information**
+More Information
+================
 
 For more details about ISCC, visit: https://sum.iscc.codes/
     ]]></help>

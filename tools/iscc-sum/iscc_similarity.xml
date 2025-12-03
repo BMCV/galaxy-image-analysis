@@ -141,7 +141,8 @@
     </tests>
     
     <help><![CDATA[
-**What it does**
+What it does
+============
 
 Compares files or collections by their International Standard Content Code (ISCC) hashes to detect content similarity.
 
@@ -151,8 +152,8 @@ This tool can operate in three modes:
 2. **Collection analysis**: Find all similar files within a collection
 3. **Two collections comparison**: Compare two complete collections as units
 
-**Similarity Measurement**
-
+Similarity Measurement
+======================
 Similarity is measured using Hamming distance on the Data-Code component of ISCC codes.
 Lower numbers indicate higher similarity:
 
@@ -160,7 +161,8 @@ Lower numbers indicate higher similarity:
 - **6-12**: Likely similar content (default threshold)
 - **13-20**: Probably somewhat similar
 
-**Input**
+Input
+=====
 
 Choose one of:
 
@@ -168,7 +170,7 @@ Choose one of:
 - **One collection**: Find similar files within the collection
 - **Two collections**: Compare collections as complete units
 
-**Output**
+Output
 
 **Mode 1 & 2** (Files/Collection): Similarity relationships showing reference files and similar matches with Hamming distance (~N)
 
@@ -185,13 +187,15 @@ Example::
     ISCC:K4A... *temp1.txt
       ~08 ISCC:K4A... *temp2.txt
 
-**Use Cases**
+Use Cases
+=========
 
 - **Mode 1**: Compare two specific files for similarity
 - **Mode 2**: Find duplicates/near-duplicates in large dataset (ISCC-SUM excels here!)
 - **Mode 3**: Check if two collections are similar (but not exactly the same)
 
-**Workflow: Verify then Compare**
+Workflow: Verify then Compare
+=============================
 
 Step 1: `Verify ISCC hash`_
 
@@ -205,7 +209,8 @@ Step 2: Compare Similarity (two collections mode)
 
 This tells you: "Not exact match, but content is very similar"
 
-**More Information**
+More Information
+================
 
 For more details about ISCC, visit: https://sum.iscc.codes/
     ]]></help>
