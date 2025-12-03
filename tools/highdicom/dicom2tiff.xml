@@ -1,0 +1,88 @@
+<tool id="highdicom_dicom2tiff" name="Convert DICOM to TIFF" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="24.01">
+    <description>with highdicom</description>
+    <macros>
+        <import>creators.xml</import>
+        <import>tests.xml</import>
+        <token name="@TOOL_VERSION@">0.27.0</token>
+        <token name="@VERSION_SUFFIX@">0</token>
+    </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+        <expand macro="creators/kostrykin"/>
+    </creator>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <requirements>
+        <requirement type="package" version="@TOOL_VERSION@">highdicom</requirement>
+        <requirement type="package" version="0.4.1">giatools</requirement>
+    </requirements>
+    <command><![CDATA[
+
+    python '$__tool_directory__/dicom2tiff.py'
+    '$input'
+    ./output.tiff
+
+    '$multiframe_axis'
+    '$dtype'
+
+    ]]>
+    </command>
+    <inputs>
+        <param name="input" type="data" format="dicom" label="DICOM dataset"/>
+        <param name="multiframe_axis" type="select" label="Fall-back axis for DICOM frames" help="If DICOM frames cannot be resolved to a specifc TIFF axis automatically, this axis will be used.">
+            <option value="T" selected="true">T-axis (frames of a temporal image sequence)</option>
+            <option value="Z">Z-axis (slices of a 3-D image or image sequence)</option>
+            <option value="Q">Q-axis (other or unknown axis)</option>
+        </param>
+        <param name="dtype" type="select" label="Data type of the produced TIFF image">
+            <option value="" selected="true">Determine automatically</option>
+            <option value="float16">16-bit floating point</option>
+            <option value="float32">32-bit floating point</option>
+            <option value="float64">64-bit floating point</option>
+            <option value="int8">8-bit signed integer</option>
+            <option value="int16">16-bit signed integer</option>
+            <option value="int32">32-bit signed integer</option>
+            <option value="uint8">8-bit unsigned integer</option>
+            <option value="uint16">16-bit unsigned integer</option>
+            <option value="uint32">32-bit unsigned integer</option>
+        </param>
+        <param name="apply_voi_transform" type="boolean" checked="false" label="Apply VOI transform" truevalue="--apply_voi_transform" falsevalue="" help="Apply the value-of-interest (VOI) transform (if present in the dataset) which limits the range of pixel values to a particular range of interest, using either a windowing operation or a LUT. Applying the VOI transform yields a TIFF image that is optimized for visual inspection, but probably less suited for subsequent analysis."/>
+    </inputs>
+    <outputs>
+        <data format="tiff" name="output" from_work_dir="output.tiff" />
+    </outputs>
+    <tests>
+        <test>
+            <param name="input" value="highdicom/ct_image.dcm"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="ct_image.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Output TIFF shape: (128, 128)" />
+                <has_line line="Output TIFF axes: YX" />
+            </assert_stdout>
+        </test>
+        <test>
+            <param name="input" value="highdicom/sm_image.dcm"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="sm_image.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="DICOM dataset is a tiled multi-frame image" />
+                <has_line line="Output TIFF shape: (50, 50, 3)" />
+                <has_line line="Output TIFF axes: YXC" />
+            </assert_stdout>
+        </test>
+        <test>
+            <param name="input" value="highdicom/seg_image_ct_binary.dcm"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="seg_image_ct_binary.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="DICOM dataset is a 3-D volume" />
+                <has_line line="Output TIFF shape: (3, 16, 16)" />
+                <has_line line="Output TIFF axes: ZYX" />
+            </assert_stdout>
+        </test>
+    </tests>
+    <help>
+    </help>
+    <citations>
+        <citation type="doi">10.1007/s10278-022-00683-y</citation>
+    </citations>
+</tool>
