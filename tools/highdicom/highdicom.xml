@@ -1,0 +1,37 @@
+<tool id="highdicom" name="Convert DICOM to TIFF" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="24.01">
+    <description>with NumPy</description>
+    <macros>
+        <token name="@TOOL_VERSION@">0.27.0</token>
+        <token name="@VERSION_SUFFIX@">0</token>
+    </macros>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <requirements>
+        <requirement type="package" version="@TOOL_VERSION@">highdicom</requirement>
+        <requirement type="package" version="0.4.1">giatools</requirement>
+    </requirements>
+    <command><![CDATA[
+
+    python '$__tool_directory__/dicom2tiff.py'
+    '$input'
+    ./output.tiff
+
+    ]]>
+    </command>
+    <inputs>
+        <param name="input" type="data" format="dicom" label="DICOM dataset" />
+    </inputs>
+    <outputs>
+        <data format="tiff" name="output" from_work_dir="output.tiff" />
+    </outputs>
+    <tests>
+        <test>
+        </test>
+    </tests>
+    <help>
+    </help>
+    <citations>
+        <citation type="doi">10.1007/s10278-022-00683-y</citation>
+    </citations>
+</tool>

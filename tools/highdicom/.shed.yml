@@ -1,0 +1,8 @@
+categories:
+  - Imaging
+description: Convert DICOM to TIFF
+long_description: This tool converts a DICOM file to a TIFF image.
+name: highdicom
+owner: imgteam
+homepage_url: https://github.com/bmcv
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tree/master/tools/highdicom/
