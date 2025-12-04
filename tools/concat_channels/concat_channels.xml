@@ -1,4 +1,4 @@
-<tool id="ip_concat_channels" name="Concatenate images or channels" version="0.3-1" profile="20.05">
+<tool id="ip_concat_channels" name="Concatenate images or channels" version="0.4" profile="20.05">
     <description></description>
     <macros>
         <import>creators.xml</import>
@@ -14,10 +14,10 @@
         <xref type="bio.tools">galaxy_image_analysis</xref>
     </xrefs>
     <requirements>
-        <requirement type="package" version="0.18.3">scikit-image</requirement>
-        <requirement type="package" version="1.24.1">numpy</requirement>
-        <requirement type="package" version="2021.7.2">tifffile</requirement>
-        <requirement type="package" version="0.1">giatools</requirement>
+        <requirement type="package" version="0.25.2">scikit-image</requirement>
+        <requirement type="package" version="2.3.5">numpy</requirement>
+        <requirement type="package" version="2025.10.16">tifffile</requirement>
+        <requirement type="package" version="0.4.1">giatools</requirement>
     </requirements>
     <command detect_errors="aggressive"><![CDATA[
 
@@ -35,7 +35,7 @@
     <inputs>
         <param name="inputs" type="data" multiple="true" format="tiff,png" label="Images to concatenate"/>
         <param name="axis" type="integer" min="0" value="0" label="Concatenation axis" help="The images will be concatenated along this axis. For a 2-D image, a value of 0 corresponds to horizontal concatenation, and a value of 1 to vertical concatenation. For an RGB image, a value of 2 corresponds to concatenation of the channels of the images."/>
-        <param name="mode" type="select" label="Scaling of values" help="If the brightness is to be preserved (default), then the values will be scaled between 0 and 1, and the pixel type will be float.">
+        <param name="mode" type="select" label="Scaling of values" help="If the brightness is to be preserved (default), then the values will be scaled between 0 and 1, and a floating point pixel data type will be used.">
             <option value="" selected="true">Preserve brightness</option>
             <option value="--preserve_values">Preserve range of values</option>
         </param>
