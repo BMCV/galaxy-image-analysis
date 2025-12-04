@@ -115,7 +115,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('dcm', type=pathlib.Path)
     parser.add_argument('tiff', type=pathlib.Path)
-    parser.add_argument('multiframe_axis', type=str, help='OME-TIFF axis to be used for the frames of a multi-frame DICOM file')
+    parser.add_argument('multiframe_axis', type=str, choices=frame_axes, help='OME-TIFF axis to be used for the frames of a multi-frame DICOM file')
     parser.add_argument('dtype', type=str)
     parser.add_argument('--normalize_label_maps', default=False, action='store_true')
     parser.add_argument('--apply_voi_transform', default=False, action='store_true')
