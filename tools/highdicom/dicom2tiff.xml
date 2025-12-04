@@ -52,7 +52,7 @@
                 <option value="uint32">32-bit unsigned integer</option>
             </param>
             <when value="">
-                <param name="normalize_label_maps" type="boolean" checked="true" label="Normalize label maps" truevalue="--normalize_label_maps" falsevalue="" help="If a DICOM dataset is recognized as a label map, a suitable data type will be chosen and the labels will be normalized to improve visual perception."/>
+                <param name="normalize_label_maps" type="boolean" checked="true" label="Normalize label maps" truevalue="--normalize_label_maps" falsevalue="" help="If a DICOM dataset is recognized as a label map, a suitable integer data type will be chosen and the labels will be normalized to improve visual perception."/>
             </when>
             <when value="float16">
                 <param name="normalize_label_maps" type="hidden" value=""/>
@@ -142,6 +142,21 @@
         </test>
     </tests>
     <help>
+
+        **Converts a DICOM dataset into a TIFF image.**
+
+        DICOM is a widely established file format in medical imaging. A DICOM dataset contains rich metadata (patient, study
+        info) and the actual medical image pixel or voxel data. A list of DICOM datasets can form a DICOM series (e.g., a list
+        of consecutive slices or time steps).
+
+        For conversion of a DICOM series into a single TIFF image, consider a two-step approach:
+
+        1. Use this tool to convert each individual DICOM dataset to TIFF.
+        2. Use the `🔧 Concatenate images or channels`_ tool to merge the obtained TIFF images into a single TIFF image (using
+           the ``T`` or ``Z`` axis).
+
+        .. _🔧 Concatenate images or channels: ?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/concat_channels/ip_concat_channels
+
     </help>
     <citations>
         <citation type="doi">10.1007/s10278-022-00683-y</citation>
