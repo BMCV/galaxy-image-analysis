@@ -57,18 +57,15 @@
             <param name="axis" value="0"/>
             <param name="mode" value="--preserve_values"/>
             <expand macro="tests/intensity_image_diff" name="output" value="res_preserve_values.tiff" ftype="tiff">
-                <!--
-
-                The input files have values ranging between 0 and 255.
-
-                Below, we use an assertion in addition to the `image_diff` comparison, to ensure that the range of
-                values is preserved. The motiviation behind this is that the expectation images are usually checked
-                visually, which means that the `image_diff` comparison is likely to ensure that the brightness of
-                the image is correct, thus it's good to double-check the range of values.
-
-                -->
                 <has_image_mean_intensity min="0" max="255"/>
             </expand>
+            <!--
+            <output name="output" value="res_preserve_values.tiff" ftype="tiff" compare="image_diff" metric="rms" eps="0.01">
+                <assert_contents>
+                    <has_image_mean_intensity min="0" max="255"/>
+                </assert_contents>
+            </output>
+            -->
         </test>
     </tests>
     <help>
