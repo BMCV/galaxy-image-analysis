@@ -165,10 +165,15 @@
         **Converts a DICOM dataset into a TIFF image.**
 
         DICOM is a widely established file format in medical imaging. A DICOM dataset contains rich metadata (patient, study
-        info) and the actual medical image pixel or voxel data. A list of DICOM datasets can form a DICOM series (e.g., a list
-        of consecutive slices or time steps).
+        info) and the actual medical image pixel or voxel data. The image data can be single-channel or multi-channel, and it
+        can also be organized in multiple frames (e.g., spatial tiles of a mosaic, spatial slices, or time steps).
 
-        For conversion of a DICOM series into a single TIFF image, consider a two-step approach:
+        Technically, a DICOM dataset can contain heterogeneous frames of mixed axes (e.g., spatial *and* temporal slices),
+        which, however, is rather uncommon (for such cases, DICOM series are more widely adopted—see below). Currently, this
+        tool can only cope with axis-homogeneous datasets (i.e. datasets with single-axis frames).
+
+        A list of DICOM datasets can form a DICOM series to store multi-dimensional data (e.g., a list of 3-D images for
+        consecutive time steps). For conversion of a DICOM series into a single TIFF image, consider a two-step approach:
 
         1. Use this tool to convert each individual DICOM dataset to TIFF.
         2. Use the `🔧 Concatenate images or channels`_ tool to merge the obtained TIFF images into a single TIFF image (using
