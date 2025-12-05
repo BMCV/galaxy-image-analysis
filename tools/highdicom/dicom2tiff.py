@@ -1,7 +1,10 @@
 import argparse
 import pathlib
 import sys
-from typing import Literal, get_args
+from typing import (
+    get_args,
+    Literal,
+)
 
 import giatools
 import highdicom
@@ -110,7 +113,7 @@ def normalize_label_map(arr: np.ndarray) -> np.ndarray:
         # (normalization should never fail, but better check)
         if len(np.unique(norm_arr)) != num_labels:
             print('Label map normalization failed', file=sys.stderr)
-            return arr  #  this should never happen in practice, but better check
+            return arr  # this should never happen in practice, but better check
         else:
             return norm_arr
 
