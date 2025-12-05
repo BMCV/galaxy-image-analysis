@@ -49,8 +49,12 @@ def dicom_to_tiff(
 
     # Otherwise, extract a raw stack of frames
     else:
-        print('DICOM dataset is an unknown multi-frame image')
-        arr = dcm.get_frames(**kwargs)
+        print(
+            'DICOM dataset is an unknown multi-frame image'
+            if dcm.number_of_frames > 1 else
+            'DICOM dataset is a single-frame image'
+        )
+        arr = dcm.get_frames(**config)
 
         # Construct OME-TIFF axes string
         axes = 'YX'

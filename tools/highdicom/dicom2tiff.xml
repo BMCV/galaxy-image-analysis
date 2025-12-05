@@ -140,6 +140,15 @@
                 <has_line line="Output TIFF axes: ZYX" />
             </assert_stdout>
         </test>
+        <test>
+            <param name="input" value="highdicom/dx_image.dcm"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="dx_image.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="DICOM dataset is a single-frame image" />
+                <has_line line="Output TIFF shape: (169, 211)" />
+                <has_line line="Output TIFF axes: YX" />
+            </assert_stdout>
+        </test>
     </tests>
     <help>
 
