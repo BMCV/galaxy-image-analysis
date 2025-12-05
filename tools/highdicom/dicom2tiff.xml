@@ -149,6 +149,16 @@
                 <has_line line="Output TIFF axes: YX" />
             </assert_stdout>
         </test>
+        <test>
+            <param name="input" value="pydicom/SC_rgb_rle_2frame.dcm"/>
+            <param name="multiframe_axis" value="Q"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="SC_rgb_rle_2frame.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="DICOM dataset is an unknown multi-frame image" />
+                <has_line line="Output TIFF shape: (2, 100, 100, 3)" />
+                <has_line line="Output TIFF axes: QYXC" />
+            </assert_stdout>
+        </test>
     </tests>
     <help>
 
