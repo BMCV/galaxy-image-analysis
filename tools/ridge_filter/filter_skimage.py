@@ -17,6 +17,12 @@ filters = {
     'laplace': lambda img, **kwargs: (
         apply_nd_filter(skimage.filters.laplace, img, **kwargs)
     ),
+    'meijering': lambda img, **kwargs: (
+        apply_nd_filter(skimage.filters.meijering, img, **kwargs)
+    ),
+    'sato': lambda img, **kwargs: (
+        apply_nd_filter(skimage.filters.sato, img, **kwargs)
+    ),
 }
 
 
@@ -75,6 +81,7 @@ def apply_filter(
     img = giatools.Image.read(input_filepath)
 
     # Perform filtering
+    print(f'Applying filter: "{filter_type}"')
     filter_impl = filters[filter_type]
     res = filter_impl(img, **params).normalize_axes_like(img.original_axes)
 
