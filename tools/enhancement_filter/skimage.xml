@@ -1,0 +1,112 @@
+<tool id="enhancement_filter_skimage" name="Apply image enhancement filter" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
+    <description>with scikit-image</description>
+    <macros>
+        <import>creators.xml</import>
+        <import>tests.xml</import>
+        <token name="@TOOL_VERSION@">0.22.0</token>
+        <token name="@VERSION_SUFFIX@">1</token>
+        <xml name="frangi_params">
+            <param name="sigma_min" type="float" value="1" min="0.1" label="Minimum sigma" help="Lower bound of the scale for multi-scale analysis."/>
+            <param name="sigma_max" type="float" value="3" label="Maximum sigma" help="Upper bound of the scale for multi-scale analysis."/>
+            <param name="num_sigma" type="integer" value="10" min="2" label="Number of sigma steps for multi-scale analysis"/>
+            <param name="alpha" type="float" min="0" value="0.5" label="Alpha" help="Frangi correction constant that adjusts the filter's sensitivity to deviation from a plate-like structure."/>
+            <param name="beta" type="float" min="0" value="0.5" label="Beta" help="Frangi correction constant that adjusts the filter's sensitivity to deviation from a blob-like structure."/>
+        </xml>
+    </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+        <expand macro="creators/kostrykin"/>
+    </creator>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="bio.tools">scikit-image</xref>
+        <xref type="biii">scikit-image</xref>
+    </xrefs>
+    <requirements>
+        <requirement type="package" version="@TOOL_VERSION@">scikit-image</requirement>
+        <requirement type="package" version="0.4.1">giatools</requirement>
+    </requirements>
+    <command detect_errors="aggressive"><![CDATA[
+
+        python '$__tool_directory__/filter_skimage.py'
+
+        '$input'
+        '$output'
+        '$params'
+
+    ]]></command>
+    <configfiles>
+        <configfile name="params"><![CDATA[
+            {
+
+            #if $filter.mode == "frangi" or $filter.mode == "hessian"
+                "sigma_min": $filter.sigma_min,
+                "sigma_max": $filter.sigma_max,
+                "num_sigma": $filter.num_sigma,
+                "alpha": $filter.alpha,
+                "beta": $filter.beta
+            #elif $filter.mode == "laplace"
+                "ksize": $filter.ksize
+            #end if
+
+            }
+        ]]></configfile>
+    </configfiles>
+    <inputs>
+        <param name="input" type="data" format="tiff,png" label="Input image"/>
+        <conditional name="filter">
+            <param name="mode" type="select" label="Filter type">
+                <option value="frangi" selected="True">Frangi vesselness filter</option>
+                <option value="hessian">Hybrid Hessian filter</option>
+                <option value="laplace">Laplace filter</option>
+                <!-- TODO: Add Meijering, Sato -->
+            </param>
+            <when value="frangi">
+                <expand macro="frangi_params"/>
+            </when>
+            <when value="hessian">
+                <expand macro="frangi_params"/>
+            </when>
+            <when value="laplace">
+                <param name="ksize" type="integer" value="3" label="Kernel size" help="Define the size of the discrete Laplacian operator such that it will have the size of a hypercube with this edge length (in pixels)." />
+            </when>
+        </conditional>
+    </inputs>
+    <outputs>
+       <data format="tiff" name="output"/>
+    </outputs>
+    <tests>
+    </tests>
+    <help>
+
+**Applies an image enhancement filter.**
+
+2-D and 3-D images are supported. For multi-channel images, the image enhancement filter is applied to all channels of the image.
+For time-series images, the filter is also applied for all time steps.
+
+Frangi vesselness filter (Frangi et al. 1998)
+=============================================
+
+Filter an image with the Frangi vesselness filter. This filter can be used to detect continuous ridges, e.g. vessels, wrinkles,
+rivers. It can be used to calculate the fraction of the whole image containing such objects.
+
+Hybrid Hessian filter (Schrijver 2001, Kroon 2009)
+==================================================
+
+Filter an image with the Hybrid Hessian filter.
+
+This filter can be used to detect continuous edges, e.g. vessels, wrinkles, rivers. It can be used to calculate the fraction of
+the whole image containing such objects. Almost equal to Frangi filter, but uses alternative method of smoothing.
+
+Laplace filter
+==============
+
+Find the edges of an image using the Laplace operator.
+
+    </help>
+    <citations>
+       <citation type="doi">10.1007/BFb0056195</citation>
+    </citations>
+</tool>
