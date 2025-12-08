@@ -58,20 +58,21 @@
     <inputs>
         <conditional name="input_type">
             <param name="input_selector" type="select" label="Input type">
-                <option value="single">Single file</option>
-                <option value="collection">Collection of files</option>
+                <option value="single">Single file (or each file in collection separately)</option>
+                <option value="collection">Collection (verified as combined unit)</option>
             </param>
             <when value="single">
-                <param name="input_file" type="data" format="data" label="File to verify"/>
+                <param name="input_file" type="data" format="data" label="File to verify"
+                    help="Single file or collection - each file will be verified separately against the same hash"/>
             </when>
             <when value="collection">
                 <param name="input_collection" type="data_collection" collection_type="list" format="data"
-                       label="Collection to verify"
-                       help="Collection of files - will generate combined ISCC hash"/>
+                    label="Collection to verify"
+                    help="Collection of files - will generate ONE combined ISCC hash for all files together"/>
             </when>
         </conditional>
         <param name="expected_code" type="text" label="Expected ISCC hash"
-               help="The 55-character ISCC-SUM hash to verify against. In workflows, use the 'Parse parameter value' tool to pipe file contents into this field.">
+            help="The 55-character ISCC-SUM hash to verify against">
             <validator type="length" min="55" max="55" message="ISCC must be exactly 55 characters"/>
         </param>
     </inputs>
@@ -145,7 +146,7 @@ Expected Hash Input
 
 Type or paste the 55-character ISCC hash to verify against.
 
-**In workflows**: Use the 🔧 **Parse parameter value** tool (available in the workflow editor) to pipe the contents of a hash file into this text field. This allows you to connect the output from "Generate ISCC" directly to the verification step.
+**In workflows**: Use the **Parse parameter value** tool (available in the workflow editor) to pipe the contents of a hash file into this text field. This allows you to connect the output from "Generate ISCC" directly to the verification step.
 
 Use Cases
 =========
