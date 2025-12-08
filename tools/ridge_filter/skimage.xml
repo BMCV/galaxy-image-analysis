@@ -41,20 +41,20 @@
         <configfile name="params"><![CDATA[
             {
 
-            #if $filter.mode == "frangi" or $filter.mode == "hessian"
+            #if $filter.filter_type == "frangi" or $filter.filter_type == "hessian"
                 "sigma_min": $filter.sigma_min,
                 "sigma_max": $filter.sigma_max,
                 "num_sigma": $filter.num_sigma,
                 "alpha": $filter.alpha,
                 "beta": $filter.beta,
 
-            #elif $filter.mode == "laplace"
+            #elif $filter.filter_type == "laplace"
                 "ksize": $filter.ksize,
 
             #end if
 
                 "dtype": "$dtype",
-                "mode": "$filter.mode"
+                "filter_type": "$filter.filter_type"
 
             }
         ]]></configfile>
@@ -67,7 +67,7 @@
             <option value="float16">16-bit floating point</option>
         </param>
         <conditional name="filter">
-            <param name="mode" type="select" label="Filter type">
+            <param name="filter_type" type="select" label="Filter type">
                 <option value="frangi" selected="True">Frangi vesselness filter</option>
                 <option value="hessian">Hybrid Hessian filter</option>
                 <option value="laplace">Laplace filter</option>
@@ -93,7 +93,7 @@
             <param name="input" value="scikit-image/retina.png"/>
             <param name="dtype" value="float16"/>
             <conditional name="filter">
-                <param name="mode" value="frangi"/>
+                <param name="filter_type" value="frangi"/>
                 <param name="sigma_min" value="0.5"/>
                 <param name="sigma_max" value="20"/>
                 <param name="num_sigma" value="10"/>
@@ -110,7 +110,7 @@
             <param name="input" value="retina_0c_0z_0t_0q.tiff"/>
             <param name="dtype" value="float16"/>
             <conditional name="filter">
-                <param name="mode" value="hessian"/>
+                <param name="filter_type" value="hessian"/>
                 <param name="sigma_min" value="0.5"/>
                 <param name="sigma_max" value="20"/>
                 <param name="num_sigma" value="10"/>
@@ -127,7 +127,7 @@
             <param name="input" value="retina_0c_0z_3t_0q.tiff"/>
             <param name="dtype" value="float16"/>
             <conditional name="filter">
-                <param name="mode" value="frangi"/>
+                <param name="filter_type" value="frangi"/>
                 <param name="sigma_min" value="0.5"/>
                 <param name="sigma_max" value="20"/>
                 <param name="num_sigma" value="10"/>
@@ -144,7 +144,7 @@
             <param name="input" value="retina_0c_0z_0t_2q.tiff"/>
             <param name="dtype" value="float16"/>
             <conditional name="filter">
-                <param name="mode" value="hessian"/>
+                <param name="filter_type" value="hessian"/>
                 <param name="sigma_min" value="0.5"/>
                 <param name="sigma_max" value="20"/>
                 <param name="num_sigma" value="10"/>
@@ -161,7 +161,7 @@
             <param name="input" value="retina_0c_5z_0t_0q.tiff"/>
             <param name="dtype" value="float16"/>
             <conditional name="filter">
-                <param name="mode" value="laplace"/>
+                <param name="filter_type" value="laplace"/>
                 <param name="ksize" value="5"/>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="retina_0c_5z_0t_0q_laplace.tiff" ftype="tiff"/>

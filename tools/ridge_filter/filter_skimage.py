@@ -57,7 +57,7 @@ def apply_nd_filter(
 def apply_filter(
     input_filepath: str,
     output_filepath: str,
-    mode: str,
+    filter_type: str,
     **kwargs: Any,
 ):
     # Validate and transform input parameters
@@ -75,7 +75,7 @@ def apply_filter(
     img = giatools.Image.read(input_filepath)
 
     # Perform filtering
-    filter_impl = filters[mode]
+    filter_impl = filters[filter_type]
     res = filter_impl(img, **params).normalize_axes_like(img.original_axes)
 
     # Write the result
