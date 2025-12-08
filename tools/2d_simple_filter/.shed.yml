@@ -1,7 +1,7 @@
 categories:
   - Imaging
-description: 2d simple filter
-long_description: Simple filter in 2D
+description: 2-D simple filter
+long_description: Apply 2-D image filter
 name: 2d_simple_filter    
 owner: imgteam
 homepage_url: https://github.com/bmcv

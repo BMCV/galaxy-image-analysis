@@ -1,4 +1,4 @@
-<tool id="ip_filter_standard" name="Filter 2-D image" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
+<tool id="ip_filter_standard" name="Apply 2-D image filter" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
     <description>with scipy</description>
     <macros>
         <import>creators.xml</import>
