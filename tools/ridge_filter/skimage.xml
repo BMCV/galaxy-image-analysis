@@ -46,16 +46,26 @@
                 "sigma_max": $filter.sigma_max,
                 "num_sigma": $filter.num_sigma,
                 "alpha": $filter.alpha,
-                "beta": $filter.beta
+                "beta": $filter.beta,
+
             #elif $filter.mode == "laplace"
-                "ksize": $filter.ksize
+                "ksize": $filter.ksize,
+
             #end if
+
+                "dtype": "$dtype",
+                "mode": "$filter.mode"
 
             }
         ]]></configfile>
     </configfiles>
     <inputs>
         <param name="input" type="data" format="tiff,png" label="Input image"/>
+        <param name="dtype" type="select" label="Output pixel type" help="Data type used to store the pixel values in the output image.">
+            <option value="float64" selected="True">64-bit floating point</option>
+            <option value="float32">32-bit floating point</option>
+            <option value="float16">16-bit floating point</option>
+        </param>
         <conditional name="filter">
             <param name="mode" type="select" label="Filter type">
                 <option value="frangi" selected="True">Frangi vesselness filter</option>
@@ -78,6 +88,40 @@
        <data format="tiff" name="output"/>
     </outputs>
     <tests>
+        <!-- Single-frame, 2-D, multi-channel, Frangi -->
+        <test>
+            <param name="input" value="scikit-image/retina.png"/>
+            <param name="dtype" value="float16"/>
+            <conditional name="filter">
+                <param name="mode" value="frangi"/>
+                <param name="sigma_min" value="0.5"/>
+                <param name="sigma_max" value="20"/>
+                <param name="num_sigma" value="10"/>
+                <param name="alpha" value="0.5"/>
+                <param name="beta" value="0.5"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="retina_rgb_frangi.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Performing 2-D filtering"/>
+            </assert_stdout>
+        </test>
+        <!-- Single-frame, 2-D, single-channel, Hessian -->
+        <test>
+            <param name="input" value="retina_1channel.tiff"/>
+            <param name="dtype" value="float16"/>
+            <conditional name="filter">
+                <param name="mode" value="frangi"/>
+                <param name="sigma_min" value="0.5"/>
+                <param name="sigma_max" value="20"/>
+                <param name="num_sigma" value="10"/>
+                <param name="alpha" value="0.5"/>
+                <param name="beta" value="0.5"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="retina_1channel_hessian.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Performing 2-D filtering"/>
+            </assert_stdout>
+        </test>
     </tests>
     <help>
 

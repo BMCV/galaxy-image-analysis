@@ -8,15 +8,22 @@ import skimage.filters
 
 
 filters = {
-    'frangi': lambda img, **kwargs: apply_nd_filter(skimage.filters.frangi, img, **kargs),
-    'hessian': lambda img, **kwargs: apply_nd_filter(skimage.filters.hessian, img, **kargs),
-    'laplace': lambda img, **kwargs: apply_nd_filter(skimage.filters.laplace, img, **kargs),
+    'frangi': lambda img, **kwargs: (
+        apply_nd_filter(skimage.filters.frangi, img, **kwargs)
+    ),
+    'hessian': lambda img, **kwargs: (
+        apply_nd_filter(skimage.filters.hessian, img, **kwargs)
+    ),
+    'laplace': lambda img, **kwargs: (
+        apply_nd_filter(skimage.filters.laplace, img, **kwargs)
+    ),
 }
 
 
 def apply_nd_filter(
     filter_impl: callable,
     img: giatools.Image,
+    dtype: str,
     **kwargs: Any,
 ) -> giatools.Image:
     """
@@ -28,9 +35,23 @@ def apply_nd_filter(
         img.data.shape[ 1],  # T axis
         img.data.shape[-1],  # C axis
     ):
-        sl = np.s_[qtc[:2]][..., qtc[2]]
-        result_data[sl] = filter_impl(img.data[sl])  # filter 2-D/3-D jointly
-    return giatools.Image(result_data, img.axes)
+        sl = np.s_[*qtc[:2], ..., qtc[2]]
+        arr = img.data[sl]
+        assert arr.ndim == 3  # sanity check, should always be True
+
+        # Perform 2-D or 3-D filtering
+        if arr.shape[0] == 1:
+            info = 'Performing 2-D filtering'
+            result_data[sl][0] = filter_impl(arr[0])
+        else:
+            info = 'Performing 3-D filtering'
+            result_data[sl] = filter_impl(arr)
+
+    # Print status info
+    print(info)
+
+    # Return results as 16bit, 32bit, or 64bit floating point
+    return giatools.Image(result_data.astype(dtype), img.axes)
 
 
 def apply_filter(
@@ -41,7 +62,7 @@ def apply_filter(
 ):
     # Validate and transform input parameters
     params = dict(kwargs)
-    if (sigma_min := params.pop('sigma_min', None) is not None and (sigma_max := params.pop('sigma_max'), None) is not None:
+    if (sigma_min := params.pop('sigma_min', None)) is not None and (sigma_max := params.pop('sigma_max', None)) is not None:
         num_sigma = params.pop('num_sigma')
         if sigma_min < sigma_max:
             params['sigmas'] = np.linspace(sigma_min, sigma_max, num_sigma)
@@ -75,6 +96,5 @@ if __name__ == "__main__":
     apply_filter(
         args.input,
         args.output,
-        args.mode,
         **cfg,
     )
