@@ -14,66 +14,37 @@
     </creator>
         
     <command detect_errors="exit_code"><![CDATA[
-        #if $input_type.input_selector == "single":
-            ## Single file - generate ISCC
-            GENERATED=\$(iscc-sum '${input_type.input_file}' | cut -d':' -f2 | cut -d' ' -f1)
-        #else:
-            ## Collection - concatenate and generate combined ISCC
-            GENERATED=\$(cat
-            #for $input in $input_type.input_collection:
-                '$input'
-            #end for
-            | iscc-sum - | cut -d':' -f2 | cut -d' ' -f1)
-        #end if
-        &&
-
+        ## Generate ISCC for input file
+        GENERATED=\$(iscc-sum '${input_file}' | cut -d':' -f2 | cut -d' ' -f1) &&
+        
         ## Get expected hash
-        EXPECTED='$expected_code'
-        &&
-
+        EXPECTED='${expected_hash}' &&
+        
         ## Validate expected hash length
         if [ \${#EXPECTED} -ne 55 ]; then
             echo "ERROR: Expected ISCC hash must be exactly 55 characters" >&2;
             echo "Found: \${#EXPECTED} characters" >&2;
-            echo "Content: \$EXPECTED" >&2;
             exit 1;
         fi &&
-
+        
         ## Output verification report
-        #if $input_type.input_selector == "single":
-            echo "File: ${input_type.input_file.element_identifier}" > '${output_file}' &&
-        #else:
-            echo "Collection: ${input_type.input_collection.name}" > '${output_file}' &&
-        #end if
+        if [ "\$GENERATED" = "\$EXPECTED" ]; then
+            echo "OK - Hashes match" > '${output_file}'; 
+        else
+            echo "FAILED - Hashes do not match" > '${output_file}'; 
+        fi &&
         echo "Expected:  \$EXPECTED" >> '${output_file}' &&
         echo "Generated: \$GENERATED" >> '${output_file}' &&
-        echo "" >> '${output_file}' &&
-        if [ "\$GENERATED" = "\$EXPECTED" ]; then
-            echo "Status: OK - Hashes match" >> '${output_file}';
-        else
-            echo "Status: FAILED - Hashes do not match" >> '${output_file}';
-        fi
+        echo "" >> '${output_file}' 
+    
     ]]></command>
 
     <inputs>
-        <conditional name="input_type">
-            <param name="input_selector" type="select" label="Input type">
-                <option value="single">Single file (or each file in collection separately)</option>
-                <option value="collection">Collection (verified as combined unit)</option>
-            </param>
-            <when value="single">
-                <param name="input_file" type="data" format="data" label="File to verify"
-                    help="Single file or collection - each file will be verified separately against the same hash"/>
-            </when>
-            <when value="collection">
-                <param name="input_collection" type="data_collection" collection_type="list" format="data"
-                    label="Collection to verify"
-                    help="Collection of files - will generate ONE combined ISCC hash for all files together"/>
-            </when>
-        </conditional>
-        <param name="expected_code" type="text" label="Expected ISCC hash"
-            help="The 55-character ISCC-SUM hash to verify against">
-            <validator type="length" min="55" max="55" message="ISCC must be exactly 55 characters"/>
+        <param name="input_file" type="data" format="data" label="File to verify"
+               help="Verify this file's ISCC hash. When a collection is provided, each file is verified separately against the same expected hash."/>
+        <param name="expected_hash" type="text" label="Expected ISCC hash"
+               help="The 55-character ISCC hash to verify against">
+            <validator type="length" min="55" max="55" message="ISCC hash must be exactly 55 characters"/>
         </param>
     </inputs>
     
@@ -82,47 +53,45 @@
     </outputs>
     
     <tests>
-        <!-- Test 1: Single file verification - match -->
+        <!-- Test 1: Successful verification -->
         <test expect_num_outputs="1">
-            <conditional name="input_type">
-                <param name="input_selector" value="single"/>
-                <param name="input_file" value="test1.png"/>
-            </conditional>
-            <param name="expected_code" value="K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY"/>
+            <param name="input_file" value="test1.png"/>
+            <param name="expected_hash" value="K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY"/>
             <output name="output_file">
                 <assert_contents>
-                    <has_text text="Status: OK"/>
+                    <has_text text="OK - Hashes match"/>
+                    <has_text text="Expected:  K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY"/>
+                    <has_text text="Generated: K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY"/>
+                    <has_n_lines n="4"/>
                 </assert_contents>
             </output>
         </test>
-        <!-- Test 2: Single file verification - mismatch -->
+        
+        <!-- Test 2: Failed verification -->
         <test expect_num_outputs="1">
-            <conditional name="input_type">
-                <param name="input_selector" value="single"/>
-                <param name="input_file" value="test1.png"/>
-            </conditional>
-            <param name="expected_code" value="K4AGSPOSB5SS2X427WZ27QASTSBVTS55DXLMFDF7WOJKEOSTDEI3OXQ"/>
+            <param name="input_file" value="test1.png"/>
+            <param name="expected_hash" value="K4AGSPOSB5SS2X427WZ27QASTSBVTS55DXLMFDF7WOJKEOSTDEI3OXQ"/>
             <output name="output_file">
                 <assert_contents>
-                    <has_text text="Status: FAILED"/>
+                    <has_text text="FAILED - Hashes do not match"/>
+                    <has_text text="Expected:  K4AGSPOSB5SS2X427WZ27QASTSBVTS55DXLMFDF7WOJKEOSTDEI3OXQ"/>
+                    <has_text text="Generated: K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY"/>
+                    <has_n_lines n="4"/>
+
                 </assert_contents>
             </output>
         </test>
-        <!-- Test 3: Collection verification - combined ISCC -->
+        
+        <!-- Test 3: FASTA file verification -->
         <test expect_num_outputs="1">
-            <conditional name="input_type">
-                <param name="input_selector" value="collection"/>
-                <param name="input_collection">
-                    <collection type="list">
-                        <element name="sample1" value="test1.png"/>
-                        <element name="sample2" value="test2.tiff"/>
-                    </collection>
-                </param>
-            </conditional>
-            <param name="expected_code" value="K4AOQPOGAJC42V42HS427TA23SJXXHWY4A7OBRVST5EIUGITM7XKOQA"/>
+            <param name="input_file" value="test3.fasta"/>
+            <param name="expected_hash" value="K4AKF7PTZ7JTAAYZ7YZHZPR5RETKYXXE7RTBTJA4JX5GQQMSLZRC6QQ"/>
             <output name="output_file">
                 <assert_contents>
-                    <has_text text="Status: OK"/>
+                    <has_text text="OK - Hashes match"/>
+                    <has_text text="Expected:  K4AKF7PTZ7JTAAYZ7YZHZPR5RETKYXXE7RTBTJA4JX5GQQMSLZRC6QQ"/>
+                    <has_text text="Generated: K4AKF7PTZ7JTAAYZ7YZHZPR5RETKYXXE7RTBTJA4JX5GQQMSLZRC6QQ"/>
+                    <has_n_lines n="4"/>
                 </assert_contents>
             </output>
         </test>
@@ -132,72 +101,99 @@
 What it does
 ============
 
-Verifies that a file or collection matches an expected ISCC hash for exact checksum verification.
+Verifies that a file matches an expected ISCC hash for exact checksum verification.
 
-This tool generates one ISCC hash (from a single file OR combined collection) and compares it against an expected reference hash.
+Exit Codes
+==========
 
-**Input Options**
+The tool uses exit codes for workflow logic:
 
-1. **Single File**: Verify one file against expected hash
-2. **Collection**: Verify entire collection as one unit (generates combined ISCC)
+- **0**: Verification successful (OK - hashes match)
+- **1**: Verification failed (FAILED - hashes do not match)
 
-Expected Hash Input
-===================
+Dataset Mapping
+===============
 
-Type or paste the 55-character ISCC hash to verify against.
+When you provide a collection, Galaxy automatically runs verification once per file. All files are verified against the same expected hash.
 
-**In workflows**: Use the **Parse parameter value** tool (available in the workflow editor) to pipe the contents of a hash file into this text field. This allows you to connect the output from "Generate ISCC" directly to the verification step.
+Output
+======
+
+A verification report containing:
+
+- Filename (or element identifier)
+- Expected ISCC hash  
+- Generated ISCC hash
+- Status: OK or FAILED
+
+Example output::
+
+    File: sample1.png
+    Expected:  K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY
+    Generated: K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY
+    
+    Status: OK - Hashes match
 
 Use Cases
 =========
 
 - Verify file integrity after transfer or storage
-- Confirm exact match for a dataset/collection
-- Validate that nothing in a collection has been modified
-- Quality control: Ensure received data matches reference exactly
+- Confirm downloaded files match reference checksums
+- Validate that backups are identical to originals
+- Quality control for data archiving
 
-Output
-======
+Workflow Examples
+=================
 
-A verification report showing:
-- Input (file or collection name)
-- Expected ISCC hash
-- Generated ISCC hash
-- Status: OK (exact match) or FAILED (different)
+Verify a single file
+--------------------
 
-Workflow Example
-================
+::
 
-Step 1: Generate ISCC (combined mode)
-Input: Reference collection
-Output: Single ISCC hash
+    Input: document.pdf
+    Expected hash: K4AOMG...
+    ↓
+    [Verify ISCC hash]
+    ↓
+    Output: "OK" or "FAILED"
 
-Step 2: [Transfer/storage/time passes]
+Verify against reference table
+-------------------------------
 
-Step 3: Verify ISCC
-Input: New collection + reference hash
-Output: OK or FAILED
+Generate reference hashes first::
+
+    Original files → [Generate ISCC] → Reference hashes
+    
+Later verify::
+
+    New files → [Generate ISCC] → New hashes
+    ↓
+    [Join two Datasets] on filename
+    ↓
+    Compare hash columns
+    ↓
+    Result: Which files match/differ
+
+Working with Hash Files in Workflows
+=====================================
+
+If you have the expected hash in a file (e.g., from Generate ISCC tool):
+
+1. In the workflow editor, connect the hash file to this tool
+2. The hash file content will be used automatically
+3. Or manually copy the hash from the file into the text field
 
 Important Notes
 ===============
 
-- **Exact match only**: Even one bit changed = FAILED
-- **Collection mode**: Treats entire collection as unit
-  - If ANY file changes, verification fails
-  - Doesn't tell you WHICH file changed
-- **For per-file tracking**: Use "Generate ISCC" (individual mode) instead
-- **For similarity detection**: Use "Compare ISCC similarity" tool
-
-When to Use This Tool vs Generate ISCC
-======================================
-
-- Use **Verify** when: You have a reference hash and want to check if current matches
-- Use **Generate** (individual) when: You need hashes for each file separately
+- **Exact match only**: Any change to the file will cause verification to fail
+- **Bit-level comparison**: Even metadata changes are detected
+- **For similarity detection**: Use "Find similar ISCC hashes" tool instead
 
 More Information
 ================
 
-For more details about ISCC, visit: https://sum.iscc.codes/
+For details about ISCC: https://sum.iscc.codes/
     ]]></help>
     <expand macro="citations" />
 </tool>

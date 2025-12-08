@@ -1,4 +1,4 @@
-<tool id="iscc_sum_compare" name="Compare ISCC hash similarity" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="24.1">
+<tool id="iscc_sum_similarity" name="Find files with similar ISCC hashes" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="24.1">
     <description>with ISCC-SUM</description>
     <macros>
         <import>macros.xml</import>
@@ -14,127 +14,92 @@
     </creator>
         
     <command detect_errors="exit_code"><![CDATA[
-        #if $input_type.input_selector == "two_files":
-            ## Pairwise file comparison
-            iscc-sum --similar --threshold $threshold '$input_type.file1' '$input_type.file2' > '${output_file}'
-        #elif $input_type.input_selector == "two_collections":
-            ## Two collections comparison - generate combined ISCC for each
-            ISCC1=\$(cat
-            #for $file in $input_type.collection1:
-                '$file'
-            #end for
-            | iscc-sum - | cut -d':' -f2 | cut -d' ' -f1) &&
-
-            ISCC2=\$(cat
-            #for $file in $input_type.collection2:
-                '$file'
-            #end for
-            | iscc-sum - | cut -d':' -f2 | cut -d' ' -f1) &&
-
-            ## Create temp files for comparison
-            echo \$ISCC1 > temp1.txt &&
-            echo \$ISCC2 > temp2.txt &&
-
-            ## Use iscc-sum to compare similarity and output directly
-            iscc-sum --similar --threshold $threshold temp1.txt temp2.txt > '${output_file}' || true
-        #else:
-            ## Single collection - find similar files within
-            mkdir -p input_files &&
-            #for $file in $input_type.file_collection:
-                ln -s '$file' 'input_files/$file.element_identifier' &&
-            #end for
-            iscc-sum --similar --threshold $threshold input_files/* > '${output_file}'
-        #end if
+        ## Create working directory
+        mkdir -p input_files &&
+        
+        ## Symlink files with proper names
+        #for $i, $file in enumerate($input_files):
+            ln -s '$file' 'input_files/${file.element_identifier}_${i}' &&
+        #end for
+        
+        ## Run similarity detection
+        iscc-sum --similar --threshold $threshold input_files/* > similarity_raw.txt &&
+        
+        ## Parse into tabular format
+        python '$__tool_directory__/iscc_similarity_parse_output.py' similarity_raw.txt '$output_file'
     ]]></command>
 
     <inputs>
-        <conditional name="input_type">
-            <param name="input_selector" type="select" label="Input type">
-                <option value="two_files">Compare two datasets</option>
-                <option value="collection">Find similar datasets in collection</option>
-                <option value="two_collections">Compare two collections</option>
-            </param>
-            <when value="two_files">
-                <param name="file1" type="data" format="data" label="First file"/>
-                <param name="file2" type="data" format="data" label="Second file"/>
-            </when>
-            <when value="collection">
-                <param name="file_collection" type="data_collection" collection_type="list"
-                       format="data" label="File collection to compare"/>
-            </when>
-            <when value="two_collections">
-                <param name="collection1" type="data_collection" collection_type="list" format="data"
-                       label="First collection (reference)"
-                       help="Reference collection - will generate combined ISCC"/>
-                <param name="collection2" type="data_collection" collection_type="list" format="data"
-                       label="Second collection (to compare)"
-                       help="Collection to compare against reference - will generate combined ISCC"/>
-            </when>
-        </conditional>
-        <param name="threshold" type="integer" value="12" min="0" max="256"
-               label="Similarity threshold (Hamming distance)"
-               help="Maximum Hamming distance for similarity matching. 0-5: Nearly identical, 6-12: Likely similar (default), 13-20: Probably somewhat similar"/>
+        <param name="input_files" type="data" format="data" multiple="true"
+               label="Files to compare"
+               help="Select multiple files or provide a collection. ISCC-SUM will find similar files."/>
+        <param name="threshold" type="integer" value="12" min="0" max="64"
+               label="Similarity threshold"
+               help="Maximum Hamming distance (0=identical, 12=default, higher=more lenient)"/>
     </inputs>
     
     <outputs>
-        <data name="output_file" format="txt" label="${tool.name} on ${on_string}"/>
+        <data name="output_file" format="tabular" label="${tool.name} on ${on_string}"/>
     </outputs>
     
     <tests>
-        <!-- Test 1: Pairwise file comparison -->
+        <!-- Test 1: Two identical files (duplicate selection) -->
         <test expect_num_outputs="1">
-            <conditional name="input_type">
-                <param name="input_selector" value="two_files"/>
-                <param name="file1" value="test1.png"/>
-                <param name="file2" value="test1.png"/>
-            </conditional>
+            <param name="input_files" value="test1.png,test1.png"/>
             <param name="threshold" value="12"/>
-            <output name="output_file">
+            <output name="output_file" ftype="tabular">
                 <assert_contents>
-                    <has_text text="~00"/>
+                    <has_n_columns n="5"/>
+                    <has_n_lines n="2"/>
+                    <has_text text="test1.png"/>
+                    <has_text text="K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY"/>
+                    <has_text text="0"/>
                 </assert_contents>
             </output>
         </test>
-        <!-- Test 2: Single collection comparison -->
+        
+        <!-- Test 2: Three files - two identical, one different -->
         <test expect_num_outputs="1">
-            <conditional name="input_type">
-                <param name="input_selector" value="collection"/>
-                <param name="file_collection">
-                    <collection type="list">
-                        <element name="file1" value="test1.png"/>
-                        <element name="file2" value="test2.tiff"/>
-                        <element name="file3" value="test2.tiff"/>
-                    </collection>
-                </param>
-            </conditional>
+            <param name="input_files" value="test1.png,test2.tiff,test2.tiff"/>
             <param name="threshold" value="12"/>
-            <output name="output_file">
+            <output name="output_file" ftype="tabular">
                 <assert_contents>
-                    <has_text text="~00"/>
+                    <has_n_columns n="5"/>
+                    <has_text text="test1.png"/>
+                    <has_text text="test2.tiff"/>
+                    <has_text text="K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY"/>
+                    <has_text text="K4AGSPOSB5SS2X427WZ27QASTSBVTS55DXLMFDF7WOJKEOSTDEI3OXQ"/>
+                    <has_text text="0"/>
+                    <has_text text="-1"/>
                 </assert_contents>
             </output>
         </test>
-        <!-- Test 3: Two collections comparison -->
+        
+<!-- Test 3: Multiple files with two identical -->
         <test expect_num_outputs="1">
-            <conditional name="input_type">
-                <param name="input_selector" value="two_collections"/>
-                <param name="collection1">
-                    <collection type="list">
-                        <element name="sample1" value="test1.png"/>
-                        <element name="sample2" value="test2.tiff"/>
-                    </collection>
-                </param>
-                <param name="collection2">
-                    <collection type="list">
-                        <element name="sample1" value="test1.png"/>
-                        <element name="sample2" value="test2.tiff"/>
-                    </collection>
-                </param>
-            </conditional>
+            <param name="input_files" value="test1.png,test2.tiff,test2.tiff"/>
             <param name="threshold" value="12"/>
-            <output name="output_file">
+            <output name="output_file" ftype="tabular">
                 <assert_contents>
-                    <has_text text="~00"/>
+                    <has_n_columns n="5"/>
+                    <has_text text="test1.png"/>
+                    <has_text text="test2.tiff"/>
+                    <has_text text="0"/>
+                    <has_text text="-1"/>
+                </assert_contents>
+            </output>
+        </test>
+        
+        <!-- Test 4: No similarities with strict threshold -->
+        <test expect_num_outputs="1">
+            <param name="input_files" value="test1.png,test3.fasta"/>
+            <param name="threshold" value="5"/>
+            <output name="output_file" ftype="tabular">
+                <assert_contents>
+                    <has_n_columns n="5"/>
+                    <has_text text="test1.png"/>
+                    <has_text text="test3.fasta"/>
+                    <has_text text="-1"/>
                 </assert_contents>
             </output>
         </test>
@@ -144,75 +109,153 @@
 What it does
 ============
 
-Compares files or collections by their International Standard Content Code (ISCC) hashes to detect content similarity.
+Finds similar files by comparing their ISCC Data-Code components using Hamming distance.
 
-This tool can operate in three modes:
+This tool identifies content similarity even when:
 
-1. **Pairwise file comparison**: Compare two specific files
-2. **Collection analysis**: Find all similar files within a collection
-3. **Two collections comparison**: Compare two complete collections as units
+- Files have been modified slightly
+- Files are renamed copies
+- Files are different versions of the same content
 
-Similarity Measurement
-======================
-Similarity is measured using Hamming distance on the Data-Code component of ISCC codes.
-Lower numbers indicate higher similarity:
+How Similarity Works
+====================
 
-- **0-5**: Nearly identical files
-- **6-12**: Likely similar content (default threshold)
-- **13-20**: Probably somewhat similar
+ISCC uses the Data-Code component (part of the 55-character hash) to measure content similarity via Hamming distance. Lower numbers mean more similar:
+
+- **0**: Identical content
+- **1-5**: Nearly identical
+- **6-12**: Likely similar (default threshold)
+- **13-20**: Somewhat similar
+- **20+**: Different content
 
 Input
 =====
 
-Choose one of:
+Provide multiple files or a collection. The tool compares all files against each other to find similar pairs.
 
-- **Two files**: Individual files for pairwise comparison
-- **One collection**: Find similar files within the collection
-- **Two collections**: Compare collections as complete units
+Threshold Parameter
+===================
+
+The threshold controls how similar files must be to be reported:
+
+- **Lower threshold** (e.g., 5): Only very similar files
+- **Default** (12): Balanced - catches similar content without too many false positives
+- **Higher threshold** (e.g., 20): More lenient - includes loosely similar files
 
 Output
+======
 
-**Mode 1 & 2** (Files/Collection): Similarity relationships showing reference files and similar matches with Hamming distance (~N)
+A tabular file with one row per similarity match::
 
-Example::
+    filename    iscc_hash    similar_to    distance
+    file1.txt   K4AOMG...    file2.txt     8
+    file1.txt   K4AOMG...    file3.txt     10
+    file4.txt   K4AGSPO...                 -1
 
-    document_v1.txt
-      ~08 document_v2.txt
-      ~12 document_draft.txt
+Where:
 
-**Mode 3** (Two collections): Similarity comparison of combined ISCCs
+- **filename**: Reference file
+- **iscc_hash**: ISCC hash of reference file
+- **similar_to**: Matching file (empty if no matches)
+- **distance**: Hamming distance (0=identical, -1=no matches)
 
-Example::
-
-    ISCC:K4A... *temp1.txt
-      ~08 ISCC:K4A... *temp2.txt
+Files with no similar matches have distance=-1.
 
 Use Cases
 =========
 
-- **Mode 1**: Compare two specific files for similarity
-- **Mode 2**: Find duplicates/near-duplicates in large dataset (ISCC-SUM excels here!)
-- **Mode 3**: Check if two collections are similar (but not exactly the same)
+Find duplicates in large datasets
+----------------------------------
 
-Workflow: Verify then Compare
-=============================
+::
 
-Step 1: `Verify ISCC hash`_
+    Input: Collection of 1000 research images
+    Threshold: 8 (strict)
+    ↓
+    [Find similar ISCC hashes]
+    ↓
+    Output: List of near-duplicate pairs
+    ↓
+    [Filter: distance < 5]
+    ↓
+    Result: Exact or near-exact duplicates to remove
 
-.. _Verify ISCC hash: ?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/iscc_sum/iscc_sum_verify
-  Input: New collection + reference hash
-  Output: FAILED
+Detect renamed files
+--------------------
 
-Step 2: Compare Similarity (two collections mode)
-  Input: Reference collection + new collection
-  Output: ~08 (very similar, minor differences)
+::
 
-This tells you: "Not exact match, but content is very similar"
+    Input: Two collections (before/after reorganization)
+    ↓
+    [Find similar ISCC hashes]
+    ↓
+    Output: Matches showing which files are the same
+    ↓
+    Result: Mapping of old names to new names
+
+Track document versions
+-----------------------
+
+::
+
+    Input: Collection of report versions
+    Threshold: 15 (lenient)
+    ↓
+    [Find similar ISCC hashes]
+    ↓
+    Output: Version relationships
+    ↓
+    [Group by: filename] ← Galaxy tool
+    ↓
+    Result: Version tree showing document evolution
+
+Working with Results
+====================
+
+The tabular output can be filtered and processed with Galaxy tools:
+
+**Find exact duplicates**::
+
+    [Filter: distance == 0]
+
+**Find very similar files**::
+
+    [Filter: distance <= 5]
+
+**Group by reference file**::
+
+    [Group data: filename]
+    
+**Create similarity network**::
+
+    Import to Cytoscape or graph tools
+
+Important Notes
+===============
+
+- **Content-based**: Similarity based on file content, not metadata
+- **Format-independent**: Can match files in different formats
+- **Not for exact verification**: Use "Verify ISCC hash" for exact checksums
+- **Ordering independent**: File order in collection doesn't matter
+- **Pairwise comparison**: All files compared against each other
+
+Comparison with Other Tools
+============================
+
++------------------------+------------------+---------------------+
+| Tool                   | Use Case         | Output              |
++========================+==================+=====================+
+| Generate ISCC          | Create checksums | Individual hashes   |
++------------------------+------------------+---------------------+
+| Verify ISCC            | Exact matching   | OK/FAILED           |
++------------------------+------------------+---------------------+
+| Find similar (this)    | Content similar  | Distance scores     |
++------------------------+------------------+---------------------+
 
 More Information
 ================
 
-For more details about ISCC, visit: https://sum.iscc.codes/
+For details about ISCC: https://sum.iscc.codes/
     ]]></help>
     <expand macro="citations" />
 </tool>
