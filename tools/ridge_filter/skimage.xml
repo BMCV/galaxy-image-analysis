@@ -100,14 +100,14 @@
                 <param name="alpha" value="0.5"/>
                 <param name="beta" value="0.5"/>
             </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="retina_rgb_frangi.tiff" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="retina_frangi.tiff" ftype="tiff"/>
             <assert_stdout>
                 <has_line line="Performing 2-D filtering"/>
             </assert_stdout>
         </test>
         <!-- Single-frame, 2-D, single-channel, Hessian -->
         <test>
-            <param name="input" value="retina_1channel.tiff"/>
+            <param name="input" value="retina_0c_0z_0t_0q.tiff"/>
             <param name="dtype" value="float16"/>
             <conditional name="filter">
                 <param name="mode" value="frangi"/>
@@ -117,7 +117,7 @@
                 <param name="alpha" value="0.5"/>
                 <param name="beta" value="0.5"/>
             </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="retina_1channel_hessian.tiff" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="retina_0c_0z_0t_0q_hessian.tiff" ftype="tiff"/>
             <assert_stdout>
                 <has_line line="Performing 2-D filtering"/>
             </assert_stdout>
