@@ -6,6 +6,10 @@
         <token name="@TOOL_VERSION@">0.22.0</token>
         <token name="@VERSION_SUFFIX@">1</token>
         <xml name="frangi_params">
+            <param name="black_ridges" type="select" label="Mode of operation">
+                <option value="true" selected="true">Enhance dark ridges (low image intensities)</option>
+                <option value="false">Enhance bright ridges (high image intensities)</option>
+            </param>
             <param name="sigma_min" type="float" value="1" min="0.1" label="Minimum sigma" help="Lower bound of the scale for multi-scale analysis."/>
             <param name="sigma_max" type="float" value="3" label="Maximum sigma" help="Upper bound of the scale for multi-scale analysis."/>
             <param name="num_sigma" type="integer" value="10" min="2" label="Number of sigma steps for multi-scale analysis"/>
@@ -42,6 +46,7 @@
             {
 
             #if $filter.filter_type == "frangi" or $filter.filter_type == "hessian"
+                "black_ridges": $filter.black_ridges,
                 "sigma_min": $filter.sigma_min,
                 "sigma_max": $filter.sigma_max,
                 "num_sigma": $filter.num_sigma,
@@ -88,12 +93,13 @@
        <data format="tiff" name="output"/>
     </outputs>
     <tests>
-        <!-- Single-image (Q), Single-frame (T), Single-slice (Z), multi-channel (C), Frangi -->
+        <!-- Single-image (Q), Single-frame (T), Single-slice (Z), multi-channel (C), Frangi (dark) -->
         <test>
             <param name="input" value="scikit-image/retina.png"/>
             <param name="dtype" value="float16"/>
             <conditional name="filter">
                 <param name="filter_type" value="frangi"/>
+                <param name="black_ridges" value="true"/>
                 <param name="sigma_min" value="0.5"/>
                 <param name="sigma_max" value="20"/>
                 <param name="num_sigma" value="10"/>
@@ -105,12 +111,13 @@
                 <has_line line="Performing 2-D filtering"/>
             </assert_stdout>
         </test>
-        <!-- Single-image (Q), Single-frame (T), Single-slice (Z), single-channel (C), Hessian -->
+        <!-- Single-image (Q), Single-frame (T), Single-slice (Z), single-channel (C), Hessian (dark) -->
         <test>
             <param name="input" value="retina_0c_0z_0t_0q.tiff"/>
             <param name="dtype" value="float16"/>
             <conditional name="filter">
                 <param name="filter_type" value="hessian"/>
+                <param name="black_ridges" value="true"/>
                 <param name="sigma_min" value="0.5"/>
                 <param name="sigma_max" value="20"/>
                 <param name="num_sigma" value="10"/>
@@ -122,12 +129,13 @@
                 <has_line line="Performing 2-D filtering"/>
             </assert_stdout>
         </test>
-        <!-- Single-image (Q), Multi-frame (T), Single-slice (Z), single-channel (C), Frangi -->
+        <!-- Single-image (Q), Multi-frame (T), Single-slice (Z), single-channel (C), Frangi (dark) -->
         <test>
             <param name="input" value="retina_0c_0z_3t_0q.tiff"/>
             <param name="dtype" value="float16"/>
             <conditional name="filter">
                 <param name="filter_type" value="frangi"/>
+                <param name="black_ridges" value="true"/>
                 <param name="sigma_min" value="0.5"/>
                 <param name="sigma_max" value="20"/>
                 <param name="num_sigma" value="10"/>
@@ -139,12 +147,13 @@
                 <has_line line="Performing 2-D filtering"/>
             </assert_stdout>
         </test>
-        <!-- Multi-image (Q), Single-frame (T), Single-slice (Z), single-channel (C), Hessian -->
+        <!-- Multi-image (Q), Single-frame (T), Single-slice (Z), single-channel (C), Hessian (dark) -->
         <test>
             <param name="input" value="retina_0c_0z_0t_2q.tiff"/>
             <param name="dtype" value="float16"/>
             <conditional name="filter">
                 <param name="filter_type" value="hessian"/>
+                <param name="black_ridges" value="true"/>
                 <param name="sigma_min" value="0.5"/>
                 <param name="sigma_max" value="20"/>
                 <param name="num_sigma" value="10"/>
@@ -167,6 +176,24 @@
             <expand macro="tests/intensity_image_diff" name="output" value="retina_0c_5z_0t_0q_laplace.tiff" ftype="tiff"/>
             <assert_stdout>
                 <has_line line="Performing 3-D filtering"/>
+            </assert_stdout>
+        </test>
+        <!-- Bright ridges, Single-image (Q), Single-frame (T), Multi-slice (Z), single-channel (C), Frangi (bright) -->
+        <test>
+            <param name="input" value="retina_inv_0c_0z_0t_0q.tiff"/>
+            <param name="dtype" value="float16"/>
+            <conditional name="filter">
+                <param name="filter_type" value="frangi"/>
+                <param name="black_ridges" value="false"/>
+                <param name="sigma_min" value="0.5"/>
+                <param name="sigma_max" value="20"/>
+                <param name="num_sigma" value="10"/>
+                <param name="alpha" value="0.5"/>
+                <param name="beta" value="0.5"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="retina_inv_0c_0z_0t_0q_frangi.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Performing 2-D filtering"/>
             </assert_stdout>
         </test>
     </tests>

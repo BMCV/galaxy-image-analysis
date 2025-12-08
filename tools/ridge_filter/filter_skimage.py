@@ -42,10 +42,10 @@ def apply_nd_filter(
         # Perform 2-D or 3-D filtering
         if arr.shape[0] == 1:
             info = 'Performing 2-D filtering'
-            result_data[sl][0] = filter_impl(arr[0])
+            result_data[sl][0] = filter_impl(arr[0], **kwargs)
         else:
             info = 'Performing 3-D filtering'
-            result_data[sl] = filter_impl(arr)
+            result_data[sl] = filter_impl(arr, **kwargs)
 
     # Print status info
     print(info)
