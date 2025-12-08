@@ -1,4 +1,4 @@
-<tool id="enhancement_filter_skimage" name="Apply image enhancement filter" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
+<tool id="ridge_filter_skimage" name="Apply ridge filter" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
     <description>with scikit-image</description>
     <macros>
         <import>creators.xml</import>
@@ -81,10 +81,13 @@
     </tests>
     <help>
 
-**Applies an image enhancement filter.**
+**Applies a ridge filter to an image.**
 
-2-D and 3-D images are supported. For multi-channel images, the image enhancement filter is applied to all channels of the image.
-For time-series images, the filter is also applied for all time steps.
+Ridge filters can be used to detect ridge-like structures, such as neurites, tubes, vessels, wrinkles, or rivers. Different
+ridge filters may be suited for detecting different structures, e.g., depending on contrast or noise level.
+
+2-D and 3-D images are supported. For multi-channel images, the filter is applied to all channels of the image. For time-series
+images, the filter is also applied for all time steps.
 
 Frangi vesselness filter (Frangi et al. 1998)
 =============================================
