@@ -1,0 +1,31 @@
+<macros>
+    <token name="@TOOL_VERSION@">0.27.0</token>
+    <token name="@VERSION_SUFFIX@">0</token>
+    <xml name="description">
+        <description>with highdicom</description>
+    </xml>
+    <xml name="xrefs">
+        <xrefs>
+            <xref type="bio.tools">highdicom</xref>
+        </xrefs>
+    </xml>
+    <xml name="requirements">
+        <requirements>
+            <requirement type="package" version="@TOOL_VERSION@">highdicom</requirement>
+            <requirement type="package" version="3.0.1">pydicom</requirement>
+            <requirement type="package" version="0.4.1">giatools</requirement>
+            <requirement type="package" version="6.0.3">pyyaml</requirement>
+        </requirements>
+    </xml>
+    <token name="@DICOM_INTRO@">
+        DICOM is a widely established file format in medical imaging. A DICOM dataset contains rich metadata (patient, study
+        info) and the actual medical image pixel or voxel data. The image data can be single-channel or multi-channel, and it
+        can also be organized in multiple frames (e.g., spatial tiles of a mosaic, spatial slices, or time steps).
+    </token>
+    <xml name="citations">
+        <citations>
+            <citation type="doi">10.1007/s10278-022-00683-y</citation>
+            <citation type="doi">10.5281/zenodo.13824606</citation>
+        </citations>
+    </xml>
+</macros>

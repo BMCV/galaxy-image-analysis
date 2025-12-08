@@ -27,6 +27,11 @@ def dicom_to_tiff(
         f'Not a valid axis for DICOM frames: "{multiframe_axis}"'
     )
     dcm = highdicom.imread(dcm_filepath)
+    print('***1', hasattr(dcm, 'to_xml'))
+    print('***2', hasattr(dcm, 'to_json_dict'))
+    ds = pydicom.dcmread(dcm_filepath)
+    print('***3', hasattr(ds, 'to_xml'))
+    print('***4', hasattr(ds, 'to_json_dict'))
 
     # If the image is a tiled image, ...
     if dcm.is_tiled:
