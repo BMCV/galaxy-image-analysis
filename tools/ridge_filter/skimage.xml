@@ -28,6 +28,7 @@
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
     <xrefs>
+        <xref type="bio.tools">galaxy_image_analysis</xref>
         <xref type="bio.tools">scikit-image</xref>
         <xref type="biii">scikit-image</xref>
     </xrefs>
