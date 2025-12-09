@@ -229,10 +229,13 @@
     </tests>
     <help>
 
-        **Applies a standard general-purpose 2-D filter to an image.**
+        **Applies a standard, general-purpose 2-D filter to an image.**
 
-        For 3-D images, the filter is applied to all z-slices of the image. For multi-channel images, the filter is applied to all
-        channels of the image. For time-series images, the filter is also applied for all time steps.
+        Support for different image types:
+
+        - For 3-D images, the filter is applied to all z-slices of the image.
+        - For multi-channel images, the filter is applied to all channels of the image.
+        - For time-series images, the filter is also applied for all time steps.
 
         Mean filters like the Gaussian filter, the box filter, or the median filter preserve both the brightness of the image, and
         the range of values. This does hold for the derivative variants of the Gaussian filter, which may produce negative values.
