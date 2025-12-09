@@ -4,7 +4,7 @@
         <import>creators.xml</import>
         <import>tests.xml</import>
         <token name="@TOOL_VERSION@">1.16.3</token>
-        <token name="@VERSION_SUFFIX@">1</token>
+        <token name="@VERSION_SUFFIX@">0</token>
         <xml name="select_axis">
             <param name="axis" type="select" label="Direction">
                 <option value="1" selected="true">Horizontal</option>
