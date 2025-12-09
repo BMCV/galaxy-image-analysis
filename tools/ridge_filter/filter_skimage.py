@@ -41,7 +41,7 @@ def apply_nd_filter(
         img.data.shape[ 1],  # T axis
         img.data.shape[-1],  # C axis
     ):
-        sl = np.s_[*qtc[:2], ..., qtc[2]]
+        sl = np.s_[*qtc[:2], ..., qtc[2]]  # noqa: E999
         arr = img.data[sl]
         assert arr.ndim == 3  # sanity check, should always be True
 
@@ -85,7 +85,8 @@ def apply_filter(
     filter_impl = filters[filter_type]
     res = filter_impl(img, **params).normalize_axes_like(img.original_axes)
 
-    # Write the result
+    # Adopt metadata and write the result
+    res.metadata = img.metadata
     res.write(output_filepath, backend='tifffile')
 
 

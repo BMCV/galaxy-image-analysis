@@ -33,7 +33,7 @@
     </xrefs>
     <requirements>
         <requirement type="package" version="@TOOL_VERSION@">scikit-image</requirement>
-        <requirement type="package" version="0.4.1">giatools</requirement>
+        <requirement type="package" version="0.5.0">giatools</requirement>
     </requirements>
     <command detect_errors="aggressive"><![CDATA[
 
