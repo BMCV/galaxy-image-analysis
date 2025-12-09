@@ -37,6 +37,13 @@ def dicom_to_tiff(
         arr = dcm.get_total_pixel_matrix(**config)
         axes = 'YX' if arr.ndim == 2 else 'YXC'
 
+        # Read metadata for the WSI size, infer the resolution
+        if (
+            (width := getattr(dcm, 'ImagedVolumeWidth', 0)) > 0 and
+            (height := getattr(dcm, 'ImagedVolumeHeight', 0)) > 0
+        ):
+            metadata.setdefault('resolution', (arr.shape[1] / width, arr.shape[0] / height))
+
     # Check if the image is a 3-D volume. According to the docs [1], `highdicom.Image.get_volume_geometry`
     # will succeed (i.e. return a non-None) if the data *is* a 3-D volume, or if it is a tiled mosaic.
     # Hence, to distinguish tiled images from 3-D volumes, we use the `elif` branching semantic.
@@ -51,7 +58,7 @@ def dicom_to_tiff(
         arr = dcm.get_volume(**config).array
         axes = 'ZYX' if arr.ndim == 3 else 'ZYXC'
 
-        # Read metadata for spacing between pixels and slices, the infer resolution
+        # Read metadata for spacing between pixels and slices, infer the resolution
         metadata.setdefault('resolution', tuple(np.divide(1, volume_geom.pixel_spacing)))
         metadata.setdefault('z_spacing', volume_geom.spacing_between_slices)
 

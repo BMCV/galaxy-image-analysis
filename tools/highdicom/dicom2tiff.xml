@@ -131,7 +131,7 @@
                 <has_line line="DICOM dataset is a tiled multi-frame image" />
                 <has_line line="Output TIFF shape: (50, 50, 3)" />
                 <has_line line="Output TIFF axes: YXC" />
-                <has_line line="Output TIFF unit: mm" />
+                <has_line line="Output TIFF resolution: (2004.0080540927092, 2004.0080540927092), unit: mm" />
             </assert_stdout>
         </test>
         <test>
