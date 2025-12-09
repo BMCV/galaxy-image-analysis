@@ -97,6 +97,7 @@
             <assert_stdout>
                 <has_line line="Output TIFF shape: (128, 128)" />
                 <has_line line="Output TIFF axes: YX" />
+                <has_line line="Output TIFF resolution: (1.5117889300767384, 1.5117889300767384), unit: mm, z_spacing: 5.0" />
             </assert_stdout>
         </test>
         <test>
@@ -114,6 +115,7 @@
             <assert_stdout>
                 <has_line line="Output TIFF shape: (128, 128)" />
                 <has_line line="Output TIFF axes: YX" />
+                <has_line line="Output TIFF resolution: (1.5117889300767384, 1.5117889300767384), unit: mm, z_spacing: 5.0" />
             </assert_stdout>
         </test>
         <test>
@@ -129,6 +131,7 @@
                 <has_line line="DICOM dataset is a tiled multi-frame image" />
                 <has_line line="Output TIFF shape: (50, 50, 3)" />
                 <has_line line="Output TIFF axes: YXC" />
+                <has_line line="Output TIFF unit: mm" />
             </assert_stdout>
         </test>
         <test>
@@ -145,6 +148,7 @@
                 <has_line line="DICOM dataset is a label map" />
                 <has_line line="Output TIFF shape: (3, 16, 16)" />
                 <has_line line="Output TIFF axes: ZYX" />
+                <has_line line="Output TIFF resolution: (2.0480010485765368, 2.0480010485765368), unit: mm, z_spacing: 1.25" />
             </assert_stdout>
         </test>
         <test>
@@ -165,6 +169,7 @@
                 <has_line line="DICOM dataset is a label map" />
                 <has_line line="Output TIFF shape: (3, 16, 16)" />
                 <has_line line="Output TIFF axes: ZYX" />
+                <has_line line="Output TIFF resolution: (2.0480010485765368, 2.0480010485765368), unit: mm, z_spacing: 1.25" />
             </assert_stdout>
         </test>
         <test>
@@ -180,6 +185,7 @@
                 <has_line line="DICOM dataset is a single-frame image" />
                 <has_line line="Output TIFF shape: (169, 211)" />
                 <has_line line="Output TIFF axes: YX" />
+                <has_line line="Output TIFF resolution: (0.8333333333333334, 0.8325008325015256), unit: mm" />
             </assert_stdout>
         </test>
         <test>
@@ -196,6 +202,7 @@
                 <has_line line="DICOM dataset is an unknown multi-frame image" />
                 <has_line line="Output TIFF shape: (2, 100, 100, 3)" />
                 <has_line line="Output TIFF axes: TYXC" />
+                <has_line line="Output TIFF resolution: (1.0, 1.0), unit: mm" />
             </assert_stdout>
         </test>
     </tests>

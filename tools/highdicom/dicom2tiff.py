@@ -27,6 +27,7 @@ def dicom_to_tiff(
         f'Not a valid axis for DICOM frames: "{multiframe_axis}"'
     )
     dcm = highdicom.imread(dcm_filepath)
+    metadata = dict(unit='mm')  # DICOM always uses millimeters as the unit of measurement
 
     # If the image is a tiled image, ...
     if dcm.is_tiled:
@@ -43,12 +44,16 @@ def dicom_to_tiff(
     # [1] https://highdicom.readthedocs.io/en/latest/package.html#highdicom.Image.get_volume_geometry
     #
     # So, if the image is a 3-D volume, ...
-    elif dcm.get_volume_geometry() is not None:
+    elif (volume_geom := dcm.get_volume_geometry()) is not None:
         print('DICOM dataset is a 3-D volume')
 
         # ...extract the 3-D volume by joining the frames (z-slices)
         arr = dcm.get_volume(**config).array
         axes = 'ZYX' if arr.ndim == 3 else 'ZYXC'
+
+        # Read metadata for spacing between pixels and slices, the infer resolution
+        metadata.setdefault('resolution', tuple(np.divide(1, volume_geom.pixel_spacing)))
+        metadata.setdefault('z_spacing', volume_geom.spacing_between_slices)
 
     # Otherwise, extract a raw stack of frames
     else:
@@ -77,10 +82,15 @@ def dicom_to_tiff(
         if normalize_label_maps:
             arr = normalize_label_map(arr)
 
+    # Read pixel spacing metadata (if available) and infer the resolution (if it wasn't determined yet)
+    if (pixel_spacing := getattr(dcm, 'PixelSpacing', None)):
+        metadata.setdefault('resolution', tuple(np.divide(1, pixel_spacing)))
+
     # Write TIFF file
     print('Output TIFF shape:', arr.shape)
     print('Output TIFF axes:', axes)
-    giatools.Image(arr, axes).write(str(tiff_filepath))
+    print('Output TIFF', metadata_to_str(metadata))
+    giatools.Image(arr, axes, metadata=metadata).write(str(tiff_filepath))
 
 
 def normalize_label_map(arr: np.ndarray) -> np.ndarray:
@@ -116,6 +126,16 @@ def normalize_label_map(arr: np.ndarray) -> np.ndarray:
             return arr  # this should never happen in practice, but better check
         else:
             return norm_arr
+
+
+def metadata_to_str(metadata: dict):
+    tokens = list()
+    for key in sorted(metadata.keys()):
+        value = metadata[key]
+        if isinstance(value, tuple):
+            value = '(' + ', '.join([f'{val}' for val in value]) + ')'
+        tokens.append(f'{key}: {value}')
+    return ', '.join(tokens)
 
 
 if __name__ == '__main__':
