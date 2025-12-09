@@ -8,9 +8,24 @@ import scipy.ndimage as ndi
 from skimage.morphology import disk
 
 
+def image_astype(img: giatools.Image, dtype: np.dtype) -> giatools.Image:
+    return giatools.Image(
+        data=img.data.astype(dtype),
+        axes=img.axes,
+        original_axes=img.original_axes,
+        metadata=img.metadata,
+    )
+
+
 filters = {
-    'gaussian': lambda img, sigma: (
-        apply_2d_filter(ndi.gaussian_filter, img, sigma=sigma)
+    'gaussian': lambda img, sigma, order=0, axis=None: (
+        apply_2d_filter(
+            ndi.gaussian_filter,
+            img if order == 0 else image_astype(img, float),
+            sigma=sigma,
+            order=order,
+            axes=axis,
+        )
     ),
     'median': lambda img, radius: (
         apply_2d_filter(ndi.median_filter, img, footprint=disk(radius))
@@ -69,11 +84,11 @@ def apply_filter(
     img = giatools.Image.read(input_filepath)
 
     # Perform filtering
-    print(f'Applying filter: "{filter_type}"')
     filter_impl = filters[filter_type]
     res = filter_impl(img, **kwargs).normalize_axes_like(img.original_axes)
 
-    # Write the result
+    # Adopt metadata and write the result
+    res.metadata = img.metadata
     res.write(output_filepath, backend='tifffile')
 
 

@@ -5,6 +5,12 @@
         <import>tests.xml</import>
         <token name="@TOOL_VERSION@">1.16.3</token>
         <token name="@VERSION_SUFFIX@">1</token>
+        <xml name="select_axis">
+            <param name="axis" type="select" label="Direction">
+                <option value="1" selected="true">Horizontal</option>
+                <option value="0">Vertical</option>
+            </param>
+        </xml>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
@@ -36,12 +42,20 @@
         <configfile name="params"><![CDATA[
             {
 
+            ## =======================================
             #if $filter.filter_type == "gaussian"
                 "sigma": $filter.sigma,
+                "order": $filter.derivative.order,
 
+                #if $filter.derivative.order != "0"
+                    "axis": $filter.derivative.axis,
+                #end if
+
+            ## =======================================
             #elif $filter.filter_type == "median"
                 "radius": $filter.radius,
 
+            ## =======================================
             #end if
 
                 "filter_type": "$filter.filter_type"
@@ -50,7 +64,7 @@
         ]]></configfile>
     </configfiles>
     <inputs>
-        <param name="input" type="data" format="tiff,png" label="Input image" />
+        <param name="input" type="data" format="tiff,png" label="Input image"/>
         <conditional name="filter">
             <param name="filter_type" type="select" label="Filter type">
                 <option value="gaussian" selected="True">Gaussian</option>
@@ -61,7 +75,22 @@
                 <option value="sobel_v">Sobel vertical</option>
             </param>
             <when value="gaussian">
-                <param name="sigma" type="float" value="3" min="0.1" label="Sigma" help="The half width of the Gaussian bell (in pixels)." />
+                <param name="sigma" type="float" value="3" min="0.1" label="Sigma" help="The half width of the Gaussian bell (in pixels)."/>
+                <conditional name="derivative">
+                    <param name="order" type="select" label="Use a derivative?">
+                        <option value="0">No derivative (mean filter)</option>
+                        <option value="1">1st-order derivative</option>
+                        <option value="2">2nd-order derivative</option>
+                    </param>
+                    <when value="0">
+                    </when>
+                    <when value="1">
+                        <expand macro="select_axis"/>
+                    </when>
+                    <when value="2">
+                        <expand macro="select_axis"/>
+                    </when>
+                </conditional>
             </when>
             <when value="median">
                 <param name="radius" type="integer" value="3" label="Radius" help="Radius of the neighborhood (in pixels)." />
@@ -150,6 +179,30 @@
                 <has_image_mean_intensity mean_intensity="0.25" eps="0.01"/>
             </expand>
         </test>
+        <!-- Tests with multi-channel image (RGB) -->
+        <test>
+            <param name="input" value="scikit-image/retina.png"/>
+            <conditional name="filter">
+                <param name="filter_type" value="gaussian"/>
+                <param name="sigma" value="5"/>
+                <conditional name="derivative">
+                    <param name="order" value="0"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="retina_gaussian_order0.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <param name="input" value="scikit-image/retina.png"/>
+            <conditional name="filter">
+                <param name="filter_type" value="gaussian"/>
+                <param name="sigma" value="3"/>
+                <conditional name="derivative">
+                    <param name="order" value="2"/>
+                    <param name="axis" value="0"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="retina_gaussian_order2_axis0.tiff" ftype="tiff"/>
+        </test>
     </tests>
     <help>
 
@@ -159,6 +212,7 @@
         channels of the image. For time-series images, the filter is also applied for all time steps.
 
         Mean filters like the Gaussian filter or the median filter preserve both the brightness of the image, and the range of values.
+        This does hold for the derivative variants of the Gaussian filter, which may produce negative values.
 
     </help>
     <citations>
