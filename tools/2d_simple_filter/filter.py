@@ -27,6 +27,9 @@ filters = {
             axes=axis,
         )
     ),
+    'uniform': lambda img, size: (
+        apply_2d_filter(ndi.uniform_filter, img, size=size)
+    ),
     'median': lambda img, radius: (
         apply_2d_filter(ndi.median_filter, img, footprint=disk(radius))
     ),
@@ -54,7 +57,7 @@ def apply_2d_filter(
         img.data.shape[ 2],  # Z axis
         img.data.shape[-1],  # C axis
     ):
-        sl = np.s_[*qtc[:3], ..., qtc[3]]
+        sl = np.s_[*qtc[:3], ..., qtc[3]]  # noqa: E999
         arr = img.data[sl]
         assert arr.ndim == 2  # sanity check, should always be True
 

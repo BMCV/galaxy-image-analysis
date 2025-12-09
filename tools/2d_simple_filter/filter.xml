@@ -52,6 +52,10 @@
                 #end if
 
             ## =====================================================================
+            #elif $filter.filter_type == "uniform"
+                "size": $filter.size,
+
+            ## =====================================================================
             #elif $filter.filter_type == "median"
                 "radius": $filter.radius,
 
@@ -72,6 +76,7 @@
         <conditional name="filter">
             <param name="filter_type" type="select" label="Filter type">
                 <option value="gaussian" selected="True">Gaussian</option>
+                <option value="uniform">Box filter (uniform filter)</option>
                 <option value="median">Median</option>
                 <option value="prewitt">Prewitt</option>
                 <option value="sobel">Sobel</option>
@@ -94,8 +99,11 @@
                     </when>
                 </conditional>
             </when>
+            <when value="uniform">
+                <param name="size" type="integer" min="2" value="3" label="Size" help="Edge length of the neighborhood (square, in pixels)." />
+            </when>
             <when value="median">
-                <param name="radius" type="integer" value="3" label="Radius" help="Radius of the neighborhood (in pixels)." />
+                <param name="radius" type="integer" min="2" value="3" label="Radius" help="Radius of the neighborhood (circle, in pixels)." />
             </when>
             <when value="prewitt">
                 <expand macro="select_axis"/>
@@ -183,6 +191,17 @@
                 <has_image_mean_intensity mean_intensity="0.25" eps="0.01"/>
             </expand>
         </test>
+        <test>
+            <param name="input" value="input2_float.tiff"/>
+            <conditional name="filter">
+                <param name="filter_type" value="uniform"/>
+                <param name="size" value="4"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="input2_uniform.tiff" ftype="tiff">
+                <!-- See note for Gaussian filter above. -->
+                <has_image_mean_intensity mean_intensity="0.25" eps="0.01"/>
+            </expand>
+        </test>
         <!-- Tests with multi-channel image (RGB) -->
         <test>
             <param name="input" value="scikit-image/retina.png"/>
@@ -215,8 +234,8 @@
         For 3-D images, the filter is applied to all z-slices of the image. For multi-channel images, the filter is applied to all
         channels of the image. For time-series images, the filter is also applied for all time steps.
 
-        Mean filters like the Gaussian filter or the median filter preserve both the brightness of the image, and the range of values.
-        This does hold for the derivative variants of the Gaussian filter, which may produce negative values.
+        Mean filters like the Gaussian filter, the box filter, or the median filter preserve both the brightness of the image, and
+        the range of values. This does hold for the derivative variants of the Gaussian filter, which may produce negative values.
 
     </help>
     <citations>
