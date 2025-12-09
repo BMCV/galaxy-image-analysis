@@ -6,6 +6,7 @@
     </xml>
     <xml name="xrefs">
         <xrefs>
+            <xref type="bio.tools">galaxy_image_analysis</xref>
             <xref type="bio.tools">highdicom</xref>
         </xrefs>
     </xml>
