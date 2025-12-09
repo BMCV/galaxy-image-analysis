@@ -1,9 +1,7 @@
 import argparse
 
-import giatools.io
+import giatools
 import scipy.ndimage as ndi
-import skimage.io
-import skimage.util
 from skimage.morphology import disk
 
 
@@ -18,12 +16,13 @@ filters = {
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('input', type=argparse.FileType('r'), help='Input file')
-    parser.add_argument('output', type=argparse.FileType('w'), help='Output file (TIFF)')
+    parser.add_argument('input', type=str, help='Input image filepath')
+    parser.add_argument('output', type=str, help='Output image filepath (TIFF)')
     parser.add_argument('filter', choices=filters.keys(), help='Filter to be used')
     parser.add_argument('size', type=float, help='Size of the filter (e.g., radius, sigma)')
     args = parser.parse_args()
 
-    im = giatools.io.imread(args.input.name)
-    res = filters[args.filter](im, args.size)
-    skimage.io.imsave(args.output.name, res, plugin='tifffile')
+    # Read the input image, perform filtering, write output (preserve metadata)
+    img = giatools.Image.read(args.input)
+    img.data = filters[args.filter](img.data, args.size)
+    img.normalize_axes_like(img.original_axes).write(args.output, backend='tifffile')

@@ -3,7 +3,7 @@
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
-        <token name="@TOOL_VERSION@">1.12.0</token>
+        <token name="@TOOL_VERSION@">1.16.3</token>
         <token name="@VERSION_SUFFIX@">1</token>
     </macros>
     <creator>
@@ -17,14 +17,14 @@
     </xrefs>
     <requirements>
         <requirement type="package" version="@TOOL_VERSION@">scipy</requirement>
-        <requirement type="package" version="1.26.4">numpy</requirement>
-        <requirement type="package" version="0.22.0">scikit-image</requirement>
-        <requirement type="package" version="2024.2.12">tifffile</requirement>
-        <requirement type="package" version="0.1">giatools</requirement>
+        <requirement type="package" version="2.3.5">numpy</requirement>
+        <requirement type="package" version="0.25.2">scikit-image</requirement>
+        <requirement type="package" version="2025.10.16">tifffile</requirement>
+        <requirement type="package" version="0.5.0">giatools</requirement>
     </requirements>
     <command detect_errors="aggressive"><![CDATA[
 
-        python '$__tool_directory__/filter_image.py'
+        python '$__tool_directory__/filter.py'
 
         '$input'
         '$output'
@@ -127,7 +127,7 @@
     </tests>
     <help>
 
-        **Applies a standard filter to a single-channel 2-D image.**
+        **Applies a standard general-purpose filter to a single-channel 2-D image.**
 
         Mean filters like the Gaussian filter or the median filter preserve both the brightness of the image, and the range of values.
 
