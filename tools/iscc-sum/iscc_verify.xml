@@ -14,7 +14,7 @@
     </creator>
         
     <command detect_errors="exit_code"><![CDATA[
-        ## Generate ISCC for input file
+        ## Generate ISCC for input dataset
         GENERATED=\$(iscc-sum '${input_file}' | cut -d':' -f2 | cut -d' ' -f1) &&
         
         ## Get expected hash
@@ -40,8 +40,8 @@
     ]]></command>
 
     <inputs>
-        <param name="input_file" type="data" format="data" label="File to verify"
-               help="Verify this file's ISCC hash. When a collection is provided, each file is verified separately against the same expected hash."/>
+        <param name="input_file" type="data" format="data" label="Dataset to verify"
+               help="Verify this dataset's ISCC hash. When a collection is provided, each dataset is verified separately against the same expected hash."/>
         <param name="expected_hash" type="text" label="Expected ISCC hash"
                help="The 55-character ISCC hash to verify against">
             <validator type="length" min="55" max="55" message="ISCC hash must be exactly 55 characters"/>
@@ -101,7 +101,7 @@
 What it does
 ============
 
-Verifies that a file matches an expected ISCC hash for exact checksum verification.
+Verifies that a file (dataset) matches an expected International Standard Content Code (ISCC) hash for exact checksum verification.
 
 Exit Codes
 ==========
@@ -114,7 +114,7 @@ The tool uses exit codes for workflow logic:
 Dataset Mapping
 ===============
 
-When you provide a collection, Galaxy automatically runs verification once per file. All files are verified against the same expected hash.
+When you provide a collection, Galaxy automatically runs verification once per dataset. All datasets are verified against the same expected hash.
 
 Output
 ======
@@ -127,25 +127,23 @@ A verification report containing:
 - Status: OK or FAILED
 
 Example output::
+    Status: OK - Hashes match
 
-    File: sample1.png
     Expected:  K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY
     Generated: K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY
     
-    Status: OK - Hashes match
-
 Use Cases
 =========
 
 - Verify file integrity after transfer or storage
-- Confirm downloaded files match reference checksums
+- Confirm downloaded datasets match reference checksums
 - Validate that backups are identical to originals
 - Quality control for data archiving
 
 Workflow Examples
 =================
 
-Verify a single file
+Verify a single dataset
 --------------------
 
 ::
@@ -166,7 +164,7 @@ Generate reference hashes first::
     
 Later verify::
 
-    New files → [Generate ISCC] → New hashes
+    New datasets → [Generate ISCC] → New hashes
     ↓
     [Join two Datasets] on filename
     ↓
@@ -177,7 +175,7 @@ Later verify::
 Working with Hash Files in Workflows
 =====================================
 
-If you have the expected hash in a file (e.g., from Generate ISCC tool):
+If you have the expected hash in a dataset (e.g., from Generate ISCC tool):
 
 1. In the workflow editor, connect the hash file to this tool
 2. The hash file content will be used automatically

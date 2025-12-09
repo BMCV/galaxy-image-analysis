@@ -1,4 +1,4 @@
-<tool id="iscc_sum_similarity" name="Find files with similar ISCC hashes" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="24.1">
+<tool id="iscc_sum_similarity" name="Find datasets with similar ISCC hashes" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="24.1">
     <description>with ISCC-SUM</description>
     <macros>
         <import>macros.xml</import>
@@ -17,22 +17,27 @@
         ## Create working directory
         mkdir -p input_files &&
         
-        ## Symlink files with proper names
+        ## Create mapping file: filename -> element_identifier
+        echo "filename\telement_identifier" > id_mapping.tsv &&
+        
+        ## Symlink files and record their identifiers
         #for $i, $file in enumerate($input_files):
             ln -s '$file' 'input_files/${file.element_identifier}_${i}' &&
+            echo "${file.element_identifier}_${i}\t${file.element_identifier}" >> id_mapping.tsv &&
         #end for
         
         ## Run similarity detection
         iscc-sum --similar --threshold $threshold input_files/* > similarity_raw.txt &&
         
-        ## Parse into tabular format
-        python '$__tool_directory__/iscc_similarity_parse_output.py' similarity_raw.txt '$output_file'
+        ## Parse into tabular format with identifiers
+        python '$__tool_directory__/iscc_similarity_parse_output.py' similarity_raw.txt id_mapping.tsv '$output_file'
+
     ]]></command>
 
     <inputs>
         <param name="input_files" type="data" format="data" multiple="true"
-               label="Files to compare"
-               help="Select multiple files or provide a collection. ISCC-SUM will find similar files."/>
+               label="Datasets to compare"
+               help="Select multiple datasets or provide a collection. ISCC-SUM will find similar datasets."/>
         <param name="threshold" type="integer" value="12" min="0" max="64"
                label="Similarity threshold"
                help="Maximum Hamming distance (0=identical, 12=default, higher=more lenient)"/>
@@ -43,28 +48,30 @@
     </outputs>
     
     <tests>
-        <!-- Test 1: Two identical files (duplicate selection) -->
+        <!-- Test 1: Two identical datasets (duplicate selection) -->
         <test expect_num_outputs="1">
             <param name="input_files" value="test1.png,test1.png"/>
             <param name="threshold" value="12"/>
             <output name="output_file" ftype="tabular">
                 <assert_contents>
-                    <has_n_columns n="5"/>
-                    <has_n_lines n="2"/>
+                    <has_n_columns n="7"/>
+                    <has_n_lines n="3"/>  <!-- Header + 2 bidirectional rows -->
                     <has_text text="test1.png"/>
                     <has_text text="K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY"/>
                     <has_text text="0"/>
+                    <not_has_text text="-1"/>
                 </assert_contents>
             </output>
         </test>
         
-        <!-- Test 2: Three files - two identical, one different -->
+        <!-- Test 2: Three datasets - two identical, one different -->
         <test expect_num_outputs="1">
             <param name="input_files" value="test1.png,test2.tiff,test2.tiff"/>
             <param name="threshold" value="12"/>
             <output name="output_file" ftype="tabular">
                 <assert_contents>
-                    <has_n_columns n="5"/>
+                    <has_n_columns n="7"/>
+                    <has_n_lines n="4"/>  <!-- Header + 2 bidirectional rows + 1 no-match -->
                     <has_text text="test1.png"/>
                     <has_text text="test2.tiff"/>
                     <has_text text="K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY"/>
@@ -75,29 +82,16 @@
             </output>
         </test>
         
-<!-- Test 3: Multiple files with two identical -->
+        <!-- Test 3: Multiple datasets with none identical -->
         <test expect_num_outputs="1">
-            <param name="input_files" value="test1.png,test2.tiff,test2.tiff"/>
+            <param name="input_files" value="test1.png,test2.tiff,test3.fasta"/>
             <param name="threshold" value="12"/>
             <output name="output_file" ftype="tabular">
                 <assert_contents>
-                    <has_n_columns n="5"/>
+                    <has_n_columns n="7"/>
+                    <has_n_lines n="4"/>  <!-- Header + 3 no-match rows -->
                     <has_text text="test1.png"/>
                     <has_text text="test2.tiff"/>
-                    <has_text text="0"/>
-                    <has_text text="-1"/>
-                </assert_contents>
-            </output>
-        </test>
-        
-        <!-- Test 4: No similarities with strict threshold -->
-        <test expect_num_outputs="1">
-            <param name="input_files" value="test1.png,test3.fasta"/>
-            <param name="threshold" value="5"/>
-            <output name="output_file" ftype="tabular">
-                <assert_contents>
-                    <has_n_columns n="5"/>
-                    <has_text text="test1.png"/>
                     <has_text text="test3.fasta"/>
                     <has_text text="-1"/>
                 </assert_contents>
@@ -109,13 +103,13 @@
 What it does
 ============
 
-Finds similar files by comparing their ISCC Data-Code components using Hamming distance.
+Finds similar datasets by comparing their International Standard Content Code (ISCC) Data-Code components using Hamming distance.
 
 This tool identifies content similarity even when:
 
-- Files have been modified slightly
-- Files are renamed copies
-- Files are different versions of the same content
+- Datasets have been modified slightly
+- Datasets are renamed copies
+- Datasets are different versions of the same content
 
 How Similarity Works
 ====================
@@ -131,35 +125,45 @@ ISCC uses the Data-Code component (part of the 55-character hash) to measure con
 Input
 =====
 
-Provide multiple files or a collection. The tool compares all files against each other to find similar pairs.
+Provide multiple datasets or a collection. The tool compares all datasets against each other to find similar pairs.
 
 Threshold Parameter
 ===================
 
-The threshold controls how similar files must be to be reported:
+The threshold controls how similar datasets must be to be reported:
 
-- **Lower threshold** (e.g., 5): Only very similar files
+- **Lower threshold** (e.g., 5): Only very similar datasets
 - **Default** (12): Balanced - catches similar content without too many false positives
-- **Higher threshold** (e.g., 20): More lenient - includes loosely similar files
+- **Higher threshold** (e.g., 20): More lenient - includes loosely similar datasets
 
 Output
 ======
 
-A tabular file with one row per similarity match::
+A tabular file with one row per similarity relationship (bidirectional)::
 
-    filename    iscc_hash    similar_to    distance
-    file1.txt   K4AOMG...    file2.txt     8
-    file1.txt   K4AOMG...    file3.txt     10
-    file4.txt   K4AGSPO...                 -1
+    file_id      filename    iscc_hash    match_id     match_filename    match_iscc_hash    distance
+    dataset_123  file1.txt   K4AOMG...    dataset_124  file2.txt         K4AOMG...          8
+    dataset_124  file2.txt   K4AOMG...    dataset_123  file1.txt         K4AOMG...          8
+    dataset_123  file1.txt   K4AOMG...    dataset_125  file3.txt         K4AOMG...          10
+    dataset_125  file3.txt   K4AOMG...    dataset_123  file1.txt         K4AOMG...          10
+    dataset_126  file4.txt   K4AGSPO...                                                      -1
 
 Where:
 
-- **filename**: Reference file
-- **iscc_hash**: ISCC hash of reference file
-- **similar_to**: Matching file (empty if no matches)
+- **file_id**: Unique Galaxy identifier for the reference dataset
+- **filename**: Display name of reference dataset
+- **iscc_hash**: ISCC hash of reference dataset
+- **match_id**: Unique Galaxy identifier for matching dataset (empty if no matches)
+- **match_filename**: Display name of matching dataset (empty if no matches)
+- **match_iscc_hash**: ISCC hash of matching dataset (empty if no matches)
 - **distance**: Hamming distance (0=identical, -1=no matches)
 
-Files with no similar matches have distance=-1.
+**Important Notes:**
+
+- Each similarity match appears **twice** (A→B and B→A) to make filtering easier
+- Files with no similar matches have distance=-1 and empty match columns
+- Use **file_id** to uniquely identify datasets (handles duplicate filenames)
+- Use **filename** for human-readable identification
 
 Use Cases
 =========
@@ -239,8 +243,8 @@ Important Notes
 - **Ordering independent**: File order in collection doesn't matter
 - **Pairwise comparison**: All files compared against each other
 
-Comparison with Other Tools
-============================
+Comparison with Other ISCC Tools
+================================
 
 +------------------------+------------------+---------------------+
 | Tool                   | Use Case         | Output              |

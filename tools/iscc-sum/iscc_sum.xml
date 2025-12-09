@@ -15,13 +15,13 @@
     </creator>
         
     <command detect_errors="exit_code"><![CDATA[
-        ## Generate ISCC hash for input file
+        ## Generate ISCC hash for input dataset
         iscc-sum '${input_file}' | cut -d':' -f2 | cut -d' ' -f1 >> '${output_file}'
     ]]></command>
 
     <inputs>
         <param name="input_file" type="data" format="data" label="Input file"
-               help="Any file type - ISCC-SUM will generate a checksum and similarity hash. When a collection is provided, generates one hash per file."/>
+               help="Any file type - ISCC-SUM will generate a checksum and similarity hash. When a collection is provided, generates one hash per dataset."/>
     </inputs>
     
     <outputs>
@@ -29,7 +29,7 @@
     </outputs>
     
     <tests>
-        <!-- Test 1: Single file PNG -->
+        <!-- Test 1: Single dataset PNG -->
         <test expect_num_outputs="1">
             <param name="input_file" value="test1.png"/>
             <output name="output_file">
@@ -40,7 +40,7 @@
             </output>
         </test>
         
-        <!-- Test 2: Single file FASTA -->
+        <!-- Test 2: Single dataset FASTA -->
         <test expect_num_outputs="1">
             <param name="input_file" value="test3.fasta"/>
             <output name="output_file">
@@ -51,7 +51,7 @@
             </output>
         </test>
         
-        <!-- Test 3: Single file TIFF -->
+        <!-- Test 3: Single dataset TIFF -->
         <test expect_num_outputs="1">
             <param name="input_file" value="test2.tiff"/>
             <output name="output_file">
@@ -67,18 +67,18 @@
 What it does
 ============
 
-Generates an International Standard Content Code (ISCC) based checksum and similarity hash for files.
+Generates an International Standard Content Code (ISCC) based checksum and similarity hash for datasets.
 
 The ISCC-SUM creates a content-derived identifier that:
 
-- Creates a unique 55-character checksum based on file content
+- Creates a unique 55-character checksum based on dataset content
 - Generates a similarity hash for content comparison
 - Works with any file format
 
 Dataset Mapping
 ===============
 
-When you provide a collection, Galaxy automatically runs this tool once per file, generating individual ISCC hashes for each file in the collection.
+When you provide a collection, Galaxy automatically runs this tool once per dataset, generating individual ISCC hashes for each dataset in the collection.
 
 Output
 ======
@@ -112,7 +112,7 @@ Generate hashes for a collection
 
 ::
 
-    Input: Collection of 100 files
+    Input: Collection of 100 dataset
     ↓
     [Generate ISCC hash] ← runs 100 times
     ↓
