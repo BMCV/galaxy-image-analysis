@@ -30,17 +30,11 @@ filters = {
     'median': lambda img, radius: (
         apply_2d_filter(ndi.median_filter, img, footprint=disk(radius))
     ),
-    'prewitt_h': lambda img: (
-        apply_2d_filter(ndi.prewitt, img, axis=1)
+    'prewitt': lambda img, axis: (
+        apply_2d_filter(ndi.prewitt, img, axis=axis)
     ),
-    'prewitt_v': lambda img: (
-        apply_2d_filter(ndi.prewitt, img, axis=0)
-    ),
-    'sobel_h': lambda img: (
-        apply_2d_filter(ndi.sobel, img, axis=1)
-    ),
-    'sobel_v': lambda img: (
-        apply_2d_filter(ndi.sobel, img, axis=0)
+    'sobel': lambda img, axis: (
+        apply_2d_filter(ndi.sobel, img, axis=axis)
     ),
 }
 

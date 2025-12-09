@@ -42,7 +42,7 @@
         <configfile name="params"><![CDATA[
             {
 
-            ## =======================================
+            ## =====================================================================
             #if $filter.filter_type == "gaussian"
                 "sigma": $filter.sigma,
                 "order": $filter.derivative.order,
@@ -51,11 +51,15 @@
                     "axis": $filter.derivative.axis,
                 #end if
 
-            ## =======================================
+            ## =====================================================================
             #elif $filter.filter_type == "median"
                 "radius": $filter.radius,
 
-            ## =======================================
+            ## =====================================================================
+            #elif $filter.filter_type == "prewitt" or $filter.filter_type == "sobel"
+                "axis": $filter.axis,
+
+            ## =====================================================================
             #end if
 
                 "filter_type": "$filter.filter_type"
@@ -69,10 +73,8 @@
             <param name="filter_type" type="select" label="Filter type">
                 <option value="gaussian" selected="True">Gaussian</option>
                 <option value="median">Median</option>
-                <option value="prewitt_h">Prewitt horizontal</option>
-                <option value="prewitt_v">Prewitt vertical</option>
-                <option value="sobel_h">Sobel horizontal</option>
-                <option value="sobel_v">Sobel vertical</option>
+                <option value="prewitt">Prewitt</option>
+                <option value="sobel">Sobel</option>
             </param>
             <when value="gaussian">
                 <param name="sigma" type="float" value="3" min="0.1" label="Sigma" help="The half width of the Gaussian bell (in pixels)."/>
@@ -95,13 +97,11 @@
             <when value="median">
                 <param name="radius" type="integer" value="3" label="Radius" help="Radius of the neighborhood (in pixels)." />
             </when>
-            <when value="prewitt_h">
+            <when value="prewitt">
+                <expand macro="select_axis"/>
             </when>
-            <when value="prewitt_v">
-            </when>
-            <when value="sobel_h">
-            </when>
-            <when value="sobel_v">
+            <when value="sobel">
+                <expand macro="select_axis"/>
             </when>
         </conditional>
     </inputs>
@@ -111,9 +111,9 @@
     <tests>
         <!-- Tests with uint8 TIFF input image -->
         <test>
-            <param name="input" value="input1_uint8.tiff" />
+            <param name="input" value="input1_uint8.tiff"/>
             <conditional name="filter">
-                <param name="filter_type" value="gaussian" />
+                <param name="filter_type" value="gaussian"/>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="input1_gaussian.tiff" ftype="tiff">
                 <!--
@@ -131,9 +131,9 @@
             </expand>
         </test>
         <test>
-            <param name="input" value="input1_uint8.tiff" />
+            <param name="input" value="input1_uint8.tiff"/>
             <conditional name="filter">
-                <param name="filter_type" value="median" />
+                <param name="filter_type" value="median"/>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="input1_median.tiff" ftype="tiff">
                 <!-- See note for Gaussian filter above. -->
@@ -141,38 +141,42 @@
             </expand>
         </test>
         <test>
-            <param name="input" value="input1_uint8.tiff" />
+            <param name="input" value="input1_uint8.tiff"/>
             <conditional name="filter">
-                <param name="filter_type" value="prewitt_h" />
+                <param name="filter_type" value="prewitt"/>
+                <param name="axis" value="1"/>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="input1_prewitt_h.tiff" ftype="tiff"/>
         </test>
         <test>
-            <param name="input" value="input1_uint8.tiff" />
+            <param name="input" value="input1_uint8.tiff"/>
             <conditional name="filter">
-                <param name="filter_type" value="prewitt_v" />
+                <param name="filter_type" value="prewitt"/>
+                <param name="axis" value="0"/>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="input1_prewitt_v.tiff" ftype="tiff"/>
         </test>
         <test>
-            <param name="input" value="input1_uint8.tiff" />
+            <param name="input" value="input1_uint8.tiff"/>
             <conditional name="filter">
-                <param name="filter_type" value="sobel_h" />
+                <param name="filter_type" value="sobel"/>
+                <param name="axis" value="1"/>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="input1_sobel_h.tiff" ftype="tiff"/>
         </test>
         <test>
-            <param name="input" value="input1_uint8.tiff" />
+            <param name="input" value="input1_uint8.tiff"/>
             <conditional name="filter">
-                <param name="filter_type" value="sobel_v" />
+                <param name="filter_type" value="sobel"/>
+                <param name="axis" value="0"/>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="input1_sobel_v.tiff" ftype="tiff"/>
         </test>
         <!-- Tests with float TIFF input image -->
         <test>
-            <param name="input" value="input2_float.tiff" />
+            <param name="input" value="input2_float.tiff"/>
             <conditional name="filter">
-                <param name="filter_type" value="gaussian" />
+                <param name="filter_type" value="gaussian"/>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="input2_gaussian.tiff" ftype="tiff">
                 <!-- See note for Gaussian filter above. -->
