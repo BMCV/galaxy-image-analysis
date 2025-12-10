@@ -75,7 +75,7 @@ def apply_filter(
         elif sigma_min == sigma_max:
             params['sigmas'] = [sigma_min]
         else:
-            raise ValueError(f'Minimum sigma ({sigma_min:g}) must be lower than Maximum sigma ({sigma_max:g})')
+            raise ValueError(f'Minimum sigma ({sigma_min:g}) must not be greater than Maximum sigma ({sigma_max:g})')
 
     # Read the input image
     img = giatools.Image.read(input_filepath)
