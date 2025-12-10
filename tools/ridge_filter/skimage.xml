@@ -11,7 +11,7 @@
                 <option value="false">Enhance bright ridges (high image intensities)</option>
             </param>
             <param name="sigma_min" type="float" value="1" min="0.1" label="Minimum sigma" help="Lower bound of the scale for multi-scale analysis."/>
-            <param name="sigma_max" type="float" value="3" label="Maximum sigma" help="Upper bound of the scale for multi-scale analysis."/>
+            <param name="sigma_max" type="float" value="3" min="0.1" label="Maximum sigma" help="Upper bound of the scale for multi-scale analysis."/>
             <param name="num_sigma" type="integer" value="10" min="2" label="Number of sigma steps for multi-scale analysis"/>
         </xml>
         <xml name="frangi_params">
