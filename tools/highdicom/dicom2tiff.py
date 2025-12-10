@@ -52,11 +52,16 @@ def dicom_to_tiff(
     #
     # So, if the image is a 3-D volume, ...
     elif (volume_geom := dcm.get_volume_geometry()) is not None:
-        print('DICOM dataset is a 3-D volume')
 
         # ...extract the 3-D volume by joining the frames (z-slices)
         arr = dcm.get_volume(**config).array
         axes = 'ZYX' if arr.ndim == 3 else 'ZYXC'
+
+        # Print status info
+        if arr.shape[0] == 1:
+            print('DICOM dataset is a slice of a 3-D volume')
+        else:
+            print('DICOM dataset is a 3-D volume')
 
         # Read metadata for spacing between pixels and slices, infer the resolution
         metadata.setdefault('resolution', tuple(np.divide(1, volume_geom.pixel_spacing)))

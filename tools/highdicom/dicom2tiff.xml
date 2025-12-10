@@ -29,7 +29,7 @@
     ]]>
     </command>
     <inputs>
-        <param name="input" type="data" format="dicom" label="DICOM dataset"/>
+        <param name="input" type="data" format="binary" label="DICOM dataset"/>
         <param name="multiframe_axis" type="select" label="Fall-back axis for DICOM frames" help="If DICOM frames cannot be resolved to a specifc TIFF axis automatically, this axis will be used.">
             <option value="T" selected="true">T-axis (frames of a temporal image sequence)</option>
             <option value="Z">Z-axis (slices of a 3-D image or image sequence)</option>
@@ -170,6 +170,28 @@
                 <has_line line="Output TIFF shape: (3, 16, 16)" />
                 <has_line line="Output TIFF axes: ZYX" />
                 <has_line line="Output TIFF resolution: (2.0480010485765368, 2.0480010485765368), unit: mm, z_spacing: 1.25" />
+            </assert_stdout>
+        </test>
+        <test>
+            <param name="input" value="heart_ct_5813.dcm"/>
+            <conditional name="target">
+                <param name="dtype" value=""/>
+                <param name="normalize_label_maps" value="false"/>
+            </conditional>
+            <output name="output" ftype="tiff">
+                <assert_contents>
+                <has_image_width width="512"/>
+                <has_image_height height="512"/>
+                <has_image_channels channels="1"/>
+                <has_image_depth depth="1"/>
+                <has_image_frames frames="1"/>
+                </assert_contents>
+            </output>
+            <assert_stdout>
+                <has_line line="DICOM dataset is a slice of a 3-D volume" />
+                <has_line line="Output TIFF shape: (512, 512)" />
+                <has_line line="Output TIFF axes: YX" />
+                <has_line line="Output TIFF resolution: (1.1377781014124377, 1.1377781014124377), unit: mm, z_spacing: 1.0" />
             </assert_stdout>
         </test>
         <test>
