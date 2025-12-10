@@ -51,13 +51,13 @@ def apply_2d_filter(
     Apply the 2-D filter to the 2-D/3-D, potentially multi-frame and multi-channel image.
     """
     result_data = None
-    for qtc in np.ndindex(
+    for qtzc in np.ndindex(
         img.data.shape[ 0],  # Q axis
         img.data.shape[ 1],  # T axis
         img.data.shape[ 2],  # Z axis
         img.data.shape[-1],  # C axis
     ):
-        sl = np.s_[*qtc[:3], ..., qtc[3]]  # noqa: E999
+        sl = np.s_[*qtzc[:3], ..., qtzc[3]]  # noqa: E999
         arr = img.data[sl]
         assert arr.ndim == 2  # sanity check, should always be True
 
