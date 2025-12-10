@@ -239,7 +239,7 @@
         - For time-series images, the filter is also applied for all time steps.
 
         Mean filters like the Gaussian filter, the box filter, or the median filter preserve both the brightness of the image, and
-        the range of values. This does hold for the derivative variants of the Gaussian filter, which may produce negative values.
+        the range of values. This does not hold for the derivative variants of the Gaussian filter, which may produce negative values.
 
     </help>
     <citations>
