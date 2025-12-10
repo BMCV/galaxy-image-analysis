@@ -35,7 +35,7 @@ def apply_nd_filter(
     """
     Apply the filter to the 2-D/3-D, potentially multi-frame and multi-channel image.
     """
-    result_data = np.empty(img.data.shape)
+    result_data = np.empty(img.data.shape, dtype=dtype)
     for qtc in np.ndindex(
         img.data.shape[ 0],  # Q axis
         img.data.shape[ 1],  # T axis
@@ -48,10 +48,10 @@ def apply_nd_filter(
         # Perform 2-D or 3-D filtering
         if arr.shape[0] == 1:
             info = 'Performing 2-D filtering'
-            result_data[sl][0] = filter_impl(arr[0], **kwargs)
+            result_data[sl][0] = filter_impl(arr[0], **kwargs).astype(dtype)
         else:
             info = 'Performing 3-D filtering'
-            result_data[sl] = filter_impl(arr, **kwargs)
+            result_data[sl] = filter_impl(arr, **kwargs).astype(dtype)
 
     # Print status info
     print(info)
