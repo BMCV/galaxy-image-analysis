@@ -1,6 +1,9 @@
 import argparse
 import json
-from typing import Any
+from typing import (
+    Any,
+    Callable,
+)
 
 import giatools
 import numpy as np
@@ -43,7 +46,7 @@ filters = {
 
 
 def apply_2d_filter(
-    filter_impl: callable,
+    filter_impl: Callable[[np.ndarray, Any, ...], np.ndarray],
     img: giatools.Image,
     **kwargs: Any,
 ) -> giatools.Image:
