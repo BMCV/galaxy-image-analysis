@@ -67,6 +67,14 @@ def dicom_to_tiff(
         metadata.setdefault('resolution', tuple(np.divide(1, volume_geom.pixel_spacing)))
         metadata.setdefault('z_spacing', volume_geom.spacing_between_slices)
 
+        # Infer metadata for z-position
+        if (
+            (ipp := getattr(dcm, 'ImagePositionPatient', None)) and
+            (iop := getattr(dcm, 'ImageOrientationPatient', None))
+        ):
+            normal = np.cross(iop[:3], iop[3:])
+            metadata.setdefault('z_position', float(normal @ ipp))
+
     # Otherwise, extract a raw stack of frames
     else:
         print(

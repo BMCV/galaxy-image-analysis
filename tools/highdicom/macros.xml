@@ -14,7 +14,7 @@
         <requirements>
             <requirement type="package" version="@TOOL_VERSION@">highdicom</requirement>
             <requirement type="package" version="3.0.1">pydicom</requirement>
-            <requirement type="package" version="0.5.0">giatools</requirement>
+            <requirement type="package" version="0.5.2">giatools</requirement>
             <requirement type="package" version="6.0.3">pyyaml</requirement>
         </requirements>
     </xml>
