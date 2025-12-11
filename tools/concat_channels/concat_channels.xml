@@ -127,6 +127,26 @@
                 <has_line line="Output TIFF resolution: (1.0, 1.0)"/>
             </assert_stdout>
         </test>
+        <!-- Test concatenation of z-slices with metadata -->
+        <test>
+            <param name="inputs" value="heart_ct_3923.tiff,heart_ct_3953.tiff,heart_ct_3983.tiff,heart_ct_4043.tiff"/>
+            <param name="axis" value="Z"/>
+            <param name="mode" value="--preserve_values"/>
+            <output name="output" ftype="tiff">
+                <assert_contents>
+                    <has_image_width width="512"/>
+                    <has_image_height height="512"/>
+                    <has_image_depth depth="4"/>
+                    <has_image_channels channels="1"/>
+                    <has_image_frames frames="1"/>
+                </assert_contents>
+            </output>
+            <assert_stdout>
+                <has_line line="Output TIFF shape: (4, 512, 512)"/>
+                <has_line line="Output TIFF axes: ZYX"/>
+                <has_line line="Output TIFF resolution: (1.137778101526753, 1.137778101526753), unit: mm, z_position: -219.860001, z_spacing: 2.5"/>
+            </assert_stdout>
+        </test>
     </tests>
     <help>
 

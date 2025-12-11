@@ -44,6 +44,10 @@ def concat_channels(
         if (metadata_value := reduce_metadata(metadata_values)) is not None:
             final_metadata[metadata_key] = metadata_value
 
+    # Update the `z_spacing` metadata, if concatenating along the Z-axis and `z_position` is available for all images
+    if axis == 'Z' and len(images) >= 2 and len(z_positions := metadata.get('z_position', list())) == len(images):
+        final_metadata['z_spacing'] = abs(np.subtract(z_positions[1:], z_positions[:-1]).mean())
+
     # Do the concatenation
     axis_pos = giatools.default_normalized_axes.index(axis)
     arr = np.concatenate(images, axis_pos)
