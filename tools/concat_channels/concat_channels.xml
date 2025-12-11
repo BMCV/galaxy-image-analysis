@@ -1,4 +1,4 @@
-<tool id="ip_concat_channels" name="Concatenate images or channels" version="0.4" profile="20.05">
+<tool id="ip_concat_channels" name="Concatenate images or channels" version="0.5" profile="20.05">
     <description></description>
     <macros>
         <import>creators.xml</import>
@@ -6,6 +6,7 @@
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
+        <expand macro="creators/kostrykin"/>
     </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
@@ -17,7 +18,7 @@
         <requirement type="package" version="0.25.2">scikit-image</requirement>
         <requirement type="package" version="2.3.5">numpy</requirement>
         <requirement type="package" version="2025.10.16">tifffile</requirement>
-        <requirement type="package" version="0.4.1">giatools</requirement>
+        <requirement type="package" version="0.5.2">giatools</requirement>
     </requirements>
     <command detect_errors="aggressive"><![CDATA[
 
@@ -58,6 +59,11 @@
             <param name="axis" value="Y"/>
             <param name="mode" value=""/>
             <expand macro="tests/intensity_image_diff" name="output" value="res_preserve_brightness.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Output TIFF shape: (238, 119, 4)"/>
+                <has_line line="Output TIFF axes: YXC"/>
+                <has_line line="Output TIFF resolution: (1.0, 1.0)"/>
+            </assert_stdout>
         </test>
         <!-- Test with "preserve range of values", vertical concatenation -->
         <test>
@@ -77,6 +83,11 @@
                 -->
                 <has_image_mean_intensity min="0" max="255"/>
             </expand>
+            <assert_stdout>
+                <has_line line="Output TIFF shape: (238, 119, 4)"/>
+                <has_line line="Output TIFF axes: YXC"/>
+                <has_line line="Output TIFF resolution: (1.0, 1.0)"/>
+            </assert_stdout>
         </test>
         <!-- Test concatenation of channels (axis *exists* in both images) -->
         <test>
@@ -91,6 +102,11 @@
                     <has_image_frames frames="1"/>
                 </assert_contents>
             </output>
+            <assert_stdout>
+                <has_line line="Output TIFF shape: (119, 119, 8)"/>
+                <has_line line="Output TIFF axes: YXC"/>
+                <has_line line="Output TIFF resolution: (1.0, 1.0)"/>
+            </assert_stdout>
         </test>
         <!-- Test concatenation of frames (axis *does not* exist in both images) -->
         <test>
@@ -105,6 +121,11 @@
                     <has_image_frames frames="2"/>
                 </assert_contents>
             </output>
+            <assert_stdout>
+                <has_line line="Output TIFF shape: (2, 119, 119, 4)"/>
+                <has_line line="Output TIFF axes: TYXC"/>
+                <has_line line="Output TIFF resolution: (1.0, 1.0)"/>
+            </assert_stdout>
         </test>
     </tests>
     <help>
