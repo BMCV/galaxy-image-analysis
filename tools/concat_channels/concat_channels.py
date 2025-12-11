@@ -42,9 +42,11 @@ def concat_channels(
     if sort_by is not None:
 
         # Validate that `sort_by` is available as metadata for all images
-        sort_keys = filter(
-            lambda value: value is not None,
-            metadata.get(sort_by, list()),
+        sort_keys = list(
+            filter(
+                lambda value: value is not None,
+                metadata.get(sort_by, list()),
+            ),
         )
         if len(sort_keys) != len(images):
             raise ValueError(
