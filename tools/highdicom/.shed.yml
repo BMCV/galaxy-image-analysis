@@ -21,7 +21,7 @@ auto_tool_repositories:
 
 # Fields defined here and below are propagated to the repositories of the tools in this suite
 long_description: |
-    Enables processing of DICOM datasets in Galaxy. Based on the highdicom Python package.
+  Enables processing of DICOM datasets in Galaxy. Based on the highdicom Python package.
 
 type: unrestricted
 
