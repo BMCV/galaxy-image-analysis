@@ -33,6 +33,10 @@
 
         $mode
 
+        #if $sort_by != ""
+            --sort_by '$sort_by'
+        #end if
+
     ]]></command>
     <inputs>
         <param name="inputs" type="data" multiple="true" format="tiff,png" label="Images to concatenate"/>
@@ -48,6 +52,10 @@
             <option value="" selected="true">Preserve brightness</option>
             <option value="--preserve_values">Preserve range of values</option>
         </param>
+        <param name="sort_by" type="select" label="Sort images before concatenating">
+            <option value="" selected="true">Do not sort (keep the order of the datasets)</option>
+            <option value="z_position">Sort images by their position along the Z-axis</option>
+        </param>
     </inputs>
     <outputs>
         <data format="tiff" name="output"/>
@@ -58,6 +66,7 @@
             <param name="inputs" value="input1_uint8.png,input2_float.tiff"/>
             <param name="axis" value="Y"/>
             <param name="mode" value=""/>
+            <param name="sort_by" value=""/>
             <expand macro="tests/intensity_image_diff" name="output" value="res_preserve_brightness.tiff" ftype="tiff"/>
             <assert_stdout>
                 <has_line line="Output TIFF shape: (238, 119, 4)"/>
@@ -70,6 +79,7 @@
             <param name="inputs" value="input1_uint8.png,input2_float.tiff"/>
             <param name="axis" value="Y"/>
             <param name="mode" value="--preserve_values"/>
+            <param name="sort_by" value=""/>
             <expand macro="tests/intensity_image_diff" name="output" value="res_preserve_values.tiff" ftype="tiff">
                 <!--
 
@@ -93,6 +103,7 @@
         <test>
             <param name="inputs" value="input1_uint8.png,input2_float.tiff"/>
             <param name="axis" value="C"/>
+            <param name="sort_by" value=""/>
             <output name="output" ftype="tiff">
                 <assert_contents>
                     <has_image_width width="119"/>
@@ -112,6 +123,7 @@
         <test>
             <param name="inputs" value="input1_uint8.png,input2_float.tiff"/>
             <param name="axis" value="T"/>
+            <param name="sort_by" value=""/>
             <output name="output" ftype="tiff">
                 <assert_contents>
                     <has_image_width width="119"/>
@@ -132,6 +144,7 @@
             <param name="inputs" value="heart_ct_3923.tiff,heart_ct_3953.tiff,heart_ct_3983.tiff,heart_ct_4043.tiff"/>
             <param name="axis" value="Z"/>
             <param name="mode" value="--preserve_values"/>
+            <param name="sort_by" value=""/>
             <output name="output" ftype="tiff">
                 <assert_contents>
                     <has_image_width width="512"/>

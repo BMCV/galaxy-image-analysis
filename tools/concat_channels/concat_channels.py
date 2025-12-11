@@ -12,6 +12,7 @@ def concat_channels(
     output_image_path: str,
     axis: str,
     preserve_values: bool,
+    sort_by: str | None,
 ):
     # Create list of arrays to be concatenated
     images = list()
@@ -36,6 +37,24 @@ def concat_channels(
 
         # Record the image data
         images.append(arr)
+
+    # Perform sorting, if requested
+    if sort_by is not None:
+
+        # Validate that `sort_by` is available as metadata for all images
+        sort_keys = filter(
+            lambda value: value is not None,
+            metadata.get(sort_by, list()),
+        )
+        if len(sort_keys) != len(images):
+            raise ValueError(
+                f'Requested to sort by "{sort_by}", '
+                f'but this is not available for all {len(images)} images'
+                f' (available for only {len(sort_keys)} images)'
+            )
+
+        # Sort images by the corresponding `sort_key` metadata value
+        images, _ = zip(*sorted(zip(images, sort_keys), key=lambda p: p[1]))
 
     # Determine consensual metadata
     # TODO: Convert metadata of images with different units of measurement into a common unit
@@ -106,6 +125,7 @@ if __name__ == "__main__":
     parser.add_argument('out_file', type=str)
     parser.add_argument('axis', type=str)
     parser.add_argument('--preserve_values', default=False, action='store_true')
+    parser.add_argument('--sort_by', type=str, default=None)
     args = parser.parse_args()
 
     concat_channels(
@@ -113,4 +133,5 @@ if __name__ == "__main__":
         args.out_file,
         args.axis,
         args.preserve_values,
+        args.sort_by,
     )
