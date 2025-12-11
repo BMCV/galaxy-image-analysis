@@ -65,6 +65,7 @@ def concat_channels(
 
     # Update the `z_spacing` metadata, if concatenating along the Z-axis and `z_position` is available for all images
     if axis == 'Z' and len(images) >= 2 and len(z_positions := metadata.get('z_position', list())) == len(images):
+        z_positions.sort()
         final_metadata['z_spacing'] = abs(np.subtract(z_positions[1:], z_positions[:-1]).mean())
 
     # Do the concatenation
