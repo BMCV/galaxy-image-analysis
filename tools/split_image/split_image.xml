@@ -37,6 +37,7 @@
             <option value="C" selected="true">C-axis (split the channels of an image or image sequence)</option>
             <option value="S">S-axis (split the samples of an image or image sequence)</option>
             <option value="Q">Q-axis (other or unknown axis)</option>
+            <option value="">Split dataset that contains multiple images (e.g., multi-series TIFF)</option>
         </param>
         <param name="squeeze" type="boolean" checked="false" truevalue="--squeeze" falsevalue="" label="Squeeze result images"
                help="Only non-singleton axes (axes with more than one element) will be retained in the result images. Does not apply for X and Y axes." />
