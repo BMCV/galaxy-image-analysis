@@ -16,8 +16,10 @@
         </xml>
         <xml name="frangi_params">
             <expand macro="base_params"/>
-            <param name="alpha" type="float" min="0" value="0.5" label="Alpha" help="Frangi correction constant that adjusts the filter's sensitivity to deviation from a plate-like structure."/>
-            <param name="beta" type="float" min="0" value="0.5" label="Beta" help="Frangi correction constant that adjusts the filter's sensitivity to deviation from a blob-like structure."/>
+            <param name="alpha" type="float" min="0" value="0.5" label="Alpha"
+                   help="Frangi correction constant that adjusts the filter's sensitivity to deviation from a plate-like structure."/>
+            <param name="beta" type="float" min="0" value="0.5" label="Beta"
+                   help="Frangi correction constant that adjusts the filter's sensitivity to deviation from a blob-like structure."/>
         </xml>
     </macros>
     <creator>
@@ -73,7 +75,8 @@
     </configfiles>
     <inputs>
         <param name="input" type="data" format="tiff,png" label="Input image"/>
-        <param name="dtype" type="select" label="Output pixel type" help="Data type used to store the pixel values in the output image.">
+        <param name="dtype" type="select" label="Output pixel type"
+               help="Data type used to store the pixel values in the output image.">
             <option value="float64" selected="True">64-bit floating point</option>
             <option value="float32">32-bit floating point</option>
             <option value="float16">16-bit floating point</option>
@@ -93,7 +96,8 @@
                 <expand macro="frangi_params"/>
             </when>
             <when value="laplace">
-                <param name="ksize" type="integer" value="3" label="Kernel size" help="Define the size of the discrete Laplacian operator such that it will have the size of a hypercube with this edge length (in pixels)." />
+                <param name="ksize" type="integer" value="3" label="Kernel size"
+                       help="Define the size of the discrete Laplacian operator such that it will have the size of a hypercube with this edge length (in pixels)."/>
             </when>
             <when value="meijering">
                 <expand macro="base_params"/>
