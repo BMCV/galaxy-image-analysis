@@ -3,8 +3,8 @@
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
-        <token name="@TOOL_VERSION@">2.2.3</token>
-        <token name="@VERSION_SUFFIX@">2</token>
+        <token name="@TOOL_VERSION@">2.3.5</token>
+        <token name="@VERSION_SUFFIX@">0</token>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
@@ -15,7 +15,7 @@
     <requirements>
         <requirement type="package" version="@TOOL_VERSION@">numpy</requirement>
         <requirement type="package" version="0.5.2">giatools</requirement>
-        <requirement type="package" version="2024.7.24">tifffile</requirement>
+        <requirement type="package" version="2025.10.16">tifffile</requirement>
     </requirements>
     <command detect_errors="aggressive"><![CDATA[
 
