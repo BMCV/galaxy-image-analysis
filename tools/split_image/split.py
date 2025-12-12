@@ -2,9 +2,7 @@ import argparse
 import math
 
 import giatools
-import giatools.util
 import numpy as np
-import tifffile
 
 
 parser = argparse.ArgumentParser()
@@ -35,20 +33,16 @@ for img_idx, img in enumerate(arr):
     img_out = giatools.Image(
         data=img,
         axes=img_in.axes,
+        metadata=img_in.metadata,
     ).squeeze_like(
         img_in.original_axes,
     )
 
     # Optionally, squeeze the image
     if args.squeeze:
-        s = [
-            axis_pos for axis_pos in range(len(img_out.axes))
-            if img_out.data.shape[axis_pos] == 1 and img_out.axes[axis_pos] not in 'YX'
-        ]
-        img_out = img_out.squeeze_like(
-            giatools.util.str_without_positions(img_out.axes, s),
-        )
+        img_out = img_out.squeeze()
 
     # Save the result
-    filename = output_filename_pattern % (img_idx + 1)
-    tifffile.imwrite(filename, img_out.data, metadata=dict(axes=img_out.axes))
+    img_out.write(
+        output_filename_pattern % (img_idx + 1),
+    )
