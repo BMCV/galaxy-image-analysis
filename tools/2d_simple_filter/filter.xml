@@ -83,7 +83,8 @@
                 <option value="sobel">Sobel</option>
             </param>
             <when value="gaussian">
-                <param name="sigma" type="float" value="3" min="0.1" label="Sigma" help="The half width of the Gaussian bell (in pixels)."/>
+                <param name="sigma" type="float" value="3" min="0.1" label="Sigma"
+                       help="The half width of the Gaussian bell (in pixels)."/>
                 <conditional name="derivative">
                     <param name="order" type="select" label="Use a derivative?">
                         <option value="0">No derivative (mean filter)</option>
@@ -101,10 +102,12 @@
                 </conditional>
             </when>
             <when value="uniform">
-                <param name="size" type="integer" min="2" value="3" label="Size" help="Edge length of the neighborhood (square, in pixels)." />
+                <param name="size" type="integer" min="2" value="3" label="Size"
+                       help="Edge length of the neighborhood (square, in pixels)."/>
             </when>
             <when value="median">
-                <param name="radius" type="integer" min="2" value="3" label="Radius" help="Radius of the neighborhood (circle, in pixels)." />
+                <param name="radius" type="integer" min="2" value="3" label="Radius"
+                       help="Radius of the neighborhood (circle, in pixels)." />
             </when>
             <when value="prewitt">
                 <expand macro="select_axis"/>
