@@ -44,7 +44,7 @@
             <option value="">Split dataset that contains multiple images (e.g., multi-series TIFF)</option>
         </param>
         <param name="squeeze" type="boolean" checked="false" truevalue="--squeeze" falsevalue="" label="Squeeze result images"
-               help="Only non-singleton axes (axes with more than one element) will be retained in the result images. Does not apply for X and Y axes." />
+               help="Only non-singleton axes (axes with more than one element) will be retained in the result images. This does not apply for the X and Y axes which always are retained." />
     </inputs>
     <outputs>
         <collection type="list" name="output" label="Split ${on_string} along ${axis} axis">
