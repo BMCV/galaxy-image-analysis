@@ -56,7 +56,8 @@ def concat_channels(
             )
 
         # Sort images by the corresponding `sort_key` metadata value
-        images, _ = zip(*sorted(zip(images, sort_keys), key=lambda p: p[1]))
+        sorted_indices = sorted(range(len(images)), key=lambda i: sort_keys[i])
+        images = [images[i] for i in sorted_indices]
 
     # Determine consensual metadata
     # TODO: Convert metadata of images with different units of measurement into a common unit
@@ -67,7 +68,7 @@ def concat_channels(
 
     # Update the `z_spacing` metadata, if concatenating along the Z-axis and `z_position` is available for all images
     if axis == 'Z' and len(images) >= 2 and len(z_positions := metadata.get('z_position', list())) == len(images):
-        z_positions.sort()
+        z_positions = sorted(z_positions)  # don't mutate the `metadata` dictionary for easier future code maintenance
         final_metadata['z_spacing'] = abs(np.subtract(z_positions[1:], z_positions[:-1]).mean())
 
     # Do the concatenation
@@ -98,12 +99,12 @@ def reduce_metadata(values: list[Any]) -> Any | None:
         value_type = value_types[0]
 
     # For floating point types, reduce via arithmetic average
-    if np.issubdtype(value_type, float):
+    if np.issubdtype(value_type, np.floating):
         return np.mean(non_none_values)
 
     # For integer types, reduce via the median
-    if np.issubdtype(value_type, int):
-        return np.median(non_none_values)
+    if np.issubdtype(value_type, np.integer):
+        return int(np.median(non_none_values))
 
     # For all other types, reduction is only possible if the values are identical
     if len(frozenset(non_none_values)) == 1:
