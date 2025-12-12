@@ -8,10 +8,14 @@
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
+        <expand macro="creators/kostrykin"/>
     </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
+    <xrefs>
+        <xref type="bio.tools">galaxy_image_analysis</xref>
+    </xrefs>
     <requirements>
         <requirement type="package" version="@TOOL_VERSION@">numpy</requirement>
         <requirement type="package" version="0.5.2">giatools</requirement>
