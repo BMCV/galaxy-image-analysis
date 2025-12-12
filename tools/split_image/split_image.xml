@@ -59,6 +59,13 @@
                 <expand macro="tests/intensity_image_diff/element" name="2.tiff" value="rgb1_g.tiff" ftype="tiff"/>
                 <expand macro="tests/intensity_image_diff/element" name="3.tiff" value="rgb1_b.tiff" ftype="tiff"/>
             </output_collection>
+            <assert_stdout>
+                <has_line line="Input image axes: YXC"/>
+                <has_line line="Input image shape: (32, 32, 3)"/>
+                <has_line line="Writing 3 image(s)"/>
+                <has_line line="Output axes: YXC"/>
+                <has_line line="Output shape: (32, 32, 1)"/>
+            </assert_stdout>
         </test>
 
         <!-- TIFF tests -->
@@ -70,6 +77,13 @@
                 <expand macro="tests/intensity_image_diff/element" name="01.tiff" value="zcyx_slice01.tiff" ftype="tiff"/>
                 <expand macro="tests/intensity_image_diff/element" name="25.tiff" value="zcyx_slice25.tiff" ftype="tiff"/>
             </output_collection>
+            <assert_stdout>
+                <has_line line="Input image axes: ZCYX"/>
+                <has_line line="Input image shape: (25, 2, 50, 50)"/>
+                <has_line line="Writing 25 image(s)"/>
+                <has_line line="Output axes: ZCYX"/>
+                <has_line line="Output shape: (1, 2, 50, 50)"/>
+            </assert_stdout>
         </test>
         <test>
             <param name="input" value="qyx.tiff" />
@@ -79,6 +93,40 @@
                 <expand macro="tests/intensity_image_diff/element" name="1.tiff" value="qyx_q1.tiff" ftype="tiff"/>
                 <expand macro="tests/intensity_image_diff/element" name="2.tiff" value="qyx_q2.tiff" ftype="tiff"/>
             </output_collection>
+            <assert_stdout>
+                <has_line line="Input image axes: QYX"/>
+                <has_line line="Input image shape: (2, 256, 256)"/>
+                <has_line line="Writing 2 image(s)"/>
+                <has_line line="Output axes: QYX"/>
+                <has_line line="Output shape: (1, 256, 256)"/>
+            </assert_stdout>
+        </test>
+
+        <!-- Test splitting multi-series TIFF -->
+        <test>
+            <param name="input" value="multiseries.ome.tiff" />
+            <param name="axis" value="" />
+            <param name="squeeze" value="false" />
+            <output_collection name="output" type="list" count="6">
+                <expand macro="tests/intensity_image_diff/element" name="1.tiff" value="multiseries_series1.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="6.tiff" value="multiseries_series6.tiff" ftype="tiff"/>
+            </output_collection>
+            <assert_stdout>
+                <has_line line="Found TIFF with 6 series"/>
+                <has_line line="Writing 6 image(s)"/>
+                <has_line line="Output 1 axes: CYX"/>
+                <has_line line="Output 1 shape: (4, 5, 5)"/>
+                <has_line line="Output 2 axes: CYX"/>
+                <has_line line="Output 2 shape: (4, 5, 5)"/>
+                <has_line line="Output 3 axes: CYX"/>
+                <has_line line="Output 3 shape: (4, 5, 5)"/>
+                <has_line line="Output 4 axes: CYX"/>
+                <has_line line="Output 4 shape: (4, 5, 5)"/>
+                <has_line line="Output 5 axes: CYX"/>
+                <has_line line="Output 5 shape: (4, 5, 5)"/>
+                <has_line line="Output 6 axes: CYX"/>
+                <has_line line="Output 6 shape: (4, 5, 5)"/>
+            </assert_stdout>
         </test>
 
         <!-- Test squeezing -->
@@ -91,6 +139,13 @@
                 <expand macro="tests/intensity_image_diff/element" name="2.tiff" value="rgb1_squeezed_g.tiff" ftype="tiff"/>
                 <expand macro="tests/intensity_image_diff/element" name="3.tiff" value="rgb1_squeezed_b.tiff" ftype="tiff"/>
             </output_collection>
+            <assert_stdout>
+                <has_line line="Input image axes: YXC"/>
+                <has_line line="Input image shape: (32, 32, 3)"/>
+                <has_line line="Writing 3 image(s)"/>
+                <has_line line="Output axes: YX"/>
+                <has_line line="Output shape: (32, 32)"/>
+            </assert_stdout>
         </test>
 
         <!-- Test with missing axes -->
@@ -101,6 +156,13 @@
             <output_collection name="output" type="list" count="1">
                 <expand macro="tests/intensity_image_diff/element" name="1.tiff" value="rgb1_split_z.tiff" ftype="tiff"/>
             </output_collection>
+            <assert_stdout>
+                <has_line line="Input image axes: YXC"/>
+                <has_line line="Input image shape: (32, 32, 3)"/>
+                <has_line line="Writing 1 image(s)"/>
+                <has_line line="Output axes: YXC"/>
+                <has_line line="Output shape: (32, 32, 3)"/>
+            </assert_stdout>
         </test>
 
     </tests>
