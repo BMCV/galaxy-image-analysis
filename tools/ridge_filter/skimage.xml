@@ -1,0 +1,270 @@
+<tool id="ridge_filter_skimage" name="Apply ridge filter" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
+    <description>with scikit-image</description>
+    <macros>
+        <import>creators.xml</import>
+        <import>tests.xml</import>
+        <token name="@TOOL_VERSION@">0.22.0</token>
+        <token name="@VERSION_SUFFIX@">1</token>
+        <xml name="base_params">
+            <param name="black_ridges" type="select" label="Mode of operation">
+                <option value="true" selected="true">Enhance dark ridges (low image intensities)</option>
+                <option value="false">Enhance bright ridges (high image intensities)</option>
+            </param>
+            <param name="sigma_min" type="float" value="1" min="0.1" label="Minimum sigma" help="Lower bound of the scale for multi-scale analysis."/>
+            <param name="sigma_max" type="float" value="3" min="0.1" label="Maximum sigma" help="Upper bound of the scale for multi-scale analysis."/>
+            <param name="num_sigma" type="integer" value="10" min="2" label="Number of sigma steps for multi-scale analysis"/>
+        </xml>
+        <xml name="frangi_params">
+            <expand macro="base_params"/>
+            <param name="alpha" type="float" min="0" value="0.5" label="Alpha"
+                   help="Frangi correction constant that adjusts the filter's sensitivity to deviation from a plate-like structure."/>
+            <param name="beta" type="float" min="0" value="0.5" label="Beta"
+                   help="Frangi correction constant that adjusts the filter's sensitivity to deviation from a blob-like structure."/>
+        </xml>
+    </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+        <expand macro="creators/kostrykin"/>
+    </creator>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="bio.tools">galaxy_image_analysis</xref>
+        <xref type="bio.tools">scikit-image</xref>
+        <xref type="biii">scikit-image</xref>
+    </xrefs>
+    <requirements>
+        <requirement type="package" version="@TOOL_VERSION@">scikit-image</requirement>
+        <requirement type="package" version="0.5.2">giatools</requirement>
+    </requirements>
+    <command detect_errors="aggressive"><![CDATA[
+
+        python '$__tool_directory__/filter_skimage.py'
+
+        '$input'
+        '$output'
+        '$params'
+
+    ]]></command>
+    <configfiles>
+        <configfile name="params"><![CDATA[
+            {
+
+            #if $filter.filter_type == "frangi" or $filter.filter_type == "hessian" or $filter.filter_type == "meijering" or $filter.filter_type == "sato"
+                "black_ridges": $filter.black_ridges,
+                "sigma_min": $filter.sigma_min,
+                "sigma_max": $filter.sigma_max,
+                "num_sigma": $filter.num_sigma,
+            #end if
+
+            #if $filter.filter_type == "frangi" or $filter.filter_type == "hessian"
+                "alpha": $filter.alpha,
+                "beta": $filter.beta,
+            #end if
+
+            #if $filter.filter_type == "laplace"
+                "ksize": $filter.ksize,
+            #end if
+
+                "dtype": "$dtype",
+                "filter_type": "$filter.filter_type"
+
+            }
+        ]]></configfile>
+    </configfiles>
+    <inputs>
+        <param name="input" type="data" format="tiff,png" label="Input image"/>
+        <param name="dtype" type="select" label="Output pixel type"
+               help="Data type used to store the pixel values in the output image.">
+            <option value="float64" selected="True">64-bit floating point</option>
+            <option value="float32">32-bit floating point</option>
+            <option value="float16">16-bit floating point</option>
+        </param>
+        <conditional name="filter">
+            <param name="filter_type" type="select" label="Filter">
+                <option value="frangi" selected="True">Frangi vesselness filter</option>
+                <option value="hessian">Hybrid Hessian filter</option>
+                <option value="laplace">Laplace filter</option>
+                <option value="meijering">Meijering neuriteness filter</option>
+                <option value="sato">Sato tubeness filter</option>
+            </param>
+            <when value="frangi">
+                <expand macro="frangi_params"/>
+            </when>
+            <when value="hessian">
+                <expand macro="frangi_params"/>
+            </when>
+            <when value="laplace">
+                <param name="ksize" type="integer" value="3" label="Kernel size"
+                       help="Define the size of the discrete Laplacian operator such that it will have the size of a hypercube with this edge length (in pixels)."/>
+            </when>
+            <when value="meijering">
+                <expand macro="base_params"/>
+            </when>
+            <when value="sato">
+                <expand macro="base_params"/>
+            </when>
+        </conditional>
+    </inputs>
+    <outputs>
+       <data format="tiff" name="output"/>
+    </outputs>
+    <tests>
+        <!-- Single-image (Q), Single-frame (T), Single-slice (Z), multi-channel (C), Frangi (dark) -->
+        <test>
+            <param name="input" value="scikit-image/retina.png"/>
+            <param name="dtype" value="float16"/>
+            <conditional name="filter">
+                <param name="filter_type" value="frangi"/>
+                <param name="black_ridges" value="true"/>
+                <param name="sigma_min" value="0.5"/>
+                <param name="sigma_max" value="20"/>
+                <param name="num_sigma" value="10"/>
+                <param name="alpha" value="0.5"/>
+                <param name="beta" value="0.5"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="retina_frangi.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line='Applying filter: "frangi"'/>
+                <has_line line="Performing 2-D filtering"/>
+            </assert_stdout>
+        </test>
+        <!-- Single-image (Q), Single-frame (T), Single-slice (Z), single-channel (C), Hessian (dark) -->
+        <test>
+            <param name="input" value="retina_0c_0z_0t_0q.tiff"/>
+            <param name="dtype" value="float16"/>
+            <conditional name="filter">
+                <param name="filter_type" value="hessian"/>
+                <param name="black_ridges" value="true"/>
+                <param name="sigma_min" value="0.5"/>
+                <param name="sigma_max" value="20"/>
+                <param name="num_sigma" value="10"/>
+                <param name="alpha" value="0.5"/>
+                <param name="beta" value="0.5"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="retina_0c_0z_0t_0q_hessian.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line='Applying filter: "hessian"'/>
+                <has_line line="Performing 2-D filtering"/>
+            </assert_stdout>
+        </test>
+        <!-- Single-image (Q), Multi-frame (T), Single-slice (Z), single-channel (C), Meijering (dark) -->
+        <test>
+            <param name="input" value="retina_0c_0z_3t_0q.tiff"/>
+            <param name="dtype" value="float16"/>
+            <conditional name="filter">
+                <param name="filter_type" value="meijering"/>
+                <param name="black_ridges" value="true"/>
+                <param name="sigma_min" value="0.5"/>
+                <param name="sigma_max" value="20"/>
+                <param name="num_sigma" value="10"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="retina_0c_0z_3t_0q_meijering.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line='Applying filter: "meijering"'/>
+                <has_line line="Performing 2-D filtering"/>
+            </assert_stdout>
+        </test>
+        <!-- Multi-image (Q), Single-frame (T), Single-slice (Z), single-channel (C), Sato (dark) -->
+        <test>
+            <param name="input" value="retina_0c_0z_0t_2q.tiff"/>
+            <param name="dtype" value="float16"/>
+            <conditional name="filter">
+                <param name="filter_type" value="sato"/>
+                <param name="black_ridges" value="true"/>
+                <param name="sigma_min" value="0.5"/>
+                <param name="sigma_max" value="20"/>
+                <param name="num_sigma" value="10"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="retina_0c_0z_0t_2q_sato.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line='Applying filter: "sato"'/>
+                <has_line line="Performing 2-D filtering"/>
+            </assert_stdout>
+        </test>
+        <!-- Single-image (Q), Single-frame (T), Multi-slice (Z), single-channel (C), Laplace -->
+        <test>
+            <param name="input" value="retina_0c_5z_0t_0q.tiff"/>
+            <param name="dtype" value="float16"/>
+            <conditional name="filter">
+                <param name="filter_type" value="laplace"/>
+                <param name="ksize" value="5"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="retina_0c_5z_0t_0q_laplace.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line='Applying filter: "laplace"'/>
+                <has_line line="Performing 3-D filtering"/>
+            </assert_stdout>
+        </test>
+        <!-- Bright ridges, Single-image (Q), Single-frame (T), Multi-slice (Z), single-channel (C), Frangi (bright) -->
+        <test>
+            <param name="input" value="retina_inv_0c_0z_0t_0q.tiff"/>
+            <param name="dtype" value="float16"/>
+            <conditional name="filter">
+                <param name="filter_type" value="frangi"/>
+                <param name="black_ridges" value="false"/>
+                <param name="sigma_min" value="0.5"/>
+                <param name="sigma_max" value="20"/>
+                <param name="num_sigma" value="10"/>
+                <param name="alpha" value="0.5"/>
+                <param name="beta" value="0.5"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="retina_inv_0c_0z_0t_0q_frangi.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line='Applying filter: "frangi"'/>
+                <has_line line="Performing 2-D filtering"/>
+            </assert_stdout>
+        </test>
+    </tests>
+    <help>
+
+**Applies a ridge filter to an image.**
+
+Ridge filters can be used to detect ridge-like structures, such as neurites, tubes, vessels, wrinkles, or rivers. Different
+ridge filters may be suited for detecting different structures, e.g., depending on contrast or noise level. 2-D and 3-D
+images are supported. For multi-channel images, the filter is applied to all channels of the image. For time-series images,
+the filter is also applied for all time steps.
+
+Frangi vesselness filter
+========================
+
+Filter an image with the Frangi vesselness filter. This filter can be used to detect continuous ridges, e.g. vessels,
+wrinkles, rivers. It can be used to calculate the fraction of the whole image containing such objects. Calculates the
+eigenvalues of the Hessian to compute the similarity of an image region to vessels, according to the method described in
+Frangi et al. (1998).
+
+Hybrid Hessian filter 
+=====================
+
+Filter an image with the Hybrid Hessian filter (Schrijver 2001, Kroon 2009). This filter can be used to detect continuous
+edges, e.g. vessels, wrinkles, rivers. It can be used to calculate the fraction of the whole image containing such objects.
+Almost equal to Frangi filter, but uses alternative method of smoothing.
+
+Laplace filter
+==============
+
+Find the edges of an image using the Laplace operator.
+
+Meijering neuriteness filter
+============================
+
+Filter an image with the Meijering neuriteness filter. This filter can be used to detect continuous ridges, e.g. neurites,
+wrinkles, rivers. It can be used to calculate the fraction of the whole image containing such objects. Calculates the
+eigenvalues of the Hessian to compute the similarity of an image region to neurites, according to the method described in
+Meijering et al. (2004).
+
+Sato tubeness filter
+====================
+
+Filter an image with the Sato tubeness filter. This filter can be used to detect continuous ridges, e.g. tubes, wrinkles,
+rivers. It can be used to calculate the fraction of the whole image containing such objects. Calculates the eigenvalues of
+the Hessian to compute the similarity of an image region to tubes, according to the method described in Sato et al. (1998).
+
+    </help>
+    <citations>
+       <citation type="doi">10.1007/BFb0056195</citation>
+       <citation type="doi">10.1002/cyto.a.20022</citation>
+       <citation type="doi">10.1016/S1361-8415(98)80009-1</citation>
+    </citations>
+</tool>
