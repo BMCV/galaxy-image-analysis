@@ -119,6 +119,17 @@
                 <has_line line="Output shape: (1, 256, 256)"/>
             </assert_stdout>
         </test>
+        <test>
+            <param name="input" value="qyx.tiff" />
+            <param name="axis" value="" />
+            <param name="squeeze" value="false" />
+            <output_collection name="output" type="list" count="1">
+                <expand macro="tests/intensity_image_diff/element" name="1.tiff" value="qyx.tiff" ftype="tiff"/>
+            </output_collection>
+            <assert_stdout>
+                <has_line line="Found TIFF with 1 series"/>
+            </assert_stdout>
+        </test>
 
         <!-- Test splitting multi-series TIFF -->
         <test>
