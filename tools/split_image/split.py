@@ -2,6 +2,7 @@ import argparse
 import math
 import os
 import pathlib
+import shutil
 
 import giatools
 import numpy as np
@@ -68,7 +69,10 @@ if __name__ == '__main__':
         # Otherwise, there is nothing to be split (or squeeze)
         # (the input is either a single-series TIFF or not a TIFF at all)
         elif num_tiff_series == 1:  # input is a single-series TIFF (output = input)
-            os.symlink(args.input, args.output / '1.tiff')
+            try:
+                os.symlink(args.input, args.output / '1.tiff')
+            except OSError:
+                shutil.copyfile(args.input, args.output / '1.tiff')
         else:  # input is not a TIFF, conversion needed
             img = giatools.Image.read(args.input)
             OutputWriter(
