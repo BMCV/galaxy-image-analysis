@@ -75,7 +75,7 @@ if __name__ == '__main__':
                 dir_path=args.output,
                 num_images=1,
                 squeeze=args.squeeze,
-                verbose=True,
+                verbose=False,
             ).write(
                 img.squeeze_like(img.original_axes),
             )
