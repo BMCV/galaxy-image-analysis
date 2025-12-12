@@ -41,11 +41,11 @@ if __name__ == '__main__':
     # If splitting a file that contains multiple images...
     if args.axis == '':
 
-        # Peak the number of series in the input file (if it is a TIFF)
+        # Peek the number of series in the input file (if it is a TIFF)
         try:
-            tiff = tifffile.TiffFile(args.input)
-            num_tiff_series = len(tiff.series)
-            print(f'Found TIFF with {num_tiff_series} series')
+            with tifffile.TiffFile(args.input) as tiff:
+                num_tiff_series = len(tiff.series)
+                print(f'Found TIFF with {num_tiff_series} series')
         except tifffile.TiffFileError:
             num_tiff_series = 0  # not a TIFF file
             print('Not a TIFF file')
