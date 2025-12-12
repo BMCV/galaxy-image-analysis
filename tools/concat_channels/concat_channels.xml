@@ -1,4 +1,4 @@
-<tool id="ip_concat_channels" name="Concatenate images or channels" version="0.4" profile="20.05">
+<tool id="ip_concat_channels" name="Concatenate images or channels" version="0.5" profile="20.05">
     <description></description>
     <macros>
         <import>creators.xml</import>
@@ -6,6 +6,7 @@
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
+        <expand macro="creators/kostrykin"/>
     </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
@@ -17,7 +18,7 @@
         <requirement type="package" version="0.25.2">scikit-image</requirement>
         <requirement type="package" version="2.3.5">numpy</requirement>
         <requirement type="package" version="2025.10.16">tifffile</requirement>
-        <requirement type="package" version="0.4.1">giatools</requirement>
+        <requirement type="package" version="0.5.2">giatools</requirement>
     </requirements>
     <command detect_errors="aggressive"><![CDATA[
 
@@ -31,6 +32,10 @@
         '$axis'
 
         $mode
+
+        #if $sort_by != ""
+            --sort_by '$sort_by'
+        #end if
 
     ]]></command>
     <inputs>
@@ -47,6 +52,10 @@
             <option value="" selected="true">Preserve brightness</option>
             <option value="--preserve_values">Preserve range of values</option>
         </param>
+        <param name="sort_by" type="select" label="Sort images before concatenating">
+            <option value="" selected="true">Do not sort (keep the order of the datasets)</option>
+            <option value="z_position">Sort images by their position along the Z-axis</option>
+        </param>
     </inputs>
     <outputs>
         <data format="tiff" name="output"/>
@@ -57,13 +66,20 @@
             <param name="inputs" value="input1_uint8.png,input2_float.tiff"/>
             <param name="axis" value="Y"/>
             <param name="mode" value=""/>
+            <param name="sort_by" value=""/>
             <expand macro="tests/intensity_image_diff" name="output" value="res_preserve_brightness.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Output TIFF shape: (238, 119, 4)"/>
+                <has_line line="Output TIFF axes: YXC"/>
+                <has_line line="Output TIFF resolution: (1.0, 1.0)"/>
+            </assert_stdout>
         </test>
         <!-- Test with "preserve range of values", vertical concatenation -->
         <test>
             <param name="inputs" value="input1_uint8.png,input2_float.tiff"/>
             <param name="axis" value="Y"/>
             <param name="mode" value="--preserve_values"/>
+            <param name="sort_by" value=""/>
             <expand macro="tests/intensity_image_diff" name="output" value="res_preserve_values.tiff" ftype="tiff">
                 <!--
 
@@ -77,11 +93,17 @@
                 -->
                 <has_image_mean_intensity min="0" max="255"/>
             </expand>
+            <assert_stdout>
+                <has_line line="Output TIFF shape: (238, 119, 4)"/>
+                <has_line line="Output TIFF axes: YXC"/>
+                <has_line line="Output TIFF resolution: (1.0, 1.0)"/>
+            </assert_stdout>
         </test>
         <!-- Test concatenation of channels (axis *exists* in both images) -->
         <test>
             <param name="inputs" value="input1_uint8.png,input2_float.tiff"/>
             <param name="axis" value="C"/>
+            <param name="sort_by" value=""/>
             <output name="output" ftype="tiff">
                 <assert_contents>
                     <has_image_width width="119"/>
@@ -91,11 +113,17 @@
                     <has_image_frames frames="1"/>
                 </assert_contents>
             </output>
+            <assert_stdout>
+                <has_line line="Output TIFF shape: (119, 119, 8)"/>
+                <has_line line="Output TIFF axes: YXC"/>
+                <has_line line="Output TIFF resolution: (1.0, 1.0)"/>
+            </assert_stdout>
         </test>
         <!-- Test concatenation of frames (axis *does not* exist in both images) -->
         <test>
             <param name="inputs" value="input1_uint8.png,input2_float.tiff"/>
             <param name="axis" value="T"/>
+            <param name="sort_by" value=""/>
             <output name="output" ftype="tiff">
                 <assert_contents>
                     <has_image_width width="119"/>
@@ -105,6 +133,85 @@
                     <has_image_frames frames="2"/>
                 </assert_contents>
             </output>
+            <assert_stdout>
+                <has_line line="Output TIFF shape: (2, 119, 119, 4)"/>
+                <has_line line="Output TIFF axes: TYXC"/>
+                <has_line line="Output TIFF resolution: (1.0, 1.0)"/>
+            </assert_stdout>
+        </test>
+        <!-- Test concatenation of z-slices with metadata -->
+        <test>
+            <param name="inputs" value="heart_ct_4043.tiff,heart_ct_3983.tiff,heart_ct_3953.tiff,heart_ct_3923.tiff"/>
+            <param name="axis" value="Z"/>
+            <param name="mode" value="--preserve_values"/>
+            <param name="sort_by" value=""/>
+            <output name="output" ftype="tiff">
+                <assert_contents>
+                    <has_image_width width="512"/>
+                    <has_image_height height="512"/>
+                    <has_image_depth depth="4"/>
+                    <has_image_channels channels="1"/>
+                    <has_image_frames frames="1"/>
+                    <has_image_center_of_mass slice="0" center_of_mass="254.83911700, 251.72483820" eps="1e-8"/><!-- 4043 -->
+                    <has_image_center_of_mass slice="1" center_of_mass="254.94356937, 251.88178729" eps="1e-8"/><!-- 3983 -->
+                    <has_image_center_of_mass slice="2" center_of_mass="254.95107235, 252.04425222" eps="1e-8"/><!-- 3953 -->
+                    <has_image_center_of_mass slice="3" center_of_mass="254.91235475, 252.24777978" eps="1e-8"/><!-- 3923 -->
+                </assert_contents>
+            </output>
+            <assert_stdout>
+                <has_line line="Output TIFF shape: (4, 512, 512)"/>
+                <has_line line="Output TIFF axes: ZYX"/>
+                <has_line line="Output TIFF resolution: (1.137778101526753, 1.137778101526753), unit: mm, z_position: -219.860001, z_spacing: 2.5"/>
+            </assert_stdout>
+        </test>
+        <!-- Test concatenation of z-slices with metadata + sorting by `z_position` (inputs in wrong order) -->
+        <test>
+            <param name="inputs" value="heart_ct_3953.tiff,heart_ct_3983.tiff,heart_ct_4043.tiff,heart_ct_3923.tiff"/>
+            <param name="axis" value="Z"/>
+            <param name="mode" value="--preserve_values"/>
+            <param name="sort_by" value="z_position"/>
+            <output name="output" ftype="tiff">
+                <assert_contents>
+                    <has_image_width width="512"/>
+                    <has_image_height height="512"/>
+                    <has_image_depth depth="4"/>
+                    <has_image_channels channels="1"/>
+                    <has_image_frames frames="1"/>
+                    <has_image_center_of_mass slice="0" center_of_mass="254.83911700, 251.72483820" eps="1e-8"/><!-- 4043 -->
+                    <has_image_center_of_mass slice="1" center_of_mass="254.94356937, 251.88178729" eps="1e-8"/><!-- 3983 -->
+                    <has_image_center_of_mass slice="2" center_of_mass="254.95107235, 252.04425222" eps="1e-8"/><!-- 3953 -->
+                    <has_image_center_of_mass slice="3" center_of_mass="254.91235475, 252.24777978" eps="1e-8"/><!-- 3923 -->
+                </assert_contents>
+            </output>
+            <assert_stdout>
+                <has_line line="Output TIFF shape: (4, 512, 512)"/>
+                <has_line line="Output TIFF axes: ZYX"/>
+                <has_line line="Output TIFF resolution: (1.137778101526753, 1.137778101526753), unit: mm, z_position: -219.860001, z_spacing: 2.5"/>
+            </assert_stdout>
+        </test>
+        <!-- Test concatenation of z-slices with a missing slice in between (`z_position` must increase) -->
+        <test>
+            <param name="inputs" value="heart_ct_4043.tiff,heart_ct_3983.tiff,heart_ct_3923.tiff"/>
+            <param name="axis" value="Z"/>
+            <param name="mode" value="--preserve_values"/>
+            <param name="sort_by" value=""/>
+            <output name="output" ftype="tiff">
+                <assert_contents>
+                    <has_image_width width="512"/>
+                    <has_image_height height="512"/>
+                    <has_image_depth depth="3"/>
+                    <has_image_channels channels="1"/>
+                    <has_image_frames frames="1"/>
+                    <has_image_center_of_mass slice="0" center_of_mass="254.83911700, 251.72483820" eps="1e-8"/><!-- 4043 -->
+                    <has_image_center_of_mass slice="1" center_of_mass="254.94356937, 251.88178729" eps="1e-8"/><!-- 3983 -->
+                    <has_image_center_of_mass slice="2" center_of_mass="254.91235475, 252.24777978" eps="1e-8"/><!-- 3923 -->
+                </assert_contents>
+            </output>
+            <assert_stdout>
+                <has_line line="Output TIFF shape: (3, 512, 512)"/>
+                <has_line line="Output TIFF axes: ZYX"/>
+                <has_line line="Output TIFF resolution: (1.137778101526753, 1.137778101526753), unit: mm, z_position: -220.27666766666667, z_spacing: 3.75"/>
+            </assert_stdout>
         </test>
     </tests>
     <help>
