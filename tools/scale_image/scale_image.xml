@@ -120,107 +120,121 @@
         <data name="output" from_work_dir="output" format_source="input" metadata_source="input"/>
     </outputs>
     <tests>
-        <!-- Test PNG, uniform scaling, nearest neighbor interpolation (without antialias) -->
+        <!-- Test PNG, uniform scaling, nearest neighbor interpolation (without anti-alias) -->
         <test>
-            <param name="input" value="input1_binary_rgb.png"/>
+            <param name="input" value="inputs/binary_rgba.png"/>
             <conditional name="scale">
                 <param name="mode" value="uniform"/>
-                <param name="factor" value="0.5"/><!-- TODO: change factor to somethid odd like 0.7 to better challenge interpolation -->
+                <param name="factor" value="0.7"/>
             </conditional>
             <conditional name="interpolation">
                 <param name="order" value="0"/>
             </conditional>
-            <expand macro="tests/binary_image_diff" name="output" value="uniform_binary.png" ftype="png"/>
+            <expand macro="tests/binary_image_diff" name="output" value="outputs/binary_rgba_uniform_down_nn.png" ftype="png"/>
         </test>
-        <!-- Test PNG, uniform scaling, linear interpolation with antialias -->
         <test>
-            <param name="input" value="input1_binary_rgb.png"/>
+            <param name="input" value="inputs/binary_rgba.png"/>
             <conditional name="scale">
                 <param name="mode" value="uniform"/>
-                <param name="factor" value="0.5"/>
+                <param name="factor" value="1.5"/>
+            </conditional>
+            <conditional name="interpolation">
+                <param name="order" value="0"/>
+            </conditional>
+            <expand macro="tests/binary_image_diff" name="output" value="outputs/binary_rgba_uniform_up_nn.png" ftype="png"/>
+        </test>
+        <!-- Test PNG, uniform scaling, linear interpolation with anti-alias -->
+        <test>
+            <param name="input" value="inputs/binary_rgba.png"/>
+            <conditional name="scale">
+                <param name="mode" value="uniform"/>
+                <param name="factor" value="0.7"/>
             </conditional>
             <conditional name="interpolation">
                 <param name="order" value="1"/>
                 <param name="anti_alias" value="true"/>
             </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="uniform.png" ftype="png"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="outputs/binary_rgba_uniform_down_linear_aa.png" ftype="png"/>
         </test>
-        <!-- Test PNG, anistropic scaling, qubic interpolation with antialias -->
         <test>
-            <param name="input" value="input1_binary_rgb.png"/>
+            <param name="input" value="inputs/binary_rgba.png"/>
+            <conditional name="scale">
+                <param name="mode" value="uniform"/>
+                <param name="factor" value="1.5"/>
+            </conditional>
+            <conditional name="interpolation">
+                <param name="order" value="1"/>
+                <param name="anti_alias" value="true"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="outputs/binary_rgba_uniform_up_linear_aa.png" ftype="png"/>
+        </test>
+        <!-- Test PNG, explicit scaling, qubic interpolation with anti-alias -->
+        <test>
+            <param name="input" value="inputs/binary_rgba.png"/>
             <conditional name="scale">
                 <param name="mode" value="explicit"/>
-                <param name="factor_x" value="0.8"/>
-                <param name="factor_y" value="0.5"/>
+                <param name="factor_x" value="1.5"/>
+                <param name="factor_y" value="0.7"/>
                 <param name="factor_z" value="1.0"/>
                 <param name="factor_t" value="1.0"/>
                 <param name="factor_q" value="1.0"/>
             </conditional>
             <conditional name="interpolation">
-                <param name="order" value="1"/><!-- TODO: change to 2 for qubic -->
+                <param name="order" value="2"/>
                 <param name="anti_alias" value="true"/>
             </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="anisotropic.png" ftype="png"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="outputs/binary_rgba_explicit_qubic_aa.png" ftype="png"/>
         </test>
         <test>
-            <param name="input" value="input1_binary_rgb.png"/>
+            <param name="input" value="inputs/binary_rgba.png"/>
             <conditional name="scale">
                 <param name="mode" value="explicit"/>
-                <param name="factor_x" value="0.8"/>
-                <param name="factor_y" value="0.5"/>
-                <param name="factor_z" value="0.1"/>
-                <param name="factor_t" value="1.0"/>
+                <param name="factor_x" value="1.5"/>
+                <param name="factor_y" value="0.7"/>
+                <param name="factor_z" value="1.0"/>
+                <param name="factor_t" value="0.1"/>
                 <param name="factor_q" value="1.0"/>
             </conditional>
             <conditional name="interpolation">
-                <param name="order" value="1"/><!-- TODO: change to 2 for qubic -->
+                <param name="order" value="2"/>
                 <param name="anti_alias" value="true"/>
             </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="anisotropic.png" ftype="png"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="outputs/binary_rgba_explicit_qubic_aa.png" ftype="png"/>
         </test>
         <test expect_failure="true">
-            <param name="input" value="input1_binary_rgb.png"/>
+            <param name="input" value="inputs/binary_rgba.png"/>
             <conditional name="scale">
                 <param name="mode" value="explicit"/>
-                <param name="factor_x" value="0.8"/>
-                <param name="factor_y" value="0.5"/>
-                <param name="factor_z" value="0.1"/>
-                <param name="factor_t" value="2.0"/>
+                <param name="factor_x" value="1.5"/>
+                <param name="factor_y" value="0.7"/>
+                <param name="factor_z" value="2.0"/>
+                <param name="factor_t" value="0.1"/>
                 <param name="factor_q" value="1.0"/>
             </conditional>
             <conditional name="interpolation">
-                <param name="order" value="1"/><!-- TODO: change to 2 for qubic -->
+                <param name="order" value="2"/>
                 <param name="anti_alias" value="true"/>
             </conditional>
             <assert_stderr>
-                <has_line line='Cannot write PNG file with axes "TYXC"'/>
+                <has_line line='Cannot write PNG file with axes "ZYXC"'/>
             </assert_stderr>
         </test>
-        <!-- Test TIFF, normalized -->
+        <!-- Test TIFF, explicit scaling, qubic interpolation with anti-alias -->
         <test>
-            <param name="input" value="input2_normalized.tiff"/>
+            <param name="input" value="inputs/binary_c0.tiff"/>
             <conditional name="scale">
-                <param name="mode" value="uniform"/>
-                <param name="factor" value="0.5"/>
+                <param name="mode" value="explicit"/>
+                <param name="factor_x" value="1.5"/>
+                <param name="factor_y" value="0.7"/>
+                <param name="factor_z" value="2.0"/>
+                <param name="factor_t" value="0.1"/>
+                <param name="factor_q" value="1.0"/>
             </conditional>
             <conditional name="interpolation">
-                <param name="order" value="1"/>
+                <param name="order" value="2"/>
                 <param name="anti_alias" value="true"/>
             </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="normalized.tiff" ftype="tiff"/>
-        </test>
-        <!-- Test TIFF, not normalized -->
-        <test>
-            <param name="input" value="input3_not_normalized.tiff"/>
-            <conditional name="scale">
-                <param name="mode" value="uniform"/>
-                <param name="factor" value="0.5"/>
-            </conditional>
-            <conditional name="interpolation">
-                <param name="order" value="1"/>
-                <param name="anti_alias" value="true"/>
-            </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="not_normalized.tiff" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="outputs/binary_c0_explicit_qubic_aa.tiff" ftype="tiff"/>
         </test>
         <!-- TODO: Add tests for isotropy scaling -->
     </tests>
