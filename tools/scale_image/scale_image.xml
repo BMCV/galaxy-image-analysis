@@ -131,6 +131,14 @@
                 <param name="order" value="0"/>
             </conditional>
             <expand macro="tests/binary_image_diff" name="output" value="outputs/binary_rgba_uniform_down_nn.png" ftype="png"/>
+            <assert_stdout>
+                <has_line line="Input axes: YXC"/>
+                <has_line line="Input has no metadata"/>
+                <has_line line="Output axes: YXC"/>
+                <has_line line="Output resolution: (1.4285714285714286, 1.4285714285714286), z_spacing: 1"/>
+                <has_line line="scale: (1, 1, 1, 0.7, 0.7)"/>
+                <has_line line="order: 0"/>
+            </assert_stdout>
         </test>
         <test>
             <param name="input" value="inputs/binary_rgba.png"/>
@@ -142,6 +150,14 @@
                 <param name="order" value="0"/>
             </conditional>
             <expand macro="tests/binary_image_diff" name="output" value="outputs/binary_rgba_uniform_up_nn.png" ftype="png"/>
+            <assert_stdout>
+                <has_line line="Input axes: YXC"/>
+                <has_line line="Input has no metadata"/>
+                <has_line line="Output axes: YXC"/>
+                <has_line line="Output resolution: (0.6666666666666666, 0.6666666666666666), z_spacing: 1"/>
+                <has_line line="scale: (1, 1, 1, 1.5, 1.5)"/>
+                <has_line line="order: 0"/>
+            </assert_stdout>
         </test>
         <!-- Test PNG, uniform scaling, linear interpolation with anti-alias -->
         <test>
@@ -155,6 +171,16 @@
                 <param name="anti_alias" value="true"/>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="outputs/binary_rgba_uniform_down_linear_aa.png" ftype="png"/>
+            <assert_stdout>
+                <has_line line="Input axes: YXC"/>
+                <has_line line="Input has no metadata"/>
+                <has_line line="Output axes: YXC"/>
+                <has_line line="Output resolution: (1.4285714285714286, 1.4285714285714286), z_spacing: 1"/>
+                <has_line line="scale: (1, 1, 1, 0.7, 0.7)"/>
+                <has_line line="order: 1"/>
+                <has_line line="anti_aliasing: True"/>
+                <has_line line="anti_aliasing_sigma: (0, 0, 0, 0.2142857142857143, 0.2142857142857143, 0)"/>
+            </assert_stdout>
         </test>
         <test>
             <param name="input" value="inputs/binary_rgba.png"/>
@@ -167,6 +193,14 @@
                 <param name="anti_alias" value="true"/>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="outputs/binary_rgba_uniform_up_linear_aa.png" ftype="png"/>
+            <assert_stdout>
+                <has_line line="Input axes: YXC"/>
+                <has_line line="Input has no metadata"/>
+                <has_line line="Output axes: YXC"/>
+                <has_line line="Output resolution: (0.6666666666666666, 0.6666666666666666), z_spacing: 1"/>
+                <has_line line="scale: (1, 1, 1, 1.5, 1.5)"/>
+                <has_line line="order: 1"/>
+            </assert_stdout>
         </test>
         <!-- Test PNG, explicit scaling, qubic interpolation with anti-alias -->
         <test>
@@ -184,6 +218,16 @@
                 <param name="anti_alias" value="true"/>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="outputs/binary_rgba_explicit_qubic_aa.png" ftype="png"/>
+            <assert_stdout>
+                <has_line line="Input axes: YXC"/>
+                <has_line line="Input has no metadata"/>
+                <has_line line="Output axes: YXC"/>
+                <has_line line="Output resolution: (0.6666666666666666, 1.4285714285714286), z_spacing: 1.0"/>
+                <has_line line="scale: (1.0, 1.0, 1.0, 0.7, 1.5)"/>
+                <has_line line="order: 2"/>
+                <has_line line="anti_aliasing: True"/>
+                <has_line line="anti_aliasing_sigma: (0, 0, 0, 0.2142857142857143, 0, 0)"/>
+            </assert_stdout>
         </test>
         <test>
             <param name="input" value="inputs/binary_rgba.png"/>
@@ -200,6 +244,16 @@
                 <param name="anti_alias" value="true"/>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="outputs/binary_rgba_explicit_qubic_aa.png" ftype="png"/>
+            <assert_stdout>
+                <has_line line="Input axes: YXC"/>
+                <has_line line="Input has no metadata"/>
+                <has_line line="Output axes: YXC"/>
+                <has_line line="Output resolution: (0.6666666666666666, 1.4285714285714286), z_spacing: 1.0"/>
+                <has_line line="scale: (1.0, 0.1, 1.0, 0.7, 1.5)"/><!-- TODO: check this -->
+                <has_line line="order: 2"/>
+                <has_line line="anti_aliasing: True"/>
+                <has_line line="anti_aliasing_sigma: (0, 4.5, 0, 0.2142857142857143, 0, 0)"/>
+            </assert_stdout>
         </test>
         <test expect_failure="true">
             <param name="input" value="inputs/binary_rgba.png"/>
@@ -235,8 +289,19 @@
                 <param name="anti_alias" value="true"/>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="outputs/binary_c0_explicit_qubic_aa.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input axes: YX"/>
+                <has_line line="Input resolution: (1.0, 1.0)"/>
+                <has_line line="Output axes: ZYX"/>
+                <has_line line="Output resolution: (0.6666666666666666, 1.4285714285714286), z_spacing: 2.0"/><!-- TODO: check this (z_spacing) -->
+                <has_line line="scale: (1.0, 0.1, 2.0, 0.7, 1.5)"/>
+                <has_line line="order: 2"/>
+                <has_line line="anti_aliasing: True"/>
+                <has_line line="anti_aliasing_sigma: (0, 4.5, 0, 0.2142857142857143, 0, 0)"/>
+            </assert_stdout>
         </test>
         <!-- TODO: Add tests for isotropy scaling -->
+        <!-- TODO: Add RGB non-binary PNG test for uniform scaling -->
     </tests>
     <help>
 

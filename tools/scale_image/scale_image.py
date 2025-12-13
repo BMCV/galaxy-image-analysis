@@ -145,13 +145,43 @@ def get_new_metadata(
             scales[old.axes.index('Y')],
         ),
     )
-    metadata['resolution'] = 1 / new_pixel_size
+    metadata['resolution'] = tuple(1 / new_pixel_size)
 
     # Update the metadata for the new voxel depth
     old_voxel_depth = old.metadata.get('z_spacing', 1)
     metadata['z_spacing'] = old_voxel_depth * scales[old.axes.index('Z')]
 
     return metadata
+
+
+def metadata_to_str(metadata: dict) -> str:
+    tokens = list()
+    for key in sorted(metadata.keys()):
+        value = metadata[key]
+        if isinstance(value, tuple):
+            value = '(' + ', '.join([f'{val}' for val in value]) + ')'
+        tokens.append(f'{key}: {value}')
+    if len(metadata_str := ', '.join(tokens)) > 0:
+        return metadata_str
+    else:
+        return 'has no metadata'
+
+
+def write_output(filepath: str, img: giatools.Image):
+    """
+    Validate that the output file format is suitable for the image data, then write it.
+    """
+    print('Output shape:', img.data.shape)
+    print('Output axes:', img.axes)
+    print('Output', metadata_to_str(img.metadata))
+
+    # Validate that the output file format is suitable for the image data
+    if filepath.lower().endswith('.png'):
+        if not frozenset(img.axes) <= frozenset('YXC'):
+            sys.exit(f'Cannot write PNG file with axes "{img.axes}"')
+
+    # Write image data to the output file
+    img.write(filepath)
 
 
 def scale_image(
@@ -163,6 +193,8 @@ def scale_image(
     **cfg,
 ):
     img = giatools.Image.read(input_filepath)
+    print('Input axes:', img.original_axes)
+    print('Input', metadata_to_str(img.metadata))
 
     # Determine `scale` for scaling
     match mode:
@@ -171,7 +203,9 @@ def scale_image(
             scale = get_uniform_scale(img, cfg['axes'], cfg['factor'])
 
         case 'explicit':
-            scale = [cfg.get(f'factor_{axis.lower()}', 1) for axis in img.axes if axis != 'C']
+            scale = tuple(
+                [cfg.get(f'factor_{axis.lower()}', 1) for axis in img.axes if axis != 'C']
+            )
 
         case 'isotropy':
             scale = get_scale_for_isotropy(img, cfg['isotropy_mode'])
@@ -195,10 +229,8 @@ def scale_image(
         )
 
     # Re-sample the image data to perform the scaling
-    print('-' * 10)
-    print('rescale_kwargs:')
-    print(rescale_kwargs)
-    print('-' * 10)
+    for key, value in rescale_kwargs.items():
+        print(f'{key}: {value}')
     arr = skimage.transform.rescale(img.data, **rescale_kwargs)
 
     # Preserve the `dtype` so that both brightness and range of values is preserved
@@ -219,20 +251,6 @@ def scale_image(
     )
 
 
-def write_output(filepath: str, img: giatools.Image):
-    """
-    Validate that the output file format is suitable for the image data, then write it.
-    """
-
-    # Validate that the output file format is suitable for the image data
-    if filepath.lower().endswith('.png'):
-        if not frozenset(img.axes) <= frozenset('YXC'):
-            sys.exit(f'Cannot write PNG file with axes "{img.axes}"')
-
-    # Write image data to the output file
-    img.write(filepath)
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('input', type=str)
@@ -243,11 +261,6 @@ if __name__ == "__main__":
     # Read the config file
     with open(args.params) as cfgf:
         cfg = json.load(cfgf)
-
-    print('-' * 10)
-    print('cfg:')
-    print(cfg)
-    print('-' * 10)
 
     # Perform scaling
     scale_image(
