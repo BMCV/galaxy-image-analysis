@@ -138,7 +138,7 @@ def get_new_metadata(
     )
 
     # Determine the new pixel size and update metadata
-    new_pixel_size = np.multiply(
+    new_pixel_size = np.divide(
         old_pixel_size,
         (
             scales[old.axes.index('X')],
@@ -149,7 +149,7 @@ def get_new_metadata(
 
     # Update the metadata for the new voxel depth
     old_voxel_depth = old.metadata.get('z_spacing', 1)
-    metadata['z_spacing'] = old_voxel_depth * scales[old.axes.index('Z')]
+    metadata['z_spacing'] = old_voxel_depth / scales[old.axes.index('Z')]
 
     return metadata
 
