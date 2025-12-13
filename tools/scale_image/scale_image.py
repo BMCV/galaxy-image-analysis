@@ -11,29 +11,29 @@ from PIL import Image
 
 def scale_image(input_file, output_file, scale, order, antialias):
     Image.MAX_IMAGE_PIXELS = 50000 * 50000
-    im = giatools.io.imread(input_file)
+    img = giatools.Image.read(input_file).squeeze()
 
     # Parse `--scale` argument
     if ',' in scale:
         scale = [float(s.strip()) for s in scale.split(',')]
-        assert len(scale) <= im.ndim, f'Image has {im.ndim} axes, but scale factors were given for {len(scale)} axes.'
-        scale = scale + [1] * (im.ndim - len(scale))
+        assert len(scale) <= img.data.ndim, f'Image has {img.data.ndim} axes, but scale factors were given for {len(scale)} axes.'
+        scale = scale + [1] * (img.data.ndim - len(scale))
 
     else:
         scale = float(scale)
 
         # For images with 3 or more axes, the last axis is assumed to correspond to channels
-        if im.ndim >= 3:
-            scale = [scale] * (im.ndim - 1) + [1]
+        if img.data.ndim >= 3:
+            scale = [scale] * (img.data.ndim - 1) + [1]
 
     # Do the scaling
-    res = skimage.transform.rescale(im, scale, order, anti_aliasing=antialias, preserve_range=True)
+    res = skimage.transform.rescale(img.data, scale, order, anti_aliasing=antialias, preserve_range=True)
 
     # Preserve the `dtype` so that both brightness and range of values is preserved
-    if res.dtype != im.dtype:
-        if np.issubdtype(im.dtype, np.integer):
+    if res.dtype != img.data.dtype:
+        if np.issubdtype(img.data.dtype, np.integer):
             res = res.round()
-        res = res.astype(im.dtype)
+        res = res.astype(img.data.dtype)
 
     # Save result
     skimage.io.imsave(output_file, res)
