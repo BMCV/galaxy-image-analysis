@@ -161,7 +161,7 @@
         </test>
         <!-- Test PNG, uniform scaling, linear interpolation with anti-alias -->
         <test>
-            <param name="input" value="inputs/binary_rgba.png"/>
+            <param name="input" value="inputs/rgb.png"/>
             <conditional name="scale">
                 <param name="mode" value="uniform"/>
                 <param name="factor" value="0.7"/>
@@ -170,7 +170,7 @@
                 <param name="order" value="1"/>
                 <param name="anti_alias" value="true"/>
             </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="outputs/binary_rgba_uniform_down_linear_aa.png" ftype="png"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="outputs/rgb_uniform_down_linear_aa.png" ftype="png"/>
             <assert_stdout>
                 <has_line line="Input axes: YXC"/>
                 <has_line line="Input has no metadata"/>
@@ -183,7 +183,7 @@
             </assert_stdout>
         </test>
         <test>
-            <param name="input" value="inputs/binary_rgba.png"/>
+            <param name="input" value="inputs/rgb.png"/>
             <conditional name="scale">
                 <param name="mode" value="uniform"/>
                 <param name="factor" value="1.5"/>
@@ -192,7 +192,7 @@
                 <param name="order" value="1"/>
                 <param name="anti_alias" value="true"/>
             </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="outputs/binary_rgba_uniform_up_linear_aa.png" ftype="png"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="outputs/rgb_uniform_up_linear_aa.png" ftype="png"/>
             <assert_stdout>
                 <has_line line="Input axes: YXC"/>
                 <has_line line="Input has no metadata"/>
