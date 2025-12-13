@@ -72,7 +72,8 @@
     <inputs>
         <param name="input" type="data" format="png,tiff" label="Input image"/>
         <conditional name="scale">
-            <param name="mode" type="select" label="How to scale?">
+            <param name="mode" type="select" label="How to scale?"
+                   help='Using the "Establish spatial isotropy" option requires that the real-world resolution is available from the metadata of the input image.'>
                 <option value="uniform" selected="true">Uniform by factor</option>
                 <option value="non-uniform">Non-uniform by factors</option>
                 <option value="isotropy">Establish spatial isotropy</option>

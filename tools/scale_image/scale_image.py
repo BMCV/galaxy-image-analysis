@@ -173,19 +173,22 @@ def scale_image(
         channel_axis=img.axes.index('C'),
     )
     if isinstance(scale, float):  # uniform scaling
-        if (_anti_aliasing := cfg['anti_alias'] and scale < 1):
-            rescale_kwargs['anti_aliasing'] = _anti_aliasing
+        if (anti_alias := anti_alias and scale < 1):
+            rescale_kwargs['anti_aliasing'] = anti_alias
             rescale_kwargs['anti_aliasing_sigma'] = get_aa_sigma_by_scale(scale)
     else:  # non-uniform scaling
-        if (_anti_aliasing := cfg['anti_alias'] and (np.array(scale) < 1).any()):
-            rescale_kwargs['anti_aliasing'] = _anti_aliasing
+        if (anti_alias := anti_alias and (np.array(scale) < 1).any()):
+            rescale_kwargs['anti_aliasing'] = anti_alias
             rescale_kwargs['anti_aliasing_sigma'] = tuple(
                 [
                     get_aa_sigma_by_scale(s) for s in scale
-                ]
+                ] + [0]  # `skimage.transform.rescale` also expects a value for the channel axis
             )
 
     # Re-sample the image data to perform the scaling
+    print('-' * 10)
+    print(rescale_kwargs)
+    print('-' * 10)
     arr = skimage.transform.rescale(img.data, **rescale_kwargs)
 
     # Preserve the `dtype` so that both brightness and range of values is preserved
