@@ -11,7 +11,8 @@ from PIL import Image
 
 def scale_image(input_file, output_file, scale, order, antialias):
     Image.MAX_IMAGE_PIXELS = 50000 * 50000
-    img = giatools.Image.read(input_file).squeeze()
+    img = giatools.Image.read(input_file)
+    img = img.normalize_axes_like(img.original_axes)
 
     # Parse `--scale` argument
     if ',' in scale:
