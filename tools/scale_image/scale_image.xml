@@ -103,7 +103,7 @@
             <param name="order" type="select" label="Interpolation method">
                 <option value="0">Nearest-neighbor (good for binary images and label maps)</option>
                 <option value="1" selected="true">Linear (better preserves the intensity values)</option>
-                <option value="2">Qubic (yields visually superior results)</option>
+                <option value="2">Cubic (yields visually superior results)</option>
             </param>
             <when value="0">
                 <param name="anti_alias" type="hidden" value="false"/>
@@ -351,7 +351,7 @@
 
         **Scales an image by re-sampling the image data.**
 
-        The image is rescaled uniformly along all axes, or anistropically if multiple scale factors are given.
+        The image is rescaled uniformly along all axes, or anisotropically if multiple scale factors are given.
         In addition, the metadata of an image can be used to automatically rescale the image to obtain isotropic pixels or voxels.
 
         This operation preserves both the brightness of the image, and the range of values.

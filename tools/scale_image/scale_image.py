@@ -47,7 +47,7 @@ def get_uniform_scale(
                 ]
             )
 
-        case '_':
+        case _:
             raise ValueError(f'Unknown axes for uniform scaling: "{axes}"')
 
 
@@ -78,7 +78,7 @@ def get_scale_for_isotropy(
                 return (voxel_size / voxel_size.min()).tolist()
             case 'down':
                 return (voxel_size / voxel_size.max()).tolist()
-            case '_':
+            case _:
                 raise ValueError(f'Unknown value for sample: "{sample}"')
 
     # Handle the 3-D case
@@ -110,7 +110,7 @@ def get_scale_for_isotropy(
 
 def get_aa_sigma_by_scale(scale: float) -> float:
     """
-    Determine the optimal size of the Guassian filter for anti-aliasing.
+    Determine the optimal size of the Gaussian filter for anti-aliasing.
 
     See for details: https://scikit-image.org/docs/0.25.x/api/skimage.transform.html#skimage.transform.rescale
     """
@@ -210,7 +210,7 @@ def scale_image(
         case 'isotropy':
             scale = get_scale_for_isotropy(img, cfg['sample'])
 
-        case '_':
+        case _:
             raise ValueError(f'Unknown mode: "{mode}"')
 
     # Assemble remaining `rescale` parameters
