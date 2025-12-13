@@ -3,96 +3,356 @@
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
-        <token name="@TOOL_VERSION@">0.18.3</token>
-        <token name="@VERSION_SUFFIX@">2</token>
+        <token name="@TOOL_VERSION@">0.25.2</token>
+        <token name="@VERSION_SUFFIX@">0</token>
+        <xml name="factor_input" tokens="name,label">
+            <param name="@NAME@" type="float" min="0.01" max="10" value="1" label="@LABEL@ scaling factor"
+                   help="Values less than 1 will down-sample the image data. Values greater than 1 will up-sample the image data."/>
+        </xml>
+        <xml name="anti_alias_input">
+            <param name="anti_alias" type="boolean" truevalue="true" falsevalue="false" checked="true" label="Enable anti-aliasing"
+                   help="Disable this when processing binary images or label maps."/>
+        </xml>
     </macros>
     <creator>
-        <expand macro="creators/bmcv" />
+        <expand macro="creators/bmcv"/>
+        <expand macro="creators/kostrykin"/>
     </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
     <xrefs>
+        <xref type="bio.tools">galaxy_image_analysis</xref>
         <xref type="bio.tools">scikit-image</xref>
         <xref type="biii">scikit-image</xref>
     </xrefs>
     <requirements>
         <requirement type="package" version="@TOOL_VERSION@">scikit-image</requirement>
-        <requirement type="package" version="10.0.1">pillow</requirement>
-        <requirement type="package" version="1.24.4">numpy</requirement>
-        <requirement type="package" version="2021.7.2">tifffile</requirement>
-        <requirement type="package" version="0.1">giatools</requirement>
+        <requirement type="package" version="2.3.5">numpy</requirement>
+        <requirement type="package" version="0.5.2">giatools</requirement>
+        <requirement type="package" version="2025.10.16">tifffile</requirement>
     </requirements> 
     <command detect_errors="aggressive"><![CDATA[
 
-        python '$__tool_directory__/scale_image.py' '$input'
+        python '$__tool_directory__/scale_image.py'
 
+        '$input'
         ./output.${input.ext}
-
-        --scale '$scale'
-        --order  $order
-        $antialias
+        '$params'
 
         && mv ./output.${input.ext} ./output
 
     ]]></command>
+    <configfiles>
+        <configfile name="params"><![CDATA[
+            {
+
+            #if $scale.mode == "uniform"
+                "axes": "$scale.axes",
+                "factor": $scale.factor,
+
+            #elif $scale.mode == "explicit"
+                "factor_x": $scale.factor_x,
+                "factor_y": $scale.factor_y,
+                "factor_z": $scale.factor_z,
+                "factor_t": $scale.factor_t,
+                "factor_q": $scale.factor_q,
+
+            #elif $scale.mode == "isotropy"
+                "sample": "$scale.sample",
+
+            #end if
+                "mode": "$scale.mode",
+                "order": $interpolation.order,
+                "anti_alias": $interpolation.anti_alias
+
+            }
+        ]]></configfile>
+    </configfiles>
     <inputs>
-        <param name="input" type="data" format="png,tiff" label="Image file"/>
-        <param argument="--scale" type="text" value="1" label="Scaling factor" help="Use either a single scaling factor (uniform scaling), or a comma-separated list of scaling factors (anistropic scaling). For a 2-D single-channel or RGB image, the first scaling factor corresponds to the image width and the second corresponds to the image height. For images with 3 or more axes, the last axis is assumed to correspond to the image channels if uniform scaling is used (a single value)."/>
-        <param argument="--order" type="select" label="Interpolation method">
-            <option value="0">Nearest-neighbor</option>
-            <option value="1" selected="true">Bi-linear</option>
-            <option value="2">Bi-cubic</option>
-        </param>
-        <param name="antialias" type="boolean" truevalue="--antialias" falsevalue="" checked="true" label="Enable anti-aliasing" help="This should only be used for down-scaling."/>
+        <param name="input" type="data" format="png,tiff" label="Input image"/>
+        <conditional name="scale">
+            <param name="mode" type="select" label="How to scale?"
+                   help='Using the "Scale to spatially isotropic pixels/voxels" option requires that the real-world resolution is available from the metadata of the input image.'>
+                <option value="uniform" selected="true">Uniform scaling factor</option>
+                <option value="explicit">Explicit scaling factors</option>
+                <option value="isotropy">Scale to spatially isotropic pixels/voxels</option>
+            </param>
+            <when value="uniform">
+                <param name="axes" type="select" label="Axes to be scaled">
+                    <option value="spatial" selected="true">All spatial axes (X, Y, Z)</option>
+                    <option value="all">All axes except channels (X, Y, Z, T, Q)</option>
+                </param>
+                <expand macro="factor_input" name="factor" label="Uniform"/>
+            </when>
+            <when value="explicit">
+                <expand macro="factor_input" name="factor_x" label="Horizontal (X)"/>
+                <expand macro="factor_input" name="factor_y" label="Vertical (Y)"/>
+                <expand macro="factor_input" name="factor_z" label="Depth axis (Z)"/>
+                <expand macro="factor_input" name="factor_t" label="Temporal (T)"/>
+                <expand macro="factor_input" name="factor_q" label="Other axis (Q)"/>
+            </when>
+            <when value="isotropy">
+                <param name="sample" type="select" label="Method">
+                    <option value="up">Up-sample (enlarges the image data)</option>
+                    <option value="down" selected="true">Down-sample (might lose information)</option>
+                </param>
+            </when>
+        </conditional>
+        <conditional name="interpolation">
+            <param name="order" type="select" label="Interpolation method">
+                <option value="0">Nearest-neighbor (good for binary images and label maps)</option>
+                <option value="1" selected="true">Linear (better preserves the intensity values)</option>
+                <option value="2">Cubic (yields visually superior results)</option>
+            </param>
+            <when value="0">
+                <param name="anti_alias" type="hidden" value="false"/>
+            </when>
+            <when value="1">
+                <expand macro="anti_alias_input"/>
+            </when>
+            <when value="2">
+                <expand macro="anti_alias_input"/>
+            </when>
+        </conditional>
     </inputs>
     <outputs>
         <data name="output" from_work_dir="output" format_source="input" metadata_source="input"/>
     </outputs>
     <tests>
-        <!-- Test PNG, without antialias -->
+        <!-- Test PNG, uniform scaling, nearest neighbor interpolation (without anti-alias) -->
         <test>
-            <param name="input" value="input1_binary_rgb.png"/>
-            <param name="scale" value="0.5"/>
-            <param name="antialias" value="false"/>
-            <param name="order" value="0"/>
-            <expand macro="tests/binary_image_diff" name="output" value="uniform_binary.png" ftype="png"/>
+            <param name="input" value="inputs/binary_rgba.png"/>
+            <conditional name="scale">
+                <param name="mode" value="uniform"/>
+                <param name="factor" value="0.7"/>
+            </conditional>
+            <conditional name="interpolation">
+                <param name="order" value="0"/>
+            </conditional>
+            <expand macro="tests/binary_image_diff" name="output" value="outputs/binary_rgba_uniform_down_nn.png" ftype="png"/>
+            <assert_stdout>
+                <has_line line="Input axes: YXC"/>
+                <has_line line="Input has no metadata"/>
+                <has_line line="Output axes: YXC"/>
+                <has_line line="Output resolution: (0.7, 0.7), z_spacing: 1.0"/>
+                <has_line line="scale: (1, 1, 1, 0.7, 0.7)"/>
+                <has_line line="order: 0"/>
+                <has_line line="anti_aliasing: False"/>
+            </assert_stdout>
         </test>
-        <!-- Test PNG, uniform scaling -->
         <test>
-            <param name="input" value="input1_binary_rgb.png"/>
-            <param name="scale" value="0.5"/>
-            <expand macro="tests/intensity_image_diff" name="output" value="uniform.png" ftype="png"/>
+            <param name="input" value="inputs/binary_rgba.png"/>
+            <conditional name="scale">
+                <param name="mode" value="uniform"/>
+                <param name="factor" value="1.5"/>
+            </conditional>
+            <conditional name="interpolation">
+                <param name="order" value="0"/>
+            </conditional>
+            <expand macro="tests/binary_image_diff" name="output" value="outputs/binary_rgba_uniform_up_nn.png" ftype="png"/>
+            <assert_stdout>
+                <has_line line="Input axes: YXC"/>
+                <has_line line="Input has no metadata"/>
+                <has_line line="Output axes: YXC"/>
+                <has_line line="Output resolution: (1.5, 1.5), z_spacing: 1.0"/>
+                <has_line line="scale: (1, 1, 1, 1.5, 1.5)"/>
+                <has_line line="order: 0"/>
+                <has_line line="anti_aliasing: False"/>
+            </assert_stdout>
         </test>
-        <!-- Test PNG, anistropic scaling -->
+        <!-- Test PNG, uniform scaling, linear interpolation with anti-alias -->
         <test>
-            <param name="input" value="input1_binary_rgb.png"/>
-            <param name="scale" value="0.5, 0.8"/>
-            <expand macro="tests/intensity_image_diff" name="output" value="anisotropic.png" ftype="png"/>
+            <param name="input" value="inputs/rgb.png"/>
+            <conditional name="scale">
+                <param name="mode" value="uniform"/>
+                <param name="factor" value="0.7"/>
+            </conditional>
+            <conditional name="interpolation">
+                <param name="order" value="1"/>
+                <param name="anti_alias" value="true"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="outputs/rgb_uniform_down_linear_aa.png" ftype="png"/>
+            <assert_stdout>
+                <has_line line="Input axes: YXC"/>
+                <has_line line="Input has no metadata"/>
+                <has_line line="Output axes: YXC"/>
+                <has_line line="Output resolution: (0.7, 0.7), z_spacing: 1.0"/>
+                <has_line line="scale: (1, 1, 1, 0.7, 0.7)"/>
+                <has_line line="order: 1"/>
+                <has_line line="anti_aliasing: True"/>
+                <has_line_matching expression="anti_aliasing_sigma: \(0, 0, 0, 0.214[0-9]+, 0.214[0-9]+, 0\)"/>
+            </assert_stdout>
         </test>
         <test>
-            <param name="input" value="input1_binary_rgb.png"/>
-            <param name="scale" value="0.5, 0.8, 1"/>
-            <expand macro="tests/intensity_image_diff" name="output" value="anisotropic.png" ftype="png"/>
+            <param name="input" value="inputs/rgb.png"/>
+            <conditional name="scale">
+                <param name="mode" value="uniform"/>
+                <param name="factor" value="1.5"/>
+            </conditional>
+            <conditional name="interpolation">
+                <param name="order" value="1"/>
+                <param name="anti_alias" value="true"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="outputs/rgb_uniform_up_linear_aa.png" ftype="png"/>
+            <assert_stdout>
+                <has_line line="Input axes: YXC"/>
+                <has_line line="Input has no metadata"/>
+                <has_line line="Output axes: YXC"/>
+                <has_line line="Output resolution: (1.5, 1.5), z_spacing: 1.0"/>
+                <has_line line="scale: (1, 1, 1, 1.5, 1.5)"/>
+                <has_line line="order: 1"/>
+                <has_line line="anti_aliasing: False"/>
+            </assert_stdout>
         </test>
-        <!-- Test TIFF, normalized -->
+        <!-- Test PNG, explicit scaling, cubic interpolation with anti-alias -->
         <test>
-            <param name="input" value="input2_normalized.tiff"/>
-            <param name="scale" value="0.5"/>
-            <expand macro="tests/intensity_image_diff" name="output" value="normalized.tiff" ftype="tiff"/>
+            <param name="input" value="inputs/binary_rgba.png"/>
+            <conditional name="scale">
+                <param name="mode" value="explicit"/>
+                <param name="factor_x" value="1.5"/>
+                <param name="factor_y" value="0.7"/>
+                <param name="factor_z" value="1.0"/>
+                <param name="factor_t" value="1.0"/>
+                <param name="factor_q" value="1.0"/>
+            </conditional>
+            <conditional name="interpolation">
+                <param name="order" value="2"/>
+                <param name="anti_alias" value="true"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="outputs/binary_rgba_explicit_cubic_aa.png" ftype="png"/>
+            <assert_stdout>
+                <has_line line="Input axes: YXC"/>
+                <has_line line="Input has no metadata"/>
+                <has_line line="Output axes: YXC"/>
+                <has_line line="Output resolution: (1.5, 0.7), z_spacing: 1.0"/>
+                <has_line line="scale: (1.0, 1.0, 1.0, 0.7, 1.5)"/>
+                <has_line line="order: 2"/>
+                <has_line line="anti_aliasing: True"/>
+                <has_line_matching expression="anti_aliasing_sigma: \(0, 0, 0, 0.214[0-9]+, 0, 0\)"/>
+            </assert_stdout>
         </test>
-        <!-- Test TIFF, not normalized -->
         <test>
-            <param name="input" value="input3_not_normalized.tiff"/>
-            <param name="scale" value="0.5"/>
-            <expand macro="tests/intensity_image_diff" name="output" value="not_normalized.tiff" ftype="tiff"/>
+            <param name="input" value="inputs/binary_rgba.png"/>
+            <conditional name="scale">
+                <param name="mode" value="explicit"/>
+                <param name="factor_x" value="1.5"/>
+                <param name="factor_y" value="0.7"/>
+                <param name="factor_z" value="1.0"/>
+                <param name="factor_t" value="0.1"/>
+                <param name="factor_q" value="1.0"/>
+            </conditional>
+            <conditional name="interpolation">
+                <param name="order" value="2"/>
+                <param name="anti_alias" value="true"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="outputs/binary_rgba_explicit_cubic_aa.png" ftype="png"/>
+            <assert_stdout>
+                <has_line line="Input axes: YXC"/>
+                <has_line line="Input has no metadata"/>
+                <has_line line="Output axes: YXC"/>
+                <has_line line="Output resolution: (1.5, 0.7), z_spacing: 1.0"/>
+                <has_line line="scale: (1.0, 0.1, 1.0, 0.7, 1.5)"/>
+                <has_line line="order: 2"/>
+                <has_line line="anti_aliasing: True"/>
+                <has_line_matching expression="anti_aliasing_sigma: \(0, 4.5, 0, 0.214[0-9]+, 0, 0\)"/>
+            </assert_stdout>
+        </test>
+        <test expect_failure="true">
+            <param name="input" value="inputs/binary_rgba.png"/>
+            <conditional name="scale">
+                <param name="mode" value="explicit"/>
+                <param name="factor_x" value="1.5"/>
+                <param name="factor_y" value="0.7"/>
+                <param name="factor_z" value="2.0"/>
+                <param name="factor_t" value="0.1"/>
+                <param name="factor_q" value="1.0"/>
+            </conditional>
+            <conditional name="interpolation">
+                <param name="order" value="2"/>
+                <param name="anti_alias" value="true"/>
+            </conditional>
+            <assert_stderr>
+                <has_line line='Cannot write PNG file with axes "ZYXC"'/>
+            </assert_stderr>
+        </test>
+        <!-- Test TIFF, explicit scaling, cubic interpolation with anti-alias -->
+        <test>
+            <param name="input" value="inputs/binary_c0.tiff"/>
+            <conditional name="scale">
+                <param name="mode" value="explicit"/>
+                <param name="factor_x" value="1.5"/>
+                <param name="factor_y" value="0.7"/>
+                <param name="factor_z" value="2.0"/>
+                <param name="factor_t" value="0.1"/>
+                <param name="factor_q" value="1.0"/>
+            </conditional>
+            <conditional name="interpolation">
+                <param name="order" value="2"/>
+                <param name="anti_alias" value="true"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="outputs/binary_c0_explicit_cubic_aa.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input axes: YX"/>
+                <has_line line="Input resolution: (1.0, 1.0)"/>
+                <has_line line="Output axes: ZYX"/>
+                <has_line line="Output resolution: (1.5, 0.7), z_spacing: 0.5"/>
+                <has_line line="scale: (1.0, 0.1, 2.0, 0.7, 1.5)"/>
+                <has_line line="order: 2"/>
+                <has_line line="anti_aliasing: True"/>
+                <has_line_matching expression="anti_aliasing_sigma: \(0, 4.5, 0, 0.214[0-9]+, 0, 0\)"/>
+            </assert_stdout>
+        </test>
+        <!-- Test TIFF, isotropy scaling, linear interpolation (without anti-alias) -->
+        <test>
+            <param name="input" value="inputs/binary_c2_z10.tiff"/>
+            <conditional name="scale">
+                <param name="mode" value="isotropy"/>
+                <param name="sample" value="up"/>
+            </conditional>
+            <conditional name="interpolation">
+                <param name="order" value="1"/>
+                <param name="anti_alias" value="false"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="outputs/binary_c2_z10_isotropy_linear.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input axes: ZYXC"/>
+                <has_line_matching expression="Input resolution: \(0.1[0-9]*, 0.05[0-9]*\), unit: um, z_spacing: 40.0"/>
+                <has_line line="Output axes: ZYXC"/>
+                <has_line_matching expression="Output resolution: \(0.1[0-9]*, 0.1[0-9]*\), unit: um, z_spacing: (?:9.999[0-9]+|10.0[0-9]*)"/>
+                <has_line_matching expression="scale: \(1, 1, 4.0[0-9]*, 2.0, 1.0\)"/>
+                <has_line line="order: 1"/>
+                <has_line line="anti_aliasing: False"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <param name="input" value="inputs/binary_c2.tiff"/>
+            <conditional name="scale">
+                <param name="mode" value="isotropy"/>
+                <param name="sample" value="up"/>
+            </conditional>
+            <conditional name="interpolation">
+                <param name="order" value="1"/>
+                <param name="anti_alias" value="false"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="outputs/binary_c2_isotropy_linear.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input axes: YXC"/>
+                <has_line_matching expression="Input resolution: \(0.1[0-9]*, 0.05[0-9]*\), unit: um, z_spacing: 40.0"/>
+                <has_line line="Output axes: YXC"/>
+                <has_line_matching expression="Output resolution: \(0.1[0-9]*, 0.1[0-9]*\), unit: um, z_spacing: 40.0"/>
+                <has_line line="scale: (1, 1, 1, 2.0, 1.0)"/>
+                <has_line line="order: 1"/>
+                <has_line line="anti_aliasing: False"/>
+            </assert_stdout>
         </test>
     </tests>
     <help>
 
-        **Scales an image using one or more scaling factors.**
+        **Scales an image by re-sampling the image data.**
 
-        The image is rescaled uniformly along all axes, or anistropically if multiple scale factors are given.
+        The image is rescaled uniformly along all axes, or anisotropically if multiple scale factors are given.
+        In addition, the metadata of an image can be used to automatically rescale the image to obtain isotropic pixels or voxels.
 
         This operation preserves both the brightness of the image, and the range of values.
 
