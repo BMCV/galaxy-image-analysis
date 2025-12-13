@@ -205,7 +205,7 @@
                 <has_line line="anti_aliasing: False"/>
             </assert_stdout>
         </test>
-        <!-- Test PNG, explicit scaling, qubic interpolation with anti-alias -->
+        <!-- Test PNG, explicit scaling, cubic interpolation with anti-alias -->
         <test>
             <param name="input" value="inputs/binary_rgba.png"/>
             <conditional name="scale">
@@ -220,7 +220,7 @@
                 <param name="order" value="2"/>
                 <param name="anti_alias" value="true"/>
             </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="outputs/binary_rgba_explicit_qubic_aa.png" ftype="png"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="outputs/binary_rgba_explicit_cubic_aa.png" ftype="png"/>
             <assert_stdout>
                 <has_line line="Input axes: YXC"/>
                 <has_line line="Input has no metadata"/>
@@ -246,7 +246,7 @@
                 <param name="order" value="2"/>
                 <param name="anti_alias" value="true"/>
             </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="outputs/binary_rgba_explicit_qubic_aa.png" ftype="png"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="outputs/binary_rgba_explicit_cubic_aa.png" ftype="png"/>
             <assert_stdout>
                 <has_line line="Input axes: YXC"/>
                 <has_line line="Input has no metadata"/>
@@ -276,7 +276,7 @@
                 <has_line line='Cannot write PNG file with axes "ZYXC"'/>
             </assert_stderr>
         </test>
-        <!-- Test TIFF, explicit scaling, qubic interpolation with anti-alias -->
+        <!-- Test TIFF, explicit scaling, cubic interpolation with anti-alias -->
         <test>
             <param name="input" value="inputs/binary_c0.tiff"/>
             <conditional name="scale">
@@ -291,7 +291,7 @@
                 <param name="order" value="2"/>
                 <param name="anti_alias" value="true"/>
             </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="outputs/binary_c0_explicit_qubic_aa.tiff" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="outputs/binary_c0_explicit_cubic_aa.tiff" ftype="tiff"/>
             <assert_stdout>
                 <has_line line="Input axes: YX"/>
                 <has_line line="Input resolution: (1.0, 1.0)"/>
