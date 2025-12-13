@@ -53,12 +53,12 @@ def get_uniform_scale(
 
 def get_scale_for_isotropy(
     img: giatools.Image,
-    mode: Literal['up', 'down'],
+    sample: Literal['up', 'down'],
 ) -> tuple[float, ...]:
     """
     Determine a tuple of `scale` factors to establish spatial isotropy.
 
-    The `mode` parameter governs whether up-sampling or down-sampling will be performed.
+    The `sample` parameter governs whether to up-sample or down-sample the image data.
     """
     scale = tuple([1] * len(img.axes) - 1)  # omit the channel axis
     z_axis, y_axis, x_axis = [
@@ -73,13 +73,13 @@ def get_scale_for_isotropy(
 
     # Define unified transformation of voxel sizes to scale factors
     def voxel_size_to_scale(voxel_size: np.ndarray) -> np.ndarray:
-        match mode:
+        match sample:
             case 'up':
                 return voxel_size.max() / voxel_size
             case 'down':
                 return voxel_size.min() / voxel_size
             case '_':
-                raise ValueError(f'Unknown mode: "{mode}"')
+                raise ValueError(f'Unknown value for sample: "{sample}"')
 
     # Handle the 3-D case
     if img.shape[img.axes.index('Z')] > 1:
@@ -208,7 +208,7 @@ def scale_image(
             )
 
         case 'isotropy':
-            scale = get_scale_for_isotropy(img, cfg['isotropy_mode'])
+            scale = get_scale_for_isotropy(img, cfg['sample'])
 
         case '_':
             raise ValueError(f'Unknown mode: "{mode}"')
