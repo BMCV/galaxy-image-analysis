@@ -5,6 +5,14 @@
         <import>tests.xml</import>
         <token name="@TOOL_VERSION@">0.25.2</token>
         <token name="@VERSION_SUFFIX@">0</token>
+        <xml name="factor_input" tokens="name,label">
+            <param name="@NAME@" type="float" min="0.01" max="10" value="1" label="@LABEL@ scaling factor"
+                   help="Values less than 1 will down-sample the image data. Values greater than 1 will up-sample the image data."/>
+        </xml>
+        <xml name="anti_alias_input">
+            <param name="anti_alias" type="boolean" truevalue="true" falsevalue="false" checked="true" label="Enable anti-aliasing"
+                   help="Disable this when processing binary images or label maps."/>
+        </xml>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
@@ -26,72 +34,180 @@
     </requirements> 
     <command detect_errors="aggressive"><![CDATA[
 
-        python '$__tool_directory__/scale_image.py' '$input'
+        python '$__tool_directory__/scale_image.py'
 
+        '$input'
         ./output.${input.ext}
-
-        --scale '$scale'
-        --order  $order
-        $antialias
+        '$params'
 
         && mv ./output.${input.ext} ./output
 
     ]]></command>
+    <configfiles>
+        <configfile name="params"><![CDATA[
+            {
+
+            #if $scale.mode == "uniform"
+                "axes": "$scale.axes",
+                "factor": $scale.factor,
+
+            #elif $scale.mode == "non-uniform"
+                "factor_x": $scale.factor_x,
+                "factor_y": $scale.factor_y,
+                "factor_z": $scale.factor_z,
+                "factor_t": $scale.factor_t,
+                "factor_q": $scale.factor_q,
+
+            #elif $scale.mode == "isotropy"
+                "mode": "$scale.mode",
+
+            #end if
+                "mode": "$scale.mode",
+                "order": $interpolation.order,
+                "anti_alias": $interpolation.anti_alias
+
+            }
+        ]]></configfile>
+    </configfiles>
     <inputs>
-        <param name="input" type="data" format="png,tiff" label="Image file"/>
-        <param argument="--scale" type="text" value="1" label="Scaling factor" help="Use either a single scaling factor (uniform scaling), or a comma-separated list of scaling factors (anistropic scaling). For a 2-D single-channel or RGB image, the first scaling factor corresponds to the image width and the second corresponds to the image height. For images with 3 or more axes, the last axis is assumed to correspond to the image channels if uniform scaling is used (a single value)."/>
-        <param argument="--order" type="select" label="Interpolation method">
-            <option value="0">Nearest-neighbor</option>
-            <option value="1" selected="true">Bi-linear</option>
-            <option value="2">Bi-cubic</option>
-        </param>
-        <param name="antialias" type="boolean" truevalue="--antialias" falsevalue="" checked="true" label="Enable anti-aliasing" help="This should only be used for down-scaling."/>
+        <param name="input" type="data" format="png,tiff" label="Input image"/>
+        <conditional name="scale">
+            <param name="mode" type="select" label="How to scale?">
+                <option value="uniform" selected="true">Uniform by factor</option>
+                <option value="non-uniform">Non-uniform by factors</option>
+                <option value="isotropy">Establish spatial isotropy</option>
+            </param>
+            <when value="uniform">
+                <param name="axes" type="select" label="Axes to be scaled">
+                    <option value="spatial" selected="true">All spatial axes (X, Y, Z)</option>
+                    <option value="all">All axes except channels (Q, T, X, Y, Z)</option>
+                </param>
+                <expand macro="factor_input" name="factor" label="Uniform"/>
+            </when>
+            <when value="non-uniform">
+                <expand macro="factor_input" name="factor_x" label="Horizontal (X)"/>
+                <expand macro="factor_input" name="factor_y" label="Vertical (Y)"/>
+                <expand macro="factor_input" name="factor_z" label="Depth axis (Z)"/>
+                <expand macro="factor_input" name="factor_t" label="Temporal (T)"/>
+                <expand macro="factor_input" name="factor_q" label="Other axis (Q)"/>
+            </when>
+            <when value="isotropy">
+                <param name="mode" type="select">
+                    <option value="up">Up-sample (enlarges the image data)</option>
+                    <option value="down" selected="true">Down-sample (loses information)</option>
+                </param>
+            </when>
+        </conditional>
+        <conditional name="interpolation">
+            <param argument="order" type="select" label="Interpolation method">
+                <option value="0">Nearest-neighbor (good for binary images and label maps)</option>
+                <option value="1" selected="true">Linear (preserves range of values)</option>
+                <option value="2">Qubic (yields visually superior results)</option>
+            </param>
+            <when value="0">
+                <param name="anti_alias" type="hidden" value="false"/>
+            </when>
+            <when value="1">
+                <expand macro="anti_alias_input"/>
+            </when>
+            <when value="2">
+                <expand macro="anti_alias_input"/>
+            </when>
+        </conditional>
     </inputs>
     <outputs>
         <data name="output" from_work_dir="output" format_source="input" metadata_source="input"/>
     </outputs>
     <tests>
-        <!-- Test PNG, without antialias -->
+        <!-- Test PNG, uniform scaling, nearest neighbor interpolation (without antialias) -->
         <test>
             <param name="input" value="input1_binary_rgb.png"/>
-            <param name="scale" value="0.5"/>
-            <param name="antialias" value="false"/>
-            <param name="order" value="0"/>
+            <conditional name="scale">
+                <param name="mode" value="uniform"/>
+                <param name="factor" value="0.5"/><!-- TODO: change factor to somethid odd like 0.7 to better challenge interpolation -->
+            </conditional>
+            <conditional name="interpolation">
+                <param name="order" value="0"/>
+            </conditional>
             <expand macro="tests/binary_image_diff" name="output" value="uniform_binary.png" ftype="png"/>
         </test>
-        <!-- Test PNG, uniform scaling -->
+        <!-- Test PNG, uniform scaling, linear interpolation with antialias -->
         <test>
             <param name="input" value="input1_binary_rgb.png"/>
-            <param name="scale" value="0.5"/>
+            <conditional name="scale">
+                <param name="mode" value="uniform"/>
+                <param name="factor" value="0.5"/>
+            </conditional>
+            <conditional name="interpolation">
+                <param name="order" value="1"/>
+                <param name="anti_alias" value="true"/>
+            </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="uniform.png" ftype="png"/>
         </test>
-        <!-- Test PNG, anistropic scaling -->
+        <!-- Test PNG, anistropic scaling, qubic interpolation with antialias -->
         <test>
             <param name="input" value="input1_binary_rgb.png"/>
-            <param name="scale" value="0.5, 0.8"/>
+            <conditional name="scale">
+                <param name="mode" value="non-uniform"/>
+                <param name="factor_x" value="0.8"/>
+                <param name="factor_y" value="0.5"/>
+                <param name="factor_z" value="1.0"/>
+                <param name="factor_t" value="1.0"/>
+                <param name="factor_q" value="1.0"/>
+            </conditional>
+            <conditional name="interpolation">
+                <param name="order" value="1"/><!-- TODO: change to 2 for qubic -->
+                <param name="anti_alias" value="true"/>
+            </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="anisotropic.png" ftype="png"/>
         </test>
         <test>
             <param name="input" value="input1_binary_rgb.png"/>
-            <param name="scale" value="0.5, 0.8, 1"/>
+            <conditional name="scale">
+                <param name="mode" value="non-uniform"/>
+                <param name="factor_x" value="0.8"/>
+                <param name="factor_y" value="0.5"/>
+                <param name="factor_z" value="0.1"/>
+                <param name="factor_t" value="2.0"/>
+                <param name="factor_q" value="1.0"/>
+            </conditional>
+            <conditional name="interpolation">
+                <param name="order" value="1"/><!-- TODO: change to 2 for qubic -->
+                <param name="anti_alias" value="true"/>
+            </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="anisotropic.png" ftype="png"/>
         </test>
         <!-- Test TIFF, normalized -->
         <test>
             <param name="input" value="input2_normalized.tiff"/>
-            <param name="scale" value="0.5"/>
+            <conditional name="scale">
+                <param name="mode" value="uniform"/>
+                <param name="factor" value="0.5"/>
+            </conditional>
+            <conditional name="interpolation">
+                <param name="order" value="1"/>
+                <param name="anti_alias" value="true"/>
+            </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="normalized.tiff" ftype="tiff"/>
         </test>
         <!-- Test TIFF, not normalized -->
         <test>
             <param name="input" value="input3_not_normalized.tiff"/>
-            <param name="scale" value="0.5"/>
+            <conditional name="scale">
+                <param name="mode" value="uniform"/>
+                <param name="factor" value="0.5"/>
+            </conditional>
+            <conditional name="interpolation">
+                <param name="order" value="1"/>
+                <param name="anti_alias" value="true"/>
+            </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="not_normalized.tiff" ftype="tiff"/>
         </test>
+        <!-- TODO: Add tests for isotropy scaling -->
     </tests>
     <help>
 
-        **Scales an image using one or more scaling factors.**
+        **Scales an image by re-sampling the image data.**
 
         The image is rescaled uniformly along all axes, or anistropically if multiple scale factors are given.
 
