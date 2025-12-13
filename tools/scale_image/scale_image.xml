@@ -352,6 +352,7 @@
         **Scales an image by re-sampling the image data.**
 
         The image is rescaled uniformly along all axes, or anistropically if multiple scale factors are given.
+        In addition, the metadata of an image can be used to automatically rescale the image to obtain isotropic pixels or voxels.
 
         This operation preserves both the brightness of the image, and the range of values.
 
