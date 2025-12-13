@@ -59,7 +59,7 @@
                 "factor_q": $scale.factor_q,
 
             #elif $scale.mode == "isotropy"
-                "mode": "$scale.mode",
+                "isotropy_mode": "$scale.mode",
 
             #end if
                 "mode": "$scale.mode",
@@ -80,7 +80,7 @@
             <when value="uniform">
                 <param name="axes" type="select" label="Axes to be scaled">
                     <option value="spatial" selected="true">All spatial axes (X, Y, Z)</option>
-                    <option value="all">All axes except channels (Q, T, X, Y, Z)</option>
+                    <option value="all">All axes except channels (X, Y, Z, T, Q)</option>
                 </param>
                 <expand macro="factor_input" name="factor" label="Uniform"/>
             </when>
@@ -92,16 +92,16 @@
                 <expand macro="factor_input" name="factor_q" label="Other axis (Q)"/>
             </when>
             <when value="isotropy">
-                <param name="mode" type="select">
+                <param name="mode" type="select" label="Method">
                     <option value="up">Up-sample (enlarges the image data)</option>
-                    <option value="down" selected="true">Down-sample (loses information)</option>
+                    <option value="down" selected="true">Down-sample (might lose information)</option>
                 </param>
             </when>
         </conditional>
         <conditional name="interpolation">
-            <param argument="order" type="select" label="Interpolation method">
+            <param name="order" type="select" label="Interpolation method">
                 <option value="0">Nearest-neighbor (good for binary images and label maps)</option>
-                <option value="1" selected="true">Linear (preserves range of values)</option>
+                <option value="1" selected="true">Linear (better preserves the intensity values)</option>
                 <option value="2">Qubic (yields visually superior results)</option>
             </param>
             <when value="0">
