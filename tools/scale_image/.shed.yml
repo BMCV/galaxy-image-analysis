@@ -1,8 +1,17 @@
 categories:
   - Imaging
-description: Scale image
-long_description: Scales image by a certain factor using nearest, bilinear or bicubic interpolation.
-name: scale_image 
+
+description: Scales an image by re-sampling the image data.
+
+long_description: |
+  Scales an image by re-sampling the image data.
+
+  The image is rescaled uniformly along all axes, or anisotropically if multiple scale factors are given.
+  In addition, the metadata of an image can be used to automatically rescale the image to obtain isotropic pixels or voxels.
+
+  This operation preserves both the brightness of the image, and the range of values.
+
+name: scale_image
 owner: imgteam
-homepage_url: https://github.com/bmcv
+homepage_url: https://scikit-image.org/docs/0.25.x/auto_examples/transform/plot_rescale.html
 remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tree/master/tools/scale_image/
