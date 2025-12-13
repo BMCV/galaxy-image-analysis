@@ -60,9 +60,9 @@ def get_scale_for_isotropy(
 
     The `sample` parameter governs whether to up-sample or down-sample the image data.
     """
-    scale = tuple([1] * len(img.axes) - 1)  # omit the channel axis
+    scale = [1] * (len(img.axes) - 1)  # omit the channel axis
     z_axis, y_axis, x_axis = [
-        img.axes.index(axis) for axis in 'zyx'
+        img.axes.index(axis) for axis in 'ZYX'
     ]
 
     # Determine the pixel size of the image
@@ -71,18 +71,18 @@ def get_scale_for_isotropy(
     else:
         sys.exit('Resolution information missing in image metadata')
 
-    # Define unified transformation of voxel sizes to scale factors
-    def voxel_size_to_scale(voxel_size: np.ndarray) -> np.ndarray:
+    # Define unified transformation of pixel/voxel sizes to scale factors
+    def voxel_size_to_scale(voxel_size: np.ndarray) -> list:
         match sample:
             case 'up':
-                return voxel_size.max() / voxel_size
+                return (voxel_size / voxel_size.min()).tolist()
             case 'down':
-                return voxel_size.min() / voxel_size
+                return (voxel_size / voxel_size.max()).tolist()
             case '_':
                 raise ValueError(f'Unknown value for sample: "{sample}"')
 
     # Handle the 3-D case
-    if img.shape[img.axes.index('Z')] > 1:
+    if img.data.shape[z_axis] > 1:
 
         # Determine the voxel depth of the image
         if (voxel_depth := img.metadata.get('z_spacing', None)) is None:
@@ -98,14 +98,14 @@ def get_scale_for_isotropy(
     # Handle the 2-D case
     else:
 
-        # Determine the XYZ scale factors
+        # Determine the XY scale factors
         scale[x_axis], scale[y_axis] = (
             voxel_size_to_scale(
                 np.array(pixel_size),
             )
         )
 
-    return scale
+    return tuple(scale)
 
 
 def get_aa_sigma_by_scale(scale: float) -> float:
