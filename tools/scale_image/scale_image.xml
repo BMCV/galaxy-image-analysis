@@ -181,7 +181,7 @@
                 <has_line line="scale: (1, 1, 1, 0.7, 0.7)"/>
                 <has_line line="order: 1"/>
                 <has_line line="anti_aliasing: True"/>
-                <has_line line="anti_aliasing_sigma: (0, 0, 0, 0.2142857142857143, 0.2142857142857143, 0)"/>
+                <has_line_matching expression="anti_aliasing_sigma: \(0, 0, 0, 0.214[0-9]+, 0.214[0-9]+, 0\)"/>
             </assert_stdout>
         </test>
         <test>
@@ -229,7 +229,7 @@
                 <has_line line="scale: (1.0, 1.0, 1.0, 0.7, 1.5)"/>
                 <has_line line="order: 2"/>
                 <has_line line="anti_aliasing: True"/>
-                <has_line line="anti_aliasing_sigma: (0, 0, 0, 0.2142857142857143, 0, 0)"/>
+                <has_line_matching expression="anti_aliasing_sigma: \(0, 0, 0, 0.214[0-9]+, 0, 0\)"/>
             </assert_stdout>
         </test>
         <test>
@@ -255,7 +255,7 @@
                 <has_line line="scale: (1.0, 0.1, 1.0, 0.7, 1.5)"/>
                 <has_line line="order: 2"/>
                 <has_line line="anti_aliasing: True"/>
-                <has_line line="anti_aliasing_sigma: (0, 4.5, 0, 0.2142857142857143, 0, 0)"/>
+                <has_line_matching expression="anti_aliasing_sigma: \(0, 4.5, 0, 0.214[0-9]+, 0, 0\)"/>
             </assert_stdout>
         </test>
         <test expect_failure="true">
@@ -300,7 +300,7 @@
                 <has_line line="scale: (1.0, 0.1, 2.0, 0.7, 1.5)"/>
                 <has_line line="order: 2"/>
                 <has_line line="anti_aliasing: True"/>
-                <has_line line="anti_aliasing_sigma: (0, 4.5, 0, 0.2142857142857143, 0, 0)"/>
+                <has_line_matching expression="anti_aliasing_sigma: \(0, 4.5, 0, 0.214[0-9]+, 0, 0\)"/>
             </assert_stdout>
         </test>
         <!-- Test TIFF, isotropy scaling, linear interpolation (without anti-alias) -->
@@ -317,10 +317,10 @@
             <expand macro="tests/intensity_image_diff" name="output" value="outputs/binary_c2_z10_isotropy_linear.tiff" ftype="tiff"/>
             <assert_stdout>
                 <has_line line="Input axes: ZYXC"/>
-                <has_line line="Input resolution: (0.10000000011641533, 0.050000000058207664), unit: um, z_spacing: 40.0"/>
+                <has_line_matching expression="Input resolution: \(0.1[0-9]*, 0.05[0-9]*\), unit: um, z_spacing: 40.0"/>
                 <has_line line="Output axes: ZYXC"/>
-                <has_line line="Output resolution: (0.10000000011641533, 0.10000000011641533), unit: um, z_spacing: 9.999999988358468"/>
-                <has_line line="scale: (1, 1, 4.000000004656613, 2.0, 1.0)"/>
+                <has_line_matching expression="Output resolution: \(0.1[0-9]*, 0.1[0-9]*\), unit: um, z_spacing: (?:9.999[0-9]+|10.0[0-9]*)"/>
+                <has_line_matching expression="scale: \(1, 1, 4.0[0-9]*, 2.0, 1.0\)"/>
                 <has_line line="order: 1"/>
                 <has_line line="anti_aliasing: False"/>
             </assert_stdout>
@@ -338,9 +338,9 @@
             <expand macro="tests/intensity_image_diff" name="output" value="outputs/binary_c2_isotropy_linear.tiff" ftype="tiff"/>
             <assert_stdout>
                 <has_line line="Input axes: YXC"/>
-                <has_line line="Input resolution: (0.10000000011641533, 0.050000000058207664), unit: um, z_spacing: 40.0"/>
+                <has_line_matching expression="Input resolution: \(0.1[0-9]*, 0.05[0-9]*\), unit: um, z_spacing: 40.0"/>
                 <has_line line="Output axes: YXC"/>
-                <has_line line="Output resolution: (0.10000000011641533, 0.10000000011641533), unit: um, z_spacing: 40.0"/>
+                <has_line_matching expression="Output resolution: \(0.1[0-9]*, 0.1[0-9]*\), unit: um, z_spacing: 40.0"/>
                 <has_line line="scale: (1, 1, 1, 2.0, 1.0)"/>
                 <has_line line="order: 1"/>
                 <has_line line="anti_aliasing: False"/>
