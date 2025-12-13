@@ -316,16 +316,13 @@
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="outputs/binary_z10_isotropy_linear.tiff" ftype="tiff"/>
             <assert_stdout>
-                <!--
-                <has_line line="Input axes: YX"/>
-                <has_line line="Input resolution: (1.0, 1.0)"/>
-                <has_line line="Output axes: ZYX"/>
-                <has_line line="Output resolution: (1.5, 0.7), z_spacing: 0.5"/>
-                <has_line line="scale: (1.0, 0.1, 2.0, 0.7, 1.5)"/>
-                <has_line line="order: 2"/>
-                <has_line line="anti_aliasing: True"/>
-                <has_line line="anti_aliasing_sigma: (0, 4.5, 0, 0.2142857142857143, 0, 0)"/>
-                -->
+                <has_line line="Input axes: ZYXC"/>
+                <has_line line="Input resolution: (0.10000000011641533, 0.050000000058207664), unit: um, z_spacing: 40.0"/>
+                <has_line line="Output axes: ZYXC"/>
+                <has_line line="Output resolution: (0.10000000011641533, 0.10000000011641533), unit: um, z_spacing: 9.999999988358468"/>
+                <has_line line="scale: (1, 1, 4.000000004656613, 2.0, 1.0)"/>
+                <has_line line="order: 1"/>
+                <has_line line="anti_aliasing: False"/>
             </assert_stdout>
         </test>
     </tests>
