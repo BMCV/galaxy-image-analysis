@@ -17,7 +17,7 @@ def get_uniform_scale(
     img: giatools.Image,
     axes: Literal['all', 'spatial'],
     factor: float,
-) -> float | tuple[float, ...]:
+) -> tuple[float, ...]:
     """
     Determine a tuple of `scale` factors for uniform or spatially uniform scaling.
 
@@ -157,7 +157,7 @@ def get_new_metadata(
 def scale_image(
     input_filepath: str,
     output_filepath: str,
-    mode: Literal['uniform', 'non-uniform', 'isotropy'],
+    mode: Literal['uniform', 'explicit', 'isotropy'],
     order: int,
     anti_alias: bool,
     **cfg,
@@ -170,7 +170,7 @@ def scale_image(
         case 'uniform':
             scale = get_uniform_scale(img, cfg['axes'], cfg['factor'])
 
-        case 'non-uniform':
+        case 'explicit':
             scale = [cfg.get(f'factor_{axis.lower()}', 1) for axis in img.axes if axis != 'C']
 
         case 'isotropy':
@@ -186,18 +186,13 @@ def scale_image(
         preserve_range=True,
         channel_axis=img.axes.index('C'),
     )
-    if isinstance(scale, float):  # uniform scaling
-        if (anti_alias := anti_alias and scale < 1):
-            rescale_kwargs['anti_aliasing'] = anti_alias
-            rescale_kwargs['anti_aliasing_sigma'] = get_aa_sigma_by_scale(scale)
-    else:  # non-uniform scaling
-        if (anti_alias := anti_alias and (np.array(scale) < 1).any()):
-            rescale_kwargs['anti_aliasing'] = anti_alias
-            rescale_kwargs['anti_aliasing_sigma'] = tuple(
-                [
-                    get_aa_sigma_by_scale(s) for s in scale
-                ] + [0]  # `skimage.transform.rescale` also expects a value for the channel axis
-            )
+    if (anti_alias := anti_alias and (np.array(scale) < 1).any()):
+        rescale_kwargs['anti_aliasing'] = anti_alias
+        rescale_kwargs['anti_aliasing_sigma'] = tuple(
+            [
+                get_aa_sigma_by_scale(s) for s in scale
+            ] + [0]  # `skimage.transform.rescale` also expects a value for the channel axis
+        )
 
     # Re-sample the image data to perform the scaling
     print('-' * 10)

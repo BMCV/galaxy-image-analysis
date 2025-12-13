@@ -51,7 +51,7 @@
                 "axes": "$scale.axes",
                 "factor": $scale.factor,
 
-            #elif $scale.mode == "non-uniform"
+            #elif $scale.mode == "explicit"
                 "factor_x": $scale.factor_x,
                 "factor_y": $scale.factor_y,
                 "factor_z": $scale.factor_z,
@@ -74,8 +74,8 @@
         <conditional name="scale">
             <param name="mode" type="select" label="How to scale?"
                    help='Using the "Scale to spatially isotropic pixels/voxels" option requires that the real-world resolution is available from the metadata of the input image.'>
-                <option value="uniform" selected="true">Uniform by factor</option>
-                <option value="non-uniform">Non-uniform by factors</option><!-- TODO: change name to `explicit` -->
+                <option value="uniform" selected="true">Uniform scaling factor</option>
+                <option value="explicit">Explicit scaling factors</option>
                 <option value="isotropy">Scale to spatially isotropic pixels/voxels</option>
             </param>
             <when value="uniform">
@@ -85,7 +85,7 @@
                 </param>
                 <expand macro="factor_input" name="factor" label="Uniform"/>
             </when>
-            <when value="non-uniform">
+            <when value="explicit">
                 <expand macro="factor_input" name="factor_x" label="Horizontal (X)"/>
                 <expand macro="factor_input" name="factor_y" label="Vertical (Y)"/>
                 <expand macro="factor_input" name="factor_z" label="Depth axis (Z)"/>
@@ -149,7 +149,7 @@
         <test>
             <param name="input" value="input1_binary_rgb.png"/>
             <conditional name="scale">
-                <param name="mode" value="non-uniform"/>
+                <param name="mode" value="explicit"/>
                 <param name="factor_x" value="0.8"/>
                 <param name="factor_y" value="0.5"/>
                 <param name="factor_z" value="1.0"/>
@@ -165,7 +165,7 @@
         <test>
             <param name="input" value="input1_binary_rgb.png"/>
             <conditional name="scale">
-                <param name="mode" value="non-uniform"/>
+                <param name="mode" value="explicit"/>
                 <param name="factor_x" value="0.8"/>
                 <param name="factor_y" value="0.5"/>
                 <param name="factor_z" value="0.1"/>
