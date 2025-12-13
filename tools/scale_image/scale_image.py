@@ -227,6 +227,8 @@ def scale_image(
                 get_aa_sigma_by_scale(s) for s in scale
             ] + [0]  # `skimage.transform.rescale` also expects a value for the channel axis
         )
+    else:
+        rescale_kwargs['anti_aliasing'] = False
 
     # Re-sample the image data to perform the scaling
     for key, value in rescale_kwargs.items():
