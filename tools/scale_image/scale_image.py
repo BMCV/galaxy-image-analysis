@@ -16,19 +16,33 @@ import skimage.util
 def get_uniform_scale(
     img: giatools.Image,
     axes: Literal['all', 'spatial'],
+    factor: float,
 ) -> float | tuple[float, ...]:
     """
-    Determine a `scale` factor or a tuple of `scale` factors for uniform or spatially uniform scaling.
+    Determine a tuple of `scale` factors for uniform or spatially uniform scaling.
+
+    Axes, that are not present in the original image data, are ignored.
     """
+    ignored_axes = [
+        axis for axis_idx, axis in enumerate(img.axes)
+        if axis not in img.original_axes or (
+            factor < 1 and img.data.shape[axis_idx] == 1
+        )
+    ]
     match axes:
 
         case 'all':
-            return cfg['factor']
+            return tuple(
+                [
+                    (factor if axis not in ignored_axes else 1)
+                    for axis in img.axes if axis != 'C'
+                ]
+            )
 
         case 'spatial':
             return tuple(
                 [
-                    (cfg['factor'] if axis in 'YXZ' else 1)
+                    (factor if axis in 'YXZ' and axis not in ignored_axes else 1)
                     for axis in img.axes if axis != 'C'
                 ]
             )
@@ -154,10 +168,10 @@ def scale_image(
     match mode:
 
         case 'uniform':
-            scale = get_uniform_scale(img, cfg['axes'])
+            scale = get_uniform_scale(img, cfg['axes'], cfg['factor'])
 
         case 'non-uniform':
-            scale = [cfg.get(f'factor_{axis}', 1) for axis in img.axes if axis != 'C']
+            scale = [cfg.get(f'factor_{axis.lower()}', 1) for axis in img.axes if axis != 'C']
 
         case 'isotropy':
             scale = get_scale_for_isotropy(img, cfg['isotropy_mode'])
@@ -187,6 +201,7 @@ def scale_image(
 
     # Re-sample the image data to perform the scaling
     print('-' * 10)
+    print('rescale_kwargs:')
     print(rescale_kwargs)
     print('-' * 10)
     arr = skimage.transform.rescale(img.data, **rescale_kwargs)
@@ -199,13 +214,28 @@ def scale_image(
 
     # Determine the result metadata and save result
     metadata = get_new_metadata(img, scale, arr)
-    giatools.Image(
-        data=arr,
-        axes=img.axes,
-        metadata=metadata,
-    ).normalize_axes_like(
-        img.original_axes,
-    ).write(output_filepath)
+    write_output(
+        output_filepath,
+        giatools.Image(
+            data=arr,
+            axes=img.axes,
+            metadata=metadata,
+        ).squeeze()
+    )
+
+
+def write_output(filepath: str, img: giatools.Image):
+    """
+    Validate that the output file format is suitable for the image data, then write it.
+    """
+
+    # Validate that the output file format is suitable for the image data
+    if filepath.lower().endswith('.png'):
+        if not frozenset(img.axes) <= frozenset('YXC'):
+            sys.exit(f'Cannot write PNG file with axes "{img.axes}"')
+
+    # Write image data to the output file
+    img.write(filepath)
 
 
 if __name__ == "__main__":
@@ -218,6 +248,11 @@ if __name__ == "__main__":
     # Read the config file
     with open(args.params) as cfgf:
         cfg = json.load(cfgf)
+
+    print('-' * 10)
+    print('cfg:')
+    print(cfg)
+    print('-' * 10)
 
     # Perform scaling
     scale_image(

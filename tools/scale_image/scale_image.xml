@@ -75,7 +75,7 @@
             <param name="mode" type="select" label="How to scale?"
                    help='Using the "Scale to spatially isotropic pixels/voxels" option requires that the real-world resolution is available from the metadata of the input image.'>
                 <option value="uniform" selected="true">Uniform by factor</option>
-                <option value="non-uniform">Non-uniform by factors</option>
+                <option value="non-uniform">Non-uniform by factors</option><!-- TODO: change name to `explicit` -->
                 <option value="isotropy">Scale to spatially isotropic pixels/voxels</option>
             </param>
             <when value="uniform">
