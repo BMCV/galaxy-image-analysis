@@ -1,10 +1,9 @@
-<tool id="ip_points_to_label" name="Convert coordinates to label map" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
+<tool id="ip_points_to_label" name="Convert coordinates to label map" version="@TOOL_VERSION@" profile="20.05">
     <description></description>
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
-        <token name="@TOOL_VERSION@">0.4.1</token>
-        <token name="@VERSION_SUFFIX@">1</token>
+        <token name="@TOOL_VERSION@">0.5.0</token>
     </macros>
     <creator>
         <expand macro="creators/bmcv" />
@@ -16,15 +15,16 @@
         <xref type="bio.tools">galaxy_image_analysis</xref>
     </xrefs>
     <requirements>
-        <requirement type="package" version="0.21">scikit-image</requirement>
-        <requirement type="package" version="1.26.4">numpy</requirement>
-        <requirement type="package" version="1.2.4">pandas</requirement>
-        <requirement type="package" version="2024.6.18">tifffile</requirement>
+        <requirement type="package" version="0.25.2">scikit-image</requirement>
+        <requirement type="package" version="2.3.4">numpy</requirement>
+        <requirement type="package" version="2.3.3">pandas</requirement>
+        <requirement type="package" version="2025.10.16">tifffile</requirement>
         <requirement type="package" version="0.3.1">giatools</requirement>
     </requirements>
     <command detect_errors="aggressive"><![CDATA[
 
         python '$__tool_directory__/points2label.py'
+        '$input.file_ext'
         '$input'
         '$output'
         $shapex
@@ -35,12 +35,12 @@
 
     ]]></command>
     <inputs>
-        <param name="input" type="data" format="tabular,geojson" label="List of points in tabular or geojson format"/>
-        <param name="shapex" type="integer" value="500" min="1" label="Width of output image" />
-        <param name="shapey" type="integer" value="500" min="1" label="Height of output image" />
-        <param name="has_header" type="boolean" checked="true" truevalue="--has_header True" falsevalue="" optional="true" label="Tabular list of points has header" help="Turning this off will ignore the first row and assume that the X and Y coordinates correspond to the first and second column, respectively. Ignored, if GeoJSON is used for input." />
-        <param name="swap_xy" type="boolean" checked="false" falsevalue="" truevalue="--swap_xy True" optional="true" label="Swap X and Y coordinates" help="Swap the X and Y coordinates, regardless of whether the tabular list has a header or not." />
-        <param name="binary" type="boolean" checked="false" truevalue="--binary True" falsevalue="" optional="true" label="Produce binary image" help="Use the same label for all points (65535)." />
+        <param name="input" type="data" format="tabular,geojson" label="Shapes to be rasterized"/>
+        <param name="shapex" type="integer" value="500" min="1" label="Width of the output image" />
+        <param name="shapey" type="integer" value="500" min="1" label="Height of the output image" />
+        <param name="has_header" type="boolean" checked="true" truevalue="--has_header True" falsevalue="" optional="true" label="Tabular list of shapes has header" help="Only used if the input is a tabular file (ignored for GeoJSON). Turning this off will interpret the tabular file as a list of points, where the X and Y coordinates correspond to the first and second column, respectively." />
+        <param name="swap_xy" type="boolean" checked="false" falsevalue="" truevalue="--swap_xy True" optional="true" label="Swap X and Y coordinates" help="Swap the X and Y coordinates before rasterization. The width and height of the output image is not affected." />
+        <param name="binary" type="boolean" checked="false" truevalue="--binary True" falsevalue="" optional="true" label="Produce binary image" help="Use the same label for all shapes (65535)." />
     </inputs>
     <outputs>
         <data name="output" format="tiff" />
@@ -106,18 +106,31 @@
             <param name="binary" value="false" />
             <expand macro="tests/label_image_diff" name="output" value="output4.tiff" ftype="tiff" />
         </test>
-        <!-- Labeled / ROI / Rectangles -->
+        <!-- Labeled / TSV with header / TSV with labels / Circles + Rectangles -->
         <test>
-            <param name="input" value="rois.geojson" />
-            <param name="shapex" value="300" />
-            <param name="shapey" value="300" />
-            <param name="has_header" value="false" />
+            <param name="input" value="input5.tsv" />
+            <param name="shapex" value="200" />
+            <param name="shapey" value="100" />
+            <param name="has_header" value="true" />
             <param name="swap_xy" value="false" />
             <param name="binary" value="false" />
-            <expand macro="tests/label_image_diff" name="output" value="output5.tiff" ftype="tiff" />
+            <expand macro="tests/label_image_diff" name="output" value="output8.tiff" ftype="tiff" />
         </test>
+        <test expect_failure="true">
+            <!-- The test should fail because simultaneous usage of radius and width/height on a row is forbidden -->
+            <param name="input" value="input6.tsv" />
+            <param name="shapex" value="200" />
+            <param name="shapey" value="100" />
+            <param name="has_header" value="true" />
+            <param name="swap_xy" value="false" />
+            <param name="binary" value="false" />
+            <assert_stderr>
+                <has_text text="Ambiguous shape type (circle or rectangle)" />
+            </assert_stderr>
+        </test>
+        <!-- Labeled / GeoJSON / mixed name and no-name -->
         <test>
-            <param name="input" value="rois-noname.geojson" />
+            <param name="input" value="rois.geojson" />
             <param name="shapex" value="300" />
             <param name="shapey" value="300" />
             <param name="has_header" value="false" />
@@ -134,48 +147,57 @@
             <param name="binary" value="false" />
             <expand macro="tests/label_image_diff" name="output" value="output6.tiff" ftype="tiff" />
         </test>
-        <test expect_failure="true">
-            <!-- The test should fail because the GeoJSON is not rectangular -->
-            <param name="input" value="rois-illegal1.geojson" />
+        <!-- Labeled / GeoJSON / no-name -->
+        <test>
+            <param name="input" value="rois-noname.geojson" />
             <param name="shapex" value="300" />
             <param name="shapey" value="300" />
             <param name="has_header" value="false" />
             <param name="swap_xy" value="false" />
             <param name="binary" value="false" />
+            <expand macro="tests/label_image_diff" name="output" value="output7.tiff" ftype="tiff" />
         </test>
         <test expect_failure="true">
-            <!-- The test should fail because the GeoJSON is not of `Polygon` type -->
+            <!-- The test should fail because the GeoJSON uses the `LineString` primitive type that is not supported yet -->
             <param name="input" value="rois-illegal2.geojson" />
             <param name="shapex" value="300" />
             <param name="shapey" value="300" />
             <param name="has_header" value="false" />
             <param name="swap_xy" value="false" />
             <param name="binary" value="false" />
+            <assert_stderr>
+                <has_text text='Unsupported geometry type: "LineString"' />
+            </assert_stderr>
         </test>
     </tests>
     <help>
 
-        **Converts a list of points to a label map by rasterizing the coordinates.**
+        **Converts a list of shapes to a label map via rasterization.**
 
-        The created image is a single-channel image with 16 bits per pixel (unsigned integer). The points are
-        rasterized with unique labels, or the value 65535 (white) for binary image output. Pixels not corresponding to
-        any points in the tabular file are assigned the value 0 (black).
+        The created image is a single-channel image with 16 bits per pixel (unsigned integers). The shapes are
+        rasterized with unique labels, explicitly given labels (custom), or the value 65535 (white) for binary image
+        output. Pixels not corresponding to any shapes are assigned the value 0 (black).
 
-        **Using a tabular input file:** The tabular list of points can either be header-less. In this case, the first
-        and second columns are expected to be the X and Y coordinates, respectively. Otherwise, if a header is present,
-        it is searched for the following column names:
+        **Using a GeoJSON input file (recommended).** Only features (shape specifications) of `Polygon` and `Point`
+        type are supported. In conjunction with the `radius` property, a `Point` type feature can also be used to
+        represent circles. Custom labels can be encoded in the `name` property (must be numeric and integer), and
+        different features are allowed to use the same labels.
 
-        - ``pos_x`` or ``POS_X``: This column corresponds to the X coordinates.
-        - ``pos_y`` or ``POS_Y``: This column corresponds to the Y coordinates.
-        - If a ``radius`` or ``RADIUS`` column is present, then the points will be rasterized as circles of the
-          corresponding radii.
-        - If ``width`` or ``WIDTH`` and ``height`` or ``HEIGHT`` columns are present, then the points will be rasterized
-          as rectangles of the corresponding size.
+        **Using a tabular input file (deprecated).** The tabular list of points can either be header-less. In this
+        case, the first and second columns are expected to be the X and Y coordinates, respectively, and each row
+        corresponds to a single point. Otherwise, if a header is present, it is searched for the following column
+        names:
+
+        - Column ``pos_x`` or ``POS_X`` is mandatory and corresponds to the X coordinates.
+        - Column ``pos_y`` or ``POS_Y`` is mandatory and corresponds to the Y coordinates.
+        - If a ``radius`` or ``RADIUS`` column is present and the value in a row is positive, then the row will be
+          rasterized as a circle of the corresponding size, centered at the given X and Y coordinates.
+        - If ``width`` or ``WIDTH`` and ``height`` or ``HEIGHT`` columns are present and the values in a row are
+          positive, then the rows will be rasterized as rectangles of the corresponding size, with the upper-left
+          corner given by the X and Y coordinates.
         - If a ``label`` or ``LABEL`` column is present, then the corresponding labels will be used for rasterization
-          (unless "Produce binary image" is activated). Different points are allowed to use the same label. If used, the
-          label must be numeric and integer.
-
-        **Using a GeoJSON input file:** Only rectangular specifications of `Polygon` type geometry is supported.
+          (unless "Produce binary image" is activated). Different rows are allowed to use the same label. If used,
+          the label must be numeric and integer.
 
     </help>
     <citations>

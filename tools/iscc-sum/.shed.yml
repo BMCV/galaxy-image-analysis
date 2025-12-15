@@ -1,0 +1,33 @@
+name: iscc_sum
+owner: imgteam
+description: Generate ISCC hashes for content identification and similarity matching
+homepage_url: https://iscc.codes/
+long_description: |
+    Generate International Standard Content Code (ISCC) hashes from any file type using the ISCC-SUM tool.
+    
+    ISCC hashes are content-derived identifiers that:
+    - Create unique checksums based on file content (not metadata or filenames)
+    - Generate similarity hashes enabling content comparison via hamming distance
+    - Work with any file format for standardized digital media identification
+    - Enable provenance tracking and content verification
+    
+    Unlike traditional checksums that only verify exact matches, ISCC hashes allow similarity detection 
+    through the Data-Code component. Files with similar content will have similar Data-Codes.
+    
+    For more information about the ISCC standard, visit: https://iscc.codes/
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tree/master/tools/iscc-sum
+type: unrestricted
+auto_tool_repositories:
+  name_template: "{{ tool_id }}"
+  description_template: "Wrapper for ISCC-SUM tool."
+suite:
+  name: "suite_iscc"
+  description: "Tools for ISCC-based content identification"
+  long_description: |
+      A suite of tools for generating ISCC hashes - content-based identifiers and similarity hashes 
+      for validation of file integrity and content similarity based on the International Standard 
+      Content Code (ISCC) standard.
+categories:
+  - Imaging
+  - Text Manipulation
+  - Data Export

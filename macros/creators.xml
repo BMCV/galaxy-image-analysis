@@ -5,6 +5,11 @@
         <yield />
     </xml>
 
+    <xml name="creators/kostrykin">
+        <person givenName="Leonid" familyName="Kostrykin"/>
+        <yield/>
+    </xml>
+
     <xml name="creators/rmassei">
         <person givenName="Riccardo" familyName="Massei"/>
         <yield/>
@@ -27,6 +32,11 @@
 
     <xml name="creators/pavanvidem">
         <person givenName="Pavan" familyName="Videm"/>
+        <yield/>
+    </xml>
+
+    <xml name="creators/tuncK">
+        <person givenName="Tunc" familyName="Kayikcioglu"/>
         <yield/>
     </xml>
 

@@ -100,34 +100,21 @@ jobs:
       run: |
         echo 'Using ${{ steps.discover.outputs.chunk-count }} chunks (${{ steps.discover.outputs.chunk-list }})'
 
-  # Check latest commit for potential switches
+  # Check labels of the PR for potential switches (only for pull_request events)
   commit_switches:
-    name: Check latest commit
+    name: Check labels
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' }}
     outputs:
       skip_version_check: ${{ steps.checks.outputs.skip_version_check }}
     steps:
-    - name: Get latest commit SHA
-      id: pr
-      run: echo "sha=$(jq -r .pull_request.head.sha < $GITHUB_EVENT_PATH)" >> $GITHUB_OUTPUT
-    - name: Get commit message
-      id: commit
+    - name: Check for "skip-version-check" label
+      if: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'skip-version-check') }}
       run: |
-        COMMIT_MSG=$(gh api repos/${{ github.repository }}/commits/${{ steps.pr.outputs.sha }} --jq .commit.message)
-        echo "commit_message<<EOF" >> $GITHUB_OUTPUT
-        echo "$COMMIT_MSG" >> $GITHUB_OUTPUT
-        echo "EOF" >> $GITHUB_OUTPUT
-      env:
-        GH_TOKEN: ${{ github.token }}
-    - name: Check for "[skip-version-check]" in commit message
+        echo "SKIP_VERSION_CHECK=true" >> $GITHUB_ENV
+    - name: Set job outputs
       id: checks
       run: |
-        echo "Commit Message: ${{ steps.commit.outputs.commit_message }}"
-        shopt -s nocasematch
-        if [[ "${{ steps.commit.outputs.commit_message }}" == *"[skip-version-check]"* ]]; then
-          echo "skip_version_check=true" >> $GITHUB_OUTPUT
-        fi
+          echo "skip_version_check=${SKIP_VERSION_CHECK}" >> $GITHUB_OUTPUT
 
   # Planemo lint the changed repositories
   lint:
@@ -428,7 +415,7 @@ jobs:
   deploy-report:
     name: Report deploy status
     needs: [deploy]
-    if: ${{ always() && needs.deploy.result != 'success' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' ) && github.repository_owner == 'BMCV' }}
+    if: ${{ always() && needs.setup.outputs.repository-list != '' && needs.deploy.result != 'success' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') && github.repository_owner == 'BMCV' }}
     runs-on: ubuntu-latest
     steps:
     # report to the PR if deployment failed
