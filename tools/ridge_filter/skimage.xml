@@ -226,6 +226,13 @@ ridge filters may be suited for detecting different structures, e.g., depending 
 images are supported. For multi-channel images, the filter is applied to all channels of the image. For time-series images,
 the filter is also applied for all time steps.
 
+.. class:: warningmark
+
+**Attention:** For proper results, this tool requires the image data to be scaled isotropically (pixels/voxels must be
+isotropic). Consider re-scaling the data with the `Scale image`_ tool, if necessary.
+
+.. _Scale image: ?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/scale_image/ip_scale_image
+
 Frangi vesselness filter
 ========================
 
