@@ -22,10 +22,11 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 
 ### Image processing [[…]](https://github.com/BMCV/galaxy-image-analysis/issues?q=label%3A%22Image%20Processing%22)
 
+- [Apply 2-D image filter](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/2d_simple_filter/ip_filter_standard) with scikit-image
 - [Apply anisotropic diffusion](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/anisotropic_diffusion/ip_anisotropic_diffusion) with MedPy
 - [Apply a morphological operation](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/morphological_operations/morphological_operations) with SciPy
+- [Apply ridge filter](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/ridge_filter/ridge_filter_skimage) with scikit-image
 - [Crop image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/crop_image/ip_crop_image) with giatools
-- [Filter 2D image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/2d_simple_filter/ip_filter_standard) with scikit-image
 - [Perform histogram equalization](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/2d_histogram_equalization/ip_histogram_equalization) with scikit-image
 - [Process images using arithmetic expressions](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/image_math/image_math) with NumPy
 - [Remove image background](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/background_removal/background_removal/0.24.0+galaxy0) with scikit-image
@@ -54,10 +55,10 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 
 - [Compute Voronoi tessellation](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/voronoi_tesselation/voronoi_tessellation) with scikit-image
 - [Count objects in label map](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/count_objects/ip_count_objects)
-- [Extract 2D features](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/2d_feature_extraction/ip_2d_feature_extraction) with scikit-image
+- [Extract image features](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/2d_feature_extraction/ip_2d_feature_extraction) with scikit-image
 - [Filter label map by rules](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/2d_filter_segmentation_by_features/ip_2d_filter_segmentation_by_features)
 - [Merge neighbors in label map](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/mergeneighboursinlabelimage/ip_merge_neighbours_in_label)
-- [Perform 2D spot detection](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/spot_detection_2d/ip_spot_detection_2d)
+- [Perform 2-D spot detection](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/spot_detection_2d/ip_spot_detection_2d)
 - [Perform segmentation in densely packed 3-D volumetric images](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/plantseg/plantseg/1.8.1+galaxy0) with PlantSeg
 - [Perform segmentation using region-based fitting of overlapping ellipses](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/rfove/rfove/2023.11.12+galaxy0) with RFOVE
 - [Perform segmentation using deformable shape models](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/superdsm/ip_superdsm) with SuperDSM
@@ -97,3 +98,4 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 This work has been funded by the BMFTR (Federal Ministry of Research, Technology and Space), Heidelberg Center for Human Bioinformatics (HD-HuB) within the German Network for Bioinformatics Infrastructure (de.NBI) & ELIXIR-DE, and LiBiS (Baden-Württemberg Institute for Bioinformatics Infrastructure).
 
 <img width="4198" height="371" alt="GIA Logos" src="https://github.com/user-attachments/assets/5724b1d7-d9ae-40c1-9c50-9d129d11d8de" />
+
