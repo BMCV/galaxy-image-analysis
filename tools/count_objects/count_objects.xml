@@ -1,4 +1,4 @@
-<tool id="ip_count_objects" name="Count objects in label map" version="0.0.5-2"> 
+<tool id="ip_count_objects" name="Count objects in label map" version="0.0.5-2">  
     <description></description>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
