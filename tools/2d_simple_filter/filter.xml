@@ -118,7 +118,7 @@
         </conditional>
     </inputs>
     <outputs>
-       <data format="tiff" name="output" />
+        <data format="tiff" name="output"/>
     </outputs>
     <tests>
         <!-- Tests with uint8 TIFF input image -->
@@ -246,6 +246,6 @@
 
     </help>
     <citations>
-       <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
+        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
     </citations>
 </tool>

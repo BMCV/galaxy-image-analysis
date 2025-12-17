@@ -56,14 +56,14 @@
             </param>
 
             <when value="coloc_vis">
-                <param name="im1" type="data" format="tiff,png" label="Image 1 (red channel)" />
-                <param name="im2" type="data" format="tiff,png" label="Image 2 (green channel)" />
+                <param name="im1" type="data" format="tiff,png" label="Image 1 (red channel)"/>
+                <param name="im2" type="data" format="tiff,png" label="Image 2 (green channel)"/>
             </when>
 
             <when value="blending">
-                <param name="im1" type="data" format="tiff,png" label="Image 1" />
-                <param name="im2" type="data" format="tiff,png" label="Image 2" />
-                <param name="alpha" type="float" value="0.5" min="0.0" max="1.0" label="The weight for blending: result = (1 - weight) * image1 + weight * image2." />
+                <param name="im1" type="data" format="tiff,png" label="Image 1"/>
+                <param name="im2" type="data" format="tiff,png" label="Image 2"/>
+                <param name="alpha" type="float" value="0.5" min="0.0" max="1.0" label="The weight for blending: result = (1 - weight) * image1 + weight * image2."/>
             </when>
 
             <when value="seg_contour">
@@ -84,7 +84,7 @@
                 <param name="im2" type="data" format="tiff,png" label="Label map" />
                 <param name="thickness" type="integer" value="2" min="1" label="Contour thickness (in pixels)" />
                 <param name="color" type="color" value="#ff0000" label="Contour color"/>
-                <param argument="--show_label" type="boolean" checked='false' truevalue="--show_label" falsevalue="" label="Show labels" />
+                <param argument="--show_label" type="boolean" checked="false" truevalue="--show_label" falsevalue="" label="Show labels"/>
                 <param name="label_color" type="color" value="#ffff00" label="Label color"/>
             </when>
 

@@ -67,7 +67,7 @@
         <param label="Input file" name="input_file" type="data" format="zip,tar"/>
         <conditional name="extract_options">
             <param label="What to extract" name="target" type="select">
-                <option selected="True" value="all">All files</option>
+                <option value="all" selected="True">All files</option>
                 <option value="all_nondot">All files except dotfiles</option>
                 <option value="all_regex">All files matching a regex</option>
                 <option value="single">Single file</option>
@@ -226,9 +226,11 @@
         </test>
     </tests>
     <help>
-        **What it does**
+
+        **Unzip an archive containing file(s) of various types.**
           
-        Unzip a folder containing file(s) of various types. If multiple files are asked to be retained, the output will be a collection containing all files within the zip or tar archive.
+        If multiple files are asked to be retained, the output will be a collection containing all files within the ZIP or TAR archive.
+
     </help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>

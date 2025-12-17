@@ -6,7 +6,7 @@
         <token name="@VERSION_SUFFIX@">0</token>
     </macros>
     <creator>
-        <expand macro="creators/bmcv" />
+        <expand macro="creators/bmcv"/>
     </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
@@ -15,7 +15,7 @@
         <xref type="bio.tools">scikit-image</xref>
         <xref type="biii">scikit-image</xref>
     </xrefs>
-    <requirements> 
+    <requirements>
         <requirement type="package" version="@TOOL_VERSION@">scikit-image</requirement>
         <requirement type="package" version="2.2.2">pandas</requirement>
         <requirement type="package" version="1.23.3">numpy</requirement>
@@ -37,15 +37,15 @@
     ]]>
     </command>
     <inputs>
-        <param name="input_label" type="data" format="tiff,png" label="Label map" />
+        <param name="input_label" type="data" format="tiff,png" label="Label map"/>
         <conditional name="use_raw_option">
             <param label="Use the intensity image to compute additional features" name="use_raw" type="select">
                 <option selected="True" value="no_original">No intensity image</option>
                 <option value="raw_image">Use intensity image</option>
             </param>
-            <when value="no_original"></when>
+            <when value="no_original"/>
             <when value="raw_image">
-                <param name="input_raw" type="data" format="tiff,png" label="Intensity image" />
+                <param name="input_raw" type="data" format="tiff,png" label="Intensity image"/>
             </when>
         </conditional>
         <conditional name="feature_options">
@@ -84,13 +84,15 @@
         </conditional>
     </inputs>
     <outputs>
-       <data format="tabular" name="output" />
+        <data format="tabular" name="output"/>
     </outputs>
     <tests>
         <test>
-            <param name="input_label" value="input.tiff"/>
-            <param name="features" value="select"/>
-            <param name="selected_features" value="--label,--area"/>
+            <param name="input_label" value="input.tiff" ftype="tiff"/>
+            <conditional name="feature_options">
+                <param name="features" value="select"/>
+                <param name="selected_features" value="--label,--area"/>
+            </conditional>
             <output name="output" ftype="tabular" value="out.tsv"/>
         </test>
     </tests>
