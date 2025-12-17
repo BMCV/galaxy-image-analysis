@@ -49,8 +49,6 @@
     </requirements>
     <command detect_errors="aggressive">
     <![CDATA[
-    mkdir /tmp/ray;
-
     python '$__tool_directory__/run-superdsm.py'
     '${dataset}'
     \${GALAXY_SLOTS:-4}

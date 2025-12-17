@@ -86,10 +86,11 @@ if __name__ == "__main__":
     import superdsm.io
     import superdsm.render
 
-    ray.init(num_cpus=num_processes, log_to_driver=True, _temp_dir='/tmp/ray')
 
-    with tempfile.TemporaryDirectory() as tmpdirname:
+    with tempfile.TemporaryDirectory(dir='/tmp', prefix='superdsm') as tmpdirname:
         tmpdir = pathlib.Path(tmpdirname)
+        ray.init(num_cpus=num_processes, log_to_driver=True, _temp_dir=str(tmpdir / 'ray'))
+
         img_ext = imghdr.what(args.image)
         img_filepath = tmpdir / f'input.{img_ext}'
         shutil.copy(str(args.image), img_filepath)
