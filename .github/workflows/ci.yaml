@@ -106,6 +106,7 @@ jobs:
         repository-list: ${{ needs.setup.outputs.repository-list }}
         tool-list: ${{ needs.setup.outputs.tool-list }}
         additional-planemo-options: --biocontainers --skip version_bumped
+        planemo-version: https://github.com/kostrykin/planemo/archive/refs/heads/dev/extend_skip_file.zip  # temporal until https://github.com/galaxyproject/planemo/pull/1588 is merged and released
     - uses: actions/upload-artifact@v4
       if: ${{ failure() }}
       with:
