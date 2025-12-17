@@ -26,8 +26,7 @@ filters = {
             ndi.gaussian_filter,
             img if order == 0 else image_astype(img, float),
             sigma=sigma,
-            order=order,
-            axes=axis,
+            order=(order if axis is None else [(1, 0), (0, 1)][axis]),
         )
     ),
     'uniform': lambda img, size: (
