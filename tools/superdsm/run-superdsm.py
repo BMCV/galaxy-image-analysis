@@ -86,6 +86,8 @@ if __name__ == "__main__":
     import superdsm.io
     import superdsm.render
 
+    # The explicit `dir` and `prefix` is to avoid breaking the 107 byte limit for socket paths in Biocontainers
+    # See for details: https://github.com/BMCV/galaxy-image-analysis/pull/178
     with tempfile.TemporaryDirectory(dir='/tmp', prefix='superdsm') as tmpdirname:
         tmpdir = pathlib.Path(tmpdirname)
         ray.init(num_cpus=num_processes, log_to_driver=True, _temp_dir=str(tmpdir / 'ray'))
@@ -128,4 +130,5 @@ if __name__ == "__main__":
             print(f'Writing masks to: {args.do_masks}')
             masks = superdsm.render.rasterize_labels(data)
             superdsm.io.imwrite(args.do_masks, masks)
+
 
