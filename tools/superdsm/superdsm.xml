@@ -4,7 +4,7 @@
         <import>creators.xml</import>
         <import>tests.xml</import>
         <token name="@TOOL_VERSION@">0.2.0</token>
-        <token name="@VERSION_SUFFIX@">1</token>
+        <token name="@VERSION_SUFFIX@">2</token>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
@@ -49,6 +49,8 @@
     </requirements>
     <command detect_errors="aggressive">
     <![CDATA[
+    mkdir /tmp/ray;
+
     python '$__tool_directory__/run-superdsm.py'
     '${dataset}'
     \${GALAXY_SLOTS:-4}
