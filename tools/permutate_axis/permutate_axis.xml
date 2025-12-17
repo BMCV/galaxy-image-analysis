@@ -29,7 +29,7 @@
     <tests>
         <test>
             <param name="input" value="galaxyIcon_noText.tiff"/>
-            <output name="output" file="res.tif" ftype="tiff" compare="sim_size"/>
+            <output name="output" file="res.tiff" ftype="tiff" compare="sim_size"/>
         </test>
     </tests>
     <help>
