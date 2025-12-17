@@ -130,5 +130,3 @@ if __name__ == "__main__":
             print(f'Writing masks to: {args.do_masks}')
             masks = superdsm.render.rasterize_labels(data)
             superdsm.io.imwrite(args.do_masks, masks)
-
-
