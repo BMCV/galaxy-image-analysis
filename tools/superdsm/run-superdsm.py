@@ -86,7 +86,7 @@ if __name__ == "__main__":
     import superdsm.io
     import superdsm.render
 
-    ray.init(num_cpus=num_processes, log_to_driver=True)
+    ray.init(num_cpus=num_processes, log_to_driver=True, _temp_dir='/tmp/ray')
 
     with tempfile.TemporaryDirectory() as tmpdirname:
         tmpdir = pathlib.Path(tmpdirname)
