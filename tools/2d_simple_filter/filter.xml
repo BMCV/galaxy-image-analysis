@@ -1,14 +1,29 @@
 <tool id="ip_filter_standard" name="Apply standard image filter" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
     <description>with scipy</description>
     <macros>
+        <!--
+        === BEGIN OF MACROS === 
+        -->
         <import>creators.xml</import>
         <import>tests.xml</import>
         <token name="@TOOL_VERSION@">1.16.3</token>
         <token name="@VERSION_SUFFIX@">1</token>
+        <!--
+        === MACROS: UI text tokens ===
+        -->
         <token name="@DEFAULT_AXIS_LABEL@">Direction</token>
         <token name="@DERIVATIVE_AXIS_LABEL@">Direction of the derivative</token>
         <token name="@DERIVATIVE_AXIS_HELP@">The axis to compute the derivative along.</token>
-        <xml name="select_axis" tokens="axis1,axis2,axis1_label,axis2_label,label,help"
+        <token name="@PREWITT_AXIS_HELP@">
+            The Prewitt filter is a 2-D image filter that computes an approximation of the derivative of the image intensities in the given direction.
+        </token>
+        <token name="@SOBEL_AXIS_HELP@">
+            The Sobel filter is a 2-D image filter that computes an approximation of the derivative of the image intensities in the given direction.
+        </token>
+        <!--
+        === MACROS: Direction selectors ===
+        -->
+        <xml name="select_direction" tokens="axis1,axis2,axis1_label,axis2_label,label,help"
              token_axis1="1" token_axis1_label="Horizontal" token_axis2="0" token_axis2_label="Vertical" token_label="@DEFAULT_AXIS_LABEL@" token_help="">
             <param name="direction" type="select" label="@LABEL@" help="@HELP@">
                 <option value="@AXIS1@" selected="true">@AXIS1_LABEL@</option>
@@ -16,52 +31,108 @@
                 <yield/>
             </param>
         </xml>
-        <xml name="select_axis_3d" tokens="label,help" token_label="@DEFAULT_AXIS_LABEL@" token_help="">
+        <xml name="select_direction_3d" tokens="label,help" token_label="@DEFAULT_AXIS_LABEL@" token_help="">
             <!-- Normalized axes layout for 3-D images: ZYX -->
-            <expand macro="select_axis" axis1="2" axis1_label="Horizontal" axis2="1" axis2_label="Vertical" label="@LABEL@" help="@HELP@">
+            <expand macro="select_direction" axis1="2" axis1_label="Horizontal" axis2="1" axis2_label="Vertical" label="@LABEL@" help="@HELP@">
                 <option value="0">Orthogonal</option>
             </expand>
         </xml>
-        <xml name="process_3d" tokens="yx_selected" token_yx_selected="true">
+        <!--
+        === MACROS: Groups of fields for 3-D processing setup ===
+        -->
+        <xml name="select_axes_2d" tokens="yx_selected" token_yx_selected="true">
             <param name="axes" type="select" label="Processing of 3-D images"
-                   help="For 3-D image data, this govers which axes are processed jointly. This option has no effect when processing 2-D images.">
+                   help="This govers which axes are processed jointly.">
                 <yield/>
                 <option value="YX" selected="@YX_SELECTED@">Perform 2-D filtering of all XY-slices</option>
                 <option value="YZ">Perform 2-D filtering of all YZ-slices</option>
                 <option value="XZ">Perform 2-D filtering of all XZ-slices</option>
             </param>
         </xml>
+        <xml name="select_axes_2d_or_3d">
+            <expand macro="select_axes_2d" yx_selected="false">
+                <option value="ZYX" selected="true">Perform 3-D filtering</option>
+            </expand>
+        </xml>
         <xml name="process_3d_directed" tokens="selector,axis_label,axis_help"
-             token_selector="process_3d" token_axis_label="@DEFAULT_AXIS_LABEL@" token_axis_help="">
-            <conditional name="process">
+             token_selector="select_axes_2d" token_axis_label="@DEFAULT_AXIS_LABEL@" token_axis_help="">
+            <conditional name="process_3d">
                 <expand macro="@SELECTOR@"/>
                 <yield/>
                 <when value="YX">
-                    <expand macro="select_axis" label="@AXIS_LABEL@" help="@AXIS_HELP@"/>
+                    <expand macro="select_direction" label="@AXIS_LABEL@" help="@AXIS_HELP@"/>
                 </when>
                 <when value="YZ">
-                    <expand macro="select_axis" label="@AXIS_LABEL@" help="@AXIS_HELP@"
+                    <expand macro="select_direction" label="@AXIS_LABEL@" help="@AXIS_HELP@"
                             axis1="0" axis1_label="Vertical" axis2="1" axis2_label="Orthogonal"/>
                 </when>
                 <when value="XZ">
-                    <expand macro="select_axis" label="@AXIS_LABEL@" help="@AXIS_HELP@"
+                    <expand macro="select_direction" label="@AXIS_LABEL@" help="@AXIS_HELP@"
                             axis1="0" axis1_label="Horizontal" axis2="1" axis2_label="Orthogonal"/>
                 </when>
             </conditional>
         </xml>
-        <xml name="process_3d_full">
-            <expand macro="process_3d" yx_selected="false">
-                <option value="ZYX" selected="true">Perform 3-D filtering</option>
-            </expand>
-        </xml>
         <xml name="process_3d_full_directed" tokens="axis_label,axis_help"
              token_axis_label="@DEFAULT_AXIS_LABEL@" token_axis_help="">
-            <expand macro="process_3d_directed" selector="process_3d_full">
+            <expand macro="process_3d_directed" selector="select_axes_2d_or_3d">
                 <when value="ZYX">
-                    <expand macro="select_axis_3d" label="@AXIS_LABEL@" help="@AXIS_HELP@"/>
+                    <expand macro="select_direction_3d" label="@AXIS_LABEL@" help="@AXIS_HELP@"/>
                 </when>
             </expand>
         </xml>
+        <!--
+        === MACROS: Group of fields for filter setup ===
+        -->
+        <xml name="filter">
+            <conditional name="filter">
+                <param name="filter_type" type="select" label="Filter type">
+                    <option value="gaussian" selected="True">Gaussian</option>
+                    <option value="uniform">Box filter (uniform filter)</option>
+                    <option value="median">Median</option>
+                    <option value="prewitt">Prewitt</option>
+                    <option value="sobel">Sobel</option>
+                </param>
+                <when value="gaussian">
+                    <param name="sigma" type="float" value="3" min="0.1" label="Sigma"
+                           help="The half width of the Gaussian bell (in pixels)."/>
+                    <conditional name="derivative">
+                        <param name="order" type="select" label="Use a derivative?">
+                            <option value="0">No derivative (mean filter)</option>
+                            <option value="1">1st-order derivative</option>
+                            <option value="2">2nd-order derivative</option>
+                        </param>
+                        <when value="0">
+                            <yield name="gaussian_order0"/>
+                        </when>
+                        <when value="1">
+                            <yield name="gaussian_order1"/>
+                        </when>
+                        <when value="2">
+                            <yield name="gaussian_order2"/>
+                        </when>
+                    </conditional>
+                </when>
+                <when value="uniform">
+                    <param name="size" type="integer" min="2" value="3" label="Size"
+                           help="Edge length of the neighborhood (square, in pixels)."/>
+                    <yield name="uniform"/>
+                </when>
+                <when value="median">
+                    <param name="radius" type="integer" min="2" value="3" label="Radius"
+                           help="Radius of the neighborhood (circle, in pixels)." />
+                    <yield name="median"/>
+                </when>
+                <when value="prewitt">
+                    <yield name="prewitt"/>
+                </when>
+                <when value="sobel">
+                    <yield name="sobel"/>
+                </when>
+            </conditional>
+        </xml>
+        <!--
+        === END OF MACROS ===
+        -->
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
@@ -94,84 +165,111 @@
         <configfile name="params"><![CDATA[
             {
 
-            ## =====================================================================
-            #if $filter.filter_type == "gaussian"
-                "sigma": $filter.sigma,
-                "order": $filter.derivative.process.order,
+            ## =================================================================================
+            #if $setup.filter.filter_type == "gaussian"
+                "sigma": $setup.filter.sigma,
+                "order": $setup.filter.derivative.order,
 
-                #if $filter.derivative.process.order != "0"
-                    "axes": $filter.derivative.process.axes,
-                    "direction": $filter.derivative.process.direction,
+                #if $setup.target == "2d"
+                    #if $setup.filter.derivative.order != "0"
+                        "direction": $setup.filter.derivative.direction,
+                    #end if
+                #else
+                    "axes": "$setup.filter.derivative.process_3d.axes",
+                    #if $setup.filter.derivative.order != "0"
+                        "direction": $setup.filter.derivative.process_3d.direction,
+                    #end if
                 #end if
 
-            ## =====================================================================
-            #elif $filter.filter_type == "uniform"
-                "size": $filter.size,
+            ## =================================================================================
+            #elif $setup.filter.filter_type == "uniform"
+                "size": $setup.filter.size,
 
-            ## =====================================================================
-            #elif $filter.filter_type == "median"
-                "radius": $filter.radius,
+                #if $setup.target == "3d"
+                    "axes": "$setup.filter.process_3d.axes",
+                #end if
 
-            ## =====================================================================
-            #elif $filter.filter_type == "prewitt" or $filter.filter_type == "sobel"
-                "axes": $filter.process.axes,
-                "direction": $filter.process.direction,
+            ## =================================================================================
+            #elif $setup.filter.filter_type == "median"
+                "radius": $setup.filter.radius,
 
-            ## =====================================================================
+                #if $setup.target == "3d"
+                    "axes": "$setup.filter.process_3d.axes",
+                #end if
+
+            ## =================================================================================
+            #elif $setup.filter.filter_type == "prewitt" or $setup.filter.filter_type == "sobel"
+
+                #if $setup.target == "2d"
+                    "direction": $setup.filter.direction,
+                #else
+                    "axes": $setup.filter.process_3d.axes,
+                    "direction": $setup.filter.process_3d.direction,
+                #endif
+
+            ## =================================================================================
             #end if
 
-                "filter_type": "$filter.filter_type"
+                "target": "$setup.target",
+                "filter_type": "$setup.filter.filter_type"
 
             }
         ]]></configfile>
     </configfiles>
     <inputs>
-        <param name="input" type="data" format="tiff,png" label="Input image"/>
-        <conditional name="filter">
-            <param name="filter_type" type="select" label="Filter type">
-                <option value="gaussian" selected="True">Gaussian</option>
-                <option value="uniform">Box filter (uniform filter)</option>
-                <option value="median">Median</option>
-                <option value="prewitt">Prewitt</option>
-                <option value="sobel">Sobel</option>
+        <conditional name="setup">
+            <param name="target" type="select" label="Type of image data to process">
+                <option value="2d" selected="true">2-D image data (or time series thereof)</option>
+                <option value="3d">3-D image data (or time series thereof)</option>
             </param>
-            <when value="gaussian">
-                <param name="sigma" type="float" value="3" min="0.1" label="Sigma"
-                       help="The half width of the Gaussian bell (in pixels)."/>
-                <conditional name="derivative">
-                    <param name="order" type="select" label="Use a derivative?">
-                        <option value="0">No derivative (mean filter)</option>
-                        <option value="1">1st-order derivative</option>
-                        <option value="2">2nd-order derivative</option>
-                    </param>
-                    <when value="0">
-                        <expand macro="process_3d_full"/>
-                    </when>
-                    <when value="1">
+            <!-- Processing 2-D image data -->
+            <when value="2d">
+                <param name="input" type="data" format="tiff,png" label="Input image (2-D)">
+                    <validator type="dataset_metadata_in_range" metadata_name="slices" min="0" max="1" message="Input image must be a 2-D image."/>
+                </param>
+                <expand macro="filter">
+                    <token name="gaussian_order1">
+                        <expand macro="select_direction" label="@DERIVATIVE_AXIS_LABEL@" help="@DERIVATIVE_AXIS_HELP@"/>
+                    </token>
+                    <token name="gaussian_order2">
+                        <expand macro="select_direction" label="@DERIVATIVE_AXIS_LABEL@" help="@DERIVATIVE_AXIS_HELP@"/>
+                    </token>
+                    <token name="prewitt">
+                        <expand macro="select_direction" label="@DERIVATIVE_AXIS_LABEL@" help="@PREWITT_AXIS_HELP@"/>
+                    </token>
+                    <token name="sobel">
+                        <expand macro="select_direction" label="@DERIVATIVE_AXIS_LABEL@" help="@SOBEL_AXIS_HELP@"/>
+                    </token>
+                </expand>
+            </when>
+            <!-- Processing 3-D image data -->
+            <when value="3d">
+                <param name="input" type="data" format="tiff" label="Input image (3-D)">
+                    <validator type="dataset_metadata_in_range" metadata_name="slices" min="2" message="Input image must be a 3-D image."/>
+                </param>
+                <expand macro="filter">
+                    <token name="gaussian_order0">
+                        <expand macro="select_axes_2d_or_3d"/>
+                    </token>
+                    <token name="gaussian_order1">
                         <expand macro="process_3d_full_directed" axis_label="@DERIVATIVE_AXIS_LABEL@" axis_help="@DERIVATIVE_AXIS_HELP@"/>
-                    </when>
-                    <when value="2">
+                    </token>
+                    <token name="gaussian_order2">
                         <expand macro="process_3d_full_directed" axis_label="@DERIVATIVE_AXIS_LABEL@" axis_help="@DERIVATIVE_AXIS_HELP@"/>
-                    </when>
-                </conditional>
-            </when>
-            <when value="uniform">
-                <param name="size" type="integer" min="2" value="3" label="Size"
-                       help="Edge length of the neighborhood (square, in pixels)."/>
-                <expand macro="process_3d_full"/>
-            </when>
-            <when value="median">
-                <param name="radius" type="integer" min="2" value="3" label="Radius"
-                       help="Radius of the neighborhood (circle, in pixels)." />
-                <expand macro="process_3d_full"/>
-            </when>
-            <when value="prewitt">
-                <expand macro="process_3d_directed" axis_label="@DERIVATIVE_AXIS_LABEL@"
-                        axis_help="The Prewitt filter is a 2-D image filter that computes an approximation of the derivative of the image intensities in the given direction."/>
-            </when>
-            <when value="sobel">
-                <expand macro="process_3d_directed" axis_label="@DERIVATIVE_AXIS_LABEL@"
-                        axis_help="The Sobel filter is a 2-D image filter that computes an approximation of the derivative of the image intensities in the given direction."/>
+                    </token>
+                    <token name="uniform">
+                        <expand macro="select_axes_2d_or_3d"/>
+                    </token>
+                    <token name="median">
+                        <expand macro="select_axes_2d_or_3d"/>
+                    </token>
+                    <token name="prewitt">
+                        <expand macro="process_3d_directed" axis_label="@DERIVATIVE_AXIS_LABEL@" axis_help="@PREWITT_AXIS_HELP@"/>
+                    </token>
+                    <token name="sobel">
+                        <expand macro="process_3d_directed" axis_label="@DERIVATIVE_AXIS_LABEL@" axis_help="@SOBEL_AXIS_HELP@"/>
+                    </token>
+                </expand>
             </when>
         </conditional>
     </inputs>
@@ -181,9 +279,12 @@
     <tests>
         <!-- Tests with uint8 TIFF input image -->
         <test>
-            <param name="input" value="input1_uint8.tiff"/>
-            <conditional name="filter">
-                <param name="filter_type" value="gaussian"/>
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                </conditional>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="input1_gaussian.tiff" ftype="tiff">
                 <!--
@@ -201,9 +302,12 @@
             </expand>
         </test>
         <test>
-            <param name="input" value="input1_uint8.tiff"/>
-            <conditional name="filter">
-                <param name="filter_type" value="median"/>
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="median"/>
+                </conditional>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="input1_median.tiff" ftype="tiff">
                 <!-- See note for Gaussian filter above. -->
@@ -211,45 +315,57 @@
             </expand>
         </test>
         <test>
-            <param name="input" value="input1_uint8.tiff"/>
-            <conditional name="filter">
-                <param name="filter_type" value="prewitt"/>
-                <conditional name="process">
-                    <param name="axes" value="YX"/><!-- TODO: here and below -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="prewitt"/>
                     <param name="direction" value="1"/>
                 </conditional>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="input1_prewitt_h.tiff" ftype="tiff"/>
         </test>
         <test>
-            <param name="input" value="input1_uint8.tiff"/>
-            <conditional name="filter">
-                <param name="filter_type" value="prewitt"/>
-                <param name="axis" value="0"/>
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="prewitt"/>
+                    <param name="direction" value="0"/>
+                </conditional>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="input1_prewitt_v.tiff" ftype="tiff"/>
         </test>
         <test>
-            <param name="input" value="input1_uint8.tiff"/>
-            <conditional name="filter">
-                <param name="filter_type" value="sobel"/>
-                <param name="axis" value="1"/>
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="sobel"/>
+                    <param name="direction" value="1"/>
+                </conditional>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="input1_sobel_h.tiff" ftype="tiff"/>
         </test>
         <test>
-            <param name="input" value="input1_uint8.tiff"/>
-            <conditional name="filter">
-                <param name="filter_type" value="sobel"/>
-                <param name="axis" value="0"/>
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="sobel"/>
+                    <param name="direction" value="0"/>
+                </conditional>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="input1_sobel_v.tiff" ftype="tiff"/>
         </test>
         <!-- Tests with float TIFF input image -->
         <test>
-            <param name="input" value="input2_float.tiff"/>
-            <conditional name="filter">
-                <param name="filter_type" value="gaussian"/>
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input2_float.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                </conditional>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="input2_gaussian.tiff" ftype="tiff">
                 <!-- See note for Gaussian filter above. -->
@@ -257,10 +373,13 @@
             </expand>
         </test>
         <test>
-            <param name="input" value="input2_float.tiff"/>
-            <conditional name="filter">
-                <param name="filter_type" value="uniform"/>
-                <param name="size" value="4"/>
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input2_float.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="uniform"/>
+                    <param name="size" value="4"/>
+                </conditional>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="input2_uniform.tiff" ftype="tiff">
                 <!-- See note for Gaussian filter above. -->
@@ -269,24 +388,30 @@
         </test>
         <!-- Tests with multi-channel image (RGB) -->
         <test>
-            <param name="input" value="scikit-image/retina.png"/>
-            <conditional name="filter">
-                <param name="filter_type" value="gaussian"/>
-                <param name="sigma" value="5"/>
-                <conditional name="derivative">
-                    <param name="order" value="0"/>
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="scikit-image/retina.png"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                    <param name="sigma" value="5"/>
+                    <conditional name="derivative">
+                        <param name="order" value="0"/>
+                    </conditional>
                 </conditional>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="retina_gaussian_order0.tiff" ftype="tiff"/>
         </test>
         <test>
-            <param name="input" value="scikit-image/retina.png"/>
-            <conditional name="filter">
-                <param name="filter_type" value="gaussian"/>
-                <param name="sigma" value="3"/>
-                <conditional name="derivative">
-                    <param name="order" value="2"/>
-                    <param name="axis" value="0"/>
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="scikit-image/retina.png"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                    <param name="sigma" value="3"/>
+                    <conditional name="derivative">
+                        <param name="order" value="2"/>
+                        <param name="direction" value="0"/>
+                    </conditional>
                 </conditional>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="retina_gaussian_order2_axis0.tiff" ftype="tiff"/>
