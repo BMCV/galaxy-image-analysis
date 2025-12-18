@@ -13,6 +13,7 @@
             <param name="axis" type="select" label="@LABEL@" help="@HELP@">
                 <option value="@AXIS1@" selected="true">@AXIS1_LABEL@</option>
                 <option value="@AXIS2@">@AXIS2_LABEL@</option>
+                <yield/>
             </param>
         </xml>
         <xml name="select_axis_3d" tokens="label,help" token_label="@DEFAULT_AXIS_LABEL@" token_help="">
@@ -163,10 +164,12 @@
                 <expand macro="process_3d_full"/>
             </when>
             <when value="prewitt">
-                <expand macro="process_3d_directed"/>
+                <expand macro="process_3d_directed" axis_label="@DERIVATIVE_AXIS_LABEL@"
+                        axis_help="The Prewitt filter is a 2-D image filter that computes an approximation of the derivative of the image intensities in the given direction."/>
             </when>
             <when value="sobel">
-                <expand macro="process_3d_directed"/>
+                <expand macro="process_3d_directed" axis_label="@DERIVATIVE_AXIS_LABEL@"
+                        axis_help="The Sobel filter is a 2-D image filter that computes an approximation of the derivative of the image intensities in the given direction."/>
             </when>
         </conditional>
     </inputs>
