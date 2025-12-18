@@ -127,8 +127,8 @@
                     <yield name="uniform"/>
                 </when>
                 <when value="median">
-                    <param name="radius" type="integer" min="2" value="3" label="Radius"
-                           help="Radius of the neighborhood (circle, in pixels)." />
+                    <param name="size" type="integer" min="2" value="3" label="Size"
+                           help="Edge length of the neighborhood (square, in pixels)."/>
                     <expand macro="anisotropic" entities="@ENTITIES@"/>
                     <yield name="median"/>
                 </when>
@@ -179,6 +179,7 @@
             #if $setup.filter.filter_type == "gaussian"
                 "sigma": $setup.filter.sigma,
                 "order": $setup.filter.derivative.order,
+                "anisotropic": $setup.filter.anisotropic,
 
                 #if $setup.target == "2d"
                     #if $setup.filter.derivative.order != "0"
@@ -196,6 +197,7 @@
             ## =================================================================================
             #elif $setup.filter.filter_type == "uniform"
                 "size": $setup.filter.size,
+                "anisotropic": $setup.filter.anisotropic,
 
                 #if $setup.target == "3d"
                     "axes": "$setup.filter.axes",
@@ -203,7 +205,8 @@
 
             ## =================================================================================
             #elif $setup.filter.filter_type == "median"
-                "radius": $setup.filter.radius,
+                "size": $setup.filter.size,
+                "anisotropic": $setup.filter.anisotropic,
 
                 #if $setup.target == "3d"
                     "axes": "$setup.filter.axes",
@@ -503,8 +506,8 @@ Median filter
 Median filters are non-linear filters, specifically well suited for reduction of impulse noise (e.g., salt-&amp;-pepper noise).
 Median filters compute the local median intensity value. An important advantage of median filters is that they preserve the set
 of intensity values in the image (or yield a subset). This trait makes them specifically well suited for smoothing of label
-maps and binary images. The median filters implemented in this tool uses circular neighborhoods for the computation of the local
-median values.
+maps and binary images. The median filters implemented in this tool uses rectangular neighborhoods for the computation of the
+local median values.
 
 Prewitt and Sobel filters
 =========================

@@ -8,7 +8,6 @@ from typing import (
 import giatools
 import numpy as np
 import scipy.ndimage as ndi
-from skimage.morphology import disk
 
 
 def image_astype(image: giatools.Image, dtype: np.dtype) -> giatools.Image:
@@ -20,12 +19,46 @@ def image_astype(image: giatools.Image, dtype: np.dtype) -> giatools.Image:
     )
 
 
+def get_anisotropy(image: giatools.Image, axes: str) -> tuple[float, ...] | None:
+    voxel_size = list()
+    if 'X' in axes:
+        voxel_size.append(
+            None if image.metadata.pixel_size is None else image.metadata.pixel_size[0]
+        )
+    if 'Y' in axes:
+        voxel_size.append(
+            None if image.metadata.pixel_size is None else image.metadata.pixel_size[1]
+        )
+    if 'Z' in axes:
+        voxel_size.append(image.metadata.z_spacing)
+    if any(s is None or abs(s) < 1e-8 for s in voxel_size):
+        print('Unknown pixel/voxel size')
+        return None
+    else:
+        anisotropy = 1 / np.abs(voxel_size)
+        anisotropy = (anisotropy / anisotropy.mean()).tolist()
+        print('Anisotropy of pixels/voxels:', tuple(anisotropy))
+        return tuple(anisotropy)
+
+
+def get_anisotropic_size(image: giatools.Image, axes: str, size: int) -> tuple[int, ...] | int:
+    if (anisotropy := get_anisotropy(image, axes)) is not None:
+        _size = tuple(
+            np.multiply(size, anisotropy).round().clip(1, np.inf).astype(int).tolist(),
+        )
+        print('Anisotropic size:', _size)
+        return _size
+    else:
+        return size
+
+
 class Filters:
 
     @staticmethod
     def gaussian(
         image: giatools.Image,
         sigma: float,
+        anisotropic: bool,
         axes: str,
         order: int = 0,
         direction: int | None = None,
@@ -37,29 +70,39 @@ class Filters:
             _order = [0] * len(axes)
             _order[direction] = order
             _order = tuple(_order)
+        if anisotropic and (anisotropy := get_anisotropy(image, axes)) is not None:
+            _sigma = tuple(np.multiply(sigma, anisotropy).tolist())
+            print('Anisotropic sigma:', _sigma)
+        else:
+            _sigma = sigma
         return apply_nd_filter(
             ndi.gaussian_filter,
             image if order == 0 else image_astype(image, float),
-            axes=axes,
-            sigma=sigma,
+            sigma=_sigma,
             order=_order,
+            axes=axes,
             **kwargs,
         )
 
     @staticmethod
-    def uniform(image: giatools.Image, **kwargs: Any) -> giatools.Image:
+    def uniform(image: giatools.Image, size: int, anisotropic: bool, axes: str, **kwargs: Any) -> giatools.Image:
+        _size = get_anisotropic_size(image, axes, size) if anisotropic else size
         return apply_nd_filter(
             ndi.uniform_filter,
             image,
+            size=_size,
+            axes=axes,
             **kwargs,
         )
 
     @staticmethod
-    def median(image: giatools.Image, radius: int, **kwargs: Any) -> giatools.Image:
+    def median(image: giatools.Image, size: int, anisotropic: bool, axes: str, **kwargs: Any) -> giatools.Image:
+        _size = get_anisotropic_size(image, axes, size) if anisotropic else size
         return apply_nd_filter(
             ndi.median_filter,
             image,
-            footprint=disk(radius),
+            size=_size,
+            axes=axes,
             **kwargs,
         )
 
