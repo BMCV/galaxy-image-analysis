@@ -203,9 +203,9 @@
                 #if $setup.target == "2d"
                     "direction": $setup.filter.direction,
                 #else
-                    "axes": $setup.filter.process_3d.axes,
+                    "axes": "$setup.filter.process_3d.axes",
                     "direction": $setup.filter.process_3d.direction,
-                #endif
+                #end if
 
             ## =================================================================================
             #end if
