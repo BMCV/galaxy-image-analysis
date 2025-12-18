@@ -26,15 +26,23 @@ class Filters:
     def gaussian(
         image: giatools.Image,
         sigma: float,
+        axes: str,
         order: int = 0,
         direction: int | None = None,
         **kwargs: Any,
     ) -> giatools.Image:
+        if direction is None:
+            _order = 0
+        elif order >= 1:
+            _order = [0] * len(axes)
+            _order[direction] = order
+            _order = tuple(_order)
         return apply_nd_filter(
             ndi.gaussian_filter,
             image if order == 0 else image_astype(image, float),
+            axes=axes,
             sigma=sigma,
-            order=(order if direction is None else [(1, 0), (0, 1)][direction]),
+            order=_order,
             **kwargs,
         )
 
@@ -77,7 +85,7 @@ class Filters:
 def apply_nd_filter(
     filter_impl: Callable[[np.ndarray, Any, ...], np.ndarray],
     image: giatools.Image,
-    axes: str = 'YX',
+    axes: str,
     **kwargs: Any,
 ) -> giatools.Image:
     """
@@ -127,6 +135,7 @@ if __name__ == "__main__":
     # Read the config file
     with open(args.params) as cfgf:
         cfg = json.load(cfgf)
+    cfg.setdefault('axes', 'YX')
 
     # Read the input image
     image = giatools.Image.read(args.input)
@@ -134,10 +143,21 @@ if __name__ == "__main__":
     print('Input image axes:', image.axes)
     print('Input image dtype:', image.data.dtype)
 
+    # Convert `float16` images to `float32` and remember to convert back later
+    if image.data.dtype == np.float16:
+        convert_to = np.float16
+        image.data = image.data.astype(np.float32)
+    else:
+        convert_to = None
+
     # Perform filtering
     filter_type = cfg.pop('filter_type')
     filter_impl = getattr(Filters, filter_type)
     result = filter_impl(image, **cfg)
+
+    # Apply `dtype` conversion
+    if convert_to is not None:
+        result.data = result.data.astype(convert_to)
 
     # Write the result
     result = result.normalize_axes_like(
