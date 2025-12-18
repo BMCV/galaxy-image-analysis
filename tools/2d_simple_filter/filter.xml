@@ -446,12 +446,7 @@
                     </conditional>
                 </conditional>
             </conditional>
-            <output name="output" ftype="tiff">
-                <assert_contents>
-                    <has_image_mean_intensity mean_intensity="0"/>
-                    <has_image_n_labels n="1"/>
-                </assert_contents>
-            </output>
+            <expand macro="tests/intensity_image_diff" name="output" value="retina_0c_5z_0t_0q-3d_gaussian_order1_axis0.tiff" ftype="tiff"/>
         </test>
     </tests>
     <help>
