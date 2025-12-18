@@ -10,7 +10,7 @@
         <token name="@DERIVATIVE_AXIS_HELP@">The axis to compute the derivative along.</token>
         <xml name="select_axis" tokens="axis1,axis2,axis1_label,axis2_label,label,help"
              token_axis1="1" token_axis1_label="Horizontal" token_axis2="0" token_axis2_label="Vertical" token_label="@DEFAULT_AXIS_LABEL@" token_help="">
-            <param name="axis" type="select" label="@LABEL@" help="@HELP@">
+            <param name="direction" type="select" label="@LABEL@" help="@HELP@">
                 <option value="@AXIS1@" selected="true">@AXIS1_LABEL@</option>
                 <option value="@AXIS2@">@AXIS2_LABEL@</option>
                 <yield/>
@@ -23,8 +23,8 @@
             </expand>
         </xml>
         <xml name="process_3d" tokens="yx_selected" token_yx_selected="true">
-            <param name="process_3d" type="select" label="Processing of 3-D images"
-                   help="This only applies for 3-D image data. The choice has no effect when processing 2-D images.">
+            <param name="axes" type="select" label="Processing of 3-D images"
+                   help="For 3-D image data, this govers which axes are processed jointly. This option has no effect when processing 2-D images.">
                 <yield/>
                 <option value="YX" selected="@YX_SELECTED@">Perform 2-D filtering of all XY-slices</option>
                 <option value="YZ">Perform 2-D filtering of all YZ-slices</option>
@@ -97,10 +97,11 @@
             ## =====================================================================
             #if $filter.filter_type == "gaussian"
                 "sigma": $filter.sigma,
-                "order": $filter.derivative.order,
+                "order": $filter.derivative.process.order,
 
-                #if $filter.derivative.order != "0"
-                    "axis": $filter.derivative.axis,
+                #if $filter.derivative.process.order != "0"
+                    "axes": $filter.derivative.process.axes,
+                    "direction": $filter.derivative.process.direction,
                 #end if
 
             ## =====================================================================
@@ -113,7 +114,8 @@
 
             ## =====================================================================
             #elif $filter.filter_type == "prewitt" or $filter.filter_type == "sobel"
-                "axis": $filter.axis,
+                "axes": $filter.process.axes,
+                "direction": $filter.process.direction,
 
             ## =====================================================================
             #end if
@@ -212,7 +214,10 @@
             <param name="input" value="input1_uint8.tiff"/>
             <conditional name="filter">
                 <param name="filter_type" value="prewitt"/>
-                <param name="axis" value="1"/>
+                <conditional name="process">
+                    <param name="axes" value="YX"/><!-- TODO: here and below -->
+                    <param name="direction" value="1"/>
+                </conditional>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="input1_prewitt_h.tiff" ftype="tiff"/>
         </test>
