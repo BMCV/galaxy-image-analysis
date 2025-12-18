@@ -1,4 +1,4 @@
-<tool id="iscc_sum" name="Generate ISCC hash" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="24.1">
+<tool id="iscc_sum" name="Generate ISCC-CODE" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="24.1">
     <description>with ISCC-SUM</description>
 
     <macros>
@@ -15,13 +15,13 @@
     </creator>
         
     <command detect_errors="exit_code"><![CDATA[
-        ## Generate ISCC hash for input dataset
+        ## Generate ISCC-CODE for input dataset
         iscc-sum '${input_file}' | cut -d':' -f2 | cut -d' ' -f1 >> '${output_file}'
     ]]></command>
 
     <inputs>
         <param name="input_file" type="data" format="data" label="Input file"
-               help="Any file type - ISCC-SUM will generate a checksum and similarity hash. When a collection is provided, generates one hash per dataset."/>
+               help="Any file type - ISCC-SUM will generate an ISCC-CODE for content identification and verification. When a collection is provided, generates one ISCC-CODE per dataset."/>
     </inputs>
     
     <outputs>
@@ -67,23 +67,23 @@
 What it does
 ============
 
-Generates an International Standard Content Code (ISCC) based checksum and similarity hash for datasets.
+Generates an ISCC-CODE (International Standard Content Code) for datasets using the ISCC-SUM algorithm.
 
 The ISCC-SUM creates a content-derived identifier that:
 
-- Creates a unique 55-character checksum based on dataset content
-- Generates a similarity hash for content comparison
+- Creates a unique 55-character ISCC-CODE based on dataset content
+- Enables both exact matching (checksum) and similarity detection
 - Works with any file format
 
 Dataset Mapping
 ===============
 
-When you provide a collection, Galaxy automatically runs this tool once per dataset, generating individual ISCC hashes for each dataset in the collection.
+When you provide a collection, Galaxy automatically runs this tool once per dataset, generating individual ISCC-CODEs for each dataset in the collection.
 
 Output
 ======
 
-A text file contains the ISCC-SUM code (55 characters)
+A text file containing the ISCC-CODE (55 characters)
 
 Example output::
 
@@ -92,51 +92,67 @@ Example output::
 Use Cases
 =========
 
-- Generate checksums for file integrity verification
-- Create similarity hashes for duplicate detection
+- Generate ISCC-CODEs for file integrity verification
+- Create content identifiers for duplicate detection
 - Track file provenance and changes over time
+- Enable similarity-based file comparison
 
-ISCC Structure
-==============
+ISCC-CODE Structure
+===================
 
-The 55-character ISCC code contains multiple components:
+The 55-character ISCC-CODE is composed of multiple ISCC-UNITs:
 
-- **Data-Code**: Content similarity hash (used for similarity detection)
-- **Instance-Code**: Exact file checksum
+- **Data-Code**: Content similarity hash (enables fuzzy matching for similar files)
+- **Instance-Code**: Exact file checksum (for bit-perfect verification)
+
+This combination creates an ISCC-CODE with SubType SUM, hence the name ISCC-SUM.
 
 Workflow Examples
 =================
 
-Generate hashes for a collection
----------------------------------
+Generate ISCC-CODEs for a collection
+-------------------------------------
 
 ::
 
-    Input: Collection of 100 dataset
+    Input: Collection of 100 datasets
     ↓
-    [Generate ISCC hash] ← runs 100 times
+    [Generate ISCC-CODE] ← runs 100 times
     ↓
-    Output: Collection of 100 hash files
+    Output: Collection of 100 ISCC-CODE files
     ↓
     [Collapse Collection] ← Galaxy tool
     ↓
-    Result: Single file with all hashes
+    Result: Single file with all ISCC-CODEs
 
-Create reference checksums
----------------------------
+Create reference ISCC-CODEs
+----------------------------
 
 ::
 
-    Input: Original dataset
+    Input: Original datasets
     ↓
-    [Generate ISCC hash]
+    [Generate ISCC-CODE]
     ↓
-    Store hashes for future verification
+    Store ISCC-CODEs for future verification
+
+Compare datasets
+----------------
+
+::
+
+    Dataset A → [Generate ISCC-CODE] → ISCC-CODE A
+    Dataset B → [Generate ISCC-CODE] → ISCC-CODE B
+    ↓
+    Compare ISCC-CODEs
+    ↓
+    Result: Exact match or similarity score
 
 More Information
 ================
 
-For details about ISCC: https://sum.iscc.codes/ and https://sum.iscc.codes/
+For details about ISCC: https://sum.iscc.codes/ and https://iscc.codes/
+For ISCC structure and subtypes: https://ieps.iscc.codes/iep-0001/
     ]]></help>
 
     <expand macro="citations" />

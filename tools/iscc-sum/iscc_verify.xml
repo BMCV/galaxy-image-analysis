@@ -1,4 +1,4 @@
-<tool id="iscc_sum_verify" name="Verify ISCC hash" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="24.1">
+<tool id="iscc_sum_verify" name="Verify ISCC-CODE" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="24.1">
     <description>with ISCC-SUM</description>
     <macros>
         <import>macros.xml</import>
@@ -12,39 +12,39 @@
         <expand macro="creators/maartenpaul" />
         <expand macro="creators/etzm" />
     </creator>
-        
+
     <command detect_errors="exit_code"><![CDATA[
-        ## Generate ISCC for input dataset
+        ## Generate ISCC-CODE for input dataset
         GENERATED=\$(iscc-sum '${input_file}' | cut -d':' -f2 | cut -d' ' -f1) &&
         
-        ## Get expected hash
-        EXPECTED='${expected_hash}' &&
+        ## Get expected ISCC-CODE
+        EXPECTED='${expected_code}' &&
         
-        ## Validate expected hash length
+        ## Validate expected ISCC-CODE length
         if [ \${#EXPECTED} -ne 55 ]; then
-            echo "ERROR: Expected ISCC hash must be exactly 55 characters" >&2;
+            echo "ERROR: Expected ISCC-CODE must be exactly 55 characters" >&2;
             echo "Found: \${#EXPECTED} characters" >&2;
             exit 1;
         fi &&
         
         ## Output verification report
         if [ "\$GENERATED" = "\$EXPECTED" ]; then
-            echo "OK - Hashes match" > '${output_file}'; 
+            echo "OK - ISCC-CODEs match" > '${output_file}'; 
         else
-            echo "FAILED - Hashes do not match" > '${output_file}'; 
+            echo "FAILED - ISCC-CODEs do not match" > '${output_file}'; 
         fi &&
         echo "Expected:  \$EXPECTED" >> '${output_file}' &&
         echo "Generated: \$GENERATED" >> '${output_file}' &&
         echo "" >> '${output_file}' 
-    
-    ]]></command>
 
+    ]]></command>
+        
     <inputs>
         <param name="input_file" type="data" format="data" label="Dataset to verify"
-               help="Verify this dataset's ISCC hash. When a collection is provided, each dataset is verified separately against the same expected hash."/>
-        <param name="expected_hash" type="text" label="Expected ISCC hash"
-               help="The 55-character ISCC hash to verify against">
-            <validator type="length" min="55" max="55" message="ISCC hash must be exactly 55 characters"/>
+            help="Verify this dataset's ISCC-CODE. When a collection is provided, each dataset is verified separately against the same expected ISCC-CODE."/>
+        <param name="expected_code" type="text" label="Expected ISCC-CODE"
+            help="The 55-character ISCC-CODE to verify against">
+            <validator type="length" min="55" max="55" message="ISCC-CODE must be exactly 55 characters"/>
         </param>
     </inputs>
     
@@ -56,10 +56,10 @@
         <!-- Test 1: Successful verification -->
         <test expect_num_outputs="1">
             <param name="input_file" value="test1.png"/>
-            <param name="expected_hash" value="K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY"/>
+            <param name="expected_code" value="K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY"/>
             <output name="output_file">
                 <assert_contents>
-                    <has_text text="OK - Hashes match"/>
+                    <has_text text="OK - ISCC-CODEs match"/>
                     <has_text text="Expected:  K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY"/>
                     <has_text text="Generated: K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY"/>
                     <has_n_lines n="4"/>
@@ -70,14 +70,13 @@
         <!-- Test 2: Failed verification -->
         <test expect_num_outputs="1">
             <param name="input_file" value="test1.png"/>
-            <param name="expected_hash" value="K4AGSPOSB5SS2X427WZ27QASTSBVTS55DXLMFDF7WOJKEOSTDEI3OXQ"/>
+            <param name="expected_code" value="K4AGSPOSB5SS2X427WZ27QASTSBVTS55DXLMFDF7WOJKEOSTDEI3OXQ"/>
             <output name="output_file">
                 <assert_contents>
-                    <has_text text="FAILED - Hashes do not match"/>
+                    <has_text text="FAILED - ISCC-CODEs do not match"/>
                     <has_text text="Expected:  K4AGSPOSB5SS2X427WZ27QASTSBVTS55DXLMFDF7WOJKEOSTDEI3OXQ"/>
                     <has_text text="Generated: K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY"/>
                     <has_n_lines n="4"/>
-
                 </assert_contents>
             </output>
         </test>
@@ -85,10 +84,10 @@
         <!-- Test 3: FASTA file verification -->
         <test expect_num_outputs="1">
             <param name="input_file" value="test3.fasta"/>
-            <param name="expected_hash" value="K4AKF7PTZ7JTAAYZ7YZHZPR5RETKYXXE7RTBTJA4JX5GQQMSLZRC6QQ"/>
+            <param name="expected_code" value="K4AKF7PTZ7JTAAYZ7YZHZPR5RETKYXXE7RTBTJA4JX5GQQMSLZRC6QQ"/>
             <output name="output_file">
                 <assert_contents>
-                    <has_text text="OK - Hashes match"/>
+                    <has_text text="OK - ISCC-CODEs match"/>
                     <has_text text="Expected:  K4AKF7PTZ7JTAAYZ7YZHZPR5RETKYXXE7RTBTJA4JX5GQQMSLZRC6QQ"/>
                     <has_text text="Generated: K4AKF7PTZ7JTAAYZ7YZHZPR5RETKYXXE7RTBTJA4JX5GQQMSLZRC6QQ"/>
                     <has_n_lines n="4"/>
@@ -101,20 +100,20 @@
 What it does
 ============
 
-Verifies that a file (dataset) matches an expected International Standard Content Code (ISCC) hash for exact checksum verification.
+Verifies that a file (dataset) matches an expected ISCC-CODE (International Standard Content Code) for exact content verification. This tool uses ISCC-SUM, which generates an ISCC-CODE containing Data-Code and Instance-Code units for bit-level file comparison.
 
 Exit Codes
 ==========
 
 The tool uses exit codes for workflow logic:
 
-- **0**: Verification successful (OK - hashes match)
-- **1**: Verification failed (FAILED - hashes do not match)
+- **0**: Verification successful (OK - ISCC-CODEs match)
+- **1**: Verification failed (FAILED - ISCC-CODEs do not match)
 
 Dataset Mapping
 ===============
 
-When you provide a collection, Galaxy automatically runs verification once per dataset. All datasets are verified against the same expected hash.
+When you provide a collection, Galaxy automatically runs verification once per dataset. All datasets are verified against the same expected ISCC-CODE.
 
 Output
 ======
@@ -122,12 +121,12 @@ Output
 A verification report containing:
 
 - Filename (or element identifier)
-- Expected ISCC hash  
-- Generated ISCC hash
+- Expected ISCC-CODE
+- Generated ISCC-CODE
 - Status: OK or FAILED
 
 Example output::
-    Status: OK - Hashes match
+    Status: OK - ISCC-CODEs match
 
     Expected:  K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY
     Generated: K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY
@@ -136,7 +135,7 @@ Use Cases
 =========
 
 - Verify file integrity after transfer or storage
-- Confirm downloaded datasets match reference checksums
+- Confirm downloaded datasets match reference ISCC-CODEs
 - Validate that backups are identical to originals
 - Quality control for data archiving
 
@@ -149,49 +148,50 @@ Verify a single dataset
 ::
 
     Input: document.pdf
-    Expected hash: K4AOMG...
+    Expected ISCC-CODE: K4AOMG...
     ↓
-    [Verify ISCC hash]
+    [Verify ISCC-CODE]
     ↓
     Output: "OK" or "FAILED"
 
 Verify against reference table
 -------------------------------
 
-Generate reference hashes first::
+Generate reference ISCC-CODEs first::
 
-    Original files → [Generate ISCC] → Reference hashes
+    Original files → [Generate ISCC-CODE] → Reference ISCC-CODEs
     
 Later verify::
 
-    New datasets → [Generate ISCC] → New hashes
+    New datasets → [Generate ISCC-CODE] → New ISCC-CODEs
     ↓
     [Join two Datasets] on filename
     ↓
-    Compare hash columns
+    Compare ISCC-CODE columns
     ↓
     Result: Which files match/differ
 
-Working with Hash Files in Workflows
-=====================================
+Working with ISCC-CODE Files in Workflows
+==========================================
 
-If you have the expected hash in a dataset (e.g., from Generate ISCC tool):
+If you have the expected ISCC-CODE in a dataset (e.g., from Generate ISCC tool):
 
-1. In the workflow editor, connect the hash file to this tool
-2. The hash file content will be used automatically
-3. Or manually copy the hash from the file into the text field
+1. In the workflow editor, connect the ISCC-CODE file to this tool
+2. The ISCC-CODE file content will be used automatically
+3. Or manually copy the ISCC-CODE from the file into the text field
 
 Important Notes
 ===============
 
 - **Exact match only**: Any change to the file will cause verification to fail
 - **Bit-level comparison**: Even metadata changes are detected
-- **For similarity detection**: Use "Find similar ISCC hashes" tool instead
+- **For similarity detection**: Use "Find similar ISCC-CODEs" tool instead
 
 More Information
 ================
 
-For details about ISCC: https://sum.iscc.codes/ and https://sum.iscc.codes/
+For details about ISCC: https://sum.iscc.codes/ and https://iscc.codes/
+For ISCC structure and subtypes: https://ieps.iscc.codes/iep-0001/
     ]]></help>
     <expand macro="citations" />
 </tool>
