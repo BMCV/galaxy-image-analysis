@@ -5,16 +5,18 @@
         <import>tests.xml</import>
         <token name="@TOOL_VERSION@">1.16.3</token>
         <token name="@VERSION_SUFFIX@">1</token>
-        <xml name="select_axis">
+        <xml name="select_axis" tokens="axis1,axis2,axis1_label,axis2_label"
+             token_axis1="1" token_axis1_label="Horizontal" token_axis2="0" token_axis2_label="Vertical">
             <param name="axis" type="select" label="Direction">
-                <option value="1" selected="true">Horizontal</option>
-                <option value="0">Vertical</option>
+                <option value="@AXIS1@" selected="true">@AXIS1_LABEL@</option>
+                <option value="@AXIS2@">@AXIS2_LABEL@</option>
                 <yield/>
             </param>
         </xml>
         <xml name="select_axis_3d">
-            <expand macro="selected_axis_3d">
-                <option value="2">Orthogonal (only for 3-D image data)</option>
+            <!-- Normalized axes layout for 3-D images: ZYX -->
+            <expand macro="selected_axis_3d" axis1="2" axis1_label="Horizontal" axis2="1" axis2_label="Vertical">
+                <option value="0">Orthogonal</option>
             </expand>
         </xml>
         <xml name="process_3d" tokens="yx_selected" token_yx_selected="true">
