@@ -210,7 +210,6 @@
             ## =================================================================================
             #end if
 
-                "target": "$setup.target",
                 "filter_type": "$setup.filter.filter_type"
 
             }

@@ -21,12 +21,12 @@ def image_astype(img: giatools.Image, dtype: np.dtype) -> giatools.Image:
 
 
 filters = {
-    'gaussian': lambda img, sigma, order=0, axis=None: (
+    'gaussian': lambda img, sigma, order=0, direction=None: (
         apply_2d_filter(
             ndi.gaussian_filter,
             img if order == 0 else image_astype(img, float),
             sigma=sigma,
-            order=(order if axis is None else [(1, 0), (0, 1)][axis]),
+            order=(order if direction is None else [(1, 0), (0, 1)][direction]),
         )
     ),
     'uniform': lambda img, size: (
@@ -35,11 +35,11 @@ filters = {
     'median': lambda img, radius: (
         apply_2d_filter(ndi.median_filter, img, footprint=disk(radius))
     ),
-    'prewitt': lambda img, axis: (
-        apply_2d_filter(ndi.prewitt, img, axis=axis)
+    'prewitt': lambda img, direction: (
+        apply_2d_filter(ndi.prewitt, img, axis=direction)
     ),
-    'sobel': lambda img, axis: (
-        apply_2d_filter(ndi.sobel, img, axis=axis)
+    'sobel': lambda img, direction: (
+        apply_2d_filter(ndi.sobel, img, axis=direction)
     ),
 }
 
