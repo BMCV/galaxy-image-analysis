@@ -97,9 +97,9 @@
                            help="The half width of the Gaussian bell (in pixels)."/>
                     <conditional name="derivative">
                         <param name="order" type="select" label="Use a derivative?">
-                            <option value="0">No derivative (mean filter)</option>
-                            <option value="1">1st-order derivative</option>
-                            <option value="2">2nd-order derivative</option>
+                            <option value="0">No derivative (Gaussian bell)</option>
+                            <option value="1">1st-order derivative of the Gaussian bell</option>
+                            <option value="2">2nd-order derivative of the Gaussian bell</option>
                         </param>
                         <when value="0">
                             <yield name="gaussian_order0"/>
@@ -456,17 +456,53 @@
     </tests>
     <help>
 
-        **Applies a standard, general-purpose image filter to an image.**
+**Applies a standard, general-purpose image filter to an image.**
 
-        Support for different image types:
+Support for different image types:
 
-        - For 3-D images, filters can either be applied jointly to the 3-D image data, or separately to all 2-D slices of the image.
-        - For multi-channel images, filters are applied separately to all channels of the image.
-        - For time-series images, filter also are applied separately for all time steps.
+- For 3-D images, filters can either be applied jointly to the 3-D image data, or separately to all 2-D slices of the image.
+- For multi-channel images, filters are applied separately to all channels of the image.
+- For time-series images, filter also are applied separately for all time steps.
 
-        Mean filters like the Gaussian filter, the box filter, or the median filter preserve the brightness of the image and the range
-        of values. Derivative filters like 1st and 2nd order Gaussians, Prewitt filters, and Sobel filters naturally may yield negative
-        or fractional values, and thus generally produce floating point-encoded images.
+Mean filters like the Gaussian filter, the box filter, or the median filter preserve the brightness of the image and the range
+of values. Derivative filters like 1st and 2nd order Gaussians, Prewitt filters, and Sobel filters naturally may yield negative
+or fractional values, and thus generally produce floating point-encoded images.
+
+Gaussian filter
+===============
+
+Gaussian filters are crucial for pre-processing in many image analysis tasks like edge detection and object recognition. They
+are also employed for image denoising, when images are deteriorated by—or approximately by—white additive Gaussian noise.
+Gaussian filters are linear filters that smoothen images and blur out fine details, which is why they are also used for scale
+selection. These filters use a Gaussian bell-shaped kernel for weighted averaging of pixels, giving more importance to central
+pixels and less to distant ones.
+
+Gaussian derivative operators (1st and 2nd order Gaussians) are filters that are used in image analysis for approximate
+computation of the 1st and 2nd order derivatives of the image intensities. Due to their scale-space theoretical and
+noise-reducing properties, they are popular candidates for edge and feature detection. They are implemented by convolving an
+image with the derivative of a Gaussian function.
+
+Box filter
+==========
+
+The box filter is another linear smoothing filter, that uses a uniform kernel for arithmetic averaging of pixels. The name
+stems from the rectangular shape of the kernel. The box filter corresponds to a sinc function in the frequency domain. This
+causes smoothing artifacts in the spatial domain. It is rarely used as a low-pass filter and is more of academic interest.
+
+Median filter
+=============
+
+Median filters are non-linear filters, specifically well suited for reduction of impulse noise (e.g., salt-&amp;-pepper noise).
+Median filters compute the local median intensity value. An important advantage of median filters is that they preserve the set
+of intensity values in the image (or yield a subset). This trait makes them specifically well suited for smoothing of label
+maps and binary images. The median filters implemented in this tool uses circular neighborhoods for the computation of the local
+median values.
+
+Prewitt and Sobel filters
+=========================
+
+Prewitt and Sobel filters are popular 2-D filters for approximate computation of the 1-st order derivatives of the image
+intensities. Sobel filters have better isotropy properties than Prewitt filters.
 
     </help>
     <citations>
