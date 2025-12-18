@@ -54,9 +54,9 @@
                 <option value="ZYX" selected="true">Perform 3-D filtering</option>
             </expand>
         </xml>
-        <xml name="process_3d_directed" tokens="selector,axis_label,axis_help"
+        <xml name="directed_3d" tokens="selector,axis_label,axis_help"
              token_selector="select_axes_2d" token_axis_label="@DEFAULT_AXIS_LABEL@" token_axis_help="">
-            <conditional name="process_3d">
+            <conditional name="directed_3d">
                 <expand macro="@SELECTOR@"/>
                 <yield/>
                 <when value="YX">
@@ -72,9 +72,9 @@
                 </when>
             </conditional>
         </xml>
-        <xml name="process_3d_full_directed" tokens="axis_label,axis_help"
+        <xml name="directed_3d_full" tokens="axis_label,axis_help"
              token_axis_label="@DEFAULT_AXIS_LABEL@" token_axis_help="">
-            <expand macro="process_3d_directed" selector="select_axes_2d_or_3d">
+            <expand macro="directed_3d" selector="select_axes_2d_or_3d">
                 <when value="ZYX">
                     <expand macro="select_direction_3d" label="@AXIS_LABEL@" help="@AXIS_HELP@"/>
                 </when>
@@ -175,9 +175,11 @@
                         "direction": $setup.filter.derivative.direction,
                     #end if
                 #else
-                    "axes": "$setup.filter.derivative.process_3d.axes",
-                    #if $setup.filter.derivative.order != "0"
-                        "direction": $setup.filter.derivative.process_3d.direction,
+                    #if $setup.filter.derivative.order == "0"
+                        "axes": "$setup.filter.derivative.axes",
+                    #else
+                        "axes": "$setup.filter.derivative.directed_3d.axes",
+                        "direction": $setup.filter.derivative.directed_3d.direction,
                     #end if
                 #end if
 
@@ -186,7 +188,7 @@
                 "size": $setup.filter.size,
 
                 #if $setup.target == "3d"
-                    "axes": "$setup.filter.process_3d.axes",
+                    "axes": "$setup.filter.axes",
                 #end if
 
             ## =================================================================================
@@ -194,7 +196,7 @@
                 "radius": $setup.filter.radius,
 
                 #if $setup.target == "3d"
-                    "axes": "$setup.filter.process_3d.axes",
+                    "axes": "$setup.filter.axes",
                 #end if
 
             ## =================================================================================
@@ -203,8 +205,8 @@
                 #if $setup.target == "2d"
                     "direction": $setup.filter.direction,
                 #else
-                    "axes": "$setup.filter.process_3d.axes",
-                    "direction": $setup.filter.process_3d.direction,
+                    "axes": "$setup.filter.directed_3d.axes",
+                    "direction": $setup.filter.directed_3d.direction,
                 #end if
 
             ## =================================================================================
@@ -251,10 +253,10 @@
                         <expand macro="select_axes_2d_or_3d"/>
                     </token>
                     <token name="gaussian_order1">
-                        <expand macro="process_3d_full_directed" axis_label="@DERIVATIVE_AXIS_LABEL@" axis_help="@DERIVATIVE_AXIS_HELP@"/>
+                        <expand macro="directed_3d_full" axis_label="@DERIVATIVE_AXIS_LABEL@" axis_help="@DERIVATIVE_AXIS_HELP@"/>
                     </token>
                     <token name="gaussian_order2">
-                        <expand macro="process_3d_full_directed" axis_label="@DERIVATIVE_AXIS_LABEL@" axis_help="@DERIVATIVE_AXIS_HELP@"/>
+                        <expand macro="directed_3d_full" axis_label="@DERIVATIVE_AXIS_LABEL@" axis_help="@DERIVATIVE_AXIS_HELP@"/>
                     </token>
                     <token name="uniform">
                         <expand macro="select_axes_2d_or_3d"/>
@@ -263,10 +265,10 @@
                         <expand macro="select_axes_2d_or_3d"/>
                     </token>
                     <token name="prewitt">
-                        <expand macro="process_3d_directed" axis_label="@DERIVATIVE_AXIS_LABEL@" axis_help="@PREWITT_AXIS_HELP@"/>
+                        <expand macro="directed_3d" axis_label="@DERIVATIVE_AXIS_LABEL@" axis_help="@PREWITT_AXIS_HELP@"/>
                     </token>
                     <token name="sobel">
-                        <expand macro="process_3d_directed" axis_label="@DERIVATIVE_AXIS_LABEL@" axis_help="@SOBEL_AXIS_HELP@"/>
+                        <expand macro="directed_3d" axis_label="@DERIVATIVE_AXIS_LABEL@" axis_help="@SOBEL_AXIS_HELP@"/>
                     </token>
                 </expand>
             </when>
@@ -423,6 +425,10 @@
                 <conditional name="filter">
                     <param name="filter_type" value="gaussian"/>
                     <param name="sigma" value="3"/>
+                    <conditional name="derivative">
+                        <param name="order" value="0"/>
+                        <param name="axes" value="ZYX"/>
+                    </conditional>
                 </conditional>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="retina_0c_5z_0t_0q-3d_gaussian.tiff" ftype="tiff"/>
