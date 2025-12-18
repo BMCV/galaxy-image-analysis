@@ -81,9 +81,16 @@
             </expand>
         </xml>
         <!--
+        === MACROS: Field for optional anisotropic filtering ===
+        -->
+        <xml name="anisotropic" tokens="entities" token_entities="pixels/voxels">
+            <param name="anisotropic" type="boolean" checked="true" label="Anisotropic filtering"
+                   help="Perform anisotropic filtering if the image @ENTITIES@ are anistropic. Has no effect if the @ENTITIES@ are isotropic or no information about the size of the @ENTITIES@ is available from the matadata of the image."/>
+        </xml>
+        <!--
         === MACROS: Group of fields for filter setup ===
         -->
-        <xml name="filter">
+        <xml name="filter" tokens="entities" token_entities="pixels/voxels">
             <conditional name="filter">
                 <param name="filter_type" type="select" label="Filter type">
                     <option value="gaussian" selected="True">Gaussian</option>
@@ -95,6 +102,7 @@
                 <when value="gaussian">
                     <param name="sigma" type="float" value="3" min="0.1" label="Sigma"
                            help="The half width of the Gaussian bell (in pixels)."/>
+                    <expand macro="anisotropic" entities="@ENTITIES@"/>
                     <conditional name="derivative">
                         <param name="order" type="select" label="Advanced kernel options">
                             <option value="0">No derivative (Gaussian bell)</option>
@@ -115,11 +123,13 @@
                 <when value="uniform">
                     <param name="size" type="integer" min="2" value="3" label="Size"
                            help="Edge length of the neighborhood (square, in pixels)."/>
+                    <expand macro="anisotropic" entities="@ENTITIES@"/>
                     <yield name="uniform"/>
                 </when>
                 <when value="median">
                     <param name="radius" type="integer" min="2" value="3" label="Radius"
                            help="Radius of the neighborhood (circle, in pixels)." />
+                    <expand macro="anisotropic" entities="@ENTITIES@"/>
                     <yield name="median"/>
                 </when>
                 <when value="prewitt">
@@ -228,7 +238,7 @@
                 <param name="input" type="data" format="tiff,png" label="Input image (2-D)">
                     <validator type="dataset_metadata_in_range" metadata_name="depth" min="0" max="1" message="Input image must be a 2-D image."/>
                 </param>
-                <expand macro="filter">
+                <expand macro="filter" entities="pixels">
                     <token name="gaussian_order1">
                         <expand macro="select_direction" label="@DERIVATIVE_AXIS_LABEL@" help="@DERIVATIVE_AXIS_HELP@"/>
                     </token>
@@ -248,7 +258,7 @@
                 <param name="input" type="data" format="tiff" label="Input image (3-D)">
                     <validator type="dataset_metadata_in_range" metadata_name="depth" min="2" message="Input image must be a 3-D image."/>
                 </param>
-                <expand macro="filter">
+                <expand macro="filter" entities="voxels">
                     <token name="gaussian_order0">
                         <expand macro="select_axes_2d_or_3d"/>
                     </token>
