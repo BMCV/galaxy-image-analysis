@@ -5,31 +5,60 @@
         <import>tests.xml</import>
         <token name="@TOOL_VERSION@">1.16.3</token>
         <token name="@VERSION_SUFFIX@">1</token>
-        <xml name="select_axis" tokens="axis1,axis2,axis1_label,axis2_label"
-             token_axis1="1" token_axis1_label="Horizontal" token_axis2="0" token_axis2_label="Vertical">
-            <param name="axis" type="select" label="Direction">
+        <token name="@DEFAULT_AXIS_LABEL@">Direction</token>
+        <token name="@DERIVATIVE_AXIS_LABEL@">Direction of the derivative</token>
+        <token name="@DERIVATIVE_AXIS_HELP@">The axis to compute the derivative along.</token>
+        <xml name="select_axis" tokens="axis1,axis2,axis1_label,axis2_label,label,help"
+             token_axis1="1" token_axis1_label="Horizontal" token_axis2="0" token_axis2_label="Vertical" token_label="@DEFAULT_AXIS_LABEL@" token_help="">
+            <param name="axis" type="select" label="@LABEL@" help="@HELP@">
                 <option value="@AXIS1@" selected="true">@AXIS1_LABEL@</option>
                 <option value="@AXIS2@">@AXIS2_LABEL@</option>
-                <yield/>
             </param>
         </xml>
-        <xml name="select_axis_3d">
+        <xml name="select_axis_3d" tokens="label,help" token_label="@DEFAULT_AXIS_LABEL@" token_help="">
             <!-- Normalized axes layout for 3-D images: ZYX -->
-            <expand macro="selected_axis_3d" axis1="2" axis1_label="Horizontal" axis2="1" axis2_label="Vertical">
+            <expand macro="select_axis" axis1="2" axis1_label="Horizontal" axis2="1" axis2_label="Vertical" label="@LABEL@" help="@HELP@">
                 <option value="0">Orthogonal</option>
             </expand>
         </xml>
         <xml name="process_3d" tokens="yx_selected" token_yx_selected="true">
-            <param name="process_3d" type="select" label="Processing of 3-D images" help="This only applies for 3-D image data.">
+            <param name="process_3d" type="select" label="Processing of 3-D images"
+                   help="This only applies for 3-D image data. The choice has no effect when processing 2-D images.">
                 <yield/>
-                <option value="YX" selected="@YX_SELECTED@">Perform 2-D filtering of all YX-slices</option>
+                <option value="YX" selected="@YX_SELECTED@">Perform 2-D filtering of all XY-slices</option>
                 <option value="YZ">Perform 2-D filtering of all YZ-slices</option>
                 <option value="XZ">Perform 2-D filtering of all XZ-slices</option>
             </param>
         </xml>
+        <xml name="process_3d_directed" tokens="selector,axis_label,axis_help"
+             token_selector="process_3d" token_axis_label="@DEFAULT_AXIS_LABEL@" token_axis_help="">
+            <conditional name="process">
+                <expand macro="@SELECTOR@"/>
+                <yield/>
+                <when value="YX">
+                    <expand macro="select_axis" label="@AXIS_LABEL@" help="@AXIS_HELP@"/>
+                </when>
+                <when value="YZ">
+                    <expand macro="select_axis" label="@AXIS_LABEL@" help="@AXIS_HELP@"
+                            axis1="0" axis1_label="Vertical" axis2="1" axis2_label="Orthogonal"/>
+                </when>
+                <when value="XZ">
+                    <expand macro="select_axis" label="@AXIS_LABEL@" help="@AXIS_HELP@"
+                            axis1="0" axis1_label="Horizontal" axis2="1" axis2_label="Orthogonal"/>
+                </when>
+            </conditional>
+        </xml>
         <xml name="process_3d_full">
             <expand macro="process_3d" yx_selected="false">
-                <option value="YXZ" selected="true">Perform 3-D filtering</option>
+                <option value="ZYX" selected="true">Perform 3-D filtering</option>
+            </expand>
+        </xml>
+        <xml name="process_3d_full_directed" tokens="axis_label,axis_help"
+             token_axis_label="@DEFAULT_AXIS_LABEL@" token_axis_help="">
+            <expand macro="process_3d_directed" selector="process_3d_full">
+                <when value="ZYX">
+                    <expand macro="select_axis_3d" label="@AXIS_LABEL@" help="@AXIS_HELP@"/>
+                </when>
             </expand>
         </xml>
     </macros>
@@ -112,28 +141,32 @@
                         <option value="1">1st-order derivative</option>
                         <option value="2">2nd-order derivative</option>
                     </param>
-                    <when value="0"/>
+                    <when value="0">
+                        <expand macro="process_3d_full"/>
+                    </when>
                     <when value="1">
-                        <expand macro="select_axis"/>
+                        <expand macro="process_3d_full_directed" axis_label="@DERIVATIVE_AXIS_LABEL@" axis_help="@DERIVATIVE_AXIS_HELP@"/>
                     </when>
                     <when value="2">
-                        <expand macro="select_axis"/>
+                        <expand macro="process_3d_full_directed" axis_label="@DERIVATIVE_AXIS_LABEL@" axis_help="@DERIVATIVE_AXIS_HELP@"/>
                     </when>
                 </conditional>
             </when>
             <when value="uniform">
                 <param name="size" type="integer" min="2" value="3" label="Size"
                        help="Edge length of the neighborhood (square, in pixels)."/>
+                <expand macro="process_3d_full"/>
             </when>
             <when value="median">
                 <param name="radius" type="integer" min="2" value="3" label="Radius"
                        help="Radius of the neighborhood (circle, in pixels)." />
+                <expand macro="process_3d_full"/>
             </when>
             <when value="prewitt">
-                <expand macro="select_axis"/>
+                <expand macro="process_3d_directed"/>
             </when>
             <when value="sobel">
-                <expand macro="select_axis"/>
+                <expand macro="process_3d_directed"/>
             </when>
         </conditional>
     </inputs>
