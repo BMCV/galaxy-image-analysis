@@ -156,7 +156,7 @@
 
         python '$__tool_directory__/filter.py'
 
-        '$input'
+        '$setup.input'
         '$output'
         '$params'
 
@@ -225,7 +225,7 @@
             <!-- Processing 2-D image data -->
             <when value="2d">
                 <param name="input" type="data" format="tiff,png" label="Input image (2-D)">
-                    <validator type="dataset_metadata_in_range" metadata_name="slices" min="0" max="1" message="Input image must be a 2-D image."/>
+                    <validator type="dataset_metadata_in_range" metadata_name="depth" min="0" max="1" message="Input image must be a 2-D image."/>
                 </param>
                 <expand macro="filter">
                     <token name="gaussian_order1">
@@ -245,7 +245,7 @@
             <!-- Processing 3-D image data -->
             <when value="3d">
                 <param name="input" type="data" format="tiff" label="Input image (3-D)">
-                    <validator type="dataset_metadata_in_range" metadata_name="slices" min="2" message="Input image must be a 3-D image."/>
+                    <validator type="dataset_metadata_in_range" metadata_name="depth" min="2" message="Input image must be a 3-D image."/>
                 </param>
                 <expand macro="filter">
                     <token name="gaussian_order0">
