@@ -96,7 +96,7 @@
                     <param name="sigma" type="float" value="3" min="0.1" label="Sigma"
                            help="The half width of the Gaussian bell (in pixels)."/>
                     <conditional name="derivative">
-                        <param name="order" type="select" label="Use a derivative?">
+                        <param name="order" type="select" label="Advanced kernel options">
                             <option value="0">No derivative (Gaussian bell)</option>
                             <option value="1">1st-order derivative of the Gaussian bell</option>
                             <option value="2">2nd-order derivative of the Gaussian bell</option>
