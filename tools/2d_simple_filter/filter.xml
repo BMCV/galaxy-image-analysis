@@ -442,7 +442,10 @@
                     <param name="sigma" value="3"/>
                     <conditional name="derivative">
                         <param name="order" value="1"/>
-                        <param name="direction" value="0"/>
+                        <conditional name="directed_3d">
+                            <param name="axes" value="ZYX"/>
+                            <param name="direction" value="0"/>
+                        </conditional>
                     </conditional>
                 </conditional>
             </conditional>
