@@ -1,15 +1,34 @@
-<tool id="ip_filter_standard" name="Apply 2-D image filter" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
+<tool id="ip_filter_standard" name="Apply standard image filter" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
     <description>with scipy</description>
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
         <token name="@TOOL_VERSION@">1.16.3</token>
-        <token name="@VERSION_SUFFIX@">0</token>
+        <token name="@VERSION_SUFFIX@">1</token>
         <xml name="select_axis">
             <param name="axis" type="select" label="Direction">
                 <option value="1" selected="true">Horizontal</option>
                 <option value="0">Vertical</option>
+                <yield/>
             </param>
+        </xml>
+        <xml name="select_axis_3d">
+            <expand macro="selected_axis_3d">
+                <option value="2">Orthogonal (only for 3-D image data)</option>
+            </expand>
+        </xml>
+        <xml name="process_3d" tokens="yx_selected" token_yx_selected="true">
+            <param name="process_3d" type="select" label="Processing of 3-D images" help="This only applies for 3-D image data.">
+                <yield/>
+                <option value="YX" selected="@YX_SELECTED@">Perform 2-D filtering of all YX-slices</option>
+                <option value="YZ">Perform 2-D filtering of all YZ-slices</option>
+                <option value="XZ">Perform 2-D filtering of all XZ-slices</option>
+            </param>
+        </xml>
+        <xml name="process_3d_full">
+            <expand macro="process_3d" yx_selected="false">
+                <option value="YXZ" selected="true">Perform 3-D filtering</option>
+            </expand>
         </xml>
     </macros>
     <creator>
@@ -91,8 +110,7 @@
                         <option value="1">1st-order derivative</option>
                         <option value="2">2nd-order derivative</option>
                     </param>
-                    <when value="0">
-                    </when>
+                    <when value="0"/>
                     <when value="1">
                         <expand macro="select_axis"/>
                     </when>
