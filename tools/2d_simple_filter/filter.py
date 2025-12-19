@@ -11,12 +11,15 @@ import scipy.ndimage as ndi
 
 
 def image_astype(image: giatools.Image, dtype: np.dtype) -> giatools.Image:
-    return giatools.Image(
-        data=image.data.astype(dtype),
-        axes=image.axes,
-        original_axes=image.original_axes,
-        metadata=image.metadata,
-    )
+    if np.issubdtype(image.data.dtype, dtype):
+        return image  # no conversion needed
+    else:
+        return giatools.Image(
+            data=image.data.astype(dtype),
+            axes=image.axes,
+            original_axes=image.original_axes,
+            metadata=image.metadata,
+        )
 
 
 def get_anisotropy(image: giatools.Image, axes: str) -> tuple[float, ...] | None:
@@ -121,7 +124,7 @@ class Filters:
     def prewitt(image: giatools.Image, direction: int, **kwargs: Any) -> giatools.Image:
         return apply_nd_filter(
             ndi.prewitt,
-            image,
+            image_astype(image, float),
             axis=direction,
             **kwargs,
         )
@@ -130,7 +133,7 @@ class Filters:
     def sobel(image: giatools.Image, direction: int, **kwargs: Any) -> giatools.Image:
         return apply_nd_filter(
             ndi.sobel,
-            image,
+            image_astype(image, float),
             axis=direction,
             **kwargs,
         )

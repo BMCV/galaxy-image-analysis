@@ -716,7 +716,7 @@
                 <has_line line="Applying filter: prewitt with axis=1, axes='YX'"/>
                 <has_line line="Output image shape: (265, 329)"/>
                 <has_line line="Output image axes: YX"/>
-                <has_line line="Output image dtype: uint8"/>
+                <has_line line="Output image dtype: float64"/>
             </assert_stdout>
         </test>
         <test>
@@ -740,7 +740,7 @@
                 <has_line line="Applying filter: prewitt with axis=0, axes='YX'"/>
                 <has_line line="Output image shape: (265, 329)"/>
                 <has_line line="Output image axes: YX"/>
-                <has_line line="Output image dtype: uint8"/>
+                <has_line line="Output image dtype: float64"/>
             </assert_stdout>
         </test>
         <test>
@@ -763,7 +763,7 @@
                 <has_line line="Applying filter: sobel with axis=1, axes='YX'"/>
                 <has_line line="Output image shape: (265, 329)"/>
                 <has_line line="Output image axes: YX"/>
-                <has_line line="Output image dtype: uint8"/><!-- FIXME: dtype -->
+                <has_line line="Output image dtype: float64"/>
             </assert_stdout>
         </test>
         <test>
@@ -787,7 +787,7 @@
                 <has_line line="Applying filter: sobel with axis=0, axes='YX'"/>
                 <has_line line="Output image shape: (265, 329)"/>
                 <has_line line="Output image axes: YX"/>
-                <has_line line="Output image dtype: uint8"/>
+                <has_line line="Output image dtype: float64"/>
             </assert_stdout>
         </test>
         <!--
