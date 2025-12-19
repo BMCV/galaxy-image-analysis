@@ -55,7 +55,7 @@ def get_anisotropy(image: giatools.Image, axes: str) -> tuple[float, ...] | None
 def get_anisotropic_size(image: giatools.Image, axes: str, size: int) -> tuple[int, ...] | int:
     if (anisotropy := get_anisotropy(image, axes)) is not None:
         _size = tuple(
-            np.multiply(size, anisotropy).round().clip(1, np.inf).astype(int).tolist(),
+            np.divide(size, anisotropy).round().clip(1, np.inf).astype(int).tolist(),
         )
         print('Anisotropic size:', _size)
         return _size
@@ -82,7 +82,7 @@ class Filters:
             _order[direction] = order
             _order = tuple(_order)
         if anisotropic and (anisotropy := get_anisotropy(image, axes)) is not None:
-            _sigma = tuple(np.multiply(sigma, anisotropy).tolist())
+            _sigma = tuple(np.divide(sigma, anisotropy).tolist())
             print('Anisotropic sigma:', _sigma)
         else:
             _sigma = sigma
