@@ -92,7 +92,8 @@
         -->
         <xml name="filter" tokens="entities" token_entities="pixels/voxels">
             <conditional name="filter">
-                <param name="filter_type" type="select" label="Filter type">
+                <param name="filter_type" type="select" label="Filter type"
+                       help="Gaussian filters include smoothing filters for pre-processing (denoising, scale selection) and Gaussian derivatives for edge and feature detection. Box filters use uniform rectangular averaging. Median filters remove impulse noise and suit binary images and label maps. Prewitt and Sobel filters compute first-order derivatives, with Sobel providing better isotropy.">
                     <option value="gaussian" selected="True">Gaussian</option>
                     <option value="uniform">Box filter</option>
                     <option value="median">Median</option>
@@ -104,7 +105,8 @@
                            help="The half width of the Gaussian bell (in pixels)."/>
                     <expand macro="anisotropic" entities="@ENTITIES@"/>
                     <conditional name="derivative">
-                        <param name="order" type="select" label="Advanced kernel options">
+                        <param name="order" type="select" label="Advanced kernel options"
+                               help="Kernels based on the Gaussian bell are low-pass filters. Kernels based on the 1st-order and 2nd-order derivative act like high-pass and band-pass filters, respectively.">
                             <option value="0">No derivative (Gaussian bell)</option>
                             <option value="1">1st-order derivative of the Gaussian bell</option>
                             <option value="2">2nd-order derivative of the Gaussian bell</option>
@@ -253,9 +255,10 @@
     </configfiles>
     <inputs>
         <conditional name="setup">
-            <param name="target" type="select" label="Type of image data to process">
-                <option value="2d" selected="true">2-D image data (or time series thereof)</option>
-                <option value="3d">3-D image data (or time series thereof)</option>
+            <param name="target" type="select" label="Type of image data to process"
+                   help='Select "2-D image data" or "3-D image data" if you want to filter 2-D images or 3-D images, respectively, or series thereof (e.g., stacks or hyperstacks, such as temporal image sequences).'>
+                <option value="2d" selected="true">2-D image data (or series thereof)</option>
+                <option value="3d">3-D image data (or series thereof)</option>
             </param>
             <!-- Processing 2-D image data -->
             <when value="2d">
