@@ -798,6 +798,33 @@
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="output/input4_sobel.tiff" ftype="tiff"/>
         </test>
+        <!--
+        =========================================================================================================
+        === TESTS: Illegal input images
+        =========================================================================================================
+        -->
+        <test expect_failure="true">
+            <!--
+            Test 31: Using 3-D image with `"target": "2d"`
+            ==============================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input4_float16.tiff"/>
+            </conditional>
+        </test>
+        <test expect_failure="true">
+            <!--
+            Test 32: Using 2-D image with `"target": "3d"`
+            ==============================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
+            </conditional>
+        </test>
+        <!-- TODO: Add test for JPEG -->
+        <!-- TODO: Add test for OME-Zarr -->
     </tests>
     <help>
 
