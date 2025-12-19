@@ -868,5 +868,6 @@ intensities. Sobel filters have better isotropy properties than Prewitt filters.
     </help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
+        <citation type="doi">10.1038/s41592-019-0686-2</citation>
     </citations>
 </tool>
