@@ -46,19 +46,20 @@ def get_anisotropy(image: giatools.Image, axes: str) -> tuple[float, ...] | None
 
     # Check for unknown size and compute anisotropy
     if any(abs(s) < 1e-8 for s in voxel_size):
-        return None  # unknown size
+        print('Unknown pixel/voxel size')
+        return None
     else:
         denom = pow(np.prod(voxel_size), 1 / len(voxel_size))  # geometric mean
-        return tuple(np.divide(voxel_size, denom).tolist())
+        anisotropy = tuple(np.divide(voxel_size, denom).tolist())
+        print(f'Anisotropy of {axes} pixels/voxels:', anisotropy)
+        return anisotropy
 
 
 def get_anisotropic_size(image: giatools.Image, axes: str, size: int) -> tuple[int, ...] | int:
     if (anisotropy := get_anisotropy(image, axes)) is not None:
-        _size = tuple(
+        return tuple(
             np.divide(size, anisotropy).round().clip(1, np.inf).astype(int).tolist(),
         )
-        print('Anisotropic size:', _size)
-        return _size
     else:
         return size
 
@@ -83,7 +84,6 @@ class Filters:
             _order = tuple(_order)
         if anisotropic and (anisotropy := get_anisotropy(image, axes)) is not None:
             _sigma = tuple(np.divide(sigma, anisotropy).tolist())
-            print('Anisotropic sigma:', _sigma)
         else:
             _sigma = sigma
         return apply_nd_filter(
