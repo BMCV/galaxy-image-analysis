@@ -1,4 +1,4 @@
-<tool id="iscc_sum" name="Generate ISCC hash" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="24.1">
+<tool id="iscc_sum" name="Generate ISCC-CODE" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="24.1">
     <description>with ISCC-SUM</description>
 
     <macros>
@@ -15,12 +15,13 @@
     </creator>
         
     <command detect_errors="exit_code"><![CDATA[
-        iscc-sum '$input_file' | cut -d':' -f2 | cut -d' ' -f1 > '${output_file}'
+        ## Generate ISCC-CODE for input dataset
+        iscc-sum '${input_file}' | cut -d':' -f2 | cut -d' ' -f1 >> '${output_file}'
     ]]></command>
-    
+
     <inputs>
-        <param name="input_file" type="data" format="data" label="Input File" 
-               help="Any file type - ISCC-SUM will generate a checksum and similarity hash"/>
+        <param name="input_file" type="data" format="data" label="Input file"
+               help="Any file type - ISCC-SUM will generate an ISCC-CODE for content identification and verification. When a collection is provided, generates one ISCC-CODE per dataset."/>
     </inputs>
     
     <outputs>
@@ -28,53 +29,130 @@
     </outputs>
     
     <tests>
+        <!-- Test 1: Single dataset PNG -->
         <test expect_num_outputs="1">
             <param name="input_file" value="test1.png"/>
             <output name="output_file">
                 <assert_contents>
                     <has_line line="K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY" />
+                    <has_n_lines n="1" />
                 </assert_contents>
             </output>
         </test>
-        <test expect_num_outputs="1">
-            <param name="input_file" value="test2.tiff"/>
-            <output name="output_file">
-                <assert_contents>
-                    <has_line line="K4AGSPOSB5SS2X427WZ27QASTSBVTS55DXLMFDF7WOJKEOSTDEI3OXQ" />
-                </assert_contents>
-            </output>
-        </test>
+        
+        <!-- Test 2: Single dataset FASTA -->
         <test expect_num_outputs="1">
             <param name="input_file" value="test3.fasta"/>
             <output name="output_file">
                 <assert_contents>
                     <has_line line="K4AKF7PTZ7JTAAYZ7YZHZPR5RETKYXXE7RTBTJA4JX5GQQMSLZRC6QQ" />
+                    <has_n_lines n="1" />
+                </assert_contents>
+            </output>
+        </test>
+        
+        <!-- Test 3: Single dataset TIFF -->
+        <test expect_num_outputs="1">
+            <param name="input_file" value="test2.tiff"/>
+            <output name="output_file">
+                <assert_contents>
+                    <has_line line="K4AGSPOSB5SS2X427WZ27QASTSBVTS55DXLMFDF7WOJKEOSTDEI3OXQ" />
+                    <has_n_lines n="1" />
                 </assert_contents>
             </output>
         </test>
     </tests>
     
     <help><![CDATA[
-**What it does**
+What it does
+============
 
-Generates an International Standard Content Code (ISCC) based checksum and similarity hash from any input file.
+Generates an ISCC-CODE (International Standard Content Code) for datasets using the ISCC-SUM algorithm.
 
-The ISCC-SUM is a content-derived identifier that:    
-- Creates a unique checksum based on file content    
-- Generates a similarity hash for content comparison    
-- Works with any file format    
+The ISCC-SUM creates a content-derived identifier that:
 
-**Input**
+- Creates a unique 55-character ISCC-CODE based on dataset content
+- Enables both exact matching (checksum) and similarity detection
+- Works with any file format
 
-Any file format is accepted as input.
+Dataset Mapping
+===============
 
-**Output**
+When you provide a collection, Galaxy automatically runs this tool once per dataset, generating individual ISCC-CODEs for each dataset in the collection.
 
-A text file containing the ISCC-SUM code for the input file.
+Output
+======
 
-**More Information**
+A text file containing the ISCC-CODE (55 characters)
 
-For more details about ISCC, visit: https://iscc.codes/
+Example output::
+
+    K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY
+
+Use Cases
+=========
+
+- Generate ISCC-CODEs for file integrity verification
+- Create content identifiers for duplicate detection
+- Track file provenance and changes over time
+- Enable similarity-based file comparison
+
+ISCC-CODE Structure
+===================
+
+The 55-character ISCC-CODE is composed of multiple ISCC-UNITs:
+
+- **Data-Code**: Content similarity hash (enables fuzzy matching for similar files)
+- **Instance-Code**: Exact file checksum (for bit-perfect verification)
+
+This combination creates an ISCC-CODE with SubType SUM, hence the name ISCC-SUM.
+
+Workflow Examples
+=================
+
+Generate ISCC-CODEs for a collection
+-------------------------------------
+
+::
+
+    Input: Collection of 100 datasets
+    ↓
+    [Generate ISCC-CODE] ← runs 100 times
+    ↓
+    Output: Collection of 100 ISCC-CODE files
+    ↓
+    [Collapse Collection] ← Galaxy tool
+    ↓
+    Result: Single file with all ISCC-CODEs
+
+Create reference ISCC-CODEs
+----------------------------
+
+::
+
+    Input: Original datasets
+    ↓
+    [Generate ISCC-CODE]
+    ↓
+    Store ISCC-CODEs for future verification
+
+Compare datasets
+----------------
+
+::
+
+    Dataset A → [Generate ISCC-CODE] → ISCC-CODE A
+    Dataset B → [Generate ISCC-CODE] → ISCC-CODE B
+    ↓
+    Compare ISCC-CODEs
+    ↓
+    Result: Exact match or similarity score
+
+More Information
+================
+
+For details about ISCC: https://sum.iscc.codes/ and https://iscc.codes/
+For ISCC structure and subtypes: https://ieps.iscc.codes/iep-0001/
     ]]></help>
 
     <expand macro="citations" />

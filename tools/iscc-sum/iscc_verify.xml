@@ -1,0 +1,197 @@
+<tool id="iscc_sum_verify" name="Verify ISCC-CODE" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="24.1">
+    <description>with ISCC-SUM</description>
+    <macros>
+        <import>macros.xml</import>
+        <import>creators.xml</import>
+    </macros>
+    <expand macro="requirements" />
+    <expand macro="version_command" />
+    <creator>
+        <expand macro="creators/iscc" />
+        <expand macro="creators/lco" />
+        <expand macro="creators/maartenpaul" />
+        <expand macro="creators/etzm" />
+    </creator>
+
+    <command detect_errors="exit_code"><![CDATA[
+        ## Generate ISCC-CODE for input dataset
+        GENERATED=\$(iscc-sum '${input_file}' | cut -d':' -f2 | cut -d' ' -f1) &&
+        
+        ## Get expected ISCC-CODE
+        EXPECTED='${expected_code}' &&
+        
+        ## Validate expected ISCC-CODE length
+        if [ \${#EXPECTED} -ne 55 ]; then
+            echo "ERROR: Expected ISCC-CODE must be exactly 55 characters" >&2;
+            echo "Found: \${#EXPECTED} characters" >&2;
+            exit 1;
+        fi &&
+        
+        ## Output verification report
+        if [ "\$GENERATED" = "\$EXPECTED" ]; then
+            echo "OK - ISCC-CODEs match" > '${output_file}'; 
+        else
+            echo "FAILED - ISCC-CODEs do not match" > '${output_file}'; 
+        fi &&
+        echo "Expected:  \$EXPECTED" >> '${output_file}' &&
+        echo "Generated: \$GENERATED" >> '${output_file}' &&
+        echo "" >> '${output_file}' 
+
+    ]]></command>
+        
+    <inputs>
+        <param name="input_file" type="data" format="data" label="Dataset to verify"
+            help="Verify this dataset's ISCC-CODE. When a collection is provided, each dataset is verified separately against the same expected ISCC-CODE."/>
+        <param name="expected_code" type="text" label="Expected ISCC-CODE"
+            help="The 55-character ISCC-CODE to verify against">
+            <validator type="length" min="55" max="55" message="ISCC-CODE must be exactly 55 characters"/>
+        </param>
+    </inputs>
+    
+    <outputs>
+        <data name="output_file" format="txt" label="${tool.name} on ${on_string}"/>
+    </outputs>
+    
+    <tests>
+        <!-- Test 1: Successful verification -->
+        <test expect_num_outputs="1">
+            <param name="input_file" value="test1.png"/>
+            <param name="expected_code" value="K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY"/>
+            <output name="output_file">
+                <assert_contents>
+                    <has_text text="OK - ISCC-CODEs match"/>
+                    <has_text text="Expected:  K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY"/>
+                    <has_text text="Generated: K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY"/>
+                    <has_n_lines n="4"/>
+                </assert_contents>
+            </output>
+        </test>
+        
+        <!-- Test 2: Failed verification -->
+        <test expect_num_outputs="1">
+            <param name="input_file" value="test1.png"/>
+            <param name="expected_code" value="K4AGSPOSB5SS2X427WZ27QASTSBVTS55DXLMFDF7WOJKEOSTDEI3OXQ"/>
+            <output name="output_file">
+                <assert_contents>
+                    <has_text text="FAILED - ISCC-CODEs do not match"/>
+                    <has_text text="Expected:  K4AGSPOSB5SS2X427WZ27QASTSBVTS55DXLMFDF7WOJKEOSTDEI3OXQ"/>
+                    <has_text text="Generated: K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY"/>
+                    <has_n_lines n="4"/>
+                </assert_contents>
+            </output>
+        </test>
+        
+        <!-- Test 3: FASTA file verification -->
+        <test expect_num_outputs="1">
+            <param name="input_file" value="test3.fasta"/>
+            <param name="expected_code" value="K4AKF7PTZ7JTAAYZ7YZHZPR5RETKYXXE7RTBTJA4JX5GQQMSLZRC6QQ"/>
+            <output name="output_file">
+                <assert_contents>
+                    <has_text text="OK - ISCC-CODEs match"/>
+                    <has_text text="Expected:  K4AKF7PTZ7JTAAYZ7YZHZPR5RETKYXXE7RTBTJA4JX5GQQMSLZRC6QQ"/>
+                    <has_text text="Generated: K4AKF7PTZ7JTAAYZ7YZHZPR5RETKYXXE7RTBTJA4JX5GQQMSLZRC6QQ"/>
+                    <has_n_lines n="4"/>
+                </assert_contents>
+            </output>
+        </test>
+    </tests>
+    
+    <help><![CDATA[
+What it does
+============
+
+Verifies that a file (dataset) matches an expected ISCC-CODE (International Standard Content Code) for exact content verification. This tool uses ISCC-SUM, which generates an ISCC-CODE containing Data-Code and Instance-Code units for bit-level file comparison.
+
+Exit Codes
+==========
+
+The tool uses exit codes for workflow logic:
+
+- **0**: Verification successful (OK - ISCC-CODEs match)
+- **1**: Verification failed (FAILED - ISCC-CODEs do not match)
+
+Dataset Mapping
+===============
+
+When you provide a collection, Galaxy automatically runs verification once per dataset. All datasets are verified against the same expected ISCC-CODE.
+
+Output
+======
+
+A verification report containing:
+
+- Filename (or element identifier)
+- Expected ISCC-CODE
+- Generated ISCC-CODE
+- Status: OK or FAILED
+
+Example output::
+    Status: OK - ISCC-CODEs match
+
+    Expected:  K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY
+    Generated: K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY
+    
+Use Cases
+=========
+
+- Verify file integrity after transfer or storage
+- Confirm downloaded datasets match reference ISCC-CODEs
+- Validate that backups are identical to originals
+- Quality control for data archiving
+
+Workflow Examples
+=================
+
+Verify a single dataset
+-----------------------
+
+::
+
+    Input: document.pdf
+    Expected ISCC-CODE: K4AOMG...
+    ↓
+    [Verify ISCC-CODE]
+    ↓
+    Output: "OK" or "FAILED"
+
+Verify against reference table
+-------------------------------
+
+Generate reference ISCC-CODEs first::
+
+    Original files → [Generate ISCC-CODE] → Reference ISCC-CODEs
+    
+Later verify::
+
+    New datasets → [Generate ISCC-CODE] → New ISCC-CODEs
+    ↓
+    [Join two Datasets] on filename
+    ↓
+    Compare ISCC-CODE columns
+    ↓
+    Result: Which files match/differ
+
+Working with ISCC-CODE Files in Workflows
+==========================================
+
+If you have the expected ISCC-CODE in a dataset (e.g., from Generate ISCC tool):
+
+1. In the workflow editor, connect the ISCC-CODE file to this tool
+2. The ISCC-CODE file content will be used automatically
+3. Or manually copy the ISCC-CODE from the file into the text field
+
+Important Notes
+===============
+
+- **Exact match only**: Any change to the file will cause verification to fail
+- **Bit-level comparison**: Even metadata changes are detected
+- **For similarity detection**: Use "Find similar ISCC-CODEs" tool instead
+
+More Information
+================
+
+For details about ISCC: https://sum.iscc.codes/ and https://iscc.codes/
+For ISCC structure and subtypes: https://ieps.iscc.codes/iep-0001/
+    ]]></help>
+    <expand macro="citations" />
+</tool>
