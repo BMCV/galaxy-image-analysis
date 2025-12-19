@@ -143,7 +143,7 @@
         <xml name="select_dtype">
             <param name="dtype" type="select" label="Output pixel type"
                    help="Data type used to store the pixel values in the output image.">
-                <option value="float" selected="True">Same as the input image (if floating point, and 64-bit floating point otherwise)</option>
+                <option value="floating" selected="True">Same as the input image (if floating point, and 64-bit floating point otherwise)</option>
                 <option value="float64">64-bit floating point</option>
                 <option value="float32">32-bit floating point</option>
                 <option value="float16">16-bit floating point</option>
@@ -1098,6 +1098,86 @@
                 <has_line line="Output image shape: (10, 15, 18)"/>
                 <has_line line="Output image axes: ZYX"/>
                 <has_line line="Output image dtype: float16"/>
+            </assert_stdout>
+        </test>
+        <!--
+        =========================================================================================================
+        === TESTS: Explicit `dtype` conversion
+        =========================================================================================================
+        -->
+        <test>
+            <!--
+            Test 31: GAUSSIAN, uint8 input, test `"order": 1` (default is horizontal), `"dtype": "float16"`
+            ===============================================================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                    <conditional name="derivative">
+                        <param name="order" value="1"/>
+                        <param name="dtype" value="float16"/>
+                    </conditional>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_gaussian_order1_float16.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 1, 265, 329, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: uint8"/>
+                <has_line line="Applying filter: gaussian_filter with sigma=3.0, order=(0, 1), axes='YX'"/>
+                <has_line line="Output image shape: (265, 329)"/>
+                <has_line line="Output image axes: YX"/>
+                <has_line line="Output image dtype: float16"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 32: PREWITT, uint8 input, `"dtype": "float16"`
+            ===================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="prewitt"/>
+                    <param name="dtype" value="float16"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_prewitt_float16.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 1, 265, 329, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: uint8"/>
+                <has_line line="Applying filter: prewitt with axis=1, axes='YX'"/>
+                <has_line line="Output image shape: (265, 329)"/>
+                <has_line line="Output image axes: YX"/>
+                <has_line line="Output image dtype: float16"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 33: SOBEL, float16 input, `"dtype": "float32"`
+            ===================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input4_float16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="sobel"/>
+                    <param name="dtype" value="float32"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input4_sobel_float32.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 10, 15, 18, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: float16"/>
+                <has_line line="Applying filter: sobel with axis=1, axes='YX'"/>
+                <has_line line="Output image shape: (10, 15, 18)"/>
+                <has_line line="Output image axes: ZYX"/>
+                <has_line line="Output image dtype: float32"/>
             </assert_stdout>
         </test>
         <!--

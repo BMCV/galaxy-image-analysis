@@ -77,7 +77,6 @@ class Filters:
         axes: str,
         order: int = 0,
         direction: int | None = None,
-        dtype: str | None = None,
         **kwargs: Any,
     ) -> giatools.Image:
         if direction is None:
@@ -86,7 +85,6 @@ class Filters:
             _order = [0] * len(axes)
             _order[direction] = order
             _order = tuple(_order)
-            image = image_astype(image, dtype)
         if anisotropic and (anisotropy := get_anisotropy(image, axes)) is not None:
             _sigma = tuple(np.divide(sigma, anisotropy).tolist())
         else:
@@ -123,19 +121,19 @@ class Filters:
         )
 
     @staticmethod
-    def prewitt(image: giatools.Image, direction: int, dtype: str, **kwargs: Any) -> giatools.Image:
+    def prewitt(image: giatools.Image, direction: int, **kwargs: Any) -> giatools.Image:
         return apply_nd_filter(
             ndi.prewitt,
-            image_astype(image, dtype),
+            image,
             axis=direction,
             **kwargs,
         )
 
     @staticmethod
-    def sobel(image: giatools.Image, direction: int, dtype: str, **kwargs: Any) -> giatools.Image:
+    def sobel(image: giatools.Image, direction: int, **kwargs: Any) -> giatools.Image:
         return apply_nd_filter(
             ndi.sobel,
-            image_astype(image, dtype),
+            image,
             axis=direction,
             **kwargs,
         )
@@ -202,12 +200,18 @@ if __name__ == "__main__":
     print('Input image axes:', image.axes)
     print('Input image dtype:', image.data.dtype)
 
-    # Convert `float16` images to `float32` and remember to convert back later
-    if image.data.dtype == np.float16:
-        convert_to = np.float16
-        image.data = image.data.astype(np.float32)
+    # Convert the image to the explicitly requested `dtype`, or the same as the input image
+    convert_to = getattr(np, cfg.pop('dtype', str(image.data.dtype)))
+    if np.issubdtype(image.data.dtype, convert_to):
+        convert_to = image.data.dtype  # use the input image `dtype` if `convert_to` is a superset
+    elif convert_to == np.floating:
+        convert_to = np.float64  # use `float64` if conversion to *any* float is *required*
+
+    # If the input image is `float16` or conversion to `float16` is requested, ...
+    if convert_to == np.float16:
+        image = image_astype(image, np.float32)  # ...convert to `float32` as an intermediate
     else:
-        convert_to = None
+        image = image_astype(image, convert_to)  # ...otherwise, convert now
 
     # Perform filtering
     filter_type = cfg.pop('filter_type')
@@ -215,8 +219,7 @@ if __name__ == "__main__":
     result = filter_impl(image, **cfg)
 
     # Apply `dtype` conversion
-    if convert_to is not None:
-        result.data = result.data.astype(convert_to)
+    result = image_astype(result, convert_to)
 
     # Write the result
     result = result.normalize_axes_like(
