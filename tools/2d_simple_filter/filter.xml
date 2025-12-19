@@ -355,8 +355,8 @@
         </test>
         <test>
             <!--
-            Test 4: GAUSSIAN, test data with anisotropic pixels and `anisotropic` processing switched off
-            =============================================================================================
+            Test 4: GAUSSIAN, test data with anisotropic pixels and `"anisotropic": false`
+            ==============================================================================
             -->
             <conditional name="setup">
                 <param name="target" value="2d"/>
@@ -370,8 +370,8 @@
         </test>
         <test>
             <!--
-            Test 5: GAUSSIAN, test `order` parameter set to `1` (default is horizontal)
-            ===========================================================================
+            Test 5: GAUSSIAN, test `"order": 1` (default is horizontal)
+            ===========================================================
             -->
             <conditional name="setup">
                 <param name="target" value="2d"/>
@@ -387,8 +387,8 @@
         </test>
         <test>
             <!--
-            Test 6: GAUSSIAN, test `order` parameter set to `1` and `direction` to `0` (vertical)
-            =====================================================================================
+            Test 6: GAUSSIAN, test `"order": 1`, `"direction": 0` (vertical)
+            ================================================================
             -->
             <conditional name="setup">
                 <param name="target" value="2d"/>
@@ -405,8 +405,8 @@
         </test>
         <test>
             <!--
-            Test 7: GAUSSAIN, test `order` parameter set to `2`
-            ===================================================
+            Test 7: GAUSSAIN, test `"order": 2`
+            ===================================
             -->
             <conditional name="setup">
                 <param name="target" value="2d"/>
@@ -476,8 +476,8 @@
         </test>
         <test>
             <!--
-            Test 11: BOX, test data with anisotropic pixels and `anisotropic` processing switched off
-            =========================================================================================
+            Test 11: BOX, test data with anisotropic pixels and `"anisotropic": false`
+            ==========================================================================
             -->
             <conditional name="setup">
                 <param name="target" value="2d"/>
@@ -492,7 +492,7 @@
         <test>
             <!--
             Test 12: MEDIAN, range of values is preserved
-            ============================================
+            =============================================
 
             The input file `input1_uint8.tiff` has values ranging between 23 and 254, with a mean value of 63.67.
 
@@ -545,8 +545,8 @@
         </test>
         <test>
             <!--
-            Test 15: MEDIAN, test data with anisotropic pixels and `anisotropic` processing switched off
-            ============================================================================================
+            Test 15: MEDIAN, test data with anisotropic pixels and `"anisotropic": false`
+            =============================================================================
             -->
             <conditional name="setup">
                 <param name="target" value="2d"/>
@@ -574,8 +574,8 @@
         </test>
         <test>
             <!--
-            Test 17: PREWITT, test `direction` parameter set to `0` (vertical)
-            ==================================================================
+            Test 17: PREWITT, test `"direction": 0` (vertical)
+            ==================================================
             -->
             <conditional name="setup">
                 <param name="target" value="2d"/>
@@ -603,8 +603,8 @@
         </test>
         <test>
             <!--
-            Test 19: SOBEL, test `direction` parameter set to `0` (vertical)
-            ================================================================
+            Test 19: SOBEL, test `"direction": 0` (vertical)
+            ================================================
             -->
             <conditional name="setup">
                 <param name="target" value="2d"/>
@@ -615,6 +615,188 @@
                 </conditional>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="output/input1_sobel_direction0.tiff" ftype="tiff"/>
+        </test>
+        <!--
+        =========================================================================================================
+        === TESTS: 3-D images
+        =========================================================================================================
+        -->
+        <test>
+            <!--
+            Test 20: GAUSSIAN, defaults
+            ===========================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input4_float16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input4_gaussian.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <!--
+            Test 21: GAUSSIAN, test `"anisotropic": false`
+            ==============================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input4_float16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                    <param name="anisotropic" value="false"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input4_gaussian_anisotropic-off.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <!--
+            Test 22: GAUSSIAN, test `"axes": "YX"`
+            ======================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input4_float16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                    <conditional name="derivative">
+                        <param name="axes" value="YX"/>
+                    </conditional>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input4_gaussian_yx.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <!--
+            Test 23: GAUSSIAN, test `"axes": "YZ"`
+            ======================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input4_float16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                    <conditional name="derivative">
+                        <param name="axes" value="YZ"/>
+                    </conditional>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input4_gaussian_yz.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <!--
+            Test 24: GAUSSIAN, test `"order": 1` (default is horizontal)
+            ============================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input4_float16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                    <conditional name="derivative">
+                        <param name="order" value="1"/>
+                    </conditional>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input4_gaussian_order1.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <!--
+            Test 25: GAUSSIAN, test `"order": 1`, `"direction": 1` (vertical)
+            =================================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input4_float16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                    <conditional name="derivative">
+                        <param name="order" value="1"/>
+                        <conditional name="directed_3d">
+                            <param name="direction" value="1"/>
+                        </conditional>
+                    </conditional>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input4_gaussian_order1_direction1.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <!--
+            Test 26: GAUSSIAN, test `"order": 1`, `"axes": "XZ"`, `"direction": 1` (orthogonal)
+            ===================================================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input4_float16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                    <conditional name="derivative">
+                        <param name="order" value="1"/>
+                        <conditional name="directed_3d">
+                            <param name="axes" value="XZ"/>
+                            <param name="direction" value="1"/>
+                        </conditional>
+                    </conditional>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input4_gaussian_order1_xz_direction1.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <!--
+            Test 27: BOX, defaults
+            ======================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input4_float16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="uniform"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input4_uniform.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <!--
+            Test 28: MEDIAN, defaults
+            =========================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input4_float16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="median"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input4_median.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <!--
+            Test 29: PREWITT, defaults
+            =========================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input4_float16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="prewitt"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input4_prewitt.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <!--
+            Test 30: SOBEL, defaults
+            =========================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input4_float16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="sobel"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input4_sobel.tiff" ftype="tiff"/>
         </test>
     </tests>
     <help>

@@ -23,3 +23,13 @@
 - metadata:
   - resolution: `(2.0, 1.0)`
   - unit: `mm`
+
+## `input4_float16.tiff`:
+
+- axes: `ZYX`
+- resolution: `(10, 15, 18)`
+- dtype: `float16`
+- metadata:
+  - resolution: `(2.0, 1.0)`
+  - z-spacing: `2.0`
+  - unit: `inch`
