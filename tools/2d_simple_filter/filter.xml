@@ -1,8 +1,5 @@
 <tool id="ip_filter_standard" name="Apply standard image filter" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
     <description>with scipy</description>
-    <required_files>
-        <include type="literal" path="filter.py"/>
-    </required_files>
     <macros>
         <!--
         === BEGIN OF MACROS === 
@@ -97,7 +94,7 @@
             <conditional name="filter">
                 <param name="filter_type" type="select" label="Filter type">
                     <option value="gaussian" selected="True">Gaussian</option>
-                    <option value="uniform">Box filter (uniform filter)</option>
+                    <option value="uniform">Box filter</option>
                     <option value="median">Median</option>
                     <option value="prewitt">Prewitt</option>
                     <option value="sobel">Sobel</option>
@@ -165,6 +162,9 @@
         <requirement type="package" version="2025.10.16">tifffile</requirement>
         <requirement type="package" version="0.6.0">giatools</requirement>
     </requirements>
+    <required_files>
+        <include type="literal" path="filter.py"/>
+    </required_files>
     <command detect_errors="aggressive"><![CDATA[
 
         python '$__tool_directory__/filter.py'
@@ -294,178 +294,327 @@
         <data format="tiff" name="output"/>
     </outputs>
     <tests>
-        <!-- Tests with uint8 TIFF input image -->
+        <!--
+        =========================================================================================================
+        === TESTS: 2-D images
+        =========================================================================================================
+        -->
         <test>
+            <!--
+            Test 1: GAUSSIAN, range of values is preserved
+            ==============================================
+
+            The input file `input1_uint8.tiff` has values ranging between 23 and 254, with a mean value of 63.67.
+
+            Below, we use an assertion in addition to the `image_diff` comparison, to ensure that the range of
+            values is preserved. The motiviation behind this is that the expectation images are usually checked
+            visually, which means that the `image_diff` comparison is likely to ensure that the brightness of
+            the image is correct, thus it's good to double-check the range of values (hence the comparably large
+            value for `eps`). This also concerns the Median and Box filters (see below).
+            -->
             <conditional name="setup">
                 <param name="target" value="2d"/>
-                <param name="input" value="input1_uint8.tiff"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
                 <conditional name="filter">
                     <param name="filter_type" value="gaussian"/>
                 </conditional>
             </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="input1_gaussian.tiff" ftype="tiff">
-                <!--
-
-                The input file `input1_uint8.tiff` has values ranging between 23 and 254, with a mean value of 63.67.
-
-                Below, we use an assertion in addition to the `image_diff` comparison, to ensure that the range of
-                values is preserved. The motiviation behind this is that the expectation images are usually checked
-                visually, which means that the `image_diff` comparison is likely to ensure that the brightness of
-                the image is correct, thus it's good to double-check the range of values (hence the comparably large
-                value for `eps`). This also concerns the median filter.
-
-                -->
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_gaussian.tiff" ftype="tiff">
+                <!-- Mean of Gaussian filter is approximately the mean intensity value of the image: -->
                 <has_image_mean_intensity mean_intensity="63.67" eps="10"/>
             </expand>
         </test>
         <test>
+            <!--
+            Test 2: GAUSSIAN, test `sigma` parameter
+            ========================================
+            -->
             <conditional name="setup">
                 <param name="target" value="2d"/>
-                <param name="input" value="input1_uint8.tiff"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
                 <conditional name="filter">
-                    <param name="filter_type" value="median"/>
+                    <param name="filter_type" value="gaussian"/>
+                    <param name="sigma" value="1.0"/>
                 </conditional>
             </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="input1_median.tiff" ftype="tiff">
-                <!-- See note for Gaussian filter above. -->
-                <has_image_mean_intensity mean_intensity="63.67" eps="10"/>
-            </expand>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_gaussian_sigma1.tiff" ftype="tiff"/>
         </test>
         <test>
+            <!--
+            Test 3: GAUSSIAN, test data with anisotropic pixels
+            ===================================================
+            -->
             <conditional name="setup">
                 <param name="target" value="2d"/>
-                <param name="input" value="input1_uint8.tiff"/>
-                <conditional name="filter">
-                    <param name="filter_type" value="prewitt"/>
-                    <param name="direction" value="1"/>
-                </conditional>
-            </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="input1_prewitt_h.tiff" ftype="tiff"/>
-        </test>
-        <test>
-            <conditional name="setup">
-                <param name="target" value="2d"/>
-                <param name="input" value="input1_uint8.tiff"/>
-                <conditional name="filter">
-                    <param name="filter_type" value="prewitt"/>
-                    <param name="direction" value="0"/>
-                </conditional>
-            </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="input1_prewitt_v.tiff" ftype="tiff"/>
-        </test>
-        <test>
-            <conditional name="setup">
-                <param name="target" value="2d"/>
-                <param name="input" value="input1_uint8.tiff"/>
-                <conditional name="filter">
-                    <param name="filter_type" value="sobel"/>
-                    <param name="direction" value="1"/>
-                </conditional>
-            </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="input1_sobel_h.tiff" ftype="tiff"/>
-        </test>
-        <test>
-            <conditional name="setup">
-                <param name="target" value="2d"/>
-                <param name="input" value="input1_uint8.tiff"/>
-                <conditional name="filter">
-                    <param name="filter_type" value="sobel"/>
-                    <param name="direction" value="0"/>
-                </conditional>
-            </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="input1_sobel_v.tiff" ftype="tiff"/>
-        </test>
-        <!-- Tests with float TIFF input image -->
-        <test>
-            <conditional name="setup">
-                <param name="target" value="2d"/>
-                <param name="input" value="input2_float.tiff"/>
+                <param name="input" value="input/input3_uint16.tiff"/>
                 <conditional name="filter">
                     <param name="filter_type" value="gaussian"/>
                 </conditional>
             </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="input2_gaussian.tiff" ftype="tiff">
-                <!-- See note for Gaussian filter above. -->
-                <has_image_mean_intensity mean_intensity="0.25" eps="0.01"/>
-            </expand>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input3_gaussian.tiff" ftype="tiff"/>
         </test>
         <test>
+            <!--
+            Test 4: GAUSSIAN, test data with anisotropic pixels and `anisotropic` processing switched off
+            =============================================================================================
+            -->
             <conditional name="setup">
                 <param name="target" value="2d"/>
-                <param name="input" value="input2_float.tiff"/>
-                <conditional name="filter">
-                    <param name="filter_type" value="uniform"/>
-                    <param name="size" value="4"/>
-                </conditional>
-            </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="input2_uniform.tiff" ftype="tiff">
-                <!-- See note for Gaussian filter above. -->
-                <has_image_mean_intensity mean_intensity="0.25" eps="0.01"/>
-            </expand>
-        </test>
-        <!-- Tests with multi-channel image (RGB) -->
-        <test>
-            <conditional name="setup">
-                <param name="target" value="2d"/>
-                <param name="input" value="scikit-image/retina.png"/>
+                <param name="input" value="input/input3_uint16.tiff"/>
                 <conditional name="filter">
                     <param name="filter_type" value="gaussian"/>
-                    <param name="sigma" value="5"/>
+                    <param name="anisotropic" value="false"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input3_gaussian_anisotropic-off.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <!--
+            Test 5: GAUSSIAN, test `order` parameter set to `1` (default is horizontal)
+            ===========================================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
                     <conditional name="derivative">
-                        <param name="order" value="0"/>
+                        <param name="order" value="1"/>
                     </conditional>
                 </conditional>
             </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="retina_gaussian_order0.tiff" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_gaussian_order1.tiff" ftype="tiff"/>
         </test>
         <test>
+            <!--
+            Test 6: GAUSSIAN, test `order` parameter set to `1` and `direction` to `0` (vertical)
+            =====================================================================================
+            -->
             <conditional name="setup">
                 <param name="target" value="2d"/>
-                <param name="input" value="scikit-image/retina.png"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
                 <conditional name="filter">
                     <param name="filter_type" value="gaussian"/>
-                    <param name="sigma" value="3"/>
                     <conditional name="derivative">
-                        <param name="order" value="2"/>
+                        <param name="order" value="1"/>
                         <param name="direction" value="0"/>
                     </conditional>
                 </conditional>
             </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="retina_gaussian_order2_axis0.tiff" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_gaussian_order1_direction0.tiff" ftype="tiff"/>
         </test>
-        <!-- Tests with 3-D images -->
         <test>
+            <!--
+            Test 7: GAUSSAIN, test `order` parameter set to `2`
+            ===================================================
+            -->
             <conditional name="setup">
-                <param name="target" value="3d"/>
-                <param name="input" value="retina_0c_5z_0t_0q.tiff"/>
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
                 <conditional name="filter">
                     <param name="filter_type" value="gaussian"/>
-                    <param name="sigma" value="3"/>
                     <conditional name="derivative">
-                        <param name="order" value="0"/>
-                        <param name="axes" value="ZYX"/>
+                        <param name="order" value="2"/>
                     </conditional>
                 </conditional>
             </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="retina_0c_5z_0t_0q-3d_gaussian.tiff" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_gaussian_order2.tiff" ftype="tiff"/>
         </test>
         <test>
+            <!--
+            Test 8: BOX, range of values is preserved
+            =========================================
+
+            The input file `input1_uint8.tiff` has values ranging between 23 and 254, with a mean value of 63.67.
+
+            Below, we use an assertion in addition to the `image_diff` comparison, to ensure that the range of
+            values is preserved. The motiviation behind this is that the expectation images are usually checked
+            visually, which means that the `image_diff` comparison is likely to ensure that the brightness of
+            the image is correct, thus it's good to double-check the range of values (hence the comparably large
+            value for `eps`). This also concerns the Gaussian (see above) and Median filters (see below).
+            -->
             <conditional name="setup">
-                <param name="target" value="3d"/>
-                <param name="input" value="retina_0c_5z_0t_0q.tiff"/>
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
                 <conditional name="filter">
-                    <param name="filter_type" value="gaussian"/>
-                    <param name="sigma" value="3"/>
-                    <conditional name="derivative">
-                        <param name="order" value="1"/>
-                        <conditional name="directed_3d">
-                            <param name="axes" value="ZYX"/>
-                            <param name="direction" value="0"/>
-                        </conditional>
-                    </conditional>
+                    <param name="filter_type" value="uniform"/>
                 </conditional>
             </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="retina_0c_5z_0t_0q-3d_gaussian_order1_axis0.tiff" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_uniform.tiff" ftype="tiff">
+                <!-- Mean of Box filter is approximately the mean intensity value of the image: -->
+                <has_image_mean_intensity mean_intensity="63.67" eps="10"/>
+            </expand>
+        </test>
+        <test>
+            <!--
+            Test 9: BOX, test `size` parameter
+            ==================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="uniform"/>
+                    <param name="size" value="5"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_uniform_size5.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <!--
+            Test 10: BOX, test data with anisotropic pixels
+            ===============================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input3_uint16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="uniform"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input3_uniform.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <!--
+            Test 11: BOX, test data with anisotropic pixels and `anisotropic` processing switched off
+            =========================================================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input3_uint16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="uniform"/>
+                    <param name="anisotropic" value="false"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input3_uniform_anisotropic-off.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <!--
+            Test 12: MEDIAN, range of values is preserved
+            ============================================
+
+            The input file `input1_uint8.tiff` has values ranging between 23 and 254, with a mean value of 63.67.
+
+            Below, we use an assertion in addition to the `image_diff` comparison, to ensure that the range of
+            values is preserved. The motiviation behind this is that the expectation images are usually checked
+            visually, which means that the `image_diff` comparison is likely to ensure that the brightness of
+            the image is correct, thus it's good to double-check the range of values (hence the comparably large
+            value for `eps`). This also concerns the Gaussian and Box filters (see above).
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="median"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_median.tiff" ftype="tiff">
+                <!-- Mean of Median filter is approximately the mean intensity value of the image: -->
+                <has_image_mean_intensity mean_intensity="63.67" eps="10"/>
+            </expand>
+        </test>
+        <test>
+            <!--
+            Test 13: MEDIAN, test `size` parameter
+            ======================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="median"/>
+                    <param name="size" value="5"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_median_size5.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <!--
+            Test 14: MEDIAN, test data with anisotropic pixels
+            ==================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input3_uint16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="median"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input3_median.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <!--
+            Test 15: MEDIAN, test data with anisotropic pixels and `anisotropic` processing switched off
+            ============================================================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input3_uint16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="median"/>
+                    <param name="anisotropic" value="false"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input3_median_anisotropic-off.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <!--
+            Test 16: PREWITT (default is horizontal)
+            ========================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="prewitt"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_prewitt.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <!--
+            Test 17: PREWITT, test `direction` parameter set to `0` (vertical)
+            ==================================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="prewitt"/>
+                    <param name="direction" value="0"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_prewitt_direction0.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <!--
+            Test 18: SOBEL (default is horizontal)
+            ======================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="sobel"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_sobel.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <!--
+            Test 19: SOBEL, test `direction` parameter set to `0` (vertical)
+            ================================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="sobel"/>
+                    <param name="direction" value="0"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_sobel_direction0.tiff" ftype="tiff"/>
         </test>
     </tests>
     <help>
