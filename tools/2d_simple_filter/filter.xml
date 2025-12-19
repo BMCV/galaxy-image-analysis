@@ -42,7 +42,7 @@
         -->
         <xml name="select_axes_2d" tokens="yx_selected" token_yx_selected="true">
             <param name="axes" type="select" label="Processing of 3-D images"
-                   help="This govers which axes are processed jointly.">
+                   help="This governs which axes are processed jointly.">
                 <yield/>
                 <option value="YX" selected="@YX_SELECTED@">Perform 2-D filtering of all XY-slices</option>
                 <option value="YZ">Perform 2-D filtering of all YZ-slices</option>
