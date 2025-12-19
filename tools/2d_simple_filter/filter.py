@@ -77,6 +77,7 @@ class Filters:
         axes: str,
         order: int = 0,
         direction: int | None = None,
+        dtype: str | None = None,
         **kwargs: Any,
     ) -> giatools.Image:
         if direction is None:
@@ -85,13 +86,14 @@ class Filters:
             _order = [0] * len(axes)
             _order[direction] = order
             _order = tuple(_order)
+            image = image_astype(image, dtype)
         if anisotropic and (anisotropy := get_anisotropy(image, axes)) is not None:
             _sigma = tuple(np.divide(sigma, anisotropy).tolist())
         else:
             _sigma = sigma
         return apply_nd_filter(
             ndi.gaussian_filter,
-            image if order == 0 else image_astype(image, float),
+            image,
             sigma=_sigma,
             order=_order,
             axes=axes,
@@ -121,19 +123,19 @@ class Filters:
         )
 
     @staticmethod
-    def prewitt(image: giatools.Image, direction: int, **kwargs: Any) -> giatools.Image:
+    def prewitt(image: giatools.Image, direction: int, dtype: str, **kwargs: Any) -> giatools.Image:
         return apply_nd_filter(
             ndi.prewitt,
-            image_astype(image, float),
+            image_astype(image, dtype),
             axis=direction,
             **kwargs,
         )
 
     @staticmethod
-    def sobel(image: giatools.Image, direction: int, **kwargs: Any) -> giatools.Image:
+    def sobel(image: giatools.Image, direction: int, dtype: str, **kwargs: Any) -> giatools.Image:
         return apply_nd_filter(
             ndi.sobel,
-            image_astype(image, float),
+            image_astype(image, dtype),
             axis=direction,
             **kwargs,
         )

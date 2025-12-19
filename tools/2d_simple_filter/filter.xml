@@ -140,6 +140,15 @@
                 </when>
             </conditional>
         </xml>
+        <xml name="select_dtype">
+            <param name="dtype" type="select" label="Output pixel type"
+                   help="Data type used to store the pixel values in the output image.">
+                <option value="float" selected="True">Same as the input image (if floating point, and 64-bit floating point otherwise)</option>
+                <option value="float64">64-bit floating point</option>
+                <option value="float32">32-bit floating point</option>
+                <option value="float16">16-bit floating point</option>
+            </param>
+        </xml>
         <!--
         === END OF MACROS ===
         -->
@@ -187,6 +196,7 @@
                 #if $setup.target == "2d"
                     #if $setup.filter.derivative.order != "0"
                         "direction": $setup.filter.derivative.direction,
+                        "dtype": "$setup.filter.derivative.dtype",
                     #end if
                 #else
                     #if $setup.filter.derivative.order == "0"
@@ -194,6 +204,7 @@
                     #else
                         "axes": "$setup.filter.derivative.directed_3d.axes",
                         "direction": $setup.filter.derivative.directed_3d.direction,
+                        "dtype": "$setup.filter.derivative.dtype",
                     #end if
                 #end if
 
@@ -220,9 +231,11 @@
 
                 #if $setup.target == "2d"
                     "direction": $setup.filter.direction,
+                    "dtype": "$setup.filter.dtype",
                 #else
                     "axes": "$setup.filter.directed_3d.axes",
                     "direction": $setup.filter.directed_3d.direction,
+                    "dtype": "$setup.filter.dtype",
                 #end if
 
             ## =================================================================================
@@ -247,15 +260,19 @@
                 <expand macro="filter" entities="pixels">
                     <token name="gaussian_order1">
                         <expand macro="select_direction" label="@DERIVATIVE_AXIS_LABEL@" help="@DERIVATIVE_AXIS_HELP@"/>
+                        <expand macro="select_dtype"/>
                     </token>
                     <token name="gaussian_order2">
                         <expand macro="select_direction" label="@DERIVATIVE_AXIS_LABEL@" help="@DERIVATIVE_AXIS_HELP@"/>
+                        <expand macro="select_dtype"/>
                     </token>
                     <token name="prewitt">
                         <expand macro="select_direction" label="@DERIVATIVE_AXIS_LABEL@" help="@PREWITT_AXIS_HELP@"/>
+                        <expand macro="select_dtype"/>
                     </token>
                     <token name="sobel">
                         <expand macro="select_direction" label="@DERIVATIVE_AXIS_LABEL@" help="@SOBEL_AXIS_HELP@"/>
+                        <expand macro="select_dtype"/>
                     </token>
                 </expand>
             </when>
@@ -269,9 +286,11 @@
                         <expand macro="select_axes_2d_or_3d"/>
                     </token>
                     <token name="gaussian_order1">
+                        <expand macro="select_dtype"/>
                         <expand macro="directed_3d_full" axis_label="@DERIVATIVE_AXIS_LABEL@" axis_help="@DERIVATIVE_AXIS_HELP@"/>
                     </token>
                     <token name="gaussian_order2">
+                        <expand macro="select_dtype"/>
                         <expand macro="directed_3d_full" axis_label="@DERIVATIVE_AXIS_LABEL@" axis_help="@DERIVATIVE_AXIS_HELP@"/>
                     </token>
                     <token name="uniform">
@@ -281,9 +300,11 @@
                         <expand macro="select_axes_2d_or_3d"/>
                     </token>
                     <token name="prewitt">
+                        <expand macro="select_dtype"/>
                         <expand macro="directed_3d" axis_label="@DERIVATIVE_AXIS_LABEL@" axis_help="@PREWITT_AXIS_HELP@"/>
                     </token>
                     <token name="sobel">
+                        <expand macro="select_dtype"/>
                         <expand macro="directed_3d" axis_label="@DERIVATIVE_AXIS_LABEL@" axis_help="@SOBEL_AXIS_HELP@"/>
                     </token>
                 </expand>
