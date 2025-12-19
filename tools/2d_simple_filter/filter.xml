@@ -178,7 +178,12 @@
 
         python '$__tool_directory__/filter.py'
 
-        '$setup.input'
+        #if $input.extension == "zarr"
+            '$setup.input.extra_files_path/$setup.input.metadata.store_root'
+        #else
+            '$setup.input'
+        #end if
+
         '$output'
         '$params'
 
@@ -254,8 +259,14 @@
             </param>
             <!-- Processing 2-D image data -->
             <when value="2d">
-                <param name="input" type="data" format="tiff,png,jpg" label="Input image (2-D)">
-                    <validator type="dataset_metadata_in_range" metadata_name="depth" min="0" max="1" message="Input image must be a 2-D image."/>
+                <param name="input" type="data" format="tiff,zarr,png,jpg" label="Input image (2-D)">
+                    <!--
+                    The OME-Zarr datatype in Galaxy is currently not derived from the Image datatype, and it does
+                    hence not inherit the metadata fields like `depth`. To cope with that, we allow all datasets
+                    for 2-D processing except those which are *known* to be 3-D.
+                    -->
+                    <validator type="expression" message="Dataset is not a 2-D image"
+                        ><![CDATA[getattr(value.metadata, "depth", None) in (None, '') or int(value.metadata.depth) < 2]]></validator>
                 </param>
                 <expand macro="filter" entities="pixels">
                     <token name="gaussian_order1">
@@ -278,8 +289,14 @@
             </when>
             <!-- Processing 3-D image data -->
             <when value="3d">
-                <param name="input" type="data" format="tiff" label="Input image (3-D)">
-                    <validator type="dataset_metadata_in_range" metadata_name="depth" min="2" message="Input image must be a 3-D image."/>
+                <param name="input" type="data" format="tiff,zarr" label="Input image (3-D)">
+                    <!--
+                    The OME-Zarr datatype in Galaxy is currently not derived from the Image datatype, and it does
+                    hence not inherit the metadata fields like `depth`. To cope with that, we allow all datasets
+                    for 3-D processing except those which are *known* to be 2-D.
+                    -->
+                    <validator type="expression" message="Dataset is not a 3-D image"
+                        ><![CDATA[getattr(value.metadata, "depth", None) in (None, '') or int(value.metadata.depth) >= 2]]></validator>
                 </param>
                 <expand macro="filter" entities="voxels">
                     <token name="gaussian_order0">
@@ -1182,37 +1199,12 @@
         </test>
         <!--
         =========================================================================================================
-        === TESTS: Illegal input images
-        =========================================================================================================
-        -->
-        <test expect_failure="true">
-            <!--
-            Test 31: Using 3-D image with `"target": "2d"`
-            ==============================================
-            -->
-            <conditional name="setup">
-                <param name="target" value="2d"/>
-                <param name="input" value="input/input4_float16.tiff"/>
-            </conditional>
-        </test>
-        <test expect_failure="true">
-            <!--
-            Test 32: Using 2-D image with `"target": "3d"`
-            ==============================================
-            -->
-            <conditional name="setup">
-                <param name="target" value="3d"/>
-                <param name="input" value="input/input1_uint8.tiff"/>
-            </conditional>
-        </test>
-        <!--
-        =========================================================================================================
         === TESTS: Exotic datatypes
         =========================================================================================================
         -->
         <test>
             <!--
-            Test 33: JPG
+            Test 34: JPG
             ============
             -->
             <conditional name="setup">
@@ -1233,7 +1225,80 @@
                 <has_line line="Output image dtype: uint8"/>
             </assert_stdout>
         </test>
-        <!-- TODO: Add test for OME-Zarr -->
+        <test>
+            <!--
+            Test 35: 2-D OME-Zarr
+            =====================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input6_yx.zarr"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input6_gaussian.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 1, 200, 200, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: float64"/>
+                <has_line line="Anisotropy of YX pixels/voxels: (1.0, 1.0)"/>
+                <has_line line="Applying filter: gaussian_filter with sigma=(3.0, 3.0), order=0, axes='YX'"/>
+                <has_line line="Output image shape: (200, 200)"/>
+                <has_line line="Output image axes: YX"/>
+                <has_line line="Output image dtype: float64"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 36: 3-D OME-Zarr
+            =====================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input7_zyx.zarr"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input7_gaussian.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 2, 64, 64, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: float64"/>
+                <has_line line="Anisotropy of ZYX pixels/voxels: (1.0, 1.0, 1.0)"/>
+                <has_line line="Applying filter: gaussian_filter with sigma=(3.0, 3.0, 3.0), order=0, axes='ZYX'"/>
+                <has_line line="Output image shape: (2, 64, 64)"/>
+                <has_line line="Output image axes: ZYX"/>
+                <has_line line="Output image dtype: float64"/>
+            </assert_stdout>
+        </test>
+        <!--
+        =========================================================================================================
+        === TESTS: Illegal input images
+        =========================================================================================================
+        -->
+        <test expect_failure="true">
+            <!--
+            Test 37: Using 3-D image (with metadata) with `"target": "2d"`
+            ==============================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input4_float16.tiff"/>
+            </conditional>
+        </test>
+        <test expect_failure="true">
+            <!--
+            Test 38: Using 2-D image (with metadata) with `"target": "3d"`
+            ==============================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
+            </conditional>
+        </test>
+        <!-- TODO: Add test for wrong `target` with OME-Zarr -->
     </tests>
     <help>
 
