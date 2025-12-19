@@ -254,7 +254,7 @@
             </param>
             <!-- Processing 2-D image data -->
             <when value="2d">
-                <param name="input" type="data" format="tiff,png" label="Input image (2-D)">
+                <param name="input" type="data" format="tiff,png,jpg" label="Input image (2-D)">
                     <validator type="dataset_metadata_in_range" metadata_name="depth" min="0" max="1" message="Input image must be a 2-D image."/>
                 </param>
                 <expand macro="filter" entities="pixels">
@@ -1205,7 +1205,34 @@
                 <param name="input" value="input/input1_uint8.tiff"/>
             </conditional>
         </test>
-        <!-- TODO: Add test for JPEG -->
+        <!--
+        =========================================================================================================
+        === TESTS: Exotic datatypes
+        =========================================================================================================
+        -->
+        <test>
+            <!--
+            Test 33: JPG
+            ============
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input5.jpg"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input5_gaussian.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 1, 10, 10, 3)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: uint8"/>
+                <has_line line="Applying filter: gaussian_filter with sigma=3.0, order=0, axes='YX'"/>
+                <has_line line="Output image shape: (10, 10, 3)"/>
+                <has_line line="Output image axes: YXC"/>
+                <has_line line="Output image dtype: uint8"/>
+            </assert_stdout>
+        </test>
         <!-- TODO: Add test for OME-Zarr -->
     </tests>
     <help>

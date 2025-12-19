@@ -33,3 +33,9 @@
   - resolution: `(2.0, 1.0)`
   - z-spacing: `2.0`
   - unit: `inch`
+
+## `input5.jpg`:
+
+- axes: `YX`
+- resolution: `(10, 10, 3)`
+- dtype: `uint8`
