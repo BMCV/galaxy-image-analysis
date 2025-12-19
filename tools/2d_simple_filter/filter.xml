@@ -1,5 +1,8 @@
 <tool id="ip_filter_standard" name="Apply standard image filter" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
     <description>with scipy</description>
+    <required_files>
+        <include type="literal" path="filter.py"/>
+    </required_files>
     <macros>
         <!--
         === BEGIN OF MACROS === 
