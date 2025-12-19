@@ -20,25 +20,36 @@ def image_astype(image: giatools.Image, dtype: np.dtype) -> giatools.Image:
 
 
 def get_anisotropy(image: giatools.Image, axes: str) -> tuple[float, ...] | None:
+    """
+    Get the anisotropy of the image pixels/voxels along the given `axes`.
+    """
+
+    # Determine the pixel/voxel size
     voxel_size = list()
-    if 'X' in axes:
-        voxel_size.append(
-            None if image.metadata.pixel_size is None else image.metadata.pixel_size[0]
-        )
-    if 'Y' in axes:
-        voxel_size.append(
-            None if image.metadata.pixel_size is None else image.metadata.pixel_size[1]
-        )
-    if 'Z' in axes:
-        voxel_size.append(image.metadata.z_spacing)
-    if any(s is None or abs(s) < 1e-8 for s in voxel_size):
-        print('Unknown pixel/voxel size')
-        return None
+    for axis in axes:
+        match axis:
+            case 'X':
+                if image.metadata.pixel_size is None:
+                    return None  # unknown size
+                else:
+                    voxel_size.append(image.metadata.pixel_size[0])
+            case 'Y':
+                if image.metadata.pixel_size is None:
+                    return None  # unknown size
+                else:
+                    voxel_size.append(image.metadata.pixel_size[1])
+            case 'Z':
+                if image.metadata.z_spacing is None:
+                    return None  # unknown size
+                else:
+                    voxel_size.append(image.metadata.z_spacing)
+
+    # Check for unknown size and compute anisotropy
+    if any(abs(s) < 1e-8 for s in voxel_size):
+        return None  # unknown size
     else:
-        anisotropy = 1 / np.abs(voxel_size)
-        anisotropy = (anisotropy / anisotropy.mean()).tolist()
-        print('Anisotropy of pixels/voxels:', tuple(anisotropy))
-        return tuple(anisotropy)
+        denom = pow(np.prod(voxel_size), 1 / len(voxel_size))  # geometric mean
+        return tuple(np.divide(voxel_size, denom).tolist())
 
 
 def get_anisotropic_size(image: giatools.Image, axes: str, size: int) -> tuple[int, ...] | int:
