@@ -18,15 +18,13 @@
         
     <command detect_errors="exit_code"><![CDATA[
         ## Create working directory
-        mkdir -p input_files &&
-        
+        mkdir -p input_files &&        
         ## Create mapping file: filename -> element_identifier
-        echo "filename\telement_identifier" > id_mapping.tsv &&
-        
+        printf "filename\telement_identifier\n" > id_mapping.tsv &&
         ## Symlink files and record their identifiers
-        #for $i, $file in enumerate($input_files):
-            ln -s '$file' 'input_files/${file.element_identifier}_${i}' &&
-            echo "${file.element_identifier}_${i}\t${file.element_identifier}" >> id_mapping.tsv &&
+        #for $file in $input_files:
+            ln -s '$file' 'input_files/${file.id}_${file.element_identifier}' &&
+            printf "${file.id}_${file.element_identifier}\t${file.name}\n" >> id_mapping.tsv &&
         #end for
         
         ## Run similarity detection
@@ -51,9 +49,9 @@
     </outputs>
     
     <tests>
-        <!-- Test 1: Two identical datasets (duplicate selection) -->
+        <!-- Test 1: Two identical datasets (duplicates) -->
         <test expect_num_outputs="1">
-            <param name="input_files" value="test1.png,test1.png"/>
+            <param name="input_files" value="test1.png,test1_copy.png"/>
             <param name="threshold" value="12"/>
             <output name="output_file" ftype="tabular">
                 <assert_contents>
@@ -61,15 +59,16 @@
                     <has_n_lines n="3"/>  <!-- Header + 2 bidirectional rows -->
                     <has_text text="test1.png"/>
                     <has_text text="K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY"/>
-                    <has_text text="0"/>
-                    <not_has_text text="-1"/>
+                    <!-- Check that files are identical (distance=0) and have matches (not -1) -->
+                    <has_text text="&#09;0&#10;"/>  <!-- Tab before 0, newline after -->
+                    <not_has_text text="&#09;-1&#10;"/>  <!-- No files without matches -->
                 </assert_contents>
             </output>
         </test>
-        
+
         <!-- Test 2: Three datasets - two identical, one different -->
         <test expect_num_outputs="1">
-            <param name="input_files" value="test1.png,test2.tiff,test2.tiff"/>
+            <param name="input_files" value="test1.png,test2.tiff,test1_copy.png"/>
             <param name="threshold" value="12"/>
             <output name="output_file" ftype="tabular">
                 <assert_contents>
@@ -79,12 +78,13 @@
                     <has_text text="test2.tiff"/>
                     <has_text text="K4AOMGOGQJA4Y46PAC4YPPA63GKD5RVFPR7FU3I4OOEW44TYXNYOTMY"/>
                     <has_text text="K4AGSPOSB5SS2X427WZ27QASTSBVTS55DXLMFDF7WOJKEOSTDEI3OXQ"/>
-                    <has_text text="0"/>
-                    <has_text text="-1"/>
+                    <!-- Check that we have both identical files (distance=0) and unmatched files (distance=-1) -->
+                    <has_text text="&#09;0&#10;"/>  <!-- Identical files -->
+                    <has_text text="&#09;-1&#10;"/>  <!-- Unmatched file -->
                 </assert_contents>
             </output>
         </test>
-        
+
         <!-- Test 3: Multiple datasets with none identical -->
         <test expect_num_outputs="1">
             <param name="input_files" value="test1.png,test2.tiff,test3.fasta"/>
@@ -96,7 +96,47 @@
                     <has_text text="test1.png"/>
                     <has_text text="test2.tiff"/>
                     <has_text text="test3.fasta"/>
-                    <has_text text="-1"/>
+                    <!-- Check that all files have no matches (distance=-1) -->
+                    <has_text text="&#09;-1&#10;"/>
+                    <not_has_text text="&#09;0&#10;"/>  <!-- No identical files -->
+                </assert_contents>
+            </output>
+        </test>
+
+        <!-- Test 4: Two similar image datasets (similar, not identical, in the similar file a few pixels differ) -->
+        <test expect_num_outputs="1">
+            <param name="input_files" value="test2.tiff,test2_similar.tiff"/>
+            <param name="threshold" value="12"/>
+            <output name="output_file" ftype="tabular">
+                <assert_contents>
+                    <has_n_columns n="7"/>
+                    <has_n_lines n="3"/>  <!-- Header + 2 bidirectional rows -->
+                    <has_text text="test2.tiff"/>
+                    <has_text text="test2_similar.tiff"/>
+                    <has_text text="K4AGSPOSB5SS2X427WZ27QASTSBVTS55DXLMFDF7WOJKEOSTDEI3OXQ&#09;3&#10;"/>
+                    <has_text text="K4AGSPOSB5SW2X427WZK7QAQTSBVSNSQLY3ITST6FAP52LY75L6LL5Q&#09;3&#10;"/>
+                    <!-- Check that distance is not 0 (not identical) and not -1 (has matches) -->
+                    <not_has_text text="&#09;0&#10;"/>  <!-- Not identical -->
+                    <not_has_text text="&#09;-1&#10;"/>  <!-- Has matches -->
+                </assert_contents>
+            </output>
+        </test>
+
+        <!-- Test 5: Two similar text datasets (similar, not identical, some characters differ) -->
+        <test expect_num_outputs="1">
+            <param name="input_files" value="sequence1.txt,sequence2.txt"/>
+            <param name="threshold" value="12"/>
+            <output name="output_file" ftype="tabular">
+                <assert_contents>
+                    <has_n_columns n="7"/>
+                    <has_n_lines n="3"/>  <!-- Header + 2 bidirectional rows -->
+                    <has_text text="sequence1.txt"/>
+                    <has_text text="sequence2.txt"/>
+                    <has_text text="K4AARSU4SMH3MJAVBYQXBIKHHQNKUZGLNB22HEK5GUAU56QHHYXUXIA&#09;7&#10;"/>
+                    <has_text text="K4AIRSE4SMH3NJAVR2QXFIKHHQNLUDXB2E5P3ZZ3RREBKVJL4WTG3QQ&#09;7&#10;"/>
+                    <!-- Check that distance is not 0 (not identical) and not -1 (has matches) -->
+                    <not_has_text text="&#09;0&#10;"/>  <!-- Not identical -->
+                    <not_has_text text="&#09;-1&#10;"/>  <!-- Has matches -->
                 </assert_contents>
             </output>
         </test>
@@ -145,11 +185,11 @@ Output
 A tabular file with one row per similarity relationship (bidirectional)::
 
     file_id      filename    iscc_code    match_id     match_filename    match_iscc_code    distance
-    dataset_123  file1.txt   K4AOMG...    dataset_124  file2.txt         K4AOMG...          8
-    dataset_124  file2.txt   K4AOMG...    dataset_123  file1.txt         K4AOMG...          8
-    dataset_123  file1.txt   K4AOMG...    dataset_125  file3.txt         K4AOMG...          10
-    dataset_125  file3.txt   K4AOMG...    dataset_123  file1.txt         K4AOMG...          10
-    dataset_126  file4.txt   K4AGSPO...                                                      -1
+    123  file1.txt   K4AOMG...    124  file2.txt         K4AOMG...          8
+    124  file2.txt   K4AOMG...    123  file1.txt         K4AOMG...          8
+    123  file1.txt   K4AOMG...    125  file3.txt         K4AOMG...          10
+    125  file3.txt   K4AOMG...    123  file1.txt         K4AOMG...          10
+    126  file4.txt   K4AGSPO...                                                      -1
 
 Where:
 
