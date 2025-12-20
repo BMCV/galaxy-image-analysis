@@ -231,4 +231,3 @@ if __name__ == "__main__":
     print('Output image axes:', result.axes)
     print('Output image dtype:', result.data.dtype)
     result.write(args.output, backend='tifffile')
-
