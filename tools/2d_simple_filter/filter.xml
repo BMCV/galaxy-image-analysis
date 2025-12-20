@@ -1,16 +1,159 @@
-<tool id="ip_filter_standard" name="Apply 2-D image filter" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
+<tool id="ip_filter_standard" name="Apply standard image filter" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
     <description>with scipy</description>
     <macros>
+        <!--
+        === BEGIN OF MACROS === 
+        -->
         <import>creators.xml</import>
         <import>tests.xml</import>
         <token name="@TOOL_VERSION@">1.16.3</token>
-        <token name="@VERSION_SUFFIX@">0</token>
-        <xml name="select_axis">
-            <param name="axis" type="select" label="Direction">
-                <option value="1" selected="true">Horizontal</option>
-                <option value="0">Vertical</option>
+        <token name="@VERSION_SUFFIX@">1</token>
+        <!--
+        === MACROS: UI text tokens ===
+        -->
+        <token name="@DEFAULT_AXIS_LABEL@">Direction</token>
+        <token name="@DERIVATIVE_AXIS_LABEL@">Direction of the derivative</token>
+        <token name="@DERIVATIVE_AXIS_HELP@">The axis to compute the derivative along.</token>
+        <token name="@PREWITT_AXIS_HELP@">
+            The Prewitt filter is a 2-D image filter that computes an approximation of the derivative of the image intensities in the given direction.
+        </token>
+        <token name="@SOBEL_AXIS_HELP@">
+            The Sobel filter is a 2-D image filter that computes an approximation of the derivative of the image intensities in the given direction.
+        </token>
+        <!--
+        === MACROS: Direction selectors ===
+        -->
+        <xml name="select_direction" tokens="axis1,axis2,axis1_label,axis2_label,label,help"
+             token_axis1="1" token_axis1_label="Horizontal" token_axis2="0" token_axis2_label="Vertical" token_label="@DEFAULT_AXIS_LABEL@" token_help="">
+            <param name="direction" type="select" label="@LABEL@" help="@HELP@">
+                <option value="@AXIS1@" selected="true">@AXIS1_LABEL@</option>
+                <option value="@AXIS2@">@AXIS2_LABEL@</option>
+                <yield/>
             </param>
         </xml>
+        <xml name="select_direction_3d" tokens="label,help" token_label="@DEFAULT_AXIS_LABEL@" token_help="">
+            <!-- Normalized axes layout for 3-D images: ZYX -->
+            <expand macro="select_direction" axis1="2" axis1_label="Horizontal" axis2="1" axis2_label="Vertical" label="@LABEL@" help="@HELP@">
+                <option value="0">Orthogonal</option>
+            </expand>
+        </xml>
+        <!--
+        === MACROS: Groups of fields for 3-D processing setup ===
+        -->
+        <xml name="select_axes_2d" tokens="yx_selected" token_yx_selected="true">
+            <param name="axes" type="select" label="Processing of 3-D images"
+                   help="This governs which axes are processed jointly.">
+                <yield/>
+                <option value="YX" selected="@YX_SELECTED@">Perform 2-D filtering of all XY-slices</option>
+                <option value="YZ">Perform 2-D filtering of all YZ-slices</option>
+                <option value="XZ">Perform 2-D filtering of all XZ-slices</option>
+            </param>
+        </xml>
+        <xml name="select_axes_2d_or_3d">
+            <expand macro="select_axes_2d" yx_selected="false">
+                <option value="ZYX" selected="true">Perform 3-D filtering</option>
+            </expand>
+        </xml>
+        <xml name="directed_3d" tokens="selector,axis_label,axis_help"
+             token_selector="select_axes_2d" token_axis_label="@DEFAULT_AXIS_LABEL@" token_axis_help="">
+            <conditional name="directed_3d">
+                <expand macro="@SELECTOR@"/>
+                <yield/>
+                <when value="YX">
+                    <expand macro="select_direction" label="@AXIS_LABEL@" help="@AXIS_HELP@"/>
+                </when>
+                <when value="YZ">
+                    <expand macro="select_direction" label="@AXIS_LABEL@" help="@AXIS_HELP@"
+                            axis1="0" axis1_label="Vertical" axis2="1" axis2_label="Orthogonal"/>
+                </when>
+                <when value="XZ">
+                    <expand macro="select_direction" label="@AXIS_LABEL@" help="@AXIS_HELP@"
+                            axis1="0" axis1_label="Horizontal" axis2="1" axis2_label="Orthogonal"/>
+                </when>
+            </conditional>
+        </xml>
+        <xml name="directed_3d_full" tokens="axis_label,axis_help"
+             token_axis_label="@DEFAULT_AXIS_LABEL@" token_axis_help="">
+            <expand macro="directed_3d" selector="select_axes_2d_or_3d">
+                <when value="ZYX">
+                    <expand macro="select_direction_3d" label="@AXIS_LABEL@" help="@AXIS_HELP@"/>
+                </when>
+            </expand>
+        </xml>
+        <!--
+        === MACROS: Field for optional anisotropic filtering ===
+        -->
+        <xml name="anisotropic" tokens="entities" token_entities="pixels/voxels">
+            <param name="anisotropic" type="boolean" checked="true" label="Anisotropic filtering"
+                   help="Perform anisotropic filtering if the image @ENTITIES@ are anistropic. Has no effect if the @ENTITIES@ are isotropic or no information about the size of the @ENTITIES@ is available from the matadata of the image."/>
+        </xml>
+        <!--
+        === MACROS: Group of fields for filter setup ===
+        -->
+        <xml name="filter" tokens="entities" token_entities="pixels/voxels">
+            <conditional name="filter">
+                <param name="filter_type" type="select" label="Filter type"
+                       help="Gaussian filters include smoothing filters for pre-processing (denoising, scale selection) and Gaussian derivatives for edge and feature detection. Box filters use uniform rectangular averaging. Median filters remove impulse noise and suit binary images and label maps. Prewitt and Sobel filters compute first-order derivatives, with Sobel providing better isotropy.">
+                    <option value="gaussian" selected="True">Gaussian</option>
+                    <option value="uniform">Box filter</option>
+                    <option value="median">Median</option>
+                    <option value="prewitt">Prewitt</option>
+                    <option value="sobel">Sobel</option>
+                </param>
+                <when value="gaussian">
+                    <param name="sigma" type="float" value="3" min="0.1" label="Sigma"
+                           help="The half width of the Gaussian bell (in pixels)."/>
+                    <expand macro="anisotropic" entities="@ENTITIES@"/>
+                    <conditional name="derivative">
+                        <param name="order" type="select" label="Advanced kernel options"
+                               help="Kernels based on the Gaussian bell are low-pass filters. Kernels based on the 1st-order and 2nd-order derivative act like high-pass and band-pass filters, respectively.">
+                            <option value="0">No derivative (Gaussian bell)</option>
+                            <option value="1">1st-order derivative of the Gaussian bell</option>
+                            <option value="2">2nd-order derivative of the Gaussian bell</option>
+                        </param>
+                        <when value="0">
+                            <yield name="gaussian_order0"/>
+                        </when>
+                        <when value="1">
+                            <yield name="gaussian_order1"/>
+                        </when>
+                        <when value="2">
+                            <yield name="gaussian_order2"/>
+                        </when>
+                    </conditional>
+                </when>
+                <when value="uniform">
+                    <param name="size" type="integer" min="2" value="3" label="Size"
+                           help="Edge length of the neighborhood (square, in pixels)."/>
+                    <expand macro="anisotropic" entities="@ENTITIES@"/>
+                    <yield name="uniform"/>
+                </when>
+                <when value="median">
+                    <param name="size" type="integer" min="2" value="3" label="Size"
+                           help="Edge length of the neighborhood (square, in pixels)."/>
+                    <expand macro="anisotropic" entities="@ENTITIES@"/>
+                    <yield name="median"/>
+                </when>
+                <when value="prewitt">
+                    <yield name="prewitt"/>
+                </when>
+                <when value="sobel">
+                    <yield name="sobel"/>
+                </when>
+            </conditional>
+        </xml>
+        <xml name="select_dtype">
+            <param name="dtype" type="select" label="Output pixel type"
+                   help="Data type used to store the pixel values in the output image.">
+                <option value="floating" selected="True">Same as the input image (if floating point, and 64-bit floating point otherwise)</option>
+                <option value="float64">64-bit floating point</option>
+                <option value="float32">32-bit floating point</option>
+                <option value="float16">16-bit floating point</option>
+            </param>
+        </xml>
+        <!--
+        === END OF MACROS ===
+        -->
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
@@ -26,15 +169,23 @@
     <requirements>
         <requirement type="package" version="@TOOL_VERSION@">scipy</requirement>
         <requirement type="package" version="2.3.5">numpy</requirement>
-        <requirement type="package" version="0.25.2">scikit-image</requirement>
+        <requirement type="package" version="0.12.2">ome-zarr</requirement>
         <requirement type="package" version="2025.10.16">tifffile</requirement>
-        <requirement type="package" version="0.5.2">giatools</requirement>
+        <requirement type="package" version="0.6.0">giatools</requirement>
     </requirements>
+    <required_files>
+        <include type="literal" path="filter.py"/>
+    </required_files>
     <command detect_errors="aggressive"><![CDATA[
 
         python '$__tool_directory__/filter.py'
 
-        '$input'
+        #if $input.extension == "zarr"
+            '$setup.input.extra_files_path/$setup.input.metadata.store_root'
+        #else
+            '$setup.input'
+        #end if
+
         '$output'
         '$params'
 
@@ -43,77 +194,140 @@
         <configfile name="params"><![CDATA[
             {
 
-            ## =====================================================================
-            #if $filter.filter_type == "gaussian"
-                "sigma": $filter.sigma,
-                "order": $filter.derivative.order,
+            ## =================================================================================
+            #if $setup.filter.filter_type == "gaussian"
+                "sigma": $setup.filter.sigma,
+                "order": $setup.filter.derivative.order,
+                "anisotropic": $setup.filter.anisotropic,
 
-                #if $filter.derivative.order != "0"
-                    "axis": $filter.derivative.axis,
+                #if $setup.target == "2d"
+                    #if $setup.filter.derivative.order != "0"
+                        "direction": $setup.filter.derivative.direction,
+                        "dtype": "$setup.filter.derivative.dtype",
+                    #end if
+                #else
+                    #if $setup.filter.derivative.order == "0"
+                        "axes": "$setup.filter.derivative.axes",
+                    #else
+                        "axes": "$setup.filter.derivative.directed_3d.axes",
+                        "direction": $setup.filter.derivative.directed_3d.direction,
+                        "dtype": "$setup.filter.derivative.dtype",
+                    #end if
                 #end if
 
-            ## =====================================================================
-            #elif $filter.filter_type == "uniform"
-                "size": $filter.size,
+            ## =================================================================================
+            #elif $setup.filter.filter_type == "uniform"
+                "size": $setup.filter.size,
+                "anisotropic": $setup.filter.anisotropic,
 
-            ## =====================================================================
-            #elif $filter.filter_type == "median"
-                "radius": $filter.radius,
+                #if $setup.target == "3d"
+                    "axes": "$setup.filter.axes",
+                #end if
 
-            ## =====================================================================
-            #elif $filter.filter_type == "prewitt" or $filter.filter_type == "sobel"
-                "axis": $filter.axis,
+            ## =================================================================================
+            #elif $setup.filter.filter_type == "median"
+                "size": $setup.filter.size,
+                "anisotropic": $setup.filter.anisotropic,
 
-            ## =====================================================================
+                #if $setup.target == "3d"
+                    "axes": "$setup.filter.axes",
+                #end if
+
+            ## =================================================================================
+            #elif $setup.filter.filter_type == "prewitt" or $setup.filter.filter_type == "sobel"
+
+                #if $setup.target == "2d"
+                    "direction": $setup.filter.direction,
+                    "dtype": "$setup.filter.dtype",
+                #else
+                    "axes": "$setup.filter.directed_3d.axes",
+                    "direction": $setup.filter.directed_3d.direction,
+                    "dtype": "$setup.filter.dtype",
+                #end if
+
+            ## =================================================================================
             #end if
 
-                "filter_type": "$filter.filter_type"
+                "filter_type": "$setup.filter.filter_type"
 
             }
         ]]></configfile>
     </configfiles>
     <inputs>
-        <param name="input" type="data" format="tiff,png" label="Input image"/>
-        <conditional name="filter">
-            <param name="filter_type" type="select" label="Filter type">
-                <option value="gaussian" selected="True">Gaussian</option>
-                <option value="uniform">Box filter (uniform filter)</option>
-                <option value="median">Median</option>
-                <option value="prewitt">Prewitt</option>
-                <option value="sobel">Sobel</option>
+        <conditional name="setup">
+            <param name="target" type="select" label="Type of image data to process"
+                   help='Select "2-D image data" or "3-D image data" if you want to filter 2-D images or 3-D images, respectively, or series thereof (e.g., stacks or hyperstacks, such as temporal image sequences).'>
+                <option value="2d" selected="true">2-D image data (or series thereof)</option>
+                <option value="3d">3-D image data (or series thereof)</option>
             </param>
-            <when value="gaussian">
-                <param name="sigma" type="float" value="3" min="0.1" label="Sigma"
-                       help="The half width of the Gaussian bell (in pixels)."/>
-                <conditional name="derivative">
-                    <param name="order" type="select" label="Use a derivative?">
-                        <option value="0">No derivative (mean filter)</option>
-                        <option value="1">1st-order derivative</option>
-                        <option value="2">2nd-order derivative</option>
-                    </param>
-                    <when value="0">
-                    </when>
-                    <when value="1">
-                        <expand macro="select_axis"/>
-                    </when>
-                    <when value="2">
-                        <expand macro="select_axis"/>
-                    </when>
-                </conditional>
+            <!-- Processing 2-D image data -->
+            <when value="2d">
+                <param name="input" type="data" format="tiff,zarr,png,jpg" label="Input image (2-D)">
+                    <!--
+                    The OME-Zarr datatype in Galaxy is currently not derived from the Image datatype, and it does
+                    hence not inherit the metadata fields like `depth`. To cope with that, we allow all datasets
+                    for 2-D processing except those which are *known* to be 3-D.
+                    -->
+                    <validator type="expression" message="Dataset is not a 2-D image"
+                        ><![CDATA[getattr(value.metadata, "depth", None) in (None, '') or int(value.metadata.depth) < 2]]></validator>
+                </param>
+                <expand macro="filter" entities="pixels">
+                    <token name="gaussian_order1">
+                        <expand macro="select_direction" label="@DERIVATIVE_AXIS_LABEL@" help="@DERIVATIVE_AXIS_HELP@"/>
+                        <expand macro="select_dtype"/>
+                    </token>
+                    <token name="gaussian_order2">
+                        <expand macro="select_direction" label="@DERIVATIVE_AXIS_LABEL@" help="@DERIVATIVE_AXIS_HELP@"/>
+                        <expand macro="select_dtype"/>
+                    </token>
+                    <token name="prewitt">
+                        <expand macro="select_direction" label="@DERIVATIVE_AXIS_LABEL@" help="@PREWITT_AXIS_HELP@"/>
+                        <expand macro="select_dtype"/>
+                    </token>
+                    <token name="sobel">
+                        <expand macro="select_direction" label="@DERIVATIVE_AXIS_LABEL@" help="@SOBEL_AXIS_HELP@"/>
+                        <expand macro="select_dtype"/>
+                    </token>
+                </expand>
             </when>
-            <when value="uniform">
-                <param name="size" type="integer" min="2" value="3" label="Size"
-                       help="Edge length of the neighborhood (square, in pixels)."/>
-            </when>
-            <when value="median">
-                <param name="radius" type="integer" min="2" value="3" label="Radius"
-                       help="Radius of the neighborhood (circle, in pixels)." />
-            </when>
-            <when value="prewitt">
-                <expand macro="select_axis"/>
-            </when>
-            <when value="sobel">
-                <expand macro="select_axis"/>
+            <!-- Processing 3-D image data -->
+            <when value="3d">
+                <param name="input" type="data" format="tiff,zarr" label="Input image (3-D)">
+                    <!--
+                    The OME-Zarr datatype in Galaxy is currently not derived from the Image datatype, and it does
+                    hence not inherit the metadata fields like `depth`. To cope with that, we allow all datasets
+                    for 3-D processing except those which are *known* to be 2-D.
+                    -->
+                    <validator type="expression" message="Dataset is not a 3-D image"
+                        ><![CDATA[getattr(value.metadata, "depth", None) in (None, '') or int(value.metadata.depth) >= 2]]></validator>
+                </param>
+                <expand macro="filter" entities="voxels">
+                    <token name="gaussian_order0">
+                        <expand macro="select_axes_2d_or_3d"/>
+                    </token>
+                    <token name="gaussian_order1">
+                        <expand macro="select_dtype"/>
+                        <expand macro="directed_3d_full" axis_label="@DERIVATIVE_AXIS_LABEL@" axis_help="@DERIVATIVE_AXIS_HELP@"/>
+                    </token>
+                    <token name="gaussian_order2">
+                        <expand macro="select_dtype"/>
+                        <expand macro="directed_3d_full" axis_label="@DERIVATIVE_AXIS_LABEL@" axis_help="@DERIVATIVE_AXIS_HELP@"/>
+                    </token>
+                    <token name="uniform">
+                        <expand macro="select_axes_2d_or_3d"/>
+                    </token>
+                    <token name="median">
+                        <expand macro="select_axes_2d_or_3d"/>
+                    </token>
+                    <token name="prewitt">
+                        <expand macro="select_dtype"/>
+                        <expand macro="directed_3d" axis_label="@DERIVATIVE_AXIS_LABEL@" axis_help="@PREWITT_AXIS_HELP@"/>
+                    </token>
+                    <token name="sobel">
+                        <expand macro="select_dtype"/>
+                        <expand macro="directed_3d" axis_label="@DERIVATIVE_AXIS_LABEL@" axis_help="@SOBEL_AXIS_HELP@"/>
+                    </token>
+                </expand>
             </when>
         </conditional>
     </inputs>
@@ -121,131 +335,1016 @@
         <data format="tiff" name="output"/>
     </outputs>
     <tests>
-        <!-- Tests with uint8 TIFF input image -->
+        <!--
+        =========================================================================================================
+        === TESTS: 2-D images
+        =========================================================================================================
+        -->
         <test>
-            <param name="input" value="input1_uint8.tiff"/>
-            <conditional name="filter">
-                <param name="filter_type" value="gaussian"/>
-            </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="input1_gaussian.tiff" ftype="tiff">
-                <!--
+            <!--
+            Test 1: GAUSSIAN, range of values is preserved
+            ==============================================
 
-                The input file `input1_uint8.tiff` has values ranging between 23 and 254, with a mean value of 63.67.
+            The input file `input1_uint8.tiff` has values ranging between 23 and 254, with a mean value of 63.67.
 
-                Below, we use an assertion in addition to the `image_diff` comparison, to ensure that the range of
-                values is preserved. The motiviation behind this is that the expectation images are usually checked
-                visually, which means that the `image_diff` comparison is likely to ensure that the brightness of
-                the image is correct, thus it's good to double-check the range of values (hence the comparably large
-                value for `eps`). This also concerns the median filter.
-
-                -->
-                <has_image_mean_intensity mean_intensity="63.67" eps="10"/>
-            </expand>
-        </test>
-        <test>
-            <param name="input" value="input1_uint8.tiff"/>
-            <conditional name="filter">
-                <param name="filter_type" value="median"/>
-            </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="input1_median.tiff" ftype="tiff">
-                <!-- See note for Gaussian filter above. -->
-                <has_image_mean_intensity mean_intensity="63.67" eps="10"/>
-            </expand>
-        </test>
-        <test>
-            <param name="input" value="input1_uint8.tiff"/>
-            <conditional name="filter">
-                <param name="filter_type" value="prewitt"/>
-                <param name="axis" value="1"/>
-            </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="input1_prewitt_h.tiff" ftype="tiff"/>
-        </test>
-        <test>
-            <param name="input" value="input1_uint8.tiff"/>
-            <conditional name="filter">
-                <param name="filter_type" value="prewitt"/>
-                <param name="axis" value="0"/>
-            </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="input1_prewitt_v.tiff" ftype="tiff"/>
-        </test>
-        <test>
-            <param name="input" value="input1_uint8.tiff"/>
-            <conditional name="filter">
-                <param name="filter_type" value="sobel"/>
-                <param name="axis" value="1"/>
-            </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="input1_sobel_h.tiff" ftype="tiff"/>
-        </test>
-        <test>
-            <param name="input" value="input1_uint8.tiff"/>
-            <conditional name="filter">
-                <param name="filter_type" value="sobel"/>
-                <param name="axis" value="0"/>
-            </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="input1_sobel_v.tiff" ftype="tiff"/>
-        </test>
-        <!-- Tests with float TIFF input image -->
-        <test>
-            <param name="input" value="input2_float.tiff"/>
-            <conditional name="filter">
-                <param name="filter_type" value="gaussian"/>
-            </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="input2_gaussian.tiff" ftype="tiff">
-                <!-- See note for Gaussian filter above. -->
-                <has_image_mean_intensity mean_intensity="0.25" eps="0.01"/>
-            </expand>
-        </test>
-        <test>
-            <param name="input" value="input2_float.tiff"/>
-            <conditional name="filter">
-                <param name="filter_type" value="uniform"/>
-                <param name="size" value="4"/>
-            </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="input2_uniform.tiff" ftype="tiff">
-                <!-- See note for Gaussian filter above. -->
-                <has_image_mean_intensity mean_intensity="0.25" eps="0.01"/>
-            </expand>
-        </test>
-        <!-- Tests with multi-channel image (RGB) -->
-        <test>
-            <param name="input" value="scikit-image/retina.png"/>
-            <conditional name="filter">
-                <param name="filter_type" value="gaussian"/>
-                <param name="sigma" value="5"/>
-                <conditional name="derivative">
-                    <param name="order" value="0"/>
+            Below, we use an assertion in addition to the `image_diff` comparison, to ensure that the range of
+            values is preserved. The motiviation behind this is that the expectation images are usually checked
+            visually, which means that the `image_diff` comparison is likely to ensure that the brightness of
+            the image is correct, thus it's good to double-check the range of values (hence the comparably large
+            value for `eps`). This also concerns the Median and Box filters (see below).
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
                 </conditional>
             </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="retina_gaussian_order0.tiff" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_gaussian.tiff" ftype="tiff">
+                <!-- Mean of Gaussian filter is approximately the mean intensity value of the image: -->
+                <has_image_mean_intensity mean_intensity="63.67" eps="10"/>
+            </expand>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 1, 265, 329, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: uint8"/>
+                <has_line line="Applying filter: gaussian_filter with sigma=3.0, order=0, axes='YX'"/>
+                <has_line line="Output image shape: (265, 329)"/>
+                <has_line line="Output image axes: YX"/>
+                <has_line line="Output image dtype: uint8"/>
+            </assert_stdout>
         </test>
         <test>
-            <param name="input" value="scikit-image/retina.png"/>
-            <conditional name="filter">
-                <param name="filter_type" value="gaussian"/>
-                <param name="sigma" value="3"/>
-                <conditional name="derivative">
-                    <param name="order" value="2"/>
-                    <param name="axis" value="0"/>
+            <!--
+            Test 2: GAUSSIAN, test `sigma` parameter
+            ========================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                    <param name="sigma" value="1.0"/>
                 </conditional>
             </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="retina_gaussian_order2_axis0.tiff" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_gaussian_sigma1.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 1, 265, 329, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: uint8"/>
+                <has_line line="Applying filter: gaussian_filter with sigma=1.0, order=0, axes='YX'"/>
+                <has_line line="Output image shape: (265, 329)"/>
+                <has_line line="Output image axes: YX"/>
+                <has_line line="Output image dtype: uint8"/>
+            </assert_stdout>
         </test>
+        <test>
+            <!--
+            Test 3: GAUSSIAN, test data with anisotropic pixels
+            ===================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input3_uint16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input3_gaussian.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 1, 58, 64, 3)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: uint16"/>
+                <has_line_matching expression="^Anisotropy of YX pixels/voxels: \(1\.414[0-9]+, 0\.707[0-9]+\)$"/>
+                <has_line_matching expression="^Applying filter: gaussian_filter with sigma=\(2\.121[0-9]+, 4\.242[0-9]+\), order=0, axes='YX'$"/>
+                <has_line line="Output image shape: (58, 64, 3)"/>
+                <has_line line="Output image axes: YXC"/>
+                <has_line line="Output image dtype: uint16"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 4: GAUSSIAN, test data with anisotropic pixels and `"anisotropic": false`
+            ==============================================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input3_uint16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                    <param name="anisotropic" value="false"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input3_gaussian_anisotropic-off.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 1, 58, 64, 3)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: uint16"/>
+                <has_line line="Applying filter: gaussian_filter with sigma=3.0, order=0, axes='YX'"/>
+                <has_line line="Output image shape: (58, 64, 3)"/>
+                <has_line line="Output image axes: YXC"/>
+                <has_line line="Output image dtype: uint16"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 5: GAUSSIAN, test `"order": 1` (default is horizontal)
+            ===========================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                    <conditional name="derivative">
+                        <param name="order" value="1"/>
+                    </conditional>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_gaussian_order1.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 1, 265, 329, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: uint8"/>
+                <has_line line="Applying filter: gaussian_filter with sigma=3.0, order=(0, 1), axes='YX'"/>
+                <has_line line="Output image shape: (265, 329)"/>
+                <has_line line="Output image axes: YX"/>
+                <has_line line="Output image dtype: float64"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 6: GAUSSIAN, test `"order": 1`, `"direction": 0` (vertical)
+            ================================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                    <conditional name="derivative">
+                        <param name="order" value="1"/>
+                        <param name="direction" value="0"/>
+                    </conditional>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_gaussian_order1_direction0.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 1, 265, 329, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: uint8"/>
+                <has_line line="Applying filter: gaussian_filter with sigma=3.0, order=(1, 0), axes='YX'"/>
+                <has_line line="Output image shape: (265, 329)"/>
+                <has_line line="Output image axes: YX"/>
+                <has_line line="Output image dtype: float64"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 7: GAUSSAIN, test `"order": 2`
+            ===================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                    <conditional name="derivative">
+                        <param name="order" value="2"/>
+                    </conditional>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_gaussian_order2.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 1, 265, 329, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: uint8"/>
+                <has_line line="Applying filter: gaussian_filter with sigma=3.0, order=(0, 2), axes='YX'"/>
+                <has_line line="Output image shape: (265, 329)"/>
+                <has_line line="Output image axes: YX"/>
+                <has_line line="Output image dtype: float64"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 8: BOX, range of values is preserved
+            =========================================
+
+            The input file `input1_uint8.tiff` has values ranging between 23 and 254, with a mean value of 63.67.
+
+            Below, we use an assertion in addition to the `image_diff` comparison, to ensure that the range of
+            values is preserved. The motiviation behind this is that the expectation images are usually checked
+            visually, which means that the `image_diff` comparison is likely to ensure that the brightness of
+            the image is correct, thus it's good to double-check the range of values (hence the comparably large
+            value for `eps`). This also concerns the Gaussian (see above) and Median filters (see below).
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="uniform"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_uniform.tiff" ftype="tiff">
+                <!-- Mean of Box filter is approximately the mean intensity value of the image: -->
+                <has_image_mean_intensity mean_intensity="63.67" eps="10"/>
+            </expand>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 1, 265, 329, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: uint8"/>
+                <has_line line="Applying filter: uniform_filter with size=3, axes='YX'"/>
+                <has_line line="Output image shape: (265, 329)"/>
+                <has_line line="Output image axes: YX"/>
+                <has_line line="Output image dtype: uint8"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 9: BOX, test `size` parameter
+            ==================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="uniform"/>
+                    <param name="size" value="5"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_uniform_size5.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 1, 265, 329, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: uint8"/>
+                <has_line line="Applying filter: uniform_filter with size=5, axes='YX'"/>
+                <has_line line="Output image shape: (265, 329)"/>
+                <has_line line="Output image axes: YX"/>
+                <has_line line="Output image dtype: uint8"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 10: BOX, test data with anisotropic pixels
+            ===============================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input3_uint16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="uniform"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input3_uniform.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 1, 58, 64, 3)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: uint16"/>
+                <has_line_matching expression="^Anisotropy of YX pixels/voxels: \(1\.414[0-9]+, 0\.707[0-9]+\)$"/>
+                <has_line line="Applying filter: uniform_filter with size=(2, 4), axes='YX'"/>
+                <has_line line="Output image shape: (58, 64, 3)"/>
+                <has_line line="Output image axes: YXC"/>
+                <has_line line="Output image dtype: uint16"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 11: BOX, test data with anisotropic pixels and `"anisotropic": false`
+            ==========================================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input3_uint16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="uniform"/>
+                    <param name="anisotropic" value="false"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input3_uniform_anisotropic-off.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 1, 58, 64, 3)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: uint16"/>
+                <has_line line="Applying filter: uniform_filter with size=3, axes='YX'"/>
+                <has_line line="Output image shape: (58, 64, 3)"/>
+                <has_line line="Output image axes: YXC"/>
+                <has_line line="Output image dtype: uint16"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 12: MEDIAN, range of values is preserved
+            =============================================
+
+            The input file `input1_uint8.tiff` has values ranging between 23 and 254, with a mean value of 63.67.
+
+            Below, we use an assertion in addition to the `image_diff` comparison, to ensure that the range of
+            values is preserved. The motiviation behind this is that the expectation images are usually checked
+            visually, which means that the `image_diff` comparison is likely to ensure that the brightness of
+            the image is correct, thus it's good to double-check the range of values (hence the comparably large
+            value for `eps`). This also concerns the Gaussian and Box filters (see above).
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="median"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_median.tiff" ftype="tiff">
+                <!-- Mean of Median filter is approximately the mean intensity value of the image: -->
+                <has_image_mean_intensity mean_intensity="63.67" eps="10"/>
+            </expand>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 1, 265, 329, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: uint8"/>
+                <has_line line="Applying filter: median_filter with size=3, axes='YX'"/>
+                <has_line line="Output image shape: (265, 329)"/>
+                <has_line line="Output image axes: YX"/>
+                <has_line line="Output image dtype: uint8"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 13: MEDIAN, test `size` parameter
+            ======================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="median"/>
+                    <param name="size" value="5"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_median_size5.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 1, 265, 329, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: uint8"/>
+                <has_line line="Applying filter: median_filter with size=5, axes='YX'"/>
+                <has_line line="Output image shape: (265, 329)"/>
+                <has_line line="Output image axes: YX"/>
+                <has_line line="Output image dtype: uint8"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 14: MEDIAN, test data with anisotropic pixels
+            ==================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input3_uint16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="median"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input3_median.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 1, 58, 64, 3)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: uint16"/>
+                <has_line_matching expression="^Anisotropy of YX pixels/voxels: \(1\.414[0-9]+, 0\.707[0-9]+\)$"/>
+                <has_line line="Applying filter: median_filter with size=(2, 4), axes='YX'"/>
+                <has_line line="Output image shape: (58, 64, 3)"/>
+                <has_line line="Output image axes: YXC"/>
+                <has_line line="Output image dtype: uint16"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 15: MEDIAN, test data with anisotropic pixels and `"anisotropic": false`
+            =============================================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input3_uint16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="median"/>
+                    <param name="anisotropic" value="false"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input3_median_anisotropic-off.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 1, 58, 64, 3)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: uint16"/>
+                <has_line line="Applying filter: median_filter with size=3, axes='YX'"/>
+                <has_line line="Output image shape: (58, 64, 3)"/>
+                <has_line line="Output image axes: YXC"/>
+                <has_line line="Output image dtype: uint16"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 16: PREWITT (default is horizontal)
+            ========================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="prewitt"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_prewitt.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 1, 265, 329, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: uint8"/>
+                <has_line line="Applying filter: prewitt with axis=1, axes='YX'"/>
+                <has_line line="Output image shape: (265, 329)"/>
+                <has_line line="Output image axes: YX"/>
+                <has_line line="Output image dtype: float64"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 17: PREWITT, test `"direction": 0` (vertical)
+            ==================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="prewitt"/>
+                    <param name="direction" value="0"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_prewitt_direction0.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 1, 265, 329, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: uint8"/>
+                <has_line line="Applying filter: prewitt with axis=0, axes='YX'"/>
+                <has_line line="Output image shape: (265, 329)"/>
+                <has_line line="Output image axes: YX"/>
+                <has_line line="Output image dtype: float64"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 18: SOBEL (default is horizontal)
+            ======================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="sobel"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_sobel.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 1, 265, 329, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: uint8"/>
+                <has_line line="Applying filter: sobel with axis=1, axes='YX'"/>
+                <has_line line="Output image shape: (265, 329)"/>
+                <has_line line="Output image axes: YX"/>
+                <has_line line="Output image dtype: float64"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 19: SOBEL, test `"direction": 0` (vertical)
+            ================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="sobel"/>
+                    <param name="direction" value="0"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_sobel_direction0.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 1, 265, 329, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: uint8"/>
+                <has_line line="Applying filter: sobel with axis=0, axes='YX'"/>
+                <has_line line="Output image shape: (265, 329)"/>
+                <has_line line="Output image axes: YX"/>
+                <has_line line="Output image dtype: float64"/>
+            </assert_stdout>
+        </test>
+        <!--
+        =========================================================================================================
+        === TESTS: 3-D images
+        =========================================================================================================
+        -->
+        <test>
+            <!--
+            Test 20: GAUSSIAN, defaults
+            ===========================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input4_float16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input4_gaussian.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 10, 15, 18, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: float16"/>
+                <has_line line="Anisotropy of ZYX pixels/voxels: (2.0, 1.0, 0.5)"/>
+                <has_line line="Applying filter: gaussian_filter with sigma=(1.5, 3.0, 6.0), order=0, axes='ZYX'"/>
+                <has_line line="Output image shape: (10, 15, 18)"/>
+                <has_line line="Output image axes: ZYX"/>
+                <has_line line="Output image dtype: float16"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 21: GAUSSIAN, test `"anisotropic": false`
+            ==============================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input4_float16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                    <param name="anisotropic" value="false"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input4_gaussian_anisotropic-off.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 10, 15, 18, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: float16"/>
+                <has_line line="Applying filter: gaussian_filter with sigma=3.0, order=0, axes='ZYX'"/>
+                <has_line line="Output image shape: (10, 15, 18)"/>
+                <has_line line="Output image axes: ZYX"/>
+                <has_line line="Output image dtype: float16"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 22: GAUSSIAN, test `"axes": "YX"`
+            ======================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input4_float16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                    <conditional name="derivative">
+                        <param name="axes" value="YX"/>
+                    </conditional>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input4_gaussian_yx.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 10, 15, 18, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: float16"/>
+                <has_line_matching expression="^Anisotropy of YX pixels/voxels: \(1\.414[0-9]+, 0\.707[0-9]+\)$"/>
+                <has_line_matching expression="^Applying filter: gaussian_filter with sigma=\(2\.121[0-9]+, 4\.242[0-9]+\), order=0, axes='YX'$"/>
+                <has_line line="Output image shape: (10, 15, 18)"/>
+                <has_line line="Output image axes: ZYX"/>
+                <has_line line="Output image dtype: float16"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 23: GAUSSIAN, test `"axes": "YZ"`
+            ======================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input4_float16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                    <conditional name="derivative">
+                        <param name="axes" value="YZ"/>
+                    </conditional>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input4_gaussian_yz.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 10, 15, 18, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: float16"/>
+                <has_line_matching expression="^Anisotropy of YZ pixels/voxels: \(0\.707[0-9]+, 1\.414[0-9]+\)$"/>
+                <has_line_matching expression="^Applying filter: gaussian_filter with sigma=\(4\.242[0-9]+, 2\.121[0-9]+\), order=0, axes='YZ'$"/>
+                <has_line line="Output image shape: (10, 15, 18)"/>
+                <has_line line="Output image axes: ZYX"/>
+                <has_line line="Output image dtype: float16"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 24: GAUSSIAN, test `"order": 1` (default is horizontal)
+            ============================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input4_float16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                    <conditional name="derivative">
+                        <param name="order" value="1"/>
+                    </conditional>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input4_gaussian_order1.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 10, 15, 18, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: float16"/>
+                <has_line line="Anisotropy of ZYX pixels/voxels: (2.0, 1.0, 0.5)"/>
+                <has_line line="Applying filter: gaussian_filter with sigma=(1.5, 3.0, 6.0), order=(0, 0, 1), axes='ZYX'"/>
+                <has_line line="Output image shape: (10, 15, 18)"/>
+                <has_line line="Output image axes: ZYX"/>
+                <has_line line="Output image dtype: float16"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 25: GAUSSIAN, test `"order": 1`, `"direction": 1` (vertical)
+            =================================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input4_float16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                    <conditional name="derivative">
+                        <param name="order" value="1"/>
+                        <conditional name="directed_3d">
+                            <param name="direction" value="1"/>
+                        </conditional>
+                    </conditional>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input4_gaussian_order1_direction1.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 10, 15, 18, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: float16"/>
+                <has_line line="Anisotropy of ZYX pixels/voxels: (2.0, 1.0, 0.5)"/>
+                <has_line line="Applying filter: gaussian_filter with sigma=(1.5, 3.0, 6.0), order=(0, 1, 0), axes='ZYX'"/>
+                <has_line line="Output image shape: (10, 15, 18)"/>
+                <has_line line="Output image axes: ZYX"/>
+                <has_line line="Output image dtype: float16"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 26: GAUSSIAN, test `"order": 1`, `"axes": "XZ"`, `"direction": 1` (orthogonal)
+            ===================================================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input4_float16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                    <conditional name="derivative">
+                        <param name="order" value="1"/>
+                        <conditional name="directed_3d">
+                            <param name="axes" value="XZ"/>
+                            <param name="direction" value="1"/>
+                        </conditional>
+                    </conditional>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input4_gaussian_order1_xz_direction1.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 10, 15, 18, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: float16"/>
+                <has_line line="Anisotropy of XZ pixels/voxels: (0.5, 2.0)"/>
+                <has_line line="Applying filter: gaussian_filter with sigma=(6.0, 1.5), order=(0, 1), axes='XZ'"/>
+                <has_line line="Output image shape: (10, 15, 18)"/>
+                <has_line line="Output image axes: ZYX"/>
+                <has_line line="Output image dtype: float16"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 27: BOX, defaults
+            ======================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input4_float16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="uniform"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input4_uniform.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 10, 15, 18, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: float16"/>
+                <has_line line="Anisotropy of ZYX pixels/voxels: (2.0, 1.0, 0.5)"/>
+                <has_line line="Applying filter: uniform_filter with size=(2, 3, 6), axes='ZYX'"/>
+                <has_line line="Output image shape: (10, 15, 18)"/>
+                <has_line line="Output image axes: ZYX"/>
+                <has_line line="Output image dtype: float16"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 28: MEDIAN, defaults
+            =========================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input4_float16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="median"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input4_median.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 10, 15, 18, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: float16"/>
+                <has_line line="Anisotropy of ZYX pixels/voxels: (2.0, 1.0, 0.5)"/>
+                <has_line line="Applying filter: median_filter with size=(2, 3, 6), axes='ZYX'"/>
+                <has_line line="Output image shape: (10, 15, 18)"/>
+                <has_line line="Output image axes: ZYX"/>
+                <has_line line="Output image dtype: float16"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 29: PREWITT, defaults
+            =========================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input4_float16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="prewitt"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input4_prewitt.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 10, 15, 18, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: float16"/>
+                <has_line line="Applying filter: prewitt with axis=1, axes='YX'"/>
+                <has_line line="Output image shape: (10, 15, 18)"/>
+                <has_line line="Output image axes: ZYX"/>
+                <has_line line="Output image dtype: float16"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 30: SOBEL, defaults
+            =========================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input4_float16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="sobel"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input4_sobel.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 10, 15, 18, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: float16"/>
+                <has_line line="Applying filter: sobel with axis=1, axes='YX'"/>
+                <has_line line="Output image shape: (10, 15, 18)"/>
+                <has_line line="Output image axes: ZYX"/>
+                <has_line line="Output image dtype: float16"/>
+            </assert_stdout>
+        </test>
+        <!--
+        =========================================================================================================
+        === TESTS: Explicit `dtype` conversion
+        =========================================================================================================
+        -->
+        <test>
+            <!--
+            Test 31: GAUSSIAN, uint8 input, test `"order": 1` (default is horizontal), `"dtype": "float16"`
+            ===============================================================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                    <conditional name="derivative">
+                        <param name="order" value="1"/>
+                        <param name="dtype" value="float16"/>
+                    </conditional>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_gaussian_order1_float16.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 1, 265, 329, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: uint8"/>
+                <has_line line="Applying filter: gaussian_filter with sigma=3.0, order=(0, 1), axes='YX'"/>
+                <has_line line="Output image shape: (265, 329)"/>
+                <has_line line="Output image axes: YX"/>
+                <has_line line="Output image dtype: float16"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 32: PREWITT, uint8 input, `"dtype": "float16"`
+            ===================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="prewitt"/>
+                    <param name="dtype" value="float16"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input1_prewitt_float16.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 1, 265, 329, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: uint8"/>
+                <has_line line="Applying filter: prewitt with axis=1, axes='YX'"/>
+                <has_line line="Output image shape: (265, 329)"/>
+                <has_line line="Output image axes: YX"/>
+                <has_line line="Output image dtype: float16"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 33: SOBEL, float16 input, `"dtype": "float32"`
+            ===================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input4_float16.tiff"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="sobel"/>
+                    <param name="dtype" value="float32"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input4_sobel_float32.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 10, 15, 18, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: float16"/>
+                <has_line line="Applying filter: sobel with axis=1, axes='YX'"/>
+                <has_line line="Output image shape: (10, 15, 18)"/>
+                <has_line line="Output image axes: ZYX"/>
+                <has_line line="Output image dtype: float32"/>
+            </assert_stdout>
+        </test>
+        <!--
+        =========================================================================================================
+        === TESTS: Exotic datatypes
+        =========================================================================================================
+        -->
+        <test>
+            <!--
+            Test 34: JPG
+            ============
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input5.jpg"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input5_gaussian.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 1, 10, 10, 3)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: uint8"/>
+                <has_line line="Applying filter: gaussian_filter with sigma=3.0, order=0, axes='YX'"/>
+                <has_line line="Output image shape: (10, 10, 3)"/>
+                <has_line line="Output image axes: YXC"/>
+                <has_line line="Output image dtype: uint8"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 35: 2-D OME-Zarr
+            =====================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input6_yx.zarr"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input6_gaussian.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 1, 200, 200, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: float64"/>
+                <has_line line="Anisotropy of YX pixels/voxels: (1.0, 1.0)"/>
+                <has_line line="Applying filter: gaussian_filter with sigma=(3.0, 3.0), order=0, axes='YX'"/>
+                <has_line line="Output image shape: (200, 200)"/>
+                <has_line line="Output image axes: YX"/>
+                <has_line line="Output image dtype: float64"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <!--
+            Test 36: 3-D OME-Zarr
+            =====================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input7_zyx.zarr"/>
+                <conditional name="filter">
+                    <param name="filter_type" value="gaussian"/>
+                </conditional>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input7_gaussian.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Input image shape: (1, 1, 2, 64, 64, 1)"/>
+                <has_line line="Input image axes: QTZYXC"/>
+                <has_line line="Input image dtype: float64"/>
+                <has_line line="Anisotropy of ZYX pixels/voxels: (1.0, 1.0, 1.0)"/>
+                <has_line line="Applying filter: gaussian_filter with sigma=(3.0, 3.0, 3.0), order=0, axes='ZYX'"/>
+                <has_line line="Output image shape: (2, 64, 64)"/>
+                <has_line line="Output image axes: ZYX"/>
+                <has_line line="Output image dtype: float64"/>
+            </assert_stdout>
+        </test>
+        <!--
+        =========================================================================================================
+        === TESTS: Illegal input images
+        =========================================================================================================
+        -->
+        <test expect_failure="true">
+            <!--
+            Test 37: Using 3-D image (with metadata) with `"target": "2d"`
+            ==============================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="2d"/>
+                <param name="input" value="input/input4_float16.tiff"/>
+            </conditional>
+        </test>
+        <test expect_failure="true">
+            <!--
+            Test 38: Using 2-D image (with metadata) with `"target": "3d"`
+            ==============================================================
+            -->
+            <conditional name="setup">
+                <param name="target" value="3d"/>
+                <param name="input" value="input/input1_uint8.tiff"/>
+            </conditional>
+        </test>
+        <!-- TODO: Add test for wrong `target` with OME-Zarr -->
     </tests>
     <help>
 
-        **Applies a standard, general-purpose 2-D filter to an image.**
+**Applies a standard, general-purpose image filter to an image.**
 
-        Support for different image types:
+Support for different image types:
 
-        - For 3-D images, the filter is applied to all z-slices of the image.
-        - For multi-channel images, the filter is applied to all channels of the image.
-        - For time-series images, the filter is also applied for all time steps.
+- For 3-D images, filters can either be applied jointly to the 3-D image data, or separately to all 2-D slices of the image.
+- For multi-channel images, filters are applied separately to all channels of the image.
+- For time-series images, filter also are applied separately for all time steps.
 
-        Mean filters like the Gaussian filter, the box filter, or the median filter preserve both the brightness of the image, and
-        the range of values. This does not hold for the derivative variants of the Gaussian filter, which may produce negative values.
+Mean filters like the Gaussian filter, the box filter, or the median filter preserve the brightness of the image and the range
+of values. Derivative filters like 1st and 2nd order Gaussians, Prewitt filters, and Sobel filters naturally may yield negative
+or fractional values, and thus generally produce floating point-encoded images. The different filters are described below.
+
+**Gaussian filters** are crucial for pre-processing in many image analysis tasks like edge detection and object recognition.
+They are also employed for image denoising, when images are deteriorated by—or approximately by—white additive Gaussian noise.
+Gaussian filters are linear filters that smoothen images and blur out fine details, which is why they are also used for scale
+selection. These filters use a Gaussian bell-shaped kernel for weighted averaging of pixels, giving more importance to central
+pixels and less to distant ones.
+
+**Gaussian derivative operators** (1st and 2nd order Gaussians) are filters that are used in image analysis for approximate
+computation of the 1st and 2nd order derivatives of the image intensities. Due to their scale-space theoretical and
+noise-reducing properties, they are popular candidates for edge and feature detection. They are implemented by convolving an
+image with the derivative of a Gaussian function.
+
+**Box filters** are another family of linear smoothing filter, that uses a uniform kernel for arithmetic averaging of pixels.
+The name stems from the rectangular shape of the kernel. The box filter corresponds to a sinc function in the frequency
+domain. This causes smoothing artifacts in the spatial domain. It is rarely used as a low-pass filter and is more of academic
+interest.
+
+**Median filters** are non-linear filters, specifically well suited for reduction of impulse noise (e.g., salt-&amp;-pepper
+noise). Median filters compute the local median intensity value. An important advantage of median filters is that they
+preserve the set of intensity values in the image (or yield a subset). This trait makes them specifically well suited for
+smoothing of label maps and binary images. The median filters implemented in this tool uses rectangular neighborhoods for the
+computation of the local median values.
+
+**Prewitt and Sobel filters** are popular 2-D filters for approximate computation of the 1-st order derivatives of the image
+intensities. Sobel filters have better isotropy properties than Prewitt filters.
 
     </help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
+        <citation type="doi">10.1038/s41592-019-0686-2</citation>
     </citations>
 </tool>
