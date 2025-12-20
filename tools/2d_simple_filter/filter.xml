@@ -169,7 +169,7 @@
     <requirements>
         <requirement type="package" version="@TOOL_VERSION@">scipy</requirement>
         <requirement type="package" version="2.3.5">numpy</requirement>
-        <requirement type="package" version="0.25.2">scikit-image</requirement>
+        <requirement type="package" version="0.12.2">ome-zarr</requirement>
         <requirement type="package" version="2025.10.16">tifffile</requirement>
         <requirement type="package" version="0.6.0">giatools</requirement>
     </requirements>
