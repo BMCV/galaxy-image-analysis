@@ -25,7 +25,7 @@ def image_astype(image: giatools.Image, dtype: np.dtype) -> giatools.Image:
 def get_anisotropy(image: giatools.Image, axes: str) -> tuple[float, ...] | None:
     """
     Get the anisotropy of the image pixels/voxels along the given `axes`.
-    
+
     TODO: Migrate to `giatools.Image.get_anisotropy` with `giatools >=0.7`
     """
 
@@ -231,3 +231,4 @@ if __name__ == "__main__":
     print('Output image axes:', result.axes)
     print('Output image dtype:', result.data.dtype)
     result.write(args.output, backend='tifffile')
+
