@@ -23,12 +23,16 @@ This document is the attempt to collect some rough rules for tools to follow in 
 ## File types
 
 In tool wrappers which use a Python script, image loading should be performed by using the `giatools` package ([docs](https://giatools.readthedocs.io)).
-If such wrappers only support single-channel 2-D images, the structure of the input should be verified right after loading the image:
+This gives you out-of-the-box support for a veriety of file types, including TIFF, PNG, JPG, and OME-Zarr.
+
+Another advantage is that `giatools` gives you out-of-the-box support for 3-D images, multi-channel-images, and other rather exotic format flavors, even if the wrapped image processing/analysis operation only supports 2-D image data.
+For example, if the wrapped operation only support single-channel 2-D images, the following code structure can be used to process all slices of 3-D images, all channels of multi-channel images, and so on:
 ```python
-im = giatools.Image.read(args.input)
-im = im.squeeze_like('YX')
+image = giatools.Image.read(args.input)
+for source_slice, section in image.iterate_jointly('XY'):
+    ...  # process the 2-D `section` of the image
 ```
-This code will raise a `ValueError` if, e.g., the image is 3-D (with more than once slice).
+See the [docs](https://giatools.readthedocs.io/en/latest/giatools.image.html#giatools.image.Image.iterate_jointly) for details.
 
 Tools with **label map inputs** should accept PNG and TIFF files. Tools with **label map outputs** should produce either `uint16` single-channel PNG or `uint16` single-channel TIFF. Using `uint8` instead of `uint16` is also acceptable, if there definetely are no more than 256 different labels. Using `uint8` should be preferred for binary images.
 

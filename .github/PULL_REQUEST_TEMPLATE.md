@@ -4,7 +4,7 @@ PLEASE DESCRIBE YOUR PR HERE
 
 ### Check-list for the contributor
 
-Please make sure you have read the [CONTRIBUTING.md](https://github.com/BMCV/galaxy-image-analysis/blob/master/CONTRIBUTING.md) document (last updated: 2025/11/25).
+Please make sure you have read the [CONTRIBUTING.md](https://github.com/BMCV/galaxy-image-analysis/blob/master/CONTRIBUTING.md) document (last updated: 2025/12/22).
 
 **Mandatory checks:**
 
