@@ -15,7 +15,7 @@ if __name__ == "__main__":
     # Read the config file
     with open(args.params) as cfgf:
         cfg = json.load(cfgf)
-    cfg.setdefault('axes', 'YX')
+
 
     # Read the input image
     image = giatools.Image.read(args.input)

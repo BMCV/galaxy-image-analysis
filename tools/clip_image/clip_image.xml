@@ -137,7 +137,7 @@
 
 Supports 2-D and 3-D images, single-channel and multi-channel images, and arbitrary series of images (e.g., temporal image sequences).
 
-This tool preserves the image pixel data type and—subjectively to clipping—the image brightness and the range of values.
+This tool preserves the image pixel data type and—subject to clipping—the image brightness and the range of values.
 
     </help>
     <citations>
