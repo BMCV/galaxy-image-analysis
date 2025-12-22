@@ -13,6 +13,9 @@ import numpy as np
 import skimage.filters
 import skimage.util
 
+# Fail early if an optional backend is not available
+giatools.require_backend('omezarr')
+
 
 class DefaultThresholdingMethod:
 

@@ -35,7 +35,12 @@
 
         python '$__tool_directory__/auto_threshold.py'
 
-        '$input'
+        #if $input.extension == "zarr"
+            '$input.extra_files_path/$input.metadata.store_root'
+        #else
+            '$input'
+        #end if
+
         ./out.tiff
         '$params'
 
@@ -69,7 +74,7 @@
         ]]></configfile>
     </configfiles>
     <inputs>
-        <param name="input" type="data" format="tiff,png" label="Input image"/>
+        <param name="input" type="data" format="tiff,zarr,png,jpg" label="Input image"/>
         <conditional name="th_method">
             <param name="method_id" type="select" label="Thresholding method">
                 <option value="manual">Manual</option>
@@ -167,15 +172,30 @@
             <conditional name="th_method">
                 <param name="method_id" value="otsu"/>
             </conditional>
-            <expand macro="tests/binary_image_diff" name="output" value="output/rgb_otsu.tiff" ftype="tiff"/>
+            <expand macro="tests/binary_image_diff" name="output" value="output/rgb_otsu.tiff" ftype="tiff"/><!-- TODO: check output -->
         </test>
-        <!-- Tests for irregular files -->
+        <!-- Tests for irregular files (TODO: clear up what this means) -->
         <test>
             <param name="input" value="input/sample2.tiff"/>
             <conditional name="th_method">
                 <param name="method_id" value="otsu"/>
             </conditional>
             <expand macro="tests/binary_image_diff" name="output" value="output/out5.tiff" ftype="tiff"/>
+        </test>
+        <!-- Tests for exotic files -->
+        <test>
+            <param name="input" value="input/input5.jpg"/>
+            <conditional name="th_method">
+                <param name="method_id" value="li"/>
+            </conditional>
+            <expand macro="tests/binary_image_diff" name="output" value="output/input5_li.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <param name="input" value="input/input7_zyx.zarr"/>
+            <conditional name="th_method">
+                <param name="method_id" value="yen"/>
+            </conditional>
+            <expand macro="tests/binary_image_diff" name="output" value="output/input7_yen.tiff" ftype="tiff"/>
         </test>
     </tests>
     <help>
