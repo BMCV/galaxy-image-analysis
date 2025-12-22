@@ -31,8 +31,7 @@
     <required_files>
         <include type="literal" path="auto_threshold.py"/>
     </required_files>
-    <command detect_errors="aggressive">
-    <![CDATA[
+    <command detect_errors="aggressive"><![CDATA[
 
         python '$__tool_directory__/auto_threshold.py'
 
@@ -45,8 +44,7 @@
         ./out.tiff
         '$params'
 
-    ]]>
-    </command>
+    ]]></command>
     <configfiles>
         <configfile name="params"><![CDATA[
             {
@@ -216,4 +214,3 @@
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
     </citations>
 </tool>
-
