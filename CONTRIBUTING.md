@@ -34,6 +34,8 @@ for source_slice, section in image.iterate_jointly('XY'):
 ```
 See the [docs](https://giatools.readthedocs.io/en/latest/giatools.image.html#giatools.image.Image.iterate_jointly) for details.
 
+Instead of using functions from the global namespace of the `numpy` package to process the `section` or `image.data`, it is preferred to use the methods of the `section` and `image.data` objects directly. This is because, for some file types (e.g., OME-Zarr), those objects will be Dask arrays, and although these should fit in transparently into the NumPy framework, using implementation-specific methods promises greater efficiency of the computational performance, especially for large datasets.
+
 Tools with **label map inputs** should accept PNG and TIFF files. Tools with **label map outputs** should produce either `uint16` single-channel PNG or `uint16` single-channel TIFF. Using `uint8` instead of `uint16` is also acceptable, if there definetely are no more than 256 different labels. Using `uint8` should be preferred for binary images.
 
 > [!NOTE]  
