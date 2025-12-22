@@ -12,6 +12,7 @@
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
+        <expand macro="creators/kostrykin"/>
     </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
@@ -215,3 +216,4 @@
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
     </citations>
 </tool>
+
