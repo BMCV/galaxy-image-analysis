@@ -89,14 +89,17 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 
 - [Compute image features](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/mahotas_features/ip_mahotas_features) with Mahotas
 - [Extract top view](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/wsi_extract_top_view/ip_wsi_extract_top_view) with OpenSlide
-- [Generate ISCC hash](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/iscc_sum/iscc_sum/0.1.0+galaxy0) with ISCC-SUM
+- [Generate ISCC-CODE](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/iscc_sum/iscc_sum) with ISCC-SUM
+- [Find datasets with similar ISCC-CODEs](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/iscc_sum_similarity/iscc_sum_similarity) with ISCC-SUM
 - [Perform curve fitting](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/curve_fitting/ip_curve_fitting)
 - [Unzip](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/unzip/unzip)
+- [Verify ISCC-CODE](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/iscc_sum_verify/iscc_sum_verify) with ISCC-SUM
 
 ## Acknowledgment
 
 This work has been funded by the BMFTR (Federal Ministry of Research, Technology and Space), Heidelberg Center for Human Bioinformatics (HD-HuB) within the German Network for Bioinformatics Infrastructure (de.NBI) & ELIXIR-DE, and LiBiS (Baden-Württemberg Institute for Bioinformatics Infrastructure).
 
 <img width="4198" height="371" alt="GIA Logos" src="https://github.com/user-attachments/assets/5724b1d7-d9ae-40c1-9c50-9d129d11d8de" />
+
 
 
