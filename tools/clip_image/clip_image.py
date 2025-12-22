@@ -30,14 +30,18 @@ if __name__ == "__main__":
         cfg.get('lower_bound', -np.inf),
         cfg.get('upper_bound', +np.inf),
     ]
-    print('Applying clipping:', str(clip_args))
-    image.data = image.data.clip(*clip_args).astype(image.data.dtype)
+    if clip_args == list(sorted(clip_args)):
+        print('Applying clipping:', str(clip_args))
+        image.data = image.data.clip(*clip_args).astype(image.data.dtype)
 
-    # Write the result
-    image = image.normalize_axes_like(
-        image.original_axes,
-    )
-    print('Output image shape:', image.data.shape)
-    print('Output image axes:', image.axes)
-    print('Output image dtype:', image.data.dtype)
-    image.write(args.output, backend='tifffile')
+        # Write the result
+        image = image.normalize_axes_like(
+            image.original_axes,
+        )
+        print('Output image shape:', image.data.shape)
+        print('Output image axes:', image.axes)
+        print('Output image dtype:', image.data.dtype)
+        image.write(args.output, backend='tifffile')
+
+    else:
+        exit(f'Lower bound ({clip_args[0]:g}) must be less or equal compared to the upper bound ({clip_args[1]:g}).')

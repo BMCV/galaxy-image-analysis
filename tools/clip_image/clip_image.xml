@@ -116,6 +116,17 @@
                 <has_line line="Output image axes: YXC"/>
             </assert_stdout>
         </test>
+        <test expect_failure="true">
+            <param name="input" value="input/input5.jpg"/>
+            <conditional name="setup">
+                <param name="mode" value="lower-upper"/>
+                <param name="lower_bound" value="60"/>
+                <param name="upper_bound" value="50"/>
+            </conditional>
+            <assert_stderr>
+                <has_line line="Lower bound (60) must be less or equal compared to the upper bound (50)."/>
+            </assert_stderr>
+        </test>
         <test>
             <param name="input" value="input/input6_yx.zarr"/>
             <conditional name="setup">
