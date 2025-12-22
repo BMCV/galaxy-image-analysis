@@ -4,6 +4,9 @@ import json
 import giatools
 import numpy as np
 
+# Fail early if an optional backend is not available
+giatools.require_backend('omezarr')
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
