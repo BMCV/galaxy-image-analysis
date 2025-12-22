@@ -106,7 +106,7 @@
             <param name="input" value="input/input5.jpg"/>
             <conditional name="setup">
                 <param name="mode" value="upper"/>
-                <param name="upper_bound" value="0.5"/>
+                <param name="upper_bound" value="100.5"/>
             </conditional>
             <expand macro="tests/intensity_image_diff" name="output" value="output/input5.tiff" ftype="tiff"/>
             <assert_stdout>
