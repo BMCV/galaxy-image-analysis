@@ -1,5 +1,5 @@
 """
-Copyright 2017-2024 Biomedical Computer Vision Group, Heidelberg University.
+Copyright 2017-2025 Biomedical Computer Vision Group, Heidelberg University.
 
 Distributed under the MIT license.
 See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
@@ -7,10 +7,10 @@ See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
 
 import argparse
 
+import giatools
 import numpy as np
 import skimage.filters
 import skimage.util
-from giatools.image import Image
 
 
 class DefaultThresholdingMethod:
@@ -66,7 +66,7 @@ def do_thresholding(
     assert th_method in th_methods, f'Unknown method "{th_method}"'
 
     # Load image
-    img_in = Image.read(input_filepath)
+    img_in = giatools.Image.read(input_filepath)
 
     # Perform thresholding
     result = th_methods[th_method](
@@ -83,7 +83,7 @@ def do_thresholding(
     result = (result * 255).astype(np.uint8)
 
     # Write result
-    Image(
+    giatools.Image(
         data=skimage.util.img_as_ubyte(result),
         axes=img_in.axes,
     ).normalize_axes_like(

@@ -3,7 +3,7 @@
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
-        <token name="@TOOL_VERSION@">0.25.0</token>
+        <token name="@TOOL_VERSION@">0.25.2</token>
         <token name="@VERSION_SUFFIX@">0</token>
         <xml name="inputs/offset">
             <param name="offset" type="float" value="0" label="Offset" help="Offset to be added to the automatically determined threshold value. Positive values will increase the threshold (and thus reduce the amount of values above the threshold)." />
@@ -21,7 +21,8 @@
     </xrefs>
     <requirements>
         <requirement type="package" version="@TOOL_VERSION@">scikit-image</requirement>
-        <requirement type="package" version="0.4.1">giatools</requirement>
+        <requirement type="package" version="0.6.0">giatools</requirement>
+        <requirement type="package" version="0.12.2">ome-zarr</requirement>
     </requirements>
     <command detect_errors="aggressive">
     <![CDATA[
@@ -173,7 +174,7 @@
     </tests>
     <help>
 
-        **Applies a standard thresholding algorithm to a 2-D single-channel image. Yields a binary image.**
+        **Applies a standard thresholding algorithm to an image. Yields a binary image.**
 
         The thresholding algorithm automatically determines a threshold value (unless manual thresholding is used).
         The input image is then thresholded, by assigning white (pixel value 255) to image regions above the determined threshold,
