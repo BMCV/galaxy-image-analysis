@@ -1,0 +1,15 @@
+name: clip_image
+description: Applies intensity clipping to an image.
+long_description: |
+  Applies intensity clipping to an image.
+
+  Supports 2-D and 3-D images, single-channel and multi-channel images, and arbitrary series of images (e.g., temporal image sequences).
+
+  This tool preserves the image pixel data type and—subjectively to clipping—the image brightness and the range of values.
+
+owner: imgteam
+homepage_url: https://github.com/bmcv
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tree/master/tools/clip_image/
+
+categories:
+  - Imaging
