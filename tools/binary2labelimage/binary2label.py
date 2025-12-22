@@ -65,10 +65,6 @@ if __name__ == '__main__':
                 case _:
                     raise ValueError(f'Unknown method: "{method}"')
 
-            # Some legacy conversion, to pass the old tests...
-            if method == 'cca':
-                result = result.astype(np.int32)
-
             # Write the result image
             image.data = result
             image = image.normalize_axes_like(image.original_axes)
