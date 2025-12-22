@@ -172,7 +172,7 @@
             <conditional name="th_method">
                 <param name="method_id" value="otsu"/>
             </conditional>
-            <expand macro="tests/binary_image_diff" name="output" value="output/rgb_otsu.tiff" ftype="tiff"/><!-- TODO: check output -->
+            <expand macro="tests/binary_image_diff" name="output" value="output/rgb_otsu.tiff" ftype="tiff"/>
         </test>
         <!-- Tests for irregular files (TODO: clear up what this means) -->
         <test>
@@ -191,11 +191,11 @@
             <expand macro="tests/binary_image_diff" name="output" value="output/input5_li.tiff" ftype="tiff"/>
         </test>
         <test>
-            <param name="input" value="input/input7_zyx.zarr"/>
+            <param name="input" value="input/input8_zyx.zarr"/>
             <conditional name="th_method">
                 <param name="method_id" value="yen"/>
             </conditional>
-            <expand macro="tests/binary_image_diff" name="output" value="output/input7_yen.tiff" ftype="tiff"/>
+            <expand macro="tests/binary_image_diff" name="output" value="output/input8_yen.tiff" ftype="tiff"/>
         </test>
     </tests>
     <help>

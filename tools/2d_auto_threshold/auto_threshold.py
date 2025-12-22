@@ -83,10 +83,12 @@ def do_thresholding(
             f'{key}={repr(value)}' for key, value in (kwargs | dict(invert=invert)).items()
         ),
     )
-    result = method_impl(
-        image=img_in.data,
-        **kwargs,
-    )
+    result = np.empty(img_in.data.shape, bool)
+    for sl, section in img_in.iterate_jointly('ZYX'):
+        result[sl] = method_impl(
+            image=np.asarray(section),  # some implementations have issues with Dask arrays
+            **kwargs,
+        )
     if invert:
         result = np.logical_not(result)
 

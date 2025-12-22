@@ -6,7 +6,7 @@
 - resolution: `(10, 10, 3)`
 - dtype: `uint8`
 
-## `input7_zyx.zarr`:
+## `input8_zyx.zarr`:
 
 - axes: `ZYX`
 - resolution: `(2, 64, 64)`
