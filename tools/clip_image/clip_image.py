@@ -16,7 +16,6 @@ if __name__ == "__main__":
     with open(args.params) as cfgf:
         cfg = json.load(cfgf)
 
-
     # Read the input image
     image = giatools.Image.read(args.input)
     print('Input image shape:', image.data.shape)
