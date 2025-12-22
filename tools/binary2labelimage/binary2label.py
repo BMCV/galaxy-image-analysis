@@ -1,27 +1,87 @@
 import argparse
+import json
 
 import giatools
+import numpy as np
 import scipy.ndimage as ndi
-import tifffile
+
+# Fail early if an optional backend is not available
+giatools.require_backend('omezarr')
 
 
-# Parse CLI parameters
-parser = argparse.ArgumentParser()
-parser.add_argument('input', type=str, help='input file')
-parser.add_argument('output', type=str, help='output file (TIFF)')
-args = parser.parse_args()
+def label_watershed(arr: np.ndarray, **kwargs) -> np.ndarray:
+    import skimage.util
+    from skimage.feature import peak_local_max
+    from skimage.segmentation import watershed
+    distance = ndi.distance_transform_edt(arr)
+    local_max_indices = peak_local_max(
+        distance,
+        labels=arr,
+        **kwargs,
+    )
+    local_max_mask = np.zeros(arr.shape, dtype=bool)
+    local_max_mask[tuple(local_max_indices.T)] = True
+    markers = ndi.label(local_max_mask)[0]
+    res = watershed(-distance, markers, mask=arr)
+    return skimage.util.img_as_uint(res)  # converts to uint16
 
-# Read the input image with the original axes
-img = giatools.Image.read(args.input)
-img = img.normalize_axes_like(
-    img.original_axes,
-)
 
-# Make sure the image is truly binary
-img_arr_bin = (img.data > 0)
+if __name__ == '__main__':
 
-# Perform the labeling
-img.data = ndi.label(img_arr_bin)[0]
+    # Parse CLI parameters
+    parser = argparse.ArgumentParser()
+    parser.add_argument('input', type=str, help='Input file path')
+    parser.add_argument('output', type=str, help='Output file path (TIFF)')
+    parser.add_argument('params', type=str)
+    args = parser.parse_args()
 
-# Write the result image (same axes as input image)
-tifffile.imwrite(args.output, img.data, metadata=dict(axes=img.axes))
+    # Read the config file
+    with open(args.params) as cfgf:
+        cfg = json.load(cfgf)
+
+    # Read the input image and ensure that it is truly binary
+    image = giatools.Image.read(args.input)
+    image.data = (image.data > 0)
+    print('Input image shape:', image.data.shape)
+    print('Input image axes:', image.axes)
+    print('Input image dtype:', image.data.dtype)
+
+    # Validate the input image
+    try:
+        if image.data.shape[image.axes.index('C')] == 1:
+
+            # Perform the labeling
+            result = np.empty(image.data.shape, np.uint16)
+            match (method := cfg.pop('method')):
+
+                case 'cca':
+                    for sl, section in image.iterate_jointly('ZYX'):
+                        result[sl] = ndi.label(section, **cfg)[0].astype(result.dtype)
+
+                case 'watershed':
+                    for sl, section in image.iterate_jointly('YX'):
+                        result[sl] = label_watershed(section, **cfg)  # already uint16
+
+                case _:
+                    raise ValueError(f'Unknown method: "{method}"')
+
+            # Some legacy conversion, to pass the old tests...
+            if method == 'cca':
+                result = result.astype(np.int32)
+
+            # Write the result image
+            image.data = result
+            image = image.normalize_axes_like(image.original_axes)
+            print('Output image shape:', image.data.shape)
+            print('Output image axes:', image.axes)
+            image.write(
+                args.output,
+                backend='tifffile',
+            )
+
+        else:
+            raise ValueError('Multi-channel images are forbidden to avoid confusion with multi-channel labels (e.g., RGB labels).')
+
+    # Exit and print error to stderr
+    except ValueError as err:
+        exit(err.args[0])

@@ -1,43 +1,90 @@
 <tool id="ip_binary_to_labelimage" name="Convert binary image to label map" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@">
-    <description></description>
+    <description>with giatools</description>
     <macros>
         <import>creators.xml</import>
-        <token name="@TOOL_VERSION@">0.6</token>
-        <token name="@VERSION_SUFFIX@">0</token>
+        <token name="@TOOL_VERSION@">0.6.0</token>
+        <token name="@VERSION_SUFFIX@">1</token>
+        <xml name="input">
+            <!-- JPEG is not allowed because it is a lossy compression that has no strictly constant labels -->
+            <param name="input" type="data" format="tiff,zarr,png" label="Binary image">
+                <!--
+                The OME-Zarr datatype in Galaxy is currently not derived from the Image datatype, and it does
+                hence not inherit the metadata fields like `num_unique_unique`. To cope with that, we allow all
+                datasets except those where we *know* that they are *not* binary.
+                -->
+                <validator type="expression" message="Dataset is not a binary image"
+                    ><![CDATA[getattr(value.metadata, "num_unique_values", None) in (None, '') or int(value.metadata.num_unique_values) <= 2]]></validator>
+                <yield/>
+            </param>
+        </xml>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
+        <expand macro="creators/kostrykin"/>
     </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
     <xrefs>
         <xref type="bio.tools">galaxy_image_analysis</xref>
+        <xref type="bio.tools">giatools</xref>
     </xrefs>
     <requirements>
-        <requirement type="package" version="0.4.0">giatools</requirement>
-        <requirement type="package" version="1.12.0">scipy</requirement>
+        <requirement type="package" version="@TOOL_VERSION@">giatools</requirement>
+        <requirement type="package" version="1.16.3">scipy</requirement>
+        <requirement type="package" version="0.12.2">ome-zarr</requirement>
     </requirements>
-    <command detect_errors="aggressive">
-        <![CDATA[
-        #if str($mode.mode_selector) == 'cca':
-            python '$__tool_directory__/binary2label.py' '$input' '$output'
-        #elif str($mode.mode_selector) == 'watershed':
-            python '$__tool_directory__/2d_split_binaryimage_by_watershed.py' '$input' '$output' $min_distance
+    <required_files>
+        <include type="literal" path="binary2label.py"/>
+    </required_files>
+    <command detect_errors="aggressive"><![CDATA[
+
+        python '$__tool_directory__/binary2label.py'
+
+        #if $setup.input.extension == "zarr"
+            '$setup.input.extra_files_path/$setup.input.metadata.store_root'
+        #else
+            '$setup.input'
         #end if
-        ]]>
-    </command>
+
+        '$output'
+        '$params'
+
+    ]]></command>
+    <configfiles>
+        <configfile name="params"><![CDATA[
+            {
+
+            #if str($setup.method) == "watershed"
+                "min_distance": $setup.min_distance,
+            #end if
+
+                "method": "$setup.method"
+
+            }
+        ]]></configfile>
+    </configfiles>
     <inputs>
-        <param name="input" type="data" format="tiff,png,jpg,bmp" label="Binary image"/>
-        <conditional name="mode">
-            <param name="mode_selector" type="select" label="Mode">
+        <conditional name="setup">
+            <param name="method" type="select" label="Mode"
+                   help="Connected component analysis assigns unique labels to object that are separated by 1 pixel or more. Watershed transform can also separate partially overlapping objects, but is only applicable to 2-D image data.">
                 <option value="cca" selected="true">Connected component analysis</option>
                 <option value="watershed">Watershed transform</option>
             </param>
             <when value="cca">
+                <expand macro="input"/>
             </when>
             <when value="watershed">
-                <param name="min_distance" type="integer" min="0" value="5" label="Minimum distance between two objects" />
+                <expand macro="input">
+                    <!--
+                    The OME-Zarr datatype in Galaxy is currently not derived from the Image datatype, and it does
+                    hence not inherit the metadata fields like `depth`. To cope with that, we allow all datasets
+                    except those where we *know* that they are *not* 2-D.
+                    -->
+                    <validator type="expression" message="Dataset is a 3-D image"
+                        ><![CDATA[getattr(value.metadata, "depth", None) in (None, '') or int(value.metadata.depth) < 2]]></validator>
+                </expand>
+                <param name="min_distance" type="integer" min="0" value="5" label="Minimum distance between two objects"/>
             </when>
         </conditional>
     </inputs>
@@ -46,24 +93,24 @@
     </outputs>
     <tests>
         <test>
-            <param name="input" value="galaxyIcon_noText.tiff" />
-            <conditional name="mode">
-                <param name="mode_selector" value="cca" />
+            <conditional name="setup">
+                <param name="method" value="cca"/>
+                <param name="input" value="galaxyIcon_noText.tiff"/>
             </conditional>
             <output name="output" value="label.tiff" ftype="tiff" compare="image_diff"/>
         </test>
         <test>
-            <param name="input" value="in.tiff"/>
-            <conditional name="mode">
-                <param name="mode_selector" value="watershed" />
-                <param name="min_distance" value="10" />
+            <conditional name="setup">
+                <param name="method" value="watershed"/>
+                <param name="input" value="in.tiff"/>
+                <param name="min_distance" value="10"/>
             </conditional>
             <output name="output" value="out.tiff" ftype="tiff" compare="image_diff"/>
         </test>
         <test>
-            <param name="input" value="uint8_z12_x11_y10.tiff"/>
-            <conditional name="mode">
-                <param name="mode_selector" value="cca" />
+            <conditional name="setup">
+                <param name="method" value="cca"/>
+                <param name="input" value="uint8_z12_x11_y10.tiff"/>
             </conditional>
             <output name="output" value="uint8_z12_x11_y10-output.tiff" ftype="tiff" compare="image_diff">
                 <assert_contents>
@@ -75,9 +122,13 @@
         </test>
     </tests>
     <help>
-    This tool assigns each object a unique label.
 
-    Individual objects are determined using connected component analysis, or distance transform and watershed.
+        **Converts a binary image to a label map.**
+
+        This tool assigns each object a unique label.
+
+        Individual objects are determined using connected component analysis, or distance transform and watershed.
+
     </help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
