@@ -1,8 +1,19 @@
-categories:
-  - Imaging
-description: Automatic thresholding
-long_description: Applying a standard thresholding method to an image.
-name: 2d_auto_threshold 
+name: 2d_auto_threshold
+description: Threshold image
+long_description: |
+  Applies a standard thresholding algorithm to an image. Yields a binary image.
+
+  The thresholding algorithm automatically determines a threshold value (unless manual thresholding is used). The input image is
+  then thresholded, by assigning white (pixel value 255) to image regions above the determined threshold, and black (pixel value 0)
+  to image regions below or equal to the determined threshold. For multi-channel images, each channel is processed separately,
+  which, for example, may also yield colors beyond black and white in case of RGB images.
+
+  The assignment of the pixel values 0 and 255 (i.e. black and white) to image regions below and above the threshold is inverted,
+  if the corresponding option is set.
+
 owner: imgteam
 homepage_url: https://github.com/bmcv
 remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tree/master/tools/2d_auto_threshold/
+
+categories:
+  - Imaging
