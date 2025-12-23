@@ -37,7 +37,7 @@ class ManualThresholding:
         if threshold2 is None:
             return image > threshold1
         else:
-            thres1, thres2 = sorted((threshold1, threshold2))
+            threshold1, threshold2 = sorted((threshold1, threshold2))
             return skimage.filters.apply_hysteresis_threshold(image, threshold1, threshold2)
 
     def __str__(self):
