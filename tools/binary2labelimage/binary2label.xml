@@ -120,6 +120,33 @@
                 </assert_contents>
             </output>
         </test>
+        <!-- Tests for 3-D -->
+        <test>
+            <conditional name="setup">
+                <param name="method" value="cca"/>
+                <param name="input" value="input/input9.zarr"/>
+            </conditional>
+            <output name="output" value="output/input9-cca.tiff" ftype="tiff" compare="image_diff"/><!-- TODO: migrate to macros -->
+        </test>
+        <test expect_failure="true"><!-- Rejected by py-script -->
+            <conditional name="setup">
+                <param name="method" value="watershed"/>
+                <param name="input" value="input/input9.zarr"/>
+            </conditional>
+            <assert_stderr>
+                <has_text text='Method "watershed" is not applicable to 3-D images.'/>
+            </assert_stderr>
+        </test>
+        <test expect_failure="true"><!-- Rejected by validator -->
+            <conditional name="setup">
+                <param name="method" value="watershed"/>
+                <param name="input" value="input/input9.tiff"/>
+            </conditional>
+            <assert_stderr>
+                <has_text text=""/>
+            </assert_stderr>
+        </test>
+        <!-- TODO: Add test for multi-channel -->
     </tests>
     <help>
 

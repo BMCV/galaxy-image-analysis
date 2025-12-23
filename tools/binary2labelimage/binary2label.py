@@ -46,13 +46,19 @@ if __name__ == '__main__':
     print('Input image axes:', image.axes)
     print('Input image dtype:', image.data.dtype)
 
-    # Validate the input image
+    # Validate the input image and the selected method 
     try:
-        if image.data.shape[image.axes.index('C')] == 1:
+        if (method := cfg.pop('method')) == 'watershed' and image.data.shape[image.axes.index('Z')] > 1:
+            raise ValueError(f'Method "{method}" is not applicable to 3-D images.')
+
+        elif image.data.shape[image.axes.index('C')] > 1:
+            raise ValueError('Multi-channel images are forbidden to avoid confusion with multi-channel labels (e.g., RGB labels).')
+
+        else:
 
             # Perform the labeling
             result = np.empty(image.data.shape, np.uint16)
-            match (method := cfg.pop('method')):
+            match method:
 
                 case 'cca':
                     for sl, section in image.iterate_jointly('ZYX'):
@@ -74,9 +80,6 @@ if __name__ == '__main__':
                 args.output,
                 backend='tifffile',
             )
-
-        else:
-            raise ValueError('Multi-channel images are forbidden to avoid confusion with multi-channel labels (e.g., RGB labels).')
 
     # Exit and print error to stderr
     except ValueError as err:
