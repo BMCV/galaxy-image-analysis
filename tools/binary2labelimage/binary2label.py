@@ -46,7 +46,7 @@ if __name__ == '__main__':
     print('Input image axes:', image.axes)
     print('Input image dtype:', image.data.dtype)
 
-    # Validate the input image and the selected method 
+    # Validate the input image and the selected method
     try:
         if (method := cfg.pop('method')) == 'watershed' and image.data.shape[image.axes.index('Z')] > 1:
             raise ValueError(f'Method "{method}" is not applicable to 3-D images.')
