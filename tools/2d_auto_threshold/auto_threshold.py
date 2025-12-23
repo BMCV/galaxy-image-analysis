@@ -99,6 +99,7 @@ def do_thresholding(
     img_out = giatools.Image(
         data=skimage.util.img_as_ubyte(result),
         axes=img_in.axes,
+        metadata=img_in.metadata,
     ).normalize_axes_like(
         img_in.original_axes,
     )
