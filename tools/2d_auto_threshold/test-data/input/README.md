@@ -9,7 +9,7 @@
 ## `input8_zyx.zarr`:
 
 - axes: `ZYX`
-- resolution: `(2, 64, 64)`
+- resolution: `(2, 100, 100)`
 - dtype: `float64`
 - metadata:
   - resolution: `(1.0, 1.0)`
