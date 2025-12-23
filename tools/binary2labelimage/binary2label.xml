@@ -128,25 +128,47 @@
             </conditional>
             <output name="output" value="output/input9-cca.tiff" ftype="tiff" compare="image_diff"/><!-- TODO: migrate to macros -->
         </test>
-        <test expect_failure="true"><!-- Rejected by py-script -->
+        <test expect_failure="true">
             <conditional name="setup">
                 <param name="method" value="watershed"/>
                 <param name="input" value="input/input9.zarr"/>
             </conditional>
             <assert_stderr>
+                <!-- Rejected by py-script -->
                 <has_text text='Method "watershed" is not applicable to 3-D images.'/>
             </assert_stderr>
         </test>
-        <test expect_failure="true"><!-- Rejected by validator -->
+        <test expect_failure="true">
             <conditional name="setup">
                 <param name="method" value="watershed"/>
                 <param name="input" value="input/input9.tiff"/>
             </conditional>
             <assert_stderr>
-                <has_text text=""/>
+                <!-- Rejected by validator -->
+                <has_n_lines n="0"/>
             </assert_stderr>
         </test>
-        <!-- TODO: Add test for multi-channel -->
+        <!-- Tests for multi-channel images -->
+        <test expect_failure="true">
+            <conditional name="setup">
+                <param name="method" value="cca"/>
+                <param name="input" value="input/input10.zarr"/>
+            </conditional>
+            <assert_stderr>
+                <!-- Rejected by py-script -->
+                <has_text text='Multi-channel images are forbidden to avoid confusion with multi-channel labels (e.g., RGB labels).'/>
+            </assert_stderr>
+        </test>
+        <test expect_failure="true">
+            <conditional name="setup">
+                <param name="method" value="cca"/>
+                <param name="input" value="input/rgb.png"/>
+            </conditional>
+            <assert_stderr>
+                <!-- Rejected by validator -->
+                <has_n_lines n="0"/>
+            </assert_stderr>
+        </test>
     </tests>
     <help>
 
