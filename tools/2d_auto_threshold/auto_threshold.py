@@ -5,9 +5,6 @@ Distributed under the MIT license.
 See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
 """
 
-import argparse
-import json
-
 import giatools
 import numpy as np
 import skimage.filters
@@ -58,20 +55,15 @@ methods = {
 }
 
 
-def do_thresholding(
-    input_filepath: str,
-    output_filepath: str,
-    method: str,
-    invert: bool,
-    **kwargs,
-):
-    assert method in methods, f'Unknown method "{method}"'
+if __name__ == "__main__":
+    tool = giatools.ToolBaseplate()
+    tool.add_input_image('input')
+    tool.add_output_image('output')
+    tool.parse_args()
 
-    # Read the input image
-    img_in = giatools.Image.read(args.input)
-    print('Input image shape:', img_in.data.shape)
-    print('Input image axes:', img_in.axes)
-    print('Input image dtype:', img_in.data.dtype)
+    # Retrieve general parameters
+    method = tool.args.params.pop('method')
+    invert = tool.args.params.pop('invert')
 
     # Perform thresholding
     method_impl = methods[method]
@@ -80,51 +72,14 @@ def do_thresholding(
         str(method_impl),
         'with',
         ', '.join(
-            f'{key}={repr(value)}' for key, value in (kwargs | dict(invert=invert)).items()
+            f'{key}={repr(value)}' for key, value in (tool.args.params | dict(invert=invert)).items()
         ),
     )
-    result = np.empty(img_in.data.shape, bool)
-    for sl, section in img_in.iterate_jointly('ZYX'):
-        result[sl] = method_impl(
-            image=np.asarray(section.data),  # some implementations have issues with Dask arrays
-            **kwargs,
+    for section in tool.run('ZYX', output_dtype_hint='binary'):
+        section_output = method_impl(
+            image=np.asarray(section['input'].data),  # some implementations have issues with Dask arrays
+            **tool.args.params,
         )
-    if invert:
-        result = np.logical_not(result)
-
-    # Convert to canonical representation for binary images
-    result = (result * 255).astype(np.uint8)
-
-    # Write result
-    img_out = giatools.Image(
-        data=skimage.util.img_as_ubyte(result),
-        axes=img_in.axes,
-        metadata=img_in.metadata,
-    ).normalize_axes_like(
-        img_in.original_axes,
-    )
-    print('Output image shape:', img_out.data.shape)
-    print('Output image axes:', img_out.axes)
-    print('Output image dtype:', img_out.data.dtype)
-    img_out.write(
-        output_filepath,
-    )
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Automatic image thresholding')
-    parser.add_argument('input', type=str, help='Path to the input image')
-    parser.add_argument('output', type=str, help='Path to the output image (uint8)')
-    parser.add_argument('params', type=str)
-    args = parser.parse_args()
-
-    # Read the config file
-    with open(args.params) as cfgf:
-        cfg = json.load(cfgf)
-
-    # Perform the thresholding
-    do_thresholding(
-        args.input,
-        args.output,
-        **cfg,
-    )
+        if invert:
+            section_output = np.logical_not(section_output)
+        section['output'] = section_output

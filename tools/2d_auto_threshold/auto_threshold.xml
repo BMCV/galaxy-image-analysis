@@ -36,13 +36,14 @@
         python '$__tool_directory__/auto_threshold.py'
 
         #if $input.extension == "zarr"
-            '$input.extra_files_path/$input.metadata.store_root'
+            --input '$input.extra_files_path/$input.metadata.store_root'
         #else
-            '$input'
+            --input '$input'
         #end if
 
-        ./out.tiff
-        '$params'
+        --output ./out.tiff
+        --params '$params'
+        --verbose
 
     ]]></command>
     <configfiles>
