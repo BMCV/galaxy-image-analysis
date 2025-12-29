@@ -10,7 +10,7 @@
             <param name="input" type="data" format="tiff,zarr,png" label="Binary image">
                 <!--
                 The OME-Zarr datatype in Galaxy is currently not derived from the Image datatype, and it does
-                hence not inherit the metadata fields like `num_unique_unique`. To cope with that, we allow all
+                hence not inherit the metadata fields like `num_unique_values`. To cope with that, we allow all
                 datasets except those where we *know* that they are *not* binary.
                 -->
                 <validator type="expression" message="Dataset is not a binary image"
@@ -69,7 +69,7 @@
     <inputs>
         <conditional name="setup">
             <param name="method" type="select" label="Mode"
-                   help="Connected component analysis assigns unique labels to object that are separated by 1 pixel or more. Watershed transform can also separate partially overlapping objects, but is only applicable to 2-D image data.">
+                   help="Connected component analysis assigns unique labels to objects that are separated by 1 pixel or more. Watershed transform can also separate partially overlapping objects, but is only applicable to 2-D image data.">
                 <option value="cca" selected="true">Connected component analysis</option>
                 <option value="watershed">Watershed transform</option>
             </param>
@@ -132,7 +132,7 @@
                 <param name="method" value="cca"/>
                 <param name="input" value="input/input9.zarr"/>
             </conditional>
-            <!-- `label_image_diff` currently does nut support 3-D images: https://github.com/galaxyproject/galaxy/pull/21455 -->
+            <!-- `label_image_diff` currently does not support 3-D images: https://github.com/galaxyproject/galaxy/pull/21455 -->
             <expand macro="tests/intensity_image_diff" name="output" value="output/input9-cca.tiff" ftype="tiff"/>
             <assert_stdout>
                 <has_line line="[input] Input image axes: ZYX"/>
