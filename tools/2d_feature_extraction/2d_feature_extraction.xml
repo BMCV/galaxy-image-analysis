@@ -2,11 +2,13 @@
     <description>with scikit-image</description>
     <macros>
         <import>creators.xml</import>
+        <import>tests.xml</import>
         <token name="@TOOL_VERSION@">0.25.2</token>
         <token name="@VERSION_SUFFIX@">0</token>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
+        <expand macro="creators/kostrykin"/>
     </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
