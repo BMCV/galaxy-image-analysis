@@ -62,11 +62,11 @@ if __name__ == '__main__':
 
                 case 'cca':
                     for sl, section in image.iterate_jointly('ZYX'):
-                        result[sl] = ndi.label(section, **cfg)[0].astype(result.dtype)
+                        result[sl] = ndi.label(section.data, **cfg)[0].astype(result.dtype)
 
                 case 'watershed':
                     for sl, section in image.iterate_jointly('YX'):
-                        result[sl] = label_watershed(section, **cfg)  # already uint16
+                        result[sl] = label_watershed(section.data, **cfg)  # already uint16
 
                 case _:
                     raise ValueError(f'Unknown method: "{method}"')

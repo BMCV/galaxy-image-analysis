@@ -2,7 +2,7 @@
     <description>with giatools</description>
     <macros>
         <import>creators.xml</import>
-        <token name="@TOOL_VERSION@">0.6.0</token>
+        <token name="@TOOL_VERSION@">0.7.1</token>
         <token name="@VERSION_SUFFIX@">1</token>
         <xml name="input">
             <!-- JPEG is not allowed because it is a lossy compression that has no strictly constant labels -->
