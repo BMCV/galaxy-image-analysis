@@ -86,7 +86,7 @@ def do_thresholding(
     result = np.empty(img_in.data.shape, bool)
     for sl, section in img_in.iterate_jointly('ZYX'):
         result[sl] = method_impl(
-            image=np.asarray(section),  # some implementations have issues with Dask arrays
+            image=np.asarray(section.data),  # some implementations have issues with Dask arrays
             **kwargs,
         )
     if invert:
