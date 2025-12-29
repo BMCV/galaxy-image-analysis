@@ -69,7 +69,7 @@
     <inputs>
         <conditional name="setup">
             <param name="method" type="select" label="Mode"
-                   help="Connected component analysis assigns unique labels to object that are separated by 1 pixel or more. Watershed transform can also separate partially overlapping objects, but is only applicable to 2-D image data.">
+                   help="Connected component analysis assigns unique labels to objects that are separated by 1 pixel or more. Watershed transform can also separate partially overlapping objects, but is only applicable to 2-D image data.">
                 <option value="cca" selected="true">Connected component analysis</option>
                 <option value="watershed">Watershed transform</option>
             </param>
