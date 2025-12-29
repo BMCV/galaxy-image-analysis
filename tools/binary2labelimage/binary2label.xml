@@ -42,13 +42,13 @@
         python '$__tool_directory__/binary2label.py'
 
         #if $setup.input.extension == "zarr"
-            '$setup.input.extra_files_path/$setup.input.metadata.store_root'
+            --input '$setup.input.extra_files_path/$setup.input.metadata.store_root'
         #else
-            '$setup.input'
+            --input '$setup.input'
         #end if
 
-        '$output'
-        '$params'
+        --output 'output.tiff'
+        --params '$params'
 
     ]]></command>
     <configfiles>
@@ -89,7 +89,7 @@
         </conditional>
     </inputs>
     <outputs>
-        <data format="tiff" name="output"/>
+        <data format="tiff" name="output" from_work_dir="output.tiff"/>
     </outputs>
     <tests>
         <test>

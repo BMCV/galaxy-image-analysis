@@ -1,6 +1,3 @@
-import argparse
-import json
-
 import giatools
 import numpy as np
 import scipy.ndimage as ndi
@@ -28,58 +25,37 @@ def label_watershed(arr: np.ndarray, **kwargs) -> np.ndarray:
 
 if __name__ == '__main__':
 
-    # Parse CLI parameters
-    parser = argparse.ArgumentParser()
-    parser.add_argument('input', type=str, help='Input file path')
-    parser.add_argument('output', type=str, help='Output file path (TIFF)')
-    parser.add_argument('params', type=str)
-    args = parser.parse_args()
-
-    # Read the config file
-    with open(args.params) as cfgf:
-        cfg = json.load(cfgf)
-
-    # Read the input image and ensure that it is truly binary
-    image = giatools.Image.read(args.input)
-    image.data = (image.data > 0)
-    print('Input image shape:', image.data.shape)
-    print('Input image axes:', image.axes)
-    print('Input image dtype:', image.data.dtype)
+    tool = giatools.ToolBaseplate()
+    tool.add_input_image('input')
+    tool.add_output_image('output')
+    tool.parse_args()
 
     # Validate the input image and the selected method
     try:
-        if (method := cfg.pop('method')) == 'watershed' and image.data.shape[image.axes.index('Z')] > 1:
+        input_image = tool.args.input_images['input']
+        if (method := tool.args.params.pop('method')) == 'watershed' and input_image.shape[input_image.axes.index('Z')] > 1:
             raise ValueError(f'Method "{method}" is not applicable to 3-D images.')
 
-        elif image.data.shape[image.axes.index('C')] > 1:
+        elif input_image.shape[input_image.axes.index('C')] > 1:
             raise ValueError('Multi-channel images are forbidden to avoid confusion with multi-channel labels (e.g., RGB labels).')
 
         else:
 
             # Perform the labeling
-            result = np.empty(image.data.shape, np.uint16)
             match method:
 
                 case 'cca':
-                    for sl, section in image.iterate_jointly('ZYX'):
-                        result[sl] = ndi.label(section.data, **cfg)[0].astype(result.dtype)
+                    for section in tool.run('ZYX'):
+                        input_section_bin = (section['input'].data > 0)  # ensure that the input data is truly binary
+                        section['output'] = ndi.label(input_section_bin, **tool.args.params)[0].astype(np.uint16)
 
                 case 'watershed':
-                    for sl, section in image.iterate_jointly('YX'):
-                        result[sl] = label_watershed(section.data, **cfg)  # already uint16
+                    for section in tool.run('YX'):
+                        input_section_bin = (section['input'].data > 0)  # ensure that the input data is truly binary
+                        section['output'] = label_watershed(input_section_bin, **tool.args.params)  # already uint16
 
                 case _:
                     raise ValueError(f'Unknown method: "{method}"')
-
-            # Write the result image
-            image.data = result
-            image = image.normalize_axes_like(image.original_axes)
-            print('Output image shape:', image.data.shape)
-            print('Output image axes:', image.axes)
-            image.write(
-                args.output,
-                backend='tifffile',
-            )
 
     # Exit and print error to stderr
     except ValueError as err:
