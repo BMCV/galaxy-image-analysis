@@ -8,7 +8,7 @@ if __name__ == '__main__':
     tool = giatools.ToolBaseplate()
     tool.add_input_image('labels')
     tool.add_input_image('intensities', required=False)
-    tool.parser.add_argument('output', type=str)
+    tool.parser.add_argument('--output', type=str)
     tool.parse_args()
 
     # Validate the input image
@@ -27,11 +27,10 @@ if __name__ == '__main__':
 
             df['it'] = np.arange(len(regions))
 
-            if tool.args.params.get('add_label'):
-                df['label'] = df['it'].map(lambda ait: regions[ait].label)
-
             for feature_name in tool.args.params['features']:
-                if feature_name == 'convexity':
+                if feature_name == 'label':
+                    df['label'] = df['it'].map(lambda ait: regions[ait].label)
+                elif feature_name == 'convexity':
                     perimeter = df['it'].map(lambda ait: regions[ait].perimeter)
                     area = df['it'].map(lambda ait: regions[ait].area)
                     df['convexity'] = area / (perimeter * perimeter)

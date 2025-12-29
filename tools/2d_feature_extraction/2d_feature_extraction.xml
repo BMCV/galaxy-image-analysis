@@ -5,6 +5,30 @@
         <import>tests.xml</import>
         <token name="@TOOL_VERSION@">0.25.2</token>
         <token name="@VERSION_SUFFIX@">0</token>
+        <xml name="features">
+            <param name="features" type="select" label="Available features" multiple="true" display="checkboxes">
+                <option value="label">Label from the label map</option>
+                <yield/>
+                <option value="moments_hu">Moments Hu</option>
+                <option value="centroid">Centroid</option>
+                <option value="bbox">Bounding box</option>
+                <option value="area">Area</option>
+                <option value="filled_area">Filled area</option>
+                <option value="convex_area">Convex area</option>
+                <option value="perimeter">Perimeter</option>
+                <option value="extent">Extent</option>
+                <option value="eccentricity">Eccentricity</option>
+                <option value="equivalent_diameter">Equivalent diameter</option>
+                <option value="euler_number">Euler number</option>
+                <option value="inertia_tensor_eigvals">Inertia tensor eigenvalues</option>
+                <option value="major_axis_length">Major axis length</option>
+                <option value="minor_axis_length">Minor axis length</option>
+                <option value="orientation">Orientation</option>
+                <option value="solidity">Solidity</option>
+                <option value="moments">Moments</option>
+                <option value="convexity">Convexity</option>
+            </param>
+        </xml>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
@@ -24,64 +48,58 @@
         <requirement type="package" version="2.2.2">pandas</requirement>
         <requirement type="package" version="0.7.1">giatools</requirement>
     </requirements>
-    <command detect_errors="aggressive">
-    <![CDATA[
-    python '$__tool_directory__/2d_feature_extraction.py'
-    #if $feature_options['features'] == 'all'
-      --all
-    #else if $feature_options['features'] == 'select'
-      ${' '.join(str( $feature_options['selected_features'] ).split(','))}
-    #end if
-    #if $use_raw_option['use_raw'] == 'raw_image'
-      --raw '$input_raw'
-    #end if
-    '$input_label' '$output'
-    ]]>
-    </command>
+    <required_files>
+        <include type="literal" path="2d_feature_extraction.py"/>
+    </required_files>
+    <command detect_errors="aggressive"><![CDATA[
+
+        python '$__tool_directory__/2d_feature_extraction.py'
+
+        #if $labels.extension == "zarr"
+            --labels '$labels.extra_files_path/$labels.metadata.store_root'
+        #else
+            --labels '$labels'
+        #end if
+
+        #if $setup.mode == "with-intensities"
+            #if $setup.intensities.extension == "zarr"
+                --intensities '$setup.intensities.extra_files_path/$setup.intensities.metadata.store_root'
+            #else
+                --intensities '$setup.intensities'
+            #end if
+        #end if
+
+        --output '$output'
+        --params '$params'
+        --verbose
+
+    ]]></command>
+    <configfiles>
+        <configfile name="params"><![CDATA[
+            {
+                "features": [
+                    ${ ', '.join('"%s"' % t.strip() for t in str( $setup['features'] ).split(',')) }
+                ]
+            }
+        ]]></configfile>
+    </configfiles>
     <inputs>
-        <param name="input_label" type="data" format="tiff,png" label="Label map"/>
-        <conditional name="use_raw_option">
-            <param label="Use the intensity image to compute additional features" name="use_raw" type="select">
-                <option selected="True" value="no_original">No intensity image</option>
-                <option value="raw_image">Use intensity image</option>
+        <param name="labels" type="data" format="tiff,zarr,png" label="Label map"/>
+        <conditional name="setup">
+            <param label="Use the intensity image to compute additional features" name="mode" type="select">
+                <option value="without-intensities" selected="true">No intensity image</option>
+                <option value="with-intensities">Use intensity image</option>
             </param>
-            <when value="no_original"/>
-            <when value="raw_image">
-                <param name="input_raw" type="data" format="tiff,png" label="Intensity image"/>
+            <when value="without-intensities">
+                <expand macro="features"/>
             </when>
-        </conditional>
-        <conditional name="feature_options">
-            <param label="Select features to compute" name="features" type="select">
-                <option selected="True" value="all">All features</option>
-                <option value="select">Select features</option>
-            </param>
-            <when value="all"> </when>
-            <when value="select">
-                <param name="selected_features" type="select" label="Available features" multiple="true" display="checkboxes">
-                    <option value="--label">Label from the label map</option>
-                    <option value="--patches">Patches (requires original image)</option>
-                    <option value="--max_intensity">Max Intensity (requires original image)</option>
-                    <option value="--mean_intensity">Mean Intensity (requires original image)</option>
-                    <option value="--min_intensity">Minimum Intensity (requires original image)</option>
-                    <option value="--moments_hu">Moments Hu</option>
-                    <option value="--centroid">Centroid</option>
-                    <option value="--bbox">Bounding box</option>
-                    <option value="--area">Area</option>
-                    <option value="--filled_area">Filled area</option>
-                    <option value="--convex_area">Convex area</option>
-                    <option value="--perimeter">Perimeter</option>
-                    <option value="--extent">Extent</option>
-                    <option value="--eccentricity">Eccentricity</option>
-                    <option value="--equivalent_diameter">Equivalent diameter</option>
-                    <option value="--euler_number">Euler number</option>
-                    <option value="--inertia_tensor_eigvals">Inertia tensor eigenvalues</option>
-                    <option value="--major_axis_length">Major axis length</option>
-                    <option value="--minor_axis_length">Minor axis length</option>
-                    <option value="--orientation">Orientation</option>
-                    <option value="--solidity">Solidity</option>
-                    <option value="--moments">Moments</option>
-                    <option value="--convexity">Convexity</option>
-                </param>
+            <when value="with-intensities">
+                <param name="intensities" type="data" format="tiff,zarr,png,jpg" label="Intensity image"/>
+                <expand macro="features">
+                    <option value="max_intensity">Max Intensity (requires original image)</option>
+                    <option value="mean_intensity">Mean Intensity (requires original image)</option>
+                    <option value="min_intensity">Minimum Intensity (requires original image)</option>
+                </expand>
             </when>
         </conditional>
     </inputs>
@@ -90,10 +108,10 @@
     </outputs>
     <tests>
         <test>
-            <param name="input_label" value="input.tiff" ftype="tiff"/>
-            <conditional name="feature_options">
-                <param name="features" value="select"/>
-                <param name="selected_features" value="--label,--area"/>
+            <param name="labels" value="input.tiff" ftype="tiff"/>
+            <conditional name="setup">
+                <param name="mode" value="without-intensities"/>
+                <param name="features" value="label,area"/>
             </conditional>
             <output name="output" ftype="tabular" value="out.tsv"/>
         </test>
