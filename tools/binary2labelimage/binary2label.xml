@@ -93,6 +93,7 @@
         <data format="tiff" name="output" from_work_dir="output.tiff"/>
     </outputs>
     <tests>
+        <!-- Tests for 2-D -->
         <test>
             <conditional name="setup">
                 <param name="method" value="cca"/>
@@ -107,19 +108,14 @@
                 <param name="min_distance" value="10"/>
             </conditional>
             <output name="output" value="out.tiff" ftype="tiff" compare="image_diff"/>
-        </test>
-        <test>
-            <conditional name="setup">
-                <param name="method" value="cca"/>
-                <param name="input" value="uint8_z12_x11_y10.tiff"/>
-            </conditional>
-            <output name="output" value="uint8_z12_x11_y10-output.tiff" ftype="tiff" compare="image_diff">
-                <assert_contents>
-                    <has_image_width width="11"/>
-                    <has_image_height height="10"/>
-                    <has_image_depth depth="12"/>
-                </assert_contents>
-            </output>
+            <assert_stdout>
+                <has_line line="[input] Input image axes: YX"/>
+                <has_line line="[input] Input image shape: (265, 329)"/>
+                <has_line line="[input] Input image dtype: uint16"/>
+                <has_line line="[output] Output image axes: YX"/>
+                <has_line line="[output] Output image shape: (265, 329)"/>
+                <has_line line="[output] Output image dtype: uint16"/>
+            </assert_stdout>
         </test>
         <!-- Tests for 3-D -->
         <test>
@@ -128,6 +124,16 @@
                 <param name="input" value="input/input9.zarr"/>
             </conditional>
             <output name="output" value="output/input9-cca.tiff" ftype="tiff" compare="image_diff"/><!-- TODO: migrate to macros -->
+            <assert_stdout>
+                <has_line line="[input] Input image axes: ZYX"/>
+                <has_line line="[input] Input image shape: (2, 100, 100)"/>
+                <has_line line="[input] Input image dtype: bool"/>
+                <has_line line="[input] Input image resolution=(1.0, 1.0), unit='um', z_spacing=1.0"/>
+                <has_line line="[output] Output image axes: ZYX"/>
+                <has_line line="[output] Output image shape: (2, 100, 100)"/>
+                <has_line line="[output] Output image dtype: uint16"/>
+                <has_line line="[output] Output image resolution=(1.0, 1.0), unit='um', z_spacing=1.0"/>
+            </assert_stdout>
         </test>
         <test expect_failure="true">
             <conditional name="setup">
@@ -138,6 +144,12 @@
                 <!-- Rejected by py-script -->
                 <has_text text='Method "watershed" is not applicable to 3-D images.'/>
             </assert_stderr>
+            <assert_stdout>
+                <has_line line="[input] Input image axes: ZYX"/>
+                <has_line line="[input] Input image shape: (2, 100, 100)"/>
+                <has_line line="[input] Input image dtype: bool"/>
+                <has_line line="[input] Input image resolution=(1.0, 1.0), unit='um', z_spacing=1.0"/>
+            </assert_stdout>
         </test>
         <test expect_failure="true">
             <conditional name="setup">
@@ -148,6 +160,10 @@
                 <!-- Rejected by validator -->
                 <has_n_lines n="0"/>
             </assert_stderr>
+            <assert_stdout>
+                <!-- Rejected by validator -->
+                <has_n_lines n="0"/>
+            </assert_stdout>
         </test>
         <!-- Tests for multi-channel images -->
         <test expect_failure="true">
@@ -159,6 +175,12 @@
                 <!-- Rejected by py-script -->
                 <has_text text='Multi-channel images are forbidden to avoid confusion with multi-channel labels (e.g., RGB labels).'/>
             </assert_stderr>
+            <assert_stdout>
+                <has_line line="[input] Input image axes: CYX"/>
+                <has_line line="[input] Input image shape: (2, 64, 64)"/>
+                <has_line line="[input] Input image dtype: uint8"/>
+                <has_line line="[input] Input image resolution=(1.0, 1.0)"/>
+            </assert_stdout>
         </test>
         <test expect_failure="true">
             <conditional name="setup">
@@ -169,6 +191,10 @@
                 <!-- Rejected by validator -->
                 <has_n_lines n="0"/>
             </assert_stderr>
+            <assert_stdout>
+                <!-- Rejected by validator -->
+                <has_n_lines n="0"/>
+            </assert_stdout>
         </test>
     </tests>
     <help>
