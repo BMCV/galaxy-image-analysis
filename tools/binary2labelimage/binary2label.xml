@@ -49,6 +49,7 @@
 
         --output 'output.tiff'
         --params '$params'
+        --verbose
 
     ]]></command>
     <configfiles>

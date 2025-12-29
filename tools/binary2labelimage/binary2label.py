@@ -41,21 +41,29 @@ if __name__ == '__main__':
 
         else:
 
-            # Perform the labeling
+            # Choose the requested labeling method
             match method:
 
                 case 'cca':
-                    for section in tool.run('ZYX'):
-                        input_section_bin = (section['input'].data > 0)  # ensure that the input data is truly binary
-                        section['output'] = ndi.label(input_section_bin, **tool.args.params)[0].astype(np.uint16)
+                    joint_axes = 'ZYX'
+                    
+                    def label(input_section_bin):
+                        return ndi.label(input_section_bin, **tool.args.params)[0].astype(np.uint16)
 
                 case 'watershed':
-                    for section in tool.run('YX'):
-                        input_section_bin = (section['input'].data > 0)  # ensure that the input data is truly binary
-                        section['output'] = label_watershed(input_section_bin, **tool.args.params)  # already uint16
+                    joint_axes = 'YX'
+                    
+                    def label(input_section_bin):
+                        return label_watershed(input_section_bin, **tool.args.params)  # already uint16
 
                 case _:
                     raise ValueError(f'Unknown method: "{method}"')
+
+        # Perform the labeling
+        for section in tool.run(joint_axes):
+            section['output'] = label(
+                section['input'].data > 0,  # ensure that the input data is truly binary
+            )
 
     # Exit and print error to stderr
     except ValueError as err:
