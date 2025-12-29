@@ -32,6 +32,13 @@
   - z-spacing: `1.0`
   - unit: `um`
 
+## `input11.tiff`
+
+- axes: `YX`
+- resolution: `(265, 329)`
+- dtype: `uint16`
+- binary image
+
 ## `rgb.png`:
 
 - axes: `YXC`

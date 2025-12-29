@@ -97,17 +97,25 @@
         <test>
             <conditional name="setup">
                 <param name="method" value="cca"/>
-                <param name="input" value="galaxyIcon_noText.tiff"/>
+                <param name="input" value="input/input11.tiff"/>
             </conditional>
-            <output name="output" value="label.tiff" ftype="tiff" compare="image_diff"/>
+            <output name="output" value="output/input11-cca.tiff" ftype="tiff" compare="image_diff"/>
+            <assert_stdout>
+                <has_line line="[input] Input image axes: YX"/>
+                <has_line line="[input] Input image shape: (265, 329)"/>
+                <has_line line="[input] Input image dtype: uint16"/>
+                <has_line line="[output] Output image axes: YX"/>
+                <has_line line="[output] Output image shape: (265, 329)"/>
+                <has_line line="[output] Output image dtype: uint16"/>
+            </assert_stdout>
         </test>
         <test>
             <conditional name="setup">
                 <param name="method" value="watershed"/>
-                <param name="input" value="in.tiff"/>
+                <param name="input" value="input/input11.tiff"/>
                 <param name="min_distance" value="10"/>
             </conditional>
-            <output name="output" value="out.tiff" ftype="tiff" compare="image_diff"/>
+            <output name="output" value="output/input11-watershed.tiff" ftype="tiff" compare="image_diff"/>
             <assert_stdout>
                 <has_line line="[input] Input image axes: YX"/>
                 <has_line line="[input] Input image shape: (265, 329)"/>
