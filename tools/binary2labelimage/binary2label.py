@@ -46,15 +46,15 @@ if __name__ == '__main__':
 
                 case 'cca':
                     joint_axes = 'ZYX'
-                    
-                    def label(input_section_bin):
-                        return ndi.label(input_section_bin, **tool.args.params)[0].astype(np.uint16)
+                    label = lambda input_section_bin: (  # noqa: E731
+                        ndi.label(input_section_bin, **tool.args.params)[0].astype(np.uint16)
+                    )
 
                 case 'watershed':
                     joint_axes = 'YX'
-                    
-                    def label(input_section_bin):
-                        return label_watershed(input_section_bin, **tool.args.params)  # already uint16
+                    label = lambda input_section_bin: (  # noqa: E731
+                        label_watershed(input_section_bin, **tool.args.params)  # already uint16
+                    )
 
                 case _:
                     raise ValueError(f'Unknown method: "{method}"')
