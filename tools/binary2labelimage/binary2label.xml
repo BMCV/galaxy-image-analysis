@@ -2,6 +2,7 @@
     <description>with giatools</description>
     <macros>
         <import>creators.xml</import>
+        <import>tests.xml</import>
         <token name="@TOOL_VERSION@">0.7.1</token>
         <token name="@VERSION_SUFFIX@">1</token>
         <xml name="input">
@@ -99,7 +100,7 @@
                 <param name="method" value="cca"/>
                 <param name="input" value="input/input11.tiff"/>
             </conditional>
-            <output name="output" value="output/input11-cca.tiff" ftype="tiff" compare="image_diff"/>
+            <expand macro="tests/label_image_diff" name="output" value="output/input11-cca.tiff" ftype="tiff"/>
             <assert_stdout>
                 <has_line line="[input] Input image axes: YX"/>
                 <has_line line="[input] Input image shape: (265, 329)"/>
@@ -115,7 +116,7 @@
                 <param name="input" value="input/input11.tiff"/>
                 <param name="min_distance" value="10"/>
             </conditional>
-            <output name="output" value="output/input11-watershed.tiff" ftype="tiff" compare="image_diff"/>
+            <expand macro="tests/label_image_diff" name="output" value="output/input11-watershed.tiff" ftype="tiff"/>
             <assert_stdout>
                 <has_line line="[input] Input image axes: YX"/>
                 <has_line line="[input] Input image shape: (265, 329)"/>
@@ -131,7 +132,8 @@
                 <param name="method" value="cca"/>
                 <param name="input" value="input/input9.zarr"/>
             </conditional>
-            <output name="output" value="output/input9-cca.tiff" ftype="tiff" compare="image_diff"/><!-- TODO: migrate to macros -->
+            <!-- `label_image_diff` currently does nut support 3-D images: https://github.com/galaxyproject/galaxy/pull/21455 -->
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input9-cca.tiff" ftype="tiff"/>
             <assert_stdout>
                 <has_line line="[input] Input image axes: ZYX"/>
                 <has_line line="[input] Input image shape: (2, 100, 100)"/>
