@@ -57,9 +57,9 @@ if __name__ == '__main__':
 
     raw_image = None
     if args.raw_file is not None:
-        raw_image = giatools.io.imread(args.raw_file.name)
+        raw_image = giatools.io.imreadraw(args.raw_file.name)[0]
 
-    raw_label_image = giatools.io.imread(label_file)
+    raw_label_image = giatools.io.imreadraw(label_file)[0]
 
     df = pd.DataFrame()
     if label_file_binary:

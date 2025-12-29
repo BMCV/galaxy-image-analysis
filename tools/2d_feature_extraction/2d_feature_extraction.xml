@@ -2,7 +2,7 @@
     <description>with scikit-image</description>
     <macros>
         <import>creators.xml</import>
-        <token name="@TOOL_VERSION@">0.18.1</token>
+        <token name="@TOOL_VERSION@">0.25.2</token>
         <token name="@VERSION_SUFFIX@">0</token>
     </macros>
     <creator>
@@ -13,14 +13,14 @@
     </edam_operations>
     <xrefs>
         <xref type="bio.tools">scikit-image</xref>
+        <xref type="bio.tools">giatools</xref>
+        <xref type="bio.tools">galaxy_image_analysis</xref>
         <xref type="biii">scikit-image</xref>
     </xrefs>
     <requirements>
         <requirement type="package" version="@TOOL_VERSION@">scikit-image</requirement>
         <requirement type="package" version="2.2.2">pandas</requirement>
-        <requirement type="package" version="1.23.3">numpy</requirement>
-        <requirement type="package" version="2020.10.1">tifffile</requirement>
-        <requirement type="package" version="0.1">giatools</requirement>
+        <requirement type="package" version="0.7.1">giatools</requirement>
     </requirements>
     <command detect_errors="aggressive">
     <![CDATA[
