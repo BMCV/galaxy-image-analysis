@@ -36,6 +36,15 @@
             <validator type="expression" message="Dataset is a multi-channel image"
                 ><![CDATA[getattr(value.metadata, "channels", None) in (None, '') or int(value.metadata.channels) < 2]]></validator>
         </xml>
+        <xml name="validators/is_single_frame">
+            <!--
+            The OME-Zarr datatype in Galaxy is currently not derived from the Image datatype, and it does
+            hence not inherit the metadata fields like `frames`. To cope with that, we allow all datasets
+            except those where we *know* that they are *not* single-frame.
+            -->
+            <validator type="expression" message="Dataset is a multi-frame image"
+                ><![CDATA[getattr(value.metadata, "frames", None) in (None, '') or int(value.metadata.frames) < 2]]></validator>
+        </xml>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
@@ -94,6 +103,7 @@
     <inputs>
         <param name="labels" type="data" format="tiff,zarr,png" label="Label map">
             <expand macro="validators/is_single_channel"/>
+            <expand macro="validators/is_single_frame"/>
         </param>
         <conditional name="setup">
             <param label="Use the intensity image to compute additional features" name="mode" type="select">
@@ -106,6 +116,7 @@
             <when value="with-intensities">
                 <param name="intensities" type="data" format="tiff,zarr,png,jpg" label="Intensity image">
                     <expand macro="validators/is_single_channel"/>
+                    <expand macro="validators/is_single_frame"/>
                 </param>
                 <expand macro="features">
                     <option value="max_intensity">Max Intensity (requires original image)</option>
