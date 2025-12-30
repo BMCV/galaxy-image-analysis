@@ -38,7 +38,7 @@ if __name__ == "__main__":
             raise ValueError(f'This tool is not applicable to images with {label_image.original_axes} axes.')
 
         # Process all YX slices jointly (demands less memory when processing large Zarrs, as opposed to processing ZYX jointly)
-        info_info = list()  # list of lines to be printed to stdout when finished (do not print repeatedly on each iteration)
+        info_lines = list()  # list of lines to be printed to stdout when finished (do not print repeatedly on each iteration)
         for section in tool.run('YX', output_dtype_hint='preserve'):
 
             # Convert the slice to a NumPy array if it is a Dask array
@@ -68,7 +68,7 @@ if __name__ == "__main__":
                         min_value = rule['min']
                         max_value = rule['max']
                         if feature_value < min_value or feature_value > max_value:
-                            info_info.append(
+                            info_lines.append(
                                 f'Remove object {label} due to {feature_name}={feature_value}, must be in [{min_value}, {max_value}]',
                             )
                             result[mask] = 0
