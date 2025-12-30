@@ -1,0 +1,35 @@
+<macros>
+
+    <!-- Macros for validation of inputs -->
+
+    <xml name="validators/is_single_channel">
+        <!--
+        The OME-Zarr datatype in Galaxy is currently not derived from the Image datatype, and it does
+        hence not inherit the metadata fields like `channels`. To cope with that, we allow all datasets
+        except those where we *know* that they are *not* single-channel.
+        -->
+        <validator type="expression" message="Dataset is a multi-channel image"
+            ><![CDATA[getattr(value.metadata, "channels", None) in (None, '') or int(value.metadata.channels) < 2]]></validator>
+    </xml>
+
+    <xml name="validators/is_single_frame">
+        <!--
+        The OME-Zarr datatype in Galaxy is currently not derived from the Image datatype, and it does
+        hence not inherit the metadata fields like `frames`. To cope with that, we allow all datasets
+        except those where we *know* that they are *not* single-frame.
+        -->
+        <validator type="expression" message="Dataset is a multi-frame image"
+            ><![CDATA[getattr(value.metadata, "frames", None) in (None, '') or int(value.metadata.frames) < 2]]></validator>
+    </xml>
+
+    <xml name="validators/is_2d">
+        <!--
+        The OME-Zarr datatype in Galaxy is currently not derived from the Image datatype, and it does
+        hence not inherit the metadata fields like `depth`. To cope with that, we allow all datasets
+        except those where we *know* that they are *not* 2-D.
+        -->
+        <validator type="expression" message="Dataset is a 3-D image"
+            ><![CDATA[getattr(value.metadata, "depth", None) in (None, '') or int(value.metadata.depth) < 2]]></validator>
+    </xml>
+
+</macros>
