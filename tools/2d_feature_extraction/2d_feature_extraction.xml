@@ -7,7 +7,7 @@
         <token name="@VERSION_SUFFIX@">0</token>
         <xml name="features">
             <param name="features" type="select" label="Available features" multiple="true" display="checkboxes">
-                <option value="label">Label from the label map</option>
+                <option value="label" selected="true">Label from the label map</option>
                 <yield/>
                 <option value="area">Area</option>
                 <option value="area_convex">Convex area</option>
@@ -89,9 +89,9 @@
             <expand macro="validators/is_single_frame"/>
         </param>
         <conditional name="setup">
-            <param label="Use the intensity image to compute additional features" name="mode" type="select">
-                <option value="without-intensities" selected="true">No intensity image</option>
-                <option value="with-intensities">Use intensity image</option>
+            <param label="Features to compute" name="mode" type="select">
+                <option value="without-intensities" selected="true">Only use the label map for feature extraction (no intensity-based features)</option>
+                <option value="with-intensities">Use the intensity image to compute additional features</option>
             </param>
             <when value="without-intensities">
                 <expand macro="features"/>
@@ -102,9 +102,9 @@
                     <expand macro="validators/is_single_frame"/>
                 </param>
                 <expand macro="features">
-                    <option value="max_intensity">Max Intensity (requires original image)</option>
-                    <option value="mean_intensity">Mean Intensity (requires original image)</option>
-                    <option value="min_intensity">Minimum Intensity (requires original image)</option>
+                    <option value="max_intensity">Maximum intensity</option>
+                    <option value="mean_intensity">Mean intensity</option>
+                    <option value="min_intensity">Minimum intensity</option>
                 </expand>
             </when>
         </conditional>
@@ -174,13 +174,12 @@
 
 **Computes features of a label map.**
 
-The computed features are computed based solely on the properties of the labels in the label map, or, optionally, by also taking the intensities
-from a corresponding intensity image into account. Labels with value 0 are ignored.
+The computed features are computed based solely on the properties of the objects in the label map, or, optionally, by also taking the intensities from a corresponding intensity image into account. Labels with value 0 are ignored.
 
 Both images must be 2-D or 3-D single-channel images.
 
-Image Features
-==============
+Supported Features
+==================
 
 **Area:** Area of the region i.e. number of pixels of the region scaled by pixel-area.
 
@@ -192,11 +191,9 @@ Image Features
 
 **Minor axis length:** The length of the minor axis of the ellipse that has the same normalized second central moments as the region.
 
-**Bounding box:** Bounding box (min_row, min_col, max_row, max_col). Pixels belonging to the bounding box are in the half-open interval [min_row; max_row) and [min_col; max_col).
+**Bounding box:** Bounding box `(min_row, min_col, max_row, max_col)`. Pixels belonging to the bounding box are in the half-open interval `[min_row; max_row)` and `[min_col; max_col)`.
 
-**Centroid:** Centroid coordinate tuple (row, col).
-
-**Convexity:** 
+**Centroid:** Centroid coordinate tuple `(row, col)`.
 
 **Eccentricity:** Eccentricity of the ellipse that has the same second-moments as the region. The eccentricity is the ratio of the focal distance (distance between focal points) over the major axis length. The value is in the interval [0, 1). When it is 0, the ellipse becomes a circle.
 
@@ -204,7 +201,7 @@ Image Features
 
 **Euler number:** Euler characteristic of the set of non-zero pixels. Computed as number of connected components subtracted by number of holes (input.ndim connectivity). In 3-D, number of connected components plus number of holes subtracted by number of tunnels.
 
-**Extent:** Ratio of pixels in the region to pixels in the total bounding box. Computed as area / (rows * cols).
+**Extent:** Ratio of pixels in the region to pixels in the total bounding box. Computed as `area / (rows * cols)`.
 
 **Inertia tensor eigenvalues:** The eigenvalues of the inertia tensor in decreasing order.
 
@@ -212,9 +209,9 @@ Image Features
 
 **Moments Hu:** Hu moments (translation, scale and rotation invariant).
 
-**Orientation:** Angle between the 0th axis (rows) and the major axis of the ellipse that has the same second moments as the region, ranging from -pi/2 to pi/2 counter-clockwise.
+**Orientation:** Angle between the vertical axis (rows) and the major axis of the ellipse that has the same second moments as the region, ranging from `-pi/2` to `pi/2` counter-clockwise.
 
-**Perimeter:** Perimeter of object which approximates the contour as a line through the centers of border pixels using a 4-connectivity. Generalizes to the surface in 3-D.
+**Perimeter:** Perimeter of object which approximates the contour as a line through the centers of border pixels using a 4-connectivity. Generalizes to the surface of an object in 3-D, which uses a different approximation.
 
 **Solidity:** Ratio of pixels in the region to pixels of the convex hull image.
     
