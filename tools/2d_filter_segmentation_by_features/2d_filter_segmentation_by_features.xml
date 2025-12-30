@@ -29,25 +29,34 @@
 
         python '$__tool_directory__/2d_filter_segmentation_by_features.py'
 
-        '$input'
-        '$output'
-        '$feature_file'
-        '$rule_file'
+        --labels   '$labels'
+        --output   'output.tiff'
+        --features '$features'
+        --rules    '$rules'
+        --params   '$params'
+
+        --verbose
 
     ]]></command>
+    <configfiles>
+        <configfile name="params"><![CDATA[
+            {
+            }
+        ]]></configfile>
+    </configfiles>
     <inputs>
-        <param name="input" type="data" format="tiff" label="Label map"/>
-        <param name="feature_file" type="data" format="tabular" label="Features"/>
-        <param name="rule_file" type="data" format="tabular" label="Rules"/>
+        <param name="labels" type="data" format="tiff" label="Label map"/>
+        <param name="features" type="data" format="tabular" label="Features"/>
+        <param name="rules" type="data" format="tabular" label="Rules"/>
     </inputs>
     <outputs>
-       <data format="tiff" name="output"/>
+       <data format="tiff" name="output" from_work_dir="output.tiff"/>
     </outputs>
     <tests>
         <test>
-            <param name="input" value="in.tiff"/>
-            <param name="feature_file" value="features.tabular"/>
-            <param name="rule_file" value="rules.tabular"/>
+            <param name="labels" value="in.tiff"/>
+            <param name="features" value="features.tabular"/>
+            <param name="rules" value="rules.tabular"/>
             <expand macro="tests/label_image_diff" name="output" value="out.tiff" ftype="tiff"/>
         </test>
     </tests>
