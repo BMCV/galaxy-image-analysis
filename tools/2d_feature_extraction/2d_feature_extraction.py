@@ -61,7 +61,16 @@ if __name__ == '__main__':
                 labels_section_data = labels_section_data.astype(np.uint8)
 
             # Some features currently cannot be computed from Dask arrays
-            if 'inertia_tensor_eigvals' in tool.args.params['features']:
+            if any(
+                feature_name in tool.args.params['features'] for feature_name in (
+                    'inertia_tensor_eigvals',
+                    'axis_major_length',
+                    'axis_minor_length',
+                    'eccentricity',
+                    'orientation',
+                    'moments_hu',
+                )
+            ):
                 labels_section_data = compute_if_dask(labels_section_data)
 
             # Compute the image features
@@ -82,7 +91,7 @@ if __name__ == '__main__':
                         lambda ait: surface(labels_section_data, regions[ait].label),  # `skimage.measure.regionprops` cannot compute perimeters for 3-D data
                     )
 
-                # Skip features that are not available for 3-D images when processing 3-D images
+                # Skip features that are not available when processing 3-D images
                 elif feature_name in ('eccentricity', 'moments_hu', 'orientation') and labels_section_data.ndim == 3:
                     print(f'Skip feature that is not available for 3-D images: "{feature_name}"')
 
