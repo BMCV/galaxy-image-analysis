@@ -10,22 +10,21 @@
                 <yield/>
                 <option value="area">Area</option>
                 <option value="area_convex">Convex area</option>
+                <option value="area_filled">Filled area</option>
+                <option value="axis_major_length">Major axis length</option>
+                <option value="axis_minor_length">Minor axis length</option>
                 <option value="bbox">Bounding box</option>
                 <option value="centroid">Centroid</option>
-                <option value="moments">Moments</option>
-                <option value="moments_hu">Moments Hu</option>
-                <option value="area_filled">Filled area</option>
-                <option value="perimeter">Perimeter</option>
-                <option value="extent">Extent</option>
                 <option value="eccentricity">Eccentricity</option>
                 <option value="equivalent_diameter_area">Equivalent diameter</option>
                 <option value="euler_number">Euler number</option>
+                <option value="extent">Extent</option>
                 <option value="inertia_tensor_eigvals">Inertia tensor eigenvalues</option>
-                <option value="axis_major_length">Major axis length</option>
-                <option value="axis_minor_length">Minor axis length</option>
+                <option value="moments">Moments</option>
+                <option value="moments_hu">Moments Hu</option>
                 <option value="orientation">Orientation</option>
+                <option value="perimeter">Perimeter</option>
                 <option value="solidity">Solidity</option>
-                <option value="convexity">Convexity</option>
             </param>
         </xml>
     </macros>
@@ -46,6 +45,7 @@
         <requirement type="package" version="@TOOL_VERSION@">scikit-image</requirement>
         <requirement type="package" version="2.2.2">pandas</requirement>
         <requirement type="package" version="0.7.1">giatools</requirement>
+        <requirement type="package" version="0.12.2">ome-zarr</requirement>
     </requirements>
     <required_files>
         <include type="literal" path="2d_feature_extraction.py"/>
@@ -108,10 +108,10 @@
     <tests>
         <!-- Single-channel 2-D -->
         <test>
-            <param name="labels" value="input/input12.tiff"/>
+            <param name="labels" value="input/input12.png"/>
             <conditional name="setup">
                 <param name="mode" value="without-intensities"/>
-                <param name="features" value="label,area,area_convex,convexity"/>
+                <param name="features" value="label,area,area_convex,solidity"/>
             </conditional>
             <output name="output" ftype="tabular" value="output/input12.tsv"/>
         </test>
@@ -120,7 +120,7 @@
             <conditional name="setup">
                 <param name="mode" value="with-intensities"/>
                 <param name="intensities" value="input/input1_uint8.tiff"/>
-                <param name="features" value="area,mean_intensity"/>
+                <param name="features" value="area,mean_intensity,perimeter"/>
             </conditional>
             <output name="output" ftype="tabular" value="output/input11.tsv"/>
         </test>
@@ -130,14 +130,14 @@
             <conditional name="setup">
                 <param name="mode" value="with-intensities"/>
                 <param name="intensities" value="input/input8_zyx.zarr"/>
-                <param name="features" value="perimeter,area,mean_intensity,convexity"/>
+                <param name="features" value="perimeter,area,mean_intensity,solidity"/>
             </conditional>
             <output name="output" ftype="tabular" value="output/input9.tsv"/>
         </test>
         <!-- Multi-channel (forbidden) -->
         <!--
         <test>
-            <param name="labels" value="input/input12.tiff"/>
+            <param name="labels" value="input/input12.png"/>
             <conditional name="setup">
                 <param name="mode" value="with-intensities"/>
                 <param name="intensities" value="input/input3-uint16.tiff"/>
@@ -149,12 +149,51 @@
     </tests>
     <help>
 
-        **Computes features of a label map.**
+**Computes features of a label map.**
 
-        The computed features are computed based solely on the properties of the labels in the label map,
-        or, optionally, by also taking the intensities from a corresponding intensity image into account.
+The computed features are computed based solely on the properties of the labels in the label map, or, optionally, by also taking the intensities
+from a corresponding intensity image into account. Labels with value 0 are ignored.
 
-        The label map must be a 2-D or 3-D single-channel image.
+Both images must be 2-D or 3-D single-channel images.
+
+Image Features
+==============
+
+**Area:** Area of the region i.e. number of pixels of the region scaled by pixel-area.
+
+**Convex area:** Area of the convex hull image, which is the smallest convex polygon that encloses the region.
+
+**Filled area:** Area of the region with all the holes filled in.
+
+**Major axis length:** The length of the major axis of the ellipse that has the same normalized second central moments as the region.
+
+**Minor axis length:** The length of the minor axis of the ellipse that has the same normalized second central moments as the region.
+
+**Bounding box:** Bounding box (min_row, min_col, max_row, max_col). Pixels belonging to the bounding box are in the half-open interval [min_row; max_row) and [min_col; max_col).
+
+**Centroid:** Centroid coordinate tuple (row, col).
+
+**Convexity:** 
+
+**Eccentricity:** Eccentricity of the ellipse that has the same second-moments as the region. The eccentricity is the ratio of the focal distance (distance between focal points) over the major axis length. The value is in the interval [0, 1). When it is 0, the ellipse becomes a circle.
+
+**Equivalent diameter:** The diameter of a circle with the same area as the region.
+
+**Euler number:** Euler characteristic of the set of non-zero pixels. Computed as number of connected components subtracted by number of holes (input.ndim connectivity). In 3-D, number of connected components plus number of holes subtracted by number of tunnels.
+
+**Extent:** Ratio of pixels in the region to pixels in the total bounding box. Computed as area / (rows * cols).
+
+**Inertia tensor eigenvalues:** The eigenvalues of the inertia tensor in decreasing order.
+
+**Moments:** Spatial moments up to 3rd order: `m_ij = sum{ array(row, col) * row^i * col^j }` where the sum is over the row, col coordinates of the region.
+
+**Moments Hu:** Hu moments (translation, scale and rotation invariant).
+
+**Orientation:** Angle between the 0th axis (rows) and the major axis of the ellipse that has the same second moments as the region, ranging from -pi/2 to pi/2 counter-clockwise.
+
+**Perimeter:** Perimeter of object which approximates the contour as a line through the centers of border pixels using a 4-connectivity. Generalizes to the surface in 3-D.
+
+**Solidity:** Ratio of pixels in the region to pixels of the convex hull image.
     
     </help>
     <citations>
