@@ -158,13 +158,17 @@
                 <has_n_lines n="0"/>
             </assert_stdout>
         </test>
-        <!-- TODO: Add test case for multi-channel Zarr: -->
-        <!--
+        <test expect_failure="true">
+            <param name="labels" value="input/input10.zarr"/>
+            <conditional name="setup">
+                <param name="mode" value="without-intensities"/>
+                <param name="features" value="label"/>
+            </conditional>
             <assert_stderr>
-                <!- Rejected by py-script ->
-                <has_text text='...'/>
+                <!-- Rejected by py-script -->
+                <has_text text="This tool is not applicable to images with CYX axes."/>
             </assert_stderr>
-        -->
+        </test>
     </tests>
     <help>
 
