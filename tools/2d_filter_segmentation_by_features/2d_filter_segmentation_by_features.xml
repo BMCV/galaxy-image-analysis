@@ -1,24 +1,30 @@
-<tool id="ip_2d_filter_segmentation_by_features" name="Filter label map by rules" version="0.0.1-4" profile="20.05">
-    <description></description>
+<tool id="ip_2d_filter_segmentation_by_features" name="Filter label map by rules" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
+    <description>with giatools</description>
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
+        <token name="@TOOL_VERSION@">0.7.1</token>
+        <token name="@VERSION_SUFFIX@">0</token>
     </macros>
     <creator>
-        <expand macro="creators/bmcv" />
+        <expand macro="creators/bmcv"/>
+        <expand macro="creators/kostrykin"/>
     </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
     <xrefs>
         <xref type="bio.tools">galaxy_image_analysis</xref>
+        <xref type="bio.tools">giatools</xref>
     </xrefs>
     <requirements>
-        <requirement type="package" version="0.18.1">scikit-image</requirement>
+        <requirement type="package" version="@TOOL_VERSION@">giatools</requirement>
+        <requirement type="package" version="0.25.2">scikit-image</requirement>
         <requirement type="package" version="2.2.2">pandas</requirement>
-        <requirement type="package" version="2020.10.1">tifffile</requirement>
-        <requirement type="package" version="0.1">giatools</requirement>
     </requirements>
+    <required_files>
+        <include type="literal" path="2d_filter_segmentation_by_features.py"/>
+    </required_files>
     <command detect_errors="aggressive"><![CDATA[
 
         python '$__tool_directory__/2d_filter_segmentation_by_features.py'
@@ -30,12 +36,12 @@
 
     ]]></command>
     <inputs>
-        <param name="input" type="data" format="tiff" label="Label map" />
-        <param name="feature_file" type="data" format="tabular" label="Features" />
-        <param name="rule_file" type="data" format="tabular" label="Rules" />
+        <param name="input" type="data" format="tiff" label="Label map"/>
+        <param name="feature_file" type="data" format="tabular" label="Features"/>
+        <param name="rule_file" type="data" format="tabular" label="Rules"/>
     </inputs>
     <outputs>
-       <data format="tiff" name="output" />
+       <data format="tiff" name="output"/>
     </outputs>
     <tests>
         <test>

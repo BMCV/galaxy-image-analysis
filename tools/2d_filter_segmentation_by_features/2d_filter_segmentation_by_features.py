@@ -15,7 +15,7 @@ if __name__ == "__main__":
     parser.add_argument('rule_file', type=argparse.FileType('r'), default=sys.stdin, help='file with rules per feature (cols: ,f1,2, rows: feature_name, min, max)')
     args = parser.parse_args()
 
-    img_in = giatools.io.imread(args.input_file.name)
+    img_in = giatools.io.imreadraw(args.input_file.name)[0]
     features = pd.read_csv(args.feature_file, delimiter="\t")
     rules = pd.read_csv(args.rule_file, delimiter="\t")
 
