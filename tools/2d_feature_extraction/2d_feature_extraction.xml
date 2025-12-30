@@ -27,6 +27,15 @@
                 <option value="solidity">Solidity</option>
             </param>
         </xml>
+        <xml name="validators/is_single_channel">
+            <!--
+            The OME-Zarr datatype in Galaxy is currently not derived from the Image datatype, and it does
+            hence not inherit the metadata fields like `channels`. To cope with that, we allow all datasets
+            except those where we *know* that they are *not* single-channel.
+            -->
+            <validator type="expression" message="Dataset is a multi-channel image"
+                ><![CDATA[getattr(value.metadata, "channels", None) in (None, '') or int(value.metadata.channels) < 2]]></validator>
+        </xml>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
@@ -83,7 +92,9 @@
         ]]></configfile>
     </configfiles>
     <inputs>
-        <param name="labels" type="data" format="tiff,zarr,png" label="Label map"/>
+        <param name="labels" type="data" format="tiff,zarr,png" label="Label map">
+            <expand macro="validators/is_single_channel"/>
+        </param>
         <conditional name="setup">
             <param label="Use the intensity image to compute additional features" name="mode" type="select">
                 <option value="without-intensities" selected="true">No intensity image</option>
@@ -93,7 +104,9 @@
                 <expand macro="features"/>
             </when>
             <when value="with-intensities">
-                <param name="intensities" type="data" format="tiff,zarr,png,jpg" label="Intensity image"/>
+                <param name="intensities" type="data" format="tiff,zarr,png,jpg" label="Intensity image">
+                    <expand macro="validators/is_single_channel"/>
+                </param>
                 <expand macro="features">
                     <option value="max_intensity">Max Intensity (requires original image)</option>
                     <option value="mean_intensity">Mean Intensity (requires original image)</option>
@@ -135,16 +148,22 @@
             <output name="output" ftype="tabular" value="output/input9.tsv"/>
         </test>
         <!-- Multi-channel (forbidden) -->
-        <!--
-        <test>
+        <test expect_failure="true">
             <param name="labels" value="input/input12.png"/>
             <conditional name="setup">
                 <param name="mode" value="with-intensities"/>
-                <param name="intensities" value="input/input3-uint16.tiff"/>
+                <param name="intensities" value="input/input3_uint16.tiff"/>
                 <param name="features" value="label"/>
             </conditional>
+            <assert_stderr>
+                <!-- Rejected by validator -->
+                <has_n_lines n="0"/>
+            </assert_stderr>
+            <assert_stdout>
+                <!-- Rejected by validator -->
+                <has_n_lines n="0"/>
+            </assert_stdout>
         </test>
-        -->
         <!-- TODO: Add test case for multi-channel Zarr -->
     </tests>
     <help>
