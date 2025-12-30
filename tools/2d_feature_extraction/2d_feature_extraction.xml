@@ -2,30 +2,29 @@
     <description>with scikit-image</description>
     <macros>
         <import>creators.xml</import>
-        <import>tests.xml</import>
         <token name="@TOOL_VERSION@">0.25.2</token>
         <token name="@VERSION_SUFFIX@">0</token>
         <xml name="features">
             <param name="features" type="select" label="Available features" multiple="true" display="checkboxes">
                 <option value="label">Label from the label map</option>
                 <yield/>
-                <option value="moments_hu">Moments Hu</option>
-                <option value="centroid">Centroid</option>
-                <option value="bbox">Bounding box</option>
                 <option value="area">Area</option>
-                <option value="filled_area">Filled area</option>
-                <option value="convex_area">Convex area</option>
+                <option value="area_convex">Convex area</option>
+                <option value="bbox">Bounding box</option>
+                <option value="centroid">Centroid</option>
+                <option value="moments">Moments</option>
+                <option value="moments_hu">Moments Hu</option>
+                <option value="area_filled">Filled area</option>
                 <option value="perimeter">Perimeter</option>
                 <option value="extent">Extent</option>
                 <option value="eccentricity">Eccentricity</option>
-                <option value="equivalent_diameter">Equivalent diameter</option>
+                <option value="equivalent_diameter_area">Equivalent diameter</option>
                 <option value="euler_number">Euler number</option>
                 <option value="inertia_tensor_eigvals">Inertia tensor eigenvalues</option>
-                <option value="major_axis_length">Major axis length</option>
-                <option value="minor_axis_length">Minor axis length</option>
+                <option value="axis_major_length">Major axis length</option>
+                <option value="axis_minor_length">Minor axis length</option>
                 <option value="orientation">Orientation</option>
                 <option value="solidity">Solidity</option>
-                <option value="moments">Moments</option>
                 <option value="convexity">Convexity</option>
             </param>
         </xml>
@@ -107,14 +106,46 @@
         <data format="tabular" name="output"/>
     </outputs>
     <tests>
+        <!-- Single-channel 2-D -->
         <test>
-            <param name="labels" value="input.tiff" ftype="tiff"/>
+            <param name="labels" value="input/input12.tiff"/>
             <conditional name="setup">
                 <param name="mode" value="without-intensities"/>
-                <param name="features" value="label,area"/>
+                <param name="features" value="label,area,area_convex,convexity"/>
             </conditional>
-            <output name="output" ftype="tabular" value="out.tsv"/>
+            <output name="output" ftype="tabular" value="output/input12.tsv"/>
         </test>
+        <test>
+            <param name="labels" value="input/input11.tiff"/>
+            <conditional name="setup">
+                <param name="mode" value="with-intensities"/>
+                <param name="intensities" value="input/input1_uint8.tiff"/>
+                <param name="features" value="area,mean_intensity"/>
+            </conditional>
+            <output name="output" ftype="tabular" value="output/input11.tsv"/>
+        </test>
+        <!-- Single-channel 3-D -->
+        <test>
+            <param name="labels" value="input/input9.zarr"/>
+            <conditional name="setup">
+                <param name="mode" value="with-intensities"/>
+                <param name="intensities" value="input/input8_zyx.zarr"/>
+                <param name="features" value="perimeter,area,mean_intensity,convexity"/>
+            </conditional>
+            <output name="output" ftype="tabular" value="output/input9.tsv"/>
+        </test>
+        <!-- Multi-channel (forbidden) -->
+        <!--
+        <test>
+            <param name="labels" value="input/input12.tiff"/>
+            <conditional name="setup">
+                <param name="mode" value="with-intensities"/>
+                <param name="intensities" value="input/input3-uint16.tiff"/>
+                <param name="features" value="label"/>
+            </conditional>
+        </test>
+        -->
+        <!-- TODO: Add test case for multi-channel Zarr -->
     </tests>
     <help>
 
