@@ -3,18 +3,13 @@
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
+        <import>validators.xml</import>
         <token name="@TOOL_VERSION@">0.7.1</token>
         <token name="@VERSION_SUFFIX@">1</token>
         <xml name="input">
             <!-- JPEG is not allowed because it is a lossy compression that has no strictly constant labels -->
             <param name="input" type="data" format="tiff,zarr,png" label="Binary image">
-                <!--
-                The OME-Zarr datatype in Galaxy is currently not derived from the Image datatype, and it does
-                hence not inherit the metadata fields like `num_unique_values`. To cope with that, we allow all
-                datasets except those where we *know* that they are *not* binary.
-                -->
-                <validator type="expression" message="Dataset is not a binary image"
-                    ><![CDATA[getattr(value.metadata, "num_unique_values", None) in (None, '') or int(value.metadata.num_unique_values) <= 2]]></validator>
+                <expand macro="validators/is_binary"/>
                 <yield/>
             </param>
         </xml>
@@ -78,13 +73,7 @@
             </when>
             <when value="watershed">
                 <expand macro="input">
-                    <!--
-                    The OME-Zarr datatype in Galaxy is currently not derived from the Image datatype, and it does
-                    hence not inherit the metadata fields like `depth`. To cope with that, we allow all datasets
-                    except those where we *know* that they are *not* 2-D.
-                    -->
-                    <validator type="expression" message="Dataset is a 3-D image"
-                        ><![CDATA[getattr(value.metadata, "depth", None) in (None, '') or int(value.metadata.depth) < 2]]></validator>
+                    <expand macro="validators/is_2d"/>
                 </expand>
                 <param name="min_distance" type="integer" min="0" value="5" label="Minimum distance between two objects"/>
             </when>
