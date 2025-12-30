@@ -29,6 +29,17 @@
                 <option value="solidity">Solidity</option>
             </param>
         </xml>
+        <xml name="zarr-isolated-feature-test" tokens="feature">
+            <test>
+                <param name="labels" value="input/input13.zarr"/>
+                <conditional name="setup">
+                    <param name="mode" value="with-intensities"/>
+                    <param name="intensities" value="input/input1_uint8.tiff"/>
+                    <param name="features" value="@FEATURE@"/>
+                </conditional>
+                <output name="output" ftype="tabular" value="output/input13-@FEATURE@.tsv"/>
+            </test>
+        </xml>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
@@ -132,7 +143,27 @@
             </conditional>
             <output name="output" ftype="tabular" value="output/input11.tsv"/>
         </test>
-        <!-- TODO: Add single-channel 2-D Zarr tests, one for each feature (use a macro), to verify that Dask arrays are converted to NumPy arrays whenever necessary -->
+        <!-- Single-channel 2-D Zarr (isolated features, verify that Dask arrays are converted to NumPy arrays whenever necessary) -->
+        <expand macro="zarr-isolated-feature-test" feature="area"/>
+        <expand macro="zarr-isolated-feature-test" feature="area_convex"/>
+        <expand macro="zarr-isolated-feature-test" feature="area_filled"/>
+        <expand macro="zarr-isolated-feature-test" feature="axis_major_length"/>
+        <expand macro="zarr-isolated-feature-test" feature="axis_minor_length"/>
+        <expand macro="zarr-isolated-feature-test" feature="bbox"/>
+        <expand macro="zarr-isolated-feature-test" feature="centroid"/>
+        <expand macro="zarr-isolated-feature-test" feature="eccentricity"/>
+        <expand macro="zarr-isolated-feature-test" feature="equivalent_diameter_area"/>
+        <expand macro="zarr-isolated-feature-test" feature="euler_number"/>
+        <expand macro="zarr-isolated-feature-test" feature="extent"/>
+        <expand macro="zarr-isolated-feature-test" feature="inertia_tensor_eigvals"/>
+        <expand macro="zarr-isolated-feature-test" feature="moments"/>
+        <expand macro="zarr-isolated-feature-test" feature="moments_hu"/>
+        <expand macro="zarr-isolated-feature-test" feature="orientation"/>
+        <expand macro="zarr-isolated-feature-test" feature="perimeter"/>
+        <expand macro="zarr-isolated-feature-test" feature="solidity"/>
+        <expand macro="zarr-isolated-feature-test" feature="max_intensity"/>
+        <expand macro="zarr-isolated-feature-test" feature="mean_intensity"/>
+        <expand macro="zarr-isolated-feature-test" feature="min_intensity"/>
         <!-- Single-channel 3-D, test all features are supported in 3-D -->
         <test>
             <param name="labels" value="input/input9.zarr"/>

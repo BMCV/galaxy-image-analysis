@@ -27,6 +27,13 @@
 - dtype: `uint8`
 - labels: `0...24`
 
+### `input13.zarr`
+
+- axes: `YX`
+- resolution: `(265, 329)`
+- dtype: `uint8`
+- labels: `0...2`
+
 ## Intensity images
 
 ### `input1_uint8.tiff`:
