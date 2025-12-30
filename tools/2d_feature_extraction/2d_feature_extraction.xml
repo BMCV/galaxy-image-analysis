@@ -6,7 +6,8 @@
         <token name="@TOOL_VERSION@">0.25.2</token>
         <token name="@VERSION_SUFFIX@">0</token>
         <xml name="features">
-            <param name="features" type="select" label="Available features" multiple="true" display="checkboxes">
+            <param name="features" type="select" label="Available features" multiple="true" display="checkboxes"
+                   help="*) Features marked with an asterisk are only available for 2-D images (not for 3-D images).">
                 <option value="label" selected="true">Label from the label map</option>
                 <yield/>
                 <option value="area">Area</option>
@@ -16,14 +17,14 @@
                 <option value="axis_minor_length">Minor axis length</option>
                 <option value="bbox">Bounding box</option>
                 <option value="centroid">Centroid</option>
-                <option value="eccentricity">Eccentricity</option>
+                <option value="eccentricity">Eccentricity*</option>
                 <option value="equivalent_diameter_area">Equivalent diameter</option>
                 <option value="euler_number">Euler number</option>
                 <option value="extent">Extent</option>
                 <option value="inertia_tensor_eigvals">Inertia tensor eigenvalues</option>
                 <option value="moments">Moments</option>
-                <option value="moments_hu">Moments Hu</option>
-                <option value="orientation">Orientation</option>
+                <option value="moments_hu">Moments Hu*</option>
+                <option value="orientation">Orientation*</option>
                 <option value="perimeter">Perimeter</option>
                 <option value="solidity">Solidity</option>
             </param>
@@ -131,13 +132,14 @@
             </conditional>
             <output name="output" ftype="tabular" value="output/input11.tsv"/>
         </test>
-        <!-- Single-channel 3-D -->
+        <!-- TODO: Add single-channel 2-D Zarr tests, one for each feature (use a macro), to verify that Dask arrays are converted to NumPy arrays whenever necessary -->
+        <!-- Single-channel 3-D, test all features are supported in 3-D -->
         <test>
             <param name="labels" value="input/input9.zarr"/>
             <conditional name="setup">
                 <param name="mode" value="with-intensities"/>
                 <param name="intensities" value="input/input8_zyx.zarr"/>
-                <param name="features" value="perimeter,area,mean_intensity,solidity"/>
+                <param name="features" value="area,area_convex,area_filled,axis_major_length,axis_minor_length,bbox,centroid,equivalent_diameter_area,euler_number,extent,inertia_tensor_eigvals,moments,perimeter,solidity,max_intensity,mean_intensity,min_intensity"/>
             </conditional>
             <output name="output" ftype="tabular" value="output/input9.tsv"/>
         </test>

@@ -30,6 +30,13 @@ def surface(labels: np.ndarray, label: int) -> int:
     return surface.sum()  # number of voxels on the surface of the object
 
 
+def compute_if_dask(obj):
+    """
+    Return the computed object or array if it is a Dask array or deferred computable Dask object.
+    """
+    return obj.compute() if hasattr(obj, 'compute') else obj
+
+
 if __name__ == '__main__':
     tool = giatools.ToolBaseplate()
     tool.add_input_image('labels')
@@ -53,25 +60,29 @@ if __name__ == '__main__':
                 print('Convert labels from bool to uint8')
                 labels_section_data = labels_section_data.astype(np.uint8)
 
+            # Some features currently cannot be computed from Dask arrays
+            if 'inertia_tensor_eigvals' in tool.args.params['features']:
+                labels_section_data = compute_if_dask(labels_section_data)
+
             # Compute the image features
             if 'intensities' in tool.args.input_images:
                 regions = skimage.measure.regionprops(labels_section_data, intensity_image=section['intensities'].data.squeeze())
             else:
                 regions = skimage.measure.regionprops(labels_section_data, intensity_image=None)
-
             df['it'] = np.arange(len(regions))
-
             for feature_name in tool.args.params['features']:
+
+                # Add the obejct label
                 if feature_name == 'label':
                     df['label'] = df['it'].map(lambda ait: regions[ait].label)
-                elif feature_name == 'convexity':
-                    perimeter = df['it'].map(lambda ait: regions[ait].perimeter)
-                    area = df['it'].map(lambda ait: regions[ait].area)
-                    df['convexity'] = area / (perimeter * perimeter)
+
+                # Add the object perimeter/surface
                 elif feature_name == 'perimeter' and labels_section_data.ndim == 3:
                     df['perimeter'] = df['it'].map(
                         lambda ait: surface(labels_section_data, regions[ait].label),  # `skimage.measure.regionprops` cannot compute perimeters for 3-D data
                     )
+
+                # Add another feature from `regions` that was computed via `skimage.measure.regionprops`
                 else:
                     try:
                         df[feature_name] = df['it'].map(lambda ait: getattr(regions[ait], feature_name))
@@ -79,8 +90,11 @@ if __name__ == '__main__':
                         raise ValueError(f'Unknown feature: "{feature_name}"')
 
             # Resolve any remaining Dask objects to the actual values (e.g., when processing Zarrs)
+            df = df.map(compute_if_dask)
+
+            # Convert lists/tuples/arrays to lists of plain Python numbers (e.g., float instead of np.float64)
             df = df.map(
-                lambda val: val.compute() if hasattr(val, 'compute') else val
+                lambda obj: np.asarray(obj).tolist() if type(obj) in (list, tuple, np.ndarray) else obj,
             )
 
             del df['it']
