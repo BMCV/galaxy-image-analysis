@@ -158,7 +158,13 @@
                 <has_n_lines n="0"/>
             </assert_stdout>
         </test>
-        <!-- TODO: Add test case for multi-channel Zarr -->
+        <!-- TODO: Add test case for multi-channel Zarr: -->
+        <!--
+            <assert_stderr>
+                <!- Rejected by py-script ->
+                <has_text text='...'/>
+            </assert_stderr>
+        -->
     </tests>
     <help>
 
