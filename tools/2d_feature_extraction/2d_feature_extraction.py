@@ -82,6 +82,10 @@ if __name__ == '__main__':
                         lambda ait: surface(labels_section_data, regions[ait].label),  # `skimage.measure.regionprops` cannot compute perimeters for 3-D data
                     )
 
+                # Skip features that are not available for 3-D images when processing 3-D images
+                elif feature_name in ('eccentricity', 'moments_hu', 'orientation') and labels_section_data.ndim == 3:
+                    print(f'Skip feature that is not available for 3-D images: "{feature_name}"')
+
                 # Add another feature from `regions` that was computed via `skimage.measure.regionprops`
                 else:
                     try:

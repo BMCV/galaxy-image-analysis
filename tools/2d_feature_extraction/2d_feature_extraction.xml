@@ -170,9 +170,14 @@
             <conditional name="setup">
                 <param name="mode" value="with-intensities"/>
                 <param name="intensities" value="input/input8_zyx.zarr"/>
-                <param name="features" value="area,area_convex,area_filled,axis_major_length,axis_minor_length,bbox,centroid,equivalent_diameter_area,euler_number,extent,inertia_tensor_eigvals,moments,perimeter,solidity,max_intensity,mean_intensity,min_intensity"/>
+                <param name="features" value="area,area_convex,area_filled,axis_major_length,axis_minor_length,bbox,centroid,eccentricity,equivalent_diameter_area,euler_number,extent,inertia_tensor_eigvals,moments,moments_hu,orientation,perimeter,solidity,max_intensity,mean_intensity,min_intensity"/>
             </conditional>
             <output name="output" ftype="tabular" value="output/input9.tsv"/>
+            <assert_stdout>
+                <has_line line='Skip feature that is not available for 3-D images: "eccentricity"'/>
+                <has_line line='Skip feature that is not available for 3-D images: "moments_hu"'/>
+                <has_line line='Skip feature that is not available for 3-D images: "orientation"'/>
+            </assert_stdout>
         </test>
         <!-- Multi-channel (forbidden) -->
         <test expect_failure="true">
