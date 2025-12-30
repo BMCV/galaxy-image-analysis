@@ -59,7 +59,7 @@ if __name__ == "__main__":
                 # Check the rules for the object
                 else:
                     for rule in rules.to_dict(orient='records'):
-                        feature_name = rule['feature']
+                        feature_name = rule['feature'].strip()
                         if feature_name not in features.columns:
                             raise ValueError(f'Rule requires "{feature_name}" but this feature is missing.')
                         feature_value = features.loc[label, feature_name]

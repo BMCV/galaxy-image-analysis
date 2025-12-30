@@ -62,11 +62,53 @@
        <data format="tiff" name="output" from_work_dir="output.tiff"/>
     </outputs>
     <tests>
+        <!-- Single-channel 2-D -->
         <test>
-            <param name="labels" value="in.tiff"/>
-            <param name="features" value="features.tabular"/>
-            <param name="rules" value="rules.tabular"/>
-            <expand macro="tests/label_image_diff" name="output" value="out.tiff" ftype="tiff"/>
+            <param name="labels" value="input/input12.png"/>
+            <param name="features" value="input/input12-features.tsv"/>
+            <param name="rules" value="input/input12-rules.tsv"/>
+            <expand macro="tests/label_image_diff" name="output" value="output/input12.tiff" ftype="tiff"/>
+        </test>
+        <!-- TODO: add test for a label missing in the features file -->
+        <!-- Single-channel 3-D -->
+        <test>
+            <param name="labels" value="input/input9.zarr"/>
+            <param name="features" value="input/input9-features.tsv"/>
+            <param name="rules" value="input/input9-rules1.tsv"/>
+            <expand macro="tests/label_image_diff" name="output" value="output/input9-rules1.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <param name="labels" value="input/input9.zarr"/>
+            <param name="features" value="input/input9-features.tsv"/>
+            <param name="rules" value="input/input9-rules2.tsv"/>
+            <output name="output" ftype="tiff">
+                <assert_contents>
+                    <has_image_n_labels n="0" exclude_labels="0"/><!-- all background -->
+                </assert_contents>
+            </output>
+        </test>
+        <!-- Multi-channel (forbidden) -->
+        <test expect_failure="true">
+            <param name="labels" value="input/input3_uint16.tiff"/>
+            <param name="features" value="input/input12-features.tsv"/>
+            <param name="rules" value="input/input12-rules.tsv"/>
+            <assert_stderr>
+                <!-- Rejected by validator -->
+                <has_n_lines n="0"/>
+            </assert_stderr>
+            <assert_stdout>
+                <!-- Rejected by validator -->
+                <has_n_lines n="0"/>
+            </assert_stdout>
+        </test>
+        <test expect_failure="true">
+            <param name="labels" value="input/input10.zarr"/>
+            <param name="features" value="input/input12-features.tsv"/>
+            <param name="rules" value="input/input12-rules.tsv"/>
+            <assert_stderr>
+                <!-- Rejected by py-script -->
+                <has_text text="This tool is not applicable to images with CYX axes."/>
+            </assert_stderr>
         </test>
     </tests>
     <help>
