@@ -3,6 +3,7 @@
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
+        <import>validators.xml</import>
         <token name="@TOOL_VERSION@">0.7.1</token>
         <token name="@VERSION_SUFFIX@">0</token>
     </macros>
@@ -29,7 +30,12 @@
 
         python '$__tool_directory__/2d_filter_segmentation_by_features.py'
 
-        --labels   '$labels'
+        #if $labels.extension == "zarr"
+            --labels '$labels.extra_files_path/$labels.metadata.store_root'
+        #else
+            --labels '$labels'
+        #end if
+
         --output   'output.tiff'
         --features '$features'
         --rules    '$rules'
@@ -45,7 +51,10 @@
         ]]></configfile>
     </configfiles>
     <inputs>
-        <param name="labels" type="data" format="tiff" label="Label map"/>
+        <param name="labels" type="data" format="tiff,zarr,png" label="Label map">
+            <expand macro="validators/is_single_channel"/>
+            <expand macro="validators/is_single_frame"/>
+        </param>
         <param name="features" type="data" format="tabular" label="Features"/>
         <param name="rules" type="data" format="tabular" label="Rules"/>
     </inputs>
