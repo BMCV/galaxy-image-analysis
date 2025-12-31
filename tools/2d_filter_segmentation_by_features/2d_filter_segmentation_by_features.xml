@@ -64,7 +64,8 @@
         </param>
         <param name="missing" type="select" label="Processing of objects without features"
                help="Correspondances of objects within the label map and the features table are established via their label (the value in the label column corresponds to the intensity value in the label map). Rules cannot be applied to objects in the label map that have no corresponding row in the features table.">
-            <option value="remove" selected="true">Remove objects without features</option>
+            <option value="fail" selected="true">Fail if features are missing for an object</option>
+            <option value="remove">Remove objects without features</option>
             <option value="keep">Keep objects without features</option>
         </param>
     </inputs>
@@ -76,15 +77,33 @@
         <test>
             <param name="labels" value="input/input12.png"/>
             <param name="features" value="input/input12-features1.tsv"/>
-            <param name="rules" value="input/input12-rules.tsv"/>
+            <param name="rules" value="input/input12-rules1.tsv"/>
             <expand macro="tests/label_image_diff" name="output" value="output/input12.tiff" ftype="tiff">
                 <has_image_n_labels n="2" exclude_labels="0"/><!-- 5, 20 -->
             </expand>
         </test>
+        <test expect_failure="true">
+            <param name="labels" value="input/input12.png"/>
+            <param name="features" value="input/input12-features1.tsv"/>
+            <param name="rules" value="input/input12-rules2.tsv"/>
+            <assert_stderr>
+                <has_text text='Rule requires "not_a_feature" but this feature is missing.'/>
+            </assert_stderr>
+        </test>
+        <test expect_failure="true">
+            <param name="labels" value="input/input12.png"/>
+            <param name="features" value="input/input12-features2.tsv"/><!-- removed labels: 8, 20 -->
+            <param name="rules" value="input/input12-rules1.tsv"/>
+            <param name="missing" value="fail"/>
+            <assert_stderr>
+                <has_text text="No features available for label: 8"/>
+            </assert_stderr>
+        </test>
         <test>
             <param name="labels" value="input/input12.png"/>
             <param name="features" value="input/input12-features2.tsv"/><!-- removed labels: 8, 20 -->
-            <param name="rules" value="input/input12-rules.tsv"/>
+            <param name="rules" value="input/input12-rules1.tsv"/>
+            <param name="missing" value="remove"/>
             <output name="output" ftype="tiff">
                 <assert_contents>
                     <has_image_n_labels n="1" exclude_labels="0"/><!-- 5 -->
@@ -94,7 +113,7 @@
         <test>
             <param name="labels" value="input/input12.png"/>
             <param name="features" value="input/input12-features2.tsv"/><!-- removed labels: 8, 20 -->
-            <param name="rules" value="input/input12-rules.tsv"/>
+            <param name="rules" value="input/input12-rules1.tsv"/>
             <param name="missing" value="keep"/>
             <output name="output" ftype="tiff">
                 <assert_contents>
@@ -129,7 +148,7 @@
         <test expect_failure="true">
             <param name="labels" value="input/input3_uint16.tiff"/>
             <param name="features" value="input/input12-features1.tsv"/>
-            <param name="rules" value="input/input12-rules.tsv"/>
+            <param name="rules" value="input/input12-rules1.tsv"/>
             <assert_stderr>
                 <!-- Rejected by validator -->
                 <has_n_lines n="0"/>
@@ -142,7 +161,7 @@
         <test expect_failure="true">
             <param name="labels" value="input/input10.zarr"/>
             <param name="features" value="input/input12-features1.tsv"/>
-            <param name="rules" value="input/input12-rules.tsv"/>
+            <param name="rules" value="input/input12-rules1.tsv"/>
             <assert_stderr>
                 <!-- Rejected by py-script -->
                 <has_text text="This tool is not applicable to images with CYX axes."/>

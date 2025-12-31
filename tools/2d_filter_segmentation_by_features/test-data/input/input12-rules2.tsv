@@ -1,0 +1,4 @@
+feature 	min	max
+area    	5	50
+solidity	0.5	0.9
+not_a_feature	0	1

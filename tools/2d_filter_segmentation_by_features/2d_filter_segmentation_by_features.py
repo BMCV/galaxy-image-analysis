@@ -56,10 +56,13 @@ if __name__ == "__main__":
                 if label not in features.index:
 
                     # The label is not in the `features` file
-                    if tool.args.params['missing'] == 'remove':
-                        result[mask] = 0  # consider this as a manual removal
-                    else:
-                        pass  # keep the object and processed with the next label
+                    match tool.args.params['missing']:
+                        case 'remove':
+                            result[mask] = 0  # consider this as a manual removal
+                        case 'keep':
+                            pass  # keep the object and processed with the next label
+                        case 'fail':
+                            raise ValueError(f'No features available for label: {label}')
 
                 # Check the rules for the object
                 else:
