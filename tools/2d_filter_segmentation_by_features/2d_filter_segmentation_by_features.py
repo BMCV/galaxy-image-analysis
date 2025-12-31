@@ -30,7 +30,7 @@ if __name__ == "__main__":
         # Validate the rules
         if (missing_rules_columns := required_rules_columns - frozenset(rules.columns)):
             raise ValueError(f'Missing rules columns: {", ".join(missing_rules_columns)}')
-        print('Rules for:', ', '.join(rules['feature']))
+        print('Rules for:', ', '.join(feature_name.strip() for feature_name in rules['feature']))
 
         # Validate the input image
         label_image = tool.args.input_images['labels']
@@ -54,7 +54,12 @@ if __name__ == "__main__":
 
                 mask = (labels == label)
                 if label not in features.index:
-                    result[mask] = 0  # the label is not contained in the `features` file — consider this as a manual removal
+
+                    # The label is not in the `features` file
+                    if tool.args.params['missing'] == 'remove':
+                        result[mask] = 0  # consider this as a manual removal
+                    else:
+                        pass  # keep the object and processed with the next label
 
                 # Check the rules for the object
                 else:

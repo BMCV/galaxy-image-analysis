@@ -47,6 +47,9 @@
     <configfiles>
         <configfile name="params"><![CDATA[
             {
+
+                "missing": "$missing"
+
             }
         ]]></configfile>
     </configfiles>
@@ -59,6 +62,11 @@
         <param name="rules" type="data" format="tabular" label="Rules">
             <validator type="dataset_metadata_in_range" metadata_name="columns" min="3" message="Input needs to have at least 3 columns."/>
         </param>
+        <param name="missing" type="select" label="Processing of objects without features"
+               help="Correspondances of objects within the label map and the features table are established via their label (the value in the label column corresponds to the intensity value in the label map). Rules cannot be applied to objects in the label map that have no corresponding row in the features table.">
+            <option value="remove" selected="true">Remove objects without features</option>
+            <option value="keep">Keep objects without features</option>
+        </param>
     </inputs>
     <outputs>
        <data format="tiff" name="output" from_work_dir="output.tiff"/>
@@ -67,17 +75,42 @@
         <!-- Single-channel 2-D -->
         <test>
             <param name="labels" value="input/input12.png"/>
-            <param name="features" value="input/input12-features.tsv"/>
+            <param name="features" value="input/input12-features1.tsv"/>
             <param name="rules" value="input/input12-rules.tsv"/>
-            <expand macro="tests/label_image_diff" name="output" value="output/input12.tiff" ftype="tiff"/>
+            <expand macro="tests/label_image_diff" name="output" value="output/input12.tiff" ftype="tiff">
+                <has_image_n_labels n="2" exclude_labels="0"/><!-- 5, 20 -->
+            </expand>
         </test>
-        <!-- TODO: add test for a label missing in the features file -->
+        <test>
+            <param name="labels" value="input/input12.png"/>
+            <param name="features" value="input/input12-features2.tsv"/><!-- removed labels: 8, 20 -->
+            <param name="rules" value="input/input12-rules.tsv"/>
+            <output name="output" ftype="tiff">
+                <assert_contents>
+                    <has_image_n_labels n="1" exclude_labels="0"/><!-- 5 -->
+                </assert_contents>
+            </output>
+        </test>
+        <test>
+            <param name="labels" value="input/input12.png"/>
+            <param name="features" value="input/input12-features2.tsv"/><!-- removed labels: 8, 20 -->
+            <param name="rules" value="input/input12-rules.tsv"/>
+            <param name="missing" value="keep"/>
+            <output name="output" ftype="tiff">
+                <assert_contents>
+                    <has_image_n_labels n="3" exclude_labels="0"/><!-- 5, 8, 20 -->
+                </assert_contents>
+            </output>
+        </test>
         <!-- Single-channel 3-D -->
         <test>
             <param name="labels" value="input/input9.zarr"/>
             <param name="features" value="input/input9-features.tsv"/>
             <param name="rules" value="input/input9-rules1.tsv"/>
             <expand macro="tests/label_image_diff" name="output" value="output/input9-rules1.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line='Spurious rules columns: "extra_column"'/>
+            </assert_stdout>
         </test>
         <test>
             <param name="labels" value="input/input9.zarr"/>
@@ -88,11 +121,14 @@
                     <has_image_n_labels n="0" exclude_labels="0"/><!-- all background -->
                 </assert_contents>
             </output>
+            <assert_stdout>
+                <has_line line='Spurious rules columns: "extra_column"'/>
+            </assert_stdout>
         </test>
         <!-- Multi-channel (forbidden) -->
         <test expect_failure="true">
             <param name="labels" value="input/input3_uint16.tiff"/>
-            <param name="features" value="input/input12-features.tsv"/>
+            <param name="features" value="input/input12-features1.tsv"/>
             <param name="rules" value="input/input12-rules.tsv"/>
             <assert_stderr>
                 <!-- Rejected by validator -->
@@ -105,7 +141,7 @@
         </test>
         <test expect_failure="true">
             <param name="labels" value="input/input10.zarr"/>
-            <param name="features" value="input/input12-features.tsv"/>
+            <param name="features" value="input/input12-features1.tsv"/>
             <param name="rules" value="input/input12-rules.tsv"/>
             <assert_stderr>
                 <!-- Rejected by py-script -->
