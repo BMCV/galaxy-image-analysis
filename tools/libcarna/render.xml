@@ -1,0 +1,69 @@
+<tool id="libcarna" name="Render 3-D image data" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
+    <description>with LibCarna</description>
+    <macros>
+        <import>creators.xml</import>
+        <token name="@TOOL_VERSION@">0.2.0</token>
+        <token name="@VERSION_SUFFIX@">0</token>
+    </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+        <expand macro="creators/kostrykin"/>
+    </creator>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="bio.tools">galaxy_image_analysis</xref>
+        <xref type="bio.tools">giatools</xref>
+    </xrefs>
+    <requirements>
+        <requirement type="package" version="@TOOL_VERSION@">libcarna-python</requirement>
+        <requirement type="package" version="1.26.4">numpy</requirement>
+        <requirement type="package" version="4.3.2">ffmpeg</requirement>
+        <requirement type="package" version="0.7.1">giatools</requirement>
+        <requirement type="package" version="0.12.2">ome-zarr</requirement>
+    </requirements>
+    <required_files>
+        <include type="literal" path="clip_image.py"/>
+    </required_files>
+    <command detect_errors="aggressive"><![CDATA[
+
+        python '$__tool_directory__/render.py'
+
+        #if $input.extension == "zarr"
+            --input '$input.extra_files_path/$input.metadata.store_root'
+        #else
+            --input '$input'
+        #end if
+
+        --html '$html'
+        --params '$params'
+        --verbose
+
+    ]]></command>
+    <configfiles>
+        <configfile name="params"><![CDATA[
+            {
+            }
+        ]]></configfile>
+    </configfiles>
+    <inputs>
+        <param name="input" type="data" format="tiff,zarr" label="Input image (3-D)"/>
+    </inputs>
+    <outputs>
+        <data format="html" name="html"/>
+    </outputs>
+    <tests>
+        <test>
+            <param name="input" value="float32_10z_32y_40x.tiff"/>
+        </test>
+    </tests>
+    <help>
+
+**Renders videos for visualization of 3-D image data.**
+
+    </help>
+    <citations>
+        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
+    </citations>
+</tool>
