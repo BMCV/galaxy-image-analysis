@@ -58,10 +58,18 @@
 
         python '$__tool_directory__/render.py'
 
-        #if $input.extension == "zarr"
-            --input '$input.extra_files_path/$input.metadata.store_root'
+        #if $intensities.extension == "zarr"
+            --intensities '$intensities.extra_files_path/$intensities.metadata.store_root'
         #else
-            --input '$input'
+            --intensities '$intensities'
+        #end if
+
+        #if str($mask.enabled) == "true":
+            #if $mask.image.extension == "zarr"
+                --mask '$mask.image.extra_files_path/$mask.image.metadata.store_root'
+            #else
+                --mask '$mask.image'
+            #end if
         #end if
 
         --html '$html'
@@ -89,7 +97,7 @@
 
                 #if str($colormap.name) != "custom"
                     "ramp": {
-                        #if str($colormap.ramp.enabled) == "true":
+                        #if str($colormap.ramp.enabled) == "true"
                             "start_normalized": $colormap.ramp.start_normalized,
                             "start_value": $colormap.ramp.start_value,
                             "end_normalized": $colormap.ramp.end_normalized,
@@ -109,13 +117,20 @@
                 "video": {
                     "frames": $video.frames,
                     "fps": $video.fps
+                },
+
+                "mask": $mask.enabled,
+                "mask_renderer_kwargs": {
+                    #if str($mask.enabled) == "true"
+                        "color": "$mask.color"
+                    #end if
                 }
 
             }
         ]]></configfile>
     </configfiles>
     <inputs>
-        <param name="input" type="data" format="tiff,zarr" label="Input image (3-D)">
+        <param name="intensities" type="data" format="tiff,zarr" label="Input image (3-D)">
             <expand macro="validators/is_single_channel"/>
             <expand macro="validators/is_single_frame"/>
             <expand macro="validators/is_3d"/>
@@ -163,17 +178,59 @@
             <param name="frames" type="integer" min="10" value="200" label="Frames"/>
             <param name="fps" type="integer" min="1" max="60" value="25" label="Frames per second"/>
         </section>
+        <conditional name="mask">
+            <param name="enabled" type="select" label="Render mask overlay">
+                <option value="false" selected="true">No overlay</option>
+                <option value="true">Render mask overlay</option>
+            </param>
+            <when value="false"/>
+            <when value="true">
+                <param name="image" type="data" format="tiff,zarr" label="Mask overlay (3-D)">
+                    <expand macro="validators/is_single_channel"/>
+                    <expand macro="validators/is_single_frame"/>
+                    <expand macro="validators/is_3d"/>
+                </param>
+                <param name="color" type="color" value="#00ff00" label="Color of the overlay"/>
+            </when>
+        </conditional>
     </inputs>
     <outputs>
         <data format="html" name="html"/>
     </outputs>
     <tests>
         <test>
-            <param name="input" value="input/float32_10z_32y_40x.tiff"/>
+            <param name="intensities" value="input/float32_10z_32y_40x.tiff"/>
             <section name="camera">
                 <param name="distance" value="50"/>
             </section>
             <output name="html" ftype="html" value="output/float32_10z_32y_40x-mip.html" compare="sim_size" delta="10000"/>
+        </test>
+        <test>
+            <param name="intensities" value="input/float32_10z_32y_40x.tiff"/>
+            <conditional name="mode">
+                <param name="name" value="dvr"/>
+            </conditional>
+            <conditional name="colormap">
+                <conditional name="ramp">
+                    <param name="enabled" value="true"/>
+                    <section name="start">
+                        <param name="normalized" value="true"/>
+                        <param name="value" value="0"/>
+                    </section>
+                    <section name="end">
+                        <param name="normalized" value="true"/>
+                        <param name="value" value="0.2"/>
+                    </section>
+                </conditional>
+            </conditional>
+            <section name="camera">
+                <param name="distance" value="50"/>
+            </section>
+            <conditional name="mask">
+                <param name="enabled" value="true"/>
+                <param name="image" value="input/uint8_10z_32y_40x.tiff"/>
+            </conditional>
+            <output name="html" ftype="html" value="output/float32_10z_32y_40x-dvr-mask.html" compare="sim_size" delta="10000"/>
         </test>
     </tests>
     <help>

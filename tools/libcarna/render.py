@@ -2,6 +2,8 @@ import giatools
 import libcarna
 import libcarna._imshow
 
+from giatools__0_7_2__cli__ToolBaseplate import parse_args  # noqa: I202
+
 # Fail early if an optional backend is not available
 giatools.require_backend('omezarr')
 
@@ -9,45 +11,65 @@ giatools.require_backend('omezarr')
 libcarna._imshow.IPythonHTML = lambda html: html
 
 
+GEOMETRY_TYPE_INTENSITIES = 0
+GEOMETRY_TYPE_MASK = 1
+
+
+def wrap_color(params: dict) -> dict:
+    """
+    Return the `params` dictionary but wrap values for `color` with `libcarna.color`.
+    """
+    result = dict()
+    for key, value in params.items():
+        if key == 'color':
+            value = libcarna.color(value)
+        result[key] = value
+    return result
+
+
 if __name__ == "__main__":
     tool = giatools.ToolBaseplate()
-    tool.add_input_image('input')
+    tool.add_input_image('intensities')
+    tool.add_input_image('mask', required=False)
     tool.parser.add_argument('--html', type=str)
-    tool.parse_args()
+    parse_args(tool)  # TODO: Revert to `tool.parse_args` when 0.7.2 is on Conda
 
-    # Validate the input image
+    # Validate the input image(s)
     try:
-        image = tool.args.input_images['input']
-        if any(image.shape[image.axes.index(axis)] > 1 for axis in image.axes if axis not in 'ZYX'):
-            raise ValueError(f'This tool is not applicable to images with {image.original_axes} axes.')
+        for image in tool.args.input_images.values():
+            if any(image.shape[image.axes.index(axis)] > 1 for axis in image.axes if axis not in 'ZYX'):
+                raise ValueError(f'This tool is not applicable to images with {image.original_axes} axes.')
 
         # Create and configure frame renderer
-        GEOMETRY_TYPE_VOLUME = 0
-        rs = getattr(libcarna, tool.args.params['mode'])(
-            GEOMETRY_TYPE_VOLUME,
+        mode = getattr(libcarna, tool.args.params['mode'])(
+            GEOMETRY_TYPE_INTENSITIES,
             sr=tool.args.params['sample_rate'],
             **tool.args.params['mode_kwargs']
+        )
+        mask_renderer = libcarna.mask_renderer(
+            GEOMETRY_TYPE_MASK,
+            sr=tool.args.params['sample_rate'],
+            **wrap_color(tool.args.params['mask_renderer_kwargs']),
         )
         r = libcarna.renderer(
             tool.args.params['width'],
             tool.args.params['height'],
-            [rs],
+            [mode, mask_renderer],
         )
 
         # Build the scene graph
         root = libcarna.node()
-
-        volume = libcarna.volume(
-            GEOMETRY_TYPE_VOLUME,
-            image.normalize_axes_like('XZY').data,
+        intensities = tool.args.input_images['intensities']
+        intensities_volume = libcarna.volume(
+            GEOMETRY_TYPE_INTENSITIES,
+            intensities.normalize_axes_like('XZY').data,
             parent=root,
             spacing=(
-                image.metadata.pixel_size[0],
-                image.metadata.z_spacing,
-                image.metadata.pixel_size[1],
+                intensities.metadata.pixel_size[0],
+                intensities.metadata.z_spacing,
+                intensities.metadata.pixel_size[1],
             ),
         )
-
         camera = libcarna.camera(
             parent=root,
         ).frustum(
@@ -55,6 +77,13 @@ if __name__ == "__main__":
         ).translate(
             z=tool.args.params['camera']['distance'],
         )
+        if (mask := tool.args.input_images.get('mask')):
+            libcarna.volume(
+                GEOMETRY_TYPE_MASK,
+                mask.normalize_axes_like('XZY').data,
+                parent=intensities_volume,
+                spacing=intensities_volume.spacing,
+            )
 
         # Render
         html = libcarna.imshow(
@@ -62,7 +91,7 @@ if __name__ == "__main__":
                 libcarna.animate.rotate_local(camera),
                 n_frames=tool.args.params['video']['frames'],
             ).render(r, camera),
-            rs.cmap.bar(volume),
+            mode.cmap.bar(intensities_volume),
             fps=tool.args.params['video']['fps'],
         )
 
