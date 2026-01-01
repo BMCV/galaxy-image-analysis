@@ -4,6 +4,33 @@
         <import>creators.xml</import>
         <token name="@TOOL_VERSION@">0.2.0</token>
         <token name="@VERSION_SUFFIX@">0</token>
+        <xml name="params/intensity" tokens="name,label,help" token_help="">
+            <section name="@NAME@" title="@LABEL@" expanded="true">
+                <param name="normalized" type="select" label="@LABEL@" help="@HELP@">
+                    <option value="false" selected="true">Raw intensity value</option>
+                    <option value="true">Normalized intensity value</option>
+                </param>
+                <param name="value" type="float" label="Intensity value"/>
+            </section>
+        </xml>
+        <xml name="params/builtin_cmap">
+            <conditional name="ramp">
+                <param name="enabled" type="select" label="Ramp function">
+                    <option value="false" selected="true">Disabled</option>
+                    <option value="true">Enabled</option>
+                </param>
+                <when value="true">
+                    <expand macro="params/intensity" name="start" label="Ramp start"/>
+                    <expand macro="params/intensity" name="end" label="Ramp end"/>
+                </when>
+                <when value="false"/>
+            </conditional>
+        </xml>
+        <xml name="when/builtin_cmap" tokens="value">
+            <when value="@VALUE@">
+                <expand macro="params/builtin_cmap"/>
+            </when>
+        </xml>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
@@ -44,11 +71,87 @@
     <configfiles>
         <configfile name="params"><![CDATA[
             {
+
+                "sample_rate": $sample_rate,
+                "mode": "$mode.name",
+
+                "mode_kwargs": {
+                    #if str($mode.name) == "dvr"
+                        "translucency": $mode.translucency,
+                        "diffuse": $mode.diffuse
+                    #end if
+                },
+
+                "colormap": "$colormap.name",
+
+                #if str($colormap.name) != "custom"
+                    "ramp": {
+                        #if str($colormap.ramp.enabled) == "true":
+                            "start_normalized": $colormap.ramp.start_normalized,
+                            "start_value": $colormap.ramp.start_value,
+                            "end_normalized": $colormap.ramp.end_normalized,
+                            "end_value": $colormap.ramp.end_value
+                        #end if
+                    },
+                #end if
+
+                "camera": {
+                    "distance": $camera.distance,
+                    "kwargs": {
+                        "z_near": $camera.z_near,
+                        "z_far": $camera.z_far
+                    }
+                },
+                "video": {
+                    "frames": $video.frames,
+                    "fps": $video.fps
+                }
+
             }
         ]]></configfile>
     </configfiles>
     <inputs>
         <param name="input" type="data" format="tiff,zarr" label="Input image (3-D)"/>
+        <param name="sample_rate" type="integer" min="100" value="800" label="Sample rate"
+               help="Samples per pixel for volume rendering (ray marching)."/>
+        <conditional name="mode">
+            <param name="name" type="select" label="Rendering mode">
+                <option value="mip" selected="true">Maximum Intensity Projection (MIP)</option>
+                <option value="dvr">Direct Volume Rendering (DVR)</option>
+            </param>
+            <when value="mip"/>
+            <when value="dvr">
+                <param name="translucency" type="float" min="0" value="1" label="Translucency"/>
+                <param name="diffuse" type="float" min="0" max="1" value="0.8" label="Directional light"
+                       help="Balances the amount of ambient vs directional light. The light is fully ambient for 0 and fully directional for 1."/>
+            </when>
+        </conditional>
+        <conditional name="colormap">
+            <param name="name" type="select" label="Color map">
+                <option value="custom">Custom</option>
+                <option value="viridis" selected="true">Viridis</option>
+                <option value="hsv">HSV</option>
+                <option value="BrBG">BrBG</option>
+            </param>
+            <when value="custom">
+                <param name="custom" type="data" format="tabular" label="Custom color map"/>
+            </when>
+            <expand macro="when/builtin_cmap" value="viridis"/>
+            <expand macro="when/builtin_cmap" value="hsv"/>
+            <expand macro="when/builtin_cmap" value="BrBG"/>
+        </conditional>
+        <section name="camera" title="Camera parameters" expanded="true">
+            <param name="distance" type="float" min="1" value="200" label="Distance"
+                   help="Distance between the camera and the center of the 3-D data."/>
+            <param name="z_near" type="float" min="0.01" value="10" label="Near clipping plane"
+                   help="Position of the near clipping plane along the z-axis."/>
+            <param name="z_far" type="float" min="100" value="1000" label="Far clipping plane"
+                   help="Position of the far clipping plane along the z-axis."/>
+        </section>
+        <section name="video" title="Video parameters" expanded="true">
+            <param name="frames" type="integer" min="10" value="200" label="Frames"/>
+            <param name="fps" type="integer" min="1" max="60" value="25" label="Frames per second"/>
+        </section>
     </inputs>
     <outputs>
         <data format="html" name="html"/>

@@ -23,30 +23,44 @@ if __name__ == "__main__":
 
         # Create and configure frame renderer
         GEOMETRY_TYPE_VOLUME = 0
-        mip = libcarna.mip(GEOMETRY_TYPE_VOLUME, sr=400)
-        r = libcarna.renderer(600, 450, [mip])
+        rs = getattr(libcarna, tool.args.params['mode'])(
+            GEOMETRY_TYPE_VOLUME,
+            sr=tool.args.params['sample_rate'],
+            **tool.args.params['mode_kwargs']
+        )
+        r = libcarna.renderer(
+            800,  # TODO: add parameter
+            450,
+            [rs],
+        )
 
         # Build the scene graph
         root = libcarna.node()
 
         volume = libcarna.volume(
             GEOMETRY_TYPE_VOLUME,
-            image.normalize_axes_like('YZX').data,
+            image.normalize_axes_like('XZY').data,
             parent=root,
-            spacing=(1, 4, 1),
-        ).rotate('x', 90).rotate('z', 90)
+            spacing=(1, 4, 1),  # TODO write into metadata of test data
+        )
 
         camera = libcarna.camera(
             parent=root,
-        ).frustum(fov=90, z_near=1, z_far=500).translate(z=50)
+        ).frustum(
+            fov=90,  # TODO: add parameter
+            **tool.args.params['camera']['kwargs'],
+        ).translate(
+            z=tool.args.params['camera']['distance'],
+        )
 
         # Render
         html = libcarna.imshow(
             libcarna.animate(
                 libcarna.animate.rotate_local(camera),
-                n_frames=200,
+                n_frames=tool.args.params['video']['frames'],
             ).render(r, camera),
-            mip.cmap.bar(volume),
+            rs.cmap.bar(volume),
+            fps=tool.args.params['video']['fps'],
         )
 
         # Write the result
