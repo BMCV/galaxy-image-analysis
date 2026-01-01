@@ -41,7 +41,11 @@ if __name__ == "__main__":
             GEOMETRY_TYPE_VOLUME,
             image.normalize_axes_like('XZY').data,
             parent=root,
-            spacing=(1, 4, 1),  # TODO write into metadata of test data
+            spacing=(
+                image.metadata.pixel_size[0],
+                image.metadata.z_spacing,
+                image.metadata.pixel_size[1],
+            ),
         )
 
         camera = libcarna.camera(
