@@ -56,6 +56,11 @@
     <tests>
         <test>
             <param name="input" value="float32_10z_32y_40x.tiff"/>
+            <output name="html" ftype="html">
+                <assert_contents>
+                    <has_size size="260K" delta="100K"/>
+                </assert_contents>
+            </output>
         </test>
     </tests>
     <help>

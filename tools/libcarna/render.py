@@ -1,8 +1,12 @@
 import giatools
-import numpy as np
+import libcarna
+import libcarna._imshow
 
 # Fail early if an optional backend is not available
 giatools.require_backend('omezarr')
+
+# Patch `libcarna._imshow` to return plain HTML
+libcarna._imshow.IPythonHTML = lambda html: html
 
 
 if __name__ == "__main__":
@@ -17,14 +21,37 @@ if __name__ == "__main__":
         if any(image.shape[image.axes.index(axis)] > 1 for axis in image.axes if axis not in 'ZYX'):
             raise ValueError(f'This tool is not applicable to images with {image.original_axes} axes.')
 
+        # Create and configure frame renderer
+        GEOMETRY_TYPE_VOLUME = 0
+        mip = libcarna.mip(GEOMETRY_TYPE_VOLUME, sr=400)
+        r = libcarna.renderer(600, 450, [mip])
+
+        # Build the scene graph
+        root = libcarna.node()
+
+        volume = libcarna.volume(
+            GEOMETRY_TYPE_VOLUME,
+            image.normalize_axes_like('YZX').data,
+            parent=root,
+            spacing=(1, 4, 1),
+        ).rotate('x', 90).rotate('z', 90)
+
+        camera = libcarna.camera(
+            parent=root,
+        ).frustum(fov=90, z_near=1, z_far=500).translate(z=50)
+
+        # Render
+        html = libcarna.imshow(
+            libcarna.animate(
+                libcarna.animate.rotate_local(camera),
+                n_frames=200,
+            ).render(r, camera),
+            mip.cmap.bar(volume),
+        )
+
+        # Write the result
         with open(tool.args.raw_args.html, 'w') as fhtml:
-            fhtml.write(
-'<html>'
-'<body>'
-'<span style="font-family: sans-serif;">sans</span> serif'
-'</body>'
-'</html>'
-            )
+            fhtml.write(html)
 
     except ValueError as err:
         exit(err.args[0])
