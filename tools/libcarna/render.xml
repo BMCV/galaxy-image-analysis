@@ -83,6 +83,7 @@
         <configfile name="params"><![CDATA[
             {
 
+                "axes": "$axes",
                 "sample_rate": $sample_rate,
                 "width": $width,
                 "height": $height,
@@ -136,6 +137,10 @@
             <expand macro="validators/is_single_channel"/>
             <expand macro="validators/is_single_frame"/>
             <expand macro="validators/is_3d"/>
+        </param>
+        <param name="axes" type="select" label="Coordinate system">
+            <option value="XZY" selected="true">Point Z to the top</option>
+            <option value="XYZ">Point Y to the top</option>
         </param>
         <param name="sample_rate" type="integer" min="100" value="800" label="Sample rate"
                help="Samples per pixel for volume rendering (ray marching)."/>

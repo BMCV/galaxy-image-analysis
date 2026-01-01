@@ -62,7 +62,7 @@ if __name__ == "__main__":
         intensities = tool.args.input_images['intensities']
         intensities_volume = libcarna.volume(
             GEOMETRY_TYPE_INTENSITIES,
-            intensities.normalize_axes_like('XZY').data,
+            intensities.normalize_axes_like(tool.args.params['axes']).data,
             parent=root,
             spacing=(
                 intensities.metadata.pixel_size[0],
@@ -81,7 +81,7 @@ if __name__ == "__main__":
         if (mask := tool.args.input_images.get('mask')):
             libcarna.volume(
                 GEOMETRY_TYPE_MASK,
-                mask.normalize_axes_like('XZY').data,
+                mask.normalize_axes_like(tool.args.params['axes']).data,
                 parent=intensities_volume,
                 spacing=intensities_volume.spacing,
             )
