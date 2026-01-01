@@ -51,7 +51,6 @@ if __name__ == "__main__":
         camera = libcarna.camera(
             parent=root,
         ).frustum(
-            fov=90,  # TODO: add parameter
             **tool.args.params['camera']['kwargs'],
         ).translate(
             z=tool.args.params['camera']['distance'],

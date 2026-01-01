@@ -99,6 +99,7 @@
                 "camera": {
                     "distance": $camera.distance,
                     "kwargs": {
+                        "fov": $camera.fov,
                         "z_near": $camera.z_near,
                         "z_far": $camera.z_far
                     }
@@ -146,6 +147,7 @@
             <expand macro="when/builtin_cmap" value="BrBG"/>
         </conditional>
         <section name="camera" title="Camera parameters" expanded="true">
+            <param name="fov" type="float" min="10" max="170" value="90" label="Field of view (in degrees)"/>
             <param name="distance" type="float" min="1" value="200" label="Distance"
                    help="Distance between the camera and the center of the 3-D data."/>
             <param name="z_near" type="float" min="0.01" value="10" label="Near clipping plane"
