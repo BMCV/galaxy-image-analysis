@@ -1,6 +1,7 @@
 import giatools
 import libcarna
 import libcarna._imshow
+import pandas as pd
 
 from giatools__0_7_2__cli__ToolBaseplate import parse_args  # noqa: I202
 
@@ -31,8 +32,13 @@ if __name__ == "__main__":
     tool = giatools.ToolBaseplate()
     tool.add_input_image('intensities')
     tool.add_input_image('mask', required=False)
+    tool.parser.add_argument('--colormap', type=str)
     tool.parser.add_argument('--html', type=str)
     parse_args(tool)  # TODO: Revert to `tool.parse_args` when 0.7.2 is on Conda
+
+    # Load custom colormap
+    if tool.args.raw_args.colormap:
+        df_colormap = pd.read_csv(tool.args.raw_args.colormap, delimiter='\t')
 
     # Validate the input image(s)
     try:
@@ -87,21 +93,34 @@ if __name__ == "__main__":
             )
 
         # Apply colormap
-        if tool.args.params['colormap'] != 'custom':
+        if tool.args.params['colormap'] == 'custom':
+            mode.cmap.clear()
+            i0, color0 = None, None
+            for row in df_colormap.to_dict(orient='records'):
+                match row['type']:
+                    case 'relative':
+                        i1 = row['intensity']
+                    case 'absolute':
+                        i1 = intensities_volume.normalized(row['intensity'])
+                    case _:
+                        raise ValueError('Unknown intensity type: "{}"'.format(row['type']))
+                color1 = libcarna.color(row['color'])
+                if i0 is not None:
+                    mode.cmap.linear_segment(i0, i1, color0, color1)
+                i0, color0 = i1, color1
+        else:
             cmap_kwargs = dict()
             if (ramp_params := tool.args.params['ramp']):
                 ramp_values = list()
-                for normalized, value in (
-                    (ramp_params['start_normalized'], ramp_params['start_value']),
-                    (ramp_params['end_normalized'], ramp_params['end_value']),
+                for val_type, value in (
+                    (ramp_params['start_type'], ramp_params['start_value']),
+                    (ramp_params['end_type'], ramp_params['end_value']),
                 ):
                     ramp_values.append(
-                        value if normalized else intensities_volume.normalized(value),
+                        value if val_type == 'relative' else intensities_volume.normalized(value),
                     )
                 cmap_kwargs['ramp'] = tuple(ramp_values)
             mode.cmap(tool.args.params['colormap'], **cmap_kwargs)
-        else:
-            pass  # TODO: implement and add test
 
         # Render
         html = libcarna.imshow(
