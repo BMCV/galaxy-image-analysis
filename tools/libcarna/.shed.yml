@@ -1,0 +1,16 @@
+# Toolshed user name (do not change this)
+owner: imgteam
+
+name: libcarna
+
+description: 
+  Visualization of 3-D image data
+
+long_description: |
+  LibCarna renders videos for visualization of 3-D image data.
+
+categories:
+  - Imaging
+
+homepage_url: https://github.com/kostrykin/LibCarna-Python
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tree/master/tools/libcarna/
