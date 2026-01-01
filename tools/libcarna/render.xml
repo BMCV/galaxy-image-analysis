@@ -5,18 +5,20 @@
         <import>validators.xml</import>
         <token name="@TOOL_VERSION@">0.2.0</token>
         <token name="@VERSION_SUFFIX@">0</token>
-        <xml name="params/intensity" tokens="name,label,help" token_help="">
+        <xml name="params/intensity" tokens="name,label">
             <section name="@NAME@" title="@LABEL@" expanded="true">
-                <param name="normalized" type="select" label="@LABEL@" help="@HELP@">
-                    <option value="false" selected="true">Raw intensity value</option>
-                    <option value="true">Normalized intensity value</option>
+                <param name="normalized" type="select" label="@LABEL@"
+                       help="For relative intensity values, 0 is the minimum intensity of the image, and 1 is the maximum intensity.">
+                    <option value="false" selected="true">Absolute intensity value</option>
+                    <option value="true">Relative intensity value</option>
                 </param>
                 <param name="value" type="float" label="Intensity value"/>
             </section>
         </xml>
         <xml name="params/builtin_cmap">
             <conditional name="ramp">
-                <param name="enabled" type="select" label="Ramp function">
+                <param name="enabled" type="select" label="Ramp function"
+                       help="Use a piecewise linear ramp function for the alpha channel of the colormap.">
                     <option value="false" selected="true">Disabled</option>
                     <option value="true">Enabled</option>
                 </param>
@@ -98,10 +100,10 @@
                 #if str($colormap.name) != "custom"
                     "ramp": {
                         #if str($colormap.ramp.enabled) == "true"
-                            "start_normalized": $colormap.ramp.start_normalized,
-                            "start_value": $colormap.ramp.start_value,
-                            "end_normalized": $colormap.ramp.end_normalized,
-                            "end_value": $colormap.ramp.end_value
+                            "start_normalized": $colormap.ramp.start.normalized,
+                            "start_value": $colormap.ramp.start.value,
+                            "end_normalized": $colormap.ramp.end.normalized,
+                            "end_value": $colormap.ramp.end.value
                         #end if
                     },
                 #end if
@@ -209,17 +211,19 @@
             <param name="intensities" value="input/float32_10z_32y_40x.tiff"/>
             <conditional name="mode">
                 <param name="name" value="dvr"/>
+                <param name="translucency" value="0"/>
             </conditional>
             <conditional name="colormap">
+                <param name="name" value="BrBG"/>
                 <conditional name="ramp">
                     <param name="enabled" value="true"/>
                     <section name="start">
                         <param name="normalized" value="true"/>
-                        <param name="value" value="0"/>
+                        <param name="value" value="0.33"/>
                     </section>
                     <section name="end">
                         <param name="normalized" value="true"/>
-                        <param name="value" value="0.2"/>
+                        <param name="value" value="0.37"/>
                     </section>
                 </conditional>
             </conditional>

@@ -69,6 +69,7 @@ if __name__ == "__main__":
                 intensities.metadata.z_spacing,
                 intensities.metadata.pixel_size[1],
             ),
+            normals=(tool.args.params['mode'] == 'dvr'),
         )
         camera = libcarna.camera(
             parent=root,
@@ -84,6 +85,23 @@ if __name__ == "__main__":
                 parent=intensities_volume,
                 spacing=intensities_volume.spacing,
             )
+
+        # Apply colormap
+        if tool.args.params['colormap'] != 'custom':
+            cmap_kwargs = dict()
+            if (ramp_params := tool.args.params['ramp']):
+                ramp_values = list()
+                for normalized, value in (
+                    (ramp_params['start_normalized'], ramp_params['start_value']),
+                    (ramp_params['end_normalized'], ramp_params['end_value']),
+                ):
+                    ramp_values.append(
+                        value if normalized else intensities_volume.normalized(value),
+                    )
+                cmap_kwargs['ramp'] = tuple(ramp_values)
+            mode.cmap(tool.args.params['colormap'], **cmap_kwargs)
+        else:
+            pass  # TODO: implement and add test
 
         # Render
         html = libcarna.imshow(
