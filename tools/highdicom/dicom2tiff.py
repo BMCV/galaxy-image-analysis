@@ -148,7 +148,7 @@ def normalize_label_map(arr: np.ndarray) -> np.ndarray:
             return norm_arr
 
 
-def metadata_to_str(metadata: dict):
+def metadata_to_str(metadata: dict) -> str:
     tokens = list()
     for key in sorted(metadata.keys()):
         value = metadata[key]
