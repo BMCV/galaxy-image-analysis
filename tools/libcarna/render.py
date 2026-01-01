@@ -29,8 +29,8 @@ if __name__ == "__main__":
             **tool.args.params['mode_kwargs']
         )
         r = libcarna.renderer(
-            800,  # TODO: add parameter
-            450,
+            tool.args.params['width'],
+            tool.args.params['height'],
             [rs],
         )
 

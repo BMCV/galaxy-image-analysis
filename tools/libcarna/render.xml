@@ -74,6 +74,8 @@
             {
 
                 "sample_rate": $sample_rate,
+                "width": $width,
+                "height": $height,
                 "mode": "$mode.name",
 
                 "mode_kwargs": {
@@ -120,6 +122,8 @@
         </param>
         <param name="sample_rate" type="integer" min="100" value="800" label="Sample rate"
                help="Samples per pixel for volume rendering (ray marching)."/>
+        <param name="width" type="integer" min="50" max="1024" value="800" label="Width of the video (in pixels)"/>
+        <param name="height" type="integer" min="50" max="1024" value="450" label="Height of the video (in pixels)"/>
         <conditional name="mode">
             <param name="name" type="select" label="Rendering mode">
                 <option value="mip" selected="true">Maximum Intensity Projection (MIP)</option>
