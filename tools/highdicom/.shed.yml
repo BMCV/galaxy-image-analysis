@@ -3,7 +3,7 @@ owner: imgteam
 
 # Define the attributes of this suite
 suite:
-  name: highdicom
+  name: suite_highdicom
 
   description: Suite of tools for processing DICOM datasets
 
