@@ -1,0 +1,254 @@
+<tool id="highdicom_dicom2tiff" name="Convert DICOM to TIFF" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="24.01">
+    <expand macro="description"/>
+    <macros>
+        <import>macros.xml</import>
+        <import>creators.xml</import>
+        <import>tests.xml</import>
+    </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+        <expand macro="creators/kostrykin"/>
+    </creator>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <expand macro="xrefs"/>
+    <expand macro="requirements"/>
+    <command><![CDATA[
+
+    python '$__tool_directory__/dicom2tiff.py'
+    '$input'
+    ./output.tiff
+
+    '$multiframe_axis'
+    '$target.dtype'
+
+    $target.normalize_label_maps
+    $apply_voi_transform
+
+    ]]>
+    </command>
+    <inputs>
+        <param name="input" type="data" format="binary" label="DICOM dataset"/>
+        <param name="multiframe_axis" type="select" label="Fall-back axis for DICOM frames" help="If DICOM frames cannot be resolved to a specific TIFF axis automatically, this axis will be used.">
+            <option value="T" selected="true">T-axis (frames of a temporal image sequence)</option>
+            <option value="Z">Z-axis (slices of a 3-D image or image sequence)</option>
+            <option value="Q">Q-axis (other or unknown axis)</option>
+        </param>
+        <conditional name="target">
+            <param name="dtype" type="select" label="Data type of the produced TIFF image">
+                <option value="" selected="true">Determine automatically</option>
+                <option value="float16">16-bit floating point</option>
+                <option value="float32">32-bit floating point</option>
+                <option value="float64">64-bit floating point</option>
+                <option value="int8">8-bit signed integer</option>
+                <option value="int16">16-bit signed integer</option>
+                <option value="int32">32-bit signed integer</option>
+                <option value="uint8">8-bit unsigned integer</option>
+                <option value="uint16">16-bit unsigned integer</option>
+                <option value="uint32">32-bit unsigned integer</option>
+            </param>
+            <when value="">
+                <param name="normalize_label_maps" type="boolean" checked="true" label="Normalize label maps" truevalue="--normalize_label_maps" falsevalue="" help="If a DICOM dataset is recognized as a label map, a suitable integer data type will be chosen and the labels will be normalized to improve visual perception."/>
+            </when>
+            <when value="float16">
+                <param name="normalize_label_maps" type="hidden" value=""/>
+            </when>
+            <when value="float32">
+                <param name="normalize_label_maps" type="hidden" value=""/>
+            </when>
+            <when value="float64">
+                <param name="normalize_label_maps" type="hidden" value=""/>
+            </when>
+            <when value="int8">
+                <param name="normalize_label_maps" type="hidden" value=""/>
+            </when>
+            <when value="int16">
+                <param name="normalize_label_maps" type="hidden" value=""/>
+            </when>
+            <when value="int32">
+                <param name="normalize_label_maps" type="hidden" value=""/>
+            </when>
+            <when value="uint8">
+                <param name="normalize_label_maps" type="hidden" value=""/>
+            </when>
+            <when value="uint16">
+                <param name="normalize_label_maps" type="hidden" value=""/>
+            </when>
+            <when value="uint32">
+                <param name="normalize_label_maps" type="hidden" value=""/>
+            </when>
+        </conditional>
+        <param name="apply_voi_transform" type="boolean" checked="false" label="Apply VOI transform" truevalue="--apply_voi_transform" falsevalue="" help="Apply the value-of-interest (VOI) transform (if present in the dataset) which limits the range of pixel values to a particular range of interest, using either a windowing operation or a LUT. Applying the VOI transform yields a TIFF image that is optimized for visual inspection, but probably less suited for subsequent analysis."/>
+    </inputs>
+    <outputs>
+        <data format="tiff" name="output" from_work_dir="output.tiff" />
+    </outputs>
+    <tests>
+        <test>
+            <param name="input" value="highdicom/ct_image.dcm"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="ct_image.tiff" ftype="tiff">
+                <has_image_width width="128"/>
+                <has_image_height height="128"/>
+                <has_image_channels channels="1"/>
+                <has_image_depth depth="1"/>
+                <has_image_frames frames="1"/>
+            </expand>
+            <assert_stdout>
+                <has_line line="DICOM dataset is a slice of a 3-D volume"/>
+                <has_line line="Output TIFF shape: (128, 128)"/>
+                <has_line line="Output TIFF axes: YX"/>
+                <has_line line="Output TIFF resolution: (1.5117889300767384, 1.5117889300767384), unit: mm, z_position: -75.699997, z_spacing: 5.0"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <param name="input" value="highdicom/ct_image.dcm"/>
+            <conditional name="target">
+                <param name="dtype" value="float16"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="ct_image_float16.tiff" ftype="tiff">
+                <has_image_width width="128"/>
+                <has_image_height height="128"/>
+                <has_image_channels channels="1"/>
+                <has_image_depth depth="1"/>
+                <has_image_frames frames="1"/>
+            </expand>
+            <assert_stdout>
+                <has_line line="DICOM dataset is a slice of a 3-D volume"/>
+                <has_line line="Output TIFF shape: (128, 128)"/>
+                <has_line line="Output TIFF axes: YX"/>
+                <has_line line="Output TIFF resolution: (1.5117889300767384, 1.5117889300767384), unit: mm, z_position: -75.699997, z_spacing: 5.0"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <param name="input" value="highdicom/sm_image.dcm"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="sm_image.tiff" ftype="tiff">
+                <has_image_width width="50"/>
+                <has_image_height height="50"/>
+                <has_image_channels channels="3"/>
+                <has_image_depth depth="1"/>
+                <has_image_frames frames="1"/>
+            </expand>
+            <assert_stdout>
+                <has_line line="DICOM dataset is a tiled multi-frame image"/>
+                <has_line line="Output TIFF shape: (50, 50, 3)"/>
+                <has_line line="Output TIFF axes: YXC"/>
+                <has_line line="Output TIFF resolution: (2004.0080540927092, 2004.0080540927092), unit: mm"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <param name="input" value="highdicom/seg_image_ct_binary.dcm"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="seg_image_ct_binary.tiff" ftype="tiff">
+                <has_image_width width="16"/>
+                <has_image_height height="16"/>
+                <has_image_channels channels="1"/>
+                <has_image_depth depth="3"/>
+                <has_image_frames frames="1"/>
+            </expand>
+            <assert_stdout>
+                <has_line line="DICOM dataset is a 3-D volume"/>
+                <has_line line="DICOM dataset is a label map"/>
+                <has_line line="Output TIFF shape: (3, 16, 16)"/>
+                <has_line line="Output TIFF axes: ZYX"/>
+                <has_line line="Output TIFF resolution: (2.0480010485765368, 2.0480010485765368), unit: mm, z_spacing: 1.25"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <param name="input" value="highdicom/seg_image_ct_binary.dcm"/>
+            <conditional name="target">
+                <param name="dtype" value=""/>
+                <param name="normalize_label_maps" value="false"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="seg_image_ct_binary_unnormalized.tiff" ftype="tiff">
+                <has_image_width width="16"/>
+                <has_image_height height="16"/>
+                <has_image_channels channels="1"/>
+                <has_image_depth depth="3"/>
+                <has_image_frames frames="1"/>
+            </expand>
+            <assert_stdout>
+                <has_line line="DICOM dataset is a 3-D volume"/>
+                <has_line line="DICOM dataset is a label map"/>
+                <has_line line="Output TIFF shape: (3, 16, 16)"/>
+                <has_line line="Output TIFF axes: ZYX"/>
+                <has_line line="Output TIFF resolution: (2.0480010485765368, 2.0480010485765368), unit: mm, z_spacing: 1.25"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <param name="input" value="heart_ct_5813.dcm"/>
+            <conditional name="target">
+                <param name="dtype" value=""/>
+                <param name="normalize_label_maps" value="false"/>
+            </conditional>
+            <output name="output" ftype="tiff">
+                <assert_contents>
+                <has_image_width width="512"/>
+                <has_image_height height="512"/>
+                <has_image_channels channels="1"/>
+                <has_image_depth depth="1"/>
+                <has_image_frames frames="1"/>
+                </assert_contents>
+            </output>
+            <assert_stdout>
+                <has_line line="DICOM dataset is a slice of a 3-D volume"/>
+                <has_line line="Output TIFF shape: (512, 512)"/>
+                <has_line line="Output TIFF axes: YX"/>
+                <has_line line="Output TIFF resolution: (1.1377781014124377, 1.1377781014124377), unit: mm, z_position: -336.109985, z_spacing: 1.0"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <param name="input" value="highdicom/dx_image.dcm"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="dx_image.tiff" ftype="tiff">
+                <has_image_width width="211"/>
+                <has_image_height height="169"/>
+                <has_image_channels channels="1"/>
+                <has_image_depth depth="1"/>
+                <has_image_frames frames="1"/>
+            </expand>
+            <assert_stdout>
+                <has_line line="DICOM dataset is a single-frame image"/>
+                <has_line line="Output TIFF shape: (169, 211)"/>
+                <has_line line="Output TIFF axes: YX"/>
+                <has_line line="Output TIFF resolution: (0.8333333333333334, 0.8325008325015256), unit: mm"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <param name="input" value="pydicom/SC_rgb_rle_2frame.dcm"/>
+            <param name="multiframe_axis" value="T"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="SC_rgb_rle_2frame.tiff" ftype="tiff">
+                <has_image_width width="100"/>
+                <has_image_height height="100"/>
+                <has_image_channels channels="3"/>
+                <has_image_depth depth="1"/>
+                <has_image_frames frames="2"/>
+            </expand>
+            <assert_stdout>
+                <has_line line="DICOM dataset is an unknown multi-frame image"/>
+                <has_line line="Output TIFF shape: (2, 100, 100, 3)"/>
+                <has_line line="Output TIFF axes: TYXC"/>
+                <has_line line="Output TIFF resolution: (1.0, 1.0), unit: mm"/>
+            </assert_stdout>
+        </test>
+    </tests>
+    <help>
+
+        **Converts a DICOM dataset into a TIFF image.**
+
+        @DICOM_INTRO@
+
+        Technically, a DICOM dataset can contain heterogeneous frames of mixed axes (e.g., spatial *and* temporal slices),
+        which, however, is rather uncommon (for such cases, DICOM series are more widely adopted—see below). Currently, this
+        tool can only cope with axis-homogeneous datasets (i.e. datasets with single-axis frames).
+
+        A list of DICOM datasets can form a DICOM series to store multi-dimensional data (e.g., a list of 3-D images for
+        consecutive time steps). For conversion of a DICOM series into a single TIFF image, consider a two-step approach:
+
+        1. Use this tool to convert each individual DICOM dataset to TIFF.
+        2. Use the `🔧 Concatenate images or channels`_ tool to merge the obtained TIFF images into a single TIFF image (using
+           the ``T`` or ``Z`` axis).
+
+        .. _🔧 Concatenate images or channels: ?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/concat_channels/ip_concat_channels
+
+    </help>
+    <expand macro="citations"/>
+</tool>
