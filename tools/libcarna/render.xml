@@ -2,6 +2,7 @@
     <description>with LibCarna</description>
     <macros>
         <import>creators.xml</import>
+        <import>validators.xml</import>
         <token name="@TOOL_VERSION@">0.2.0</token>
         <token name="@VERSION_SUFFIX@">0</token>
         <xml name="params/intensity" tokens="name,label,help" token_help="">
@@ -111,7 +112,11 @@
         ]]></configfile>
     </configfiles>
     <inputs>
-        <param name="input" type="data" format="tiff,zarr" label="Input image (3-D)"/>
+        <param name="input" type="data" format="tiff,zarr" label="Input image (3-D)">
+            <expand macro="validators/is_single_channel"/>
+            <expand macro="validators/is_single_frame"/>
+            <expand macro="validators/is_3d"/>
+        </param>
         <param name="sample_rate" type="integer" min="100" value="800" label="Sample rate"
                help="Samples per pixel for volume rendering (ray marching)."/>
         <conditional name="mode">
