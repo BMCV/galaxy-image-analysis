@@ -60,7 +60,7 @@ if __name__ == "__main__":
                         case 'remove':
                             result[mask] = 0  # consider this as a manual removal
                         case 'keep':
-                            pass  # keep the object and processed with the next label
+                            pass  # keep the object and proceed with the next label
                         case 'fail':
                             raise ValueError(f'No features available for label: {label}')
 
