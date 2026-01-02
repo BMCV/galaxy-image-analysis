@@ -72,9 +72,9 @@ if __name__ == "__main__":
             parent=root,
             spacing=[
                 {
-                    'X': intensities.metadata.pixel_size[0],
-                    'Y': intensities.metadata.pixel_size[1],
-                    'Z': intensities.metadata.z_spacing,
+                    'X': intensities.metadata.pixel_size[0] or 1,
+                    'Y': intensities.metadata.pixel_size[1] or 1,
+                    'Z': intensities.metadata.z_spacing or 1,
                 }
                 [axis] for axis in tool.args.params['axes']
             ],
