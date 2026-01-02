@@ -23,7 +23,7 @@ if __name__ == "__main__":
     required_rules_columns = frozenset(('feature', 'min', 'max'))
     print('Features:', ', '.join(features.columns))
     if (spurious_rules_columns := frozenset(rules.columns) - required_rules_columns):
-        print('Spurious rules columns:', ','.join(f'"{column}"' for column in spurious_rules_columns))
+        print('Spurious rules columns:', ', '.join(f'"{column}"' for column in spurious_rules_columns))
 
     # Validate the rules and the input image
     try:
