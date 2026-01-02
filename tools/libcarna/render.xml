@@ -170,22 +170,20 @@
                 <expand macro="option/builtin_cmap_list"/>
             </param>
             <when value="custom">
-                <param name="custom" type="data" format="tabular" label="Custom color map"/>
+                <param name="custom" type="data" format="tabular" label="Custom colormap">
+                    <validator type="dataset_metadata_in_range" metadata_name="columns" min="3" message="Colormap needs to have at least 3 columns."/>
+                </param>
             </when>
             <expand macro="when/builtin_cmap_list"/>
         </conditional>
         <section name="camera" title="Camera parameters" expanded="true">
             <param name="fov" type="float" min="10" max="170" value="90" label="Field of view (in degrees)"/>
             <param name="distance" type="float" min="1" value="200" label="Distance"
-                   help="Distance between the camera and the center of the 3-D data."/>
+                   help="Distance between the camera and the center of the 3-D image."/>
             <param name="z_near" type="float" min="0.01" value="10" label="Near clipping plane"
                    help="Position of the near clipping plane along the z-axis."/>
             <param name="z_far" type="float" min="100" value="1000" label="Far clipping plane"
                    help="Position of the far clipping plane along the z-axis."/>
-        </section>
-        <section name="video" title="Video parameters" expanded="true">
-            <param name="frames" type="integer" min="10" value="200" label="Frames"/>
-            <param name="fps" type="integer" min="1" max="60" value="25" label="Frames per second"/>
         </section>
         <conditional name="mask">
             <param name="enabled" type="select" label="Render mask overlay">
@@ -202,6 +200,10 @@
                 <param name="color" type="color" value="#00ff00" label="Color of the overlay"/>
             </when>
         </conditional>
+        <section name="video" title="Video parameters" expanded="false">
+            <param name="frames" type="integer" min="10" value="200" label="Frames"/>
+            <param name="fps" type="integer" min="1" max="60" value="25" label="Frames per second"/>
+        </section>
     </inputs>
     <outputs>
         <data format="html" name="html"/>
@@ -262,6 +264,26 @@
     <help>
 
 **Renders videos for visualization of 3-D image data.**
+
+The image data is rotated to facilitate grasping visual information from different angles.
+
+LibCarna employs a volume rendering technique called *ray marching* and permits different visualization modes, including *maximum intensity projections* (MIP) and *direct volume rendering* (DVR). In addition, the renderings can be augmented with binary or label masks (e.g., segmentation masks).
+
+An overview of the available colormaps is available at `matplotlib.org`_.
+
+.. _matplotlib.org: https://matplotlib.org/stable/users/explain/colors/colormaps.html
+
+When using custom colormaps, a tabular file with at least 3 columns must be used (`intensity`, `type`, `color`). Each pair of consecutive rows defines a linear segment of the colormap. The `intensity` values can be given either as absolute intensity values, or as relative values where 0 and 1 correspond to the minimum and maximum intensities of the image data, respectively. The `type` column indicates whether the corresponding `intensity` value is `absolute` or `relative`. The `color` must be given in hexadecimal notation with a ``#`` prefix and must be either 6 or 8 digits long (6 for RGB and 8 for RGBA). An example is given below.
+
++-----------+------------+----------+
+| color     | intensity  | type     |
++-----------+------------+----------+
+| #ff00007f | 0          | absolute |
++-----------+------------+----------+
+| #ffff00ff | 0.5        | absolute |
++-----------+------------+----------+
+| #00ffffff | 1.0        | relative |
++-----------+------------+----------+
 
     </help>
     <citations>
