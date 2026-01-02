@@ -1,4 +1,4 @@
-<tool id="libcarna" name="Render 3-D image data" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
+<tool id="libcarna_render" name="Render 3-D image data" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
     <description>with LibCarna</description>
     <macros>
         <import>creators.xml</import>

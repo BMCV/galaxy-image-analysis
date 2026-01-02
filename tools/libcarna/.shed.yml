@@ -1,13 +1,25 @@
 # Toolshed user name (do not change this)
 owner: imgteam
 
-name: libcarna
+# Define the attributes of this suite
+suite:
+  name: suite_libcarna
 
-description: 
-  Visualization of 3-D image data
+  description: Suite of tools for visualization of 3-D image data
 
+  long_description: |
+    LibCarna renders videos for visualization of 3-D image data.
+
+# Infer the `name` and `description` for the tool repositories from the respective tool definitions
+auto_tool_repositories:
+  name_template: "{{ tool_id }}"
+  description_template: "{{ tool_name }}"
+
+# Fields defined here and below are propagated to the repositories of the tools in this suite
 long_description: |
   LibCarna renders videos for visualization of 3-D image data.
+
+type: unrestricted
 
 categories:
   - Imaging
