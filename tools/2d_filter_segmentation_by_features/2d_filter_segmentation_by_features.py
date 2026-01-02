@@ -14,7 +14,7 @@ if __name__ == "__main__":
     tool.parser.add_argument('--rules', type=str, required=True)
     tool.parse_args()
 
-    features = pd.read_csv(tool.args.raw_args.features, delimiter='\t', index_col=0)
+    features = pd.read_csv(tool.args.raw_args.features, delimiter='\t', index_col='label')
     features.columns = features.columns.str.strip()  # remove whitespaces from header names
     rules = pd.read_csv(tool.args.raw_args.rules, delimiter='\t')
     rules.columns = rules.columns.str.strip()  # remove whitespaces from header names
@@ -25,7 +25,7 @@ if __name__ == "__main__":
     if (spurious_rules_columns := frozenset(rules.columns) - required_rules_columns):
         print('Spurious rules columns:', ', '.join(f'"{column}"' for column in spurious_rules_columns))
 
-    # Validate the rules and the input image
+    # Validate the features, rules, and the input image
     try:
         # Validate the rules
         if (missing_rules_columns := required_rules_columns - frozenset(rules.columns)):
