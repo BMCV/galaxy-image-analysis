@@ -267,7 +267,7 @@
 
 The image data is rotated to facilitate grasping visual information from different angles.
 
-LibCarna employs a volume rendering technique called *ray marching* and permits different visualization modes, including *maximum intensity projections* (MIP) and *direct volume rendering* (DVR). In addition, the renderings can be augmented with binary or label masks (e.g., segmentation masks).
+LibCarna employs a volume rendering technique called *ray marching* and permits different visualization modes, including *maximum intensity projections* (MIP) and *direct volume rendering* (DVR). In addition, the renderings can be augmented with binary or label masks (e.g., segmentation overlays).
 
 An overview of the available colormaps is available at `matplotlib.org`_.
 
