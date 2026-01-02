@@ -81,7 +81,7 @@ if __name__ == '__main__':
             df['it'] = np.arange(len(regions))
             for feature_name in tool.args.params['features']:
 
-                # Add the obejct label
+                # Add the object label
                 if feature_name == 'label':
                     df['label'] = df['it'].map(lambda ait: regions[ait].label)
 
