@@ -70,11 +70,14 @@ if __name__ == "__main__":
             GEOMETRY_TYPE_INTENSITIES,
             intensities.normalize_axes_like(tool.args.params['axes']).data,
             parent=root,
-            spacing=(
-                intensities.metadata.pixel_size[0],
-                intensities.metadata.z_spacing,
-                intensities.metadata.pixel_size[1],
-            ),
+            spacing=[
+                {
+                    'X': intensities.metadata.pixel_size[0],
+                    'Y': intensities.metadata.pixel_size[1],
+                    'Z': intensities.metadata.z_spacing,
+                }
+                [axis] for axis in tool.args.params['axes']
+            ],
             normals=(tool.args.params['mode'] == 'dvr'),
         )
         camera = libcarna.camera(
