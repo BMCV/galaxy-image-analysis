@@ -63,7 +63,7 @@
             <validator type="dataset_metadata_in_range" metadata_name="columns" min="3" message="Input needs to have at least 3 columns."/>
         </param>
         <param name="missing" type="select" label="Processing of objects without features"
-               help="Correspondances of objects within the label map and the features table are established via their label (the value in the label column corresponds to the intensity value in the label map). Rules cannot be applied to objects in the label map that have no corresponding row in the features table.">
+               help="Correspondences of objects within the label map and the features table are established via their label (the value in the label column corresponds to the intensity value in the label map). Rules cannot be applied to objects in the label map that have no corresponding row in the features table.">
             <option value="fail" selected="true">Fail if features are missing for an object</option>
             <option value="remove">Remove objects without features</option>
             <option value="keep">Keep objects without features</option>
