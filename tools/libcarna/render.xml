@@ -3,6 +3,7 @@
     <macros>
         <import>creators.xml</import>
         <import>validators.xml</import>
+        <import>colormaps.xml</import>
         <token name="@TOOL_VERSION@">0.2.0</token>
         <token name="@VERSION_SUFFIX@">0</token>
         <xml name="params/intensity" tokens="name,label">
@@ -166,16 +167,12 @@
         <conditional name="colormap">
             <param name="name" type="select" label="Color map">
                 <option value="custom">Custom</option>
-                <option value="viridis" selected="true">Viridis</option>
-                <option value="hsv">HSV</option>
-                <option value="BrBG">BrBG</option>
+                <expand macro="option/builtin_cmap_list"/>
             </param>
             <when value="custom">
                 <param name="custom" type="data" format="tabular" label="Custom color map"/>
             </when>
-            <expand macro="when/builtin_cmap" value="viridis"/>
-            <expand macro="when/builtin_cmap" value="hsv"/>
-            <expand macro="when/builtin_cmap" value="BrBG"/>
+            <expand macro="when/builtin_cmap_list"/>
         </conditional>
         <section name="camera" title="Camera parameters" expanded="true">
             <param name="fov" type="float" min="10" max="170" value="90" label="Field of view (in degrees)"/>
