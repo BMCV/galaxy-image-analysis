@@ -193,7 +193,7 @@
         The first row contains the header names of the columns (``features``, ``min``, ``max``).
         Each subsequent row starts with the name of a feature (such as ``feature1`` or ``feature2``, see above),
         followed by the corresponding minimum and maximum allowed values for that feature.
-        A labeled image region is retrained in the label map if and only if it passes all checks with repsect to the given ``min`` and ``max`` values.
+        A labeled image region is retained in the label map if and only if it passes all checks with respect to the given ``min`` and ``max`` values.
         An example is given below.
 
         +--------------+--------+--------------+
