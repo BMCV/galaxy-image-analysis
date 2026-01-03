@@ -4,8 +4,8 @@
         <import>creators.xml</import>
         <import>tests.xml</import>
         <import>validators.xml</import>
-        <token name="@TOOL_VERSION@">0.7.1</token>
-        <token name="@VERSION_SUFFIX@">1</token>
+        <token name="@TOOL_VERSION@">0.7.3</token>
+        <token name="@VERSION_SUFFIX@">0</token>
         <xml name="input">
             <!-- JPEG is not allowed because it is a lossy compression that has no strictly constant labels -->
             <param name="input" type="data" format="tiff,zarr,png" label="Binary image">
