@@ -4,7 +4,7 @@
         <import>creators.xml</import>
         <import>tests.xml</import>
         <import>validators.xml</import>
-        <token name="@TOOL_VERSION@">0.7.1</token>
+        <token name="@TOOL_VERSION@">0.7.3</token>
         <token name="@VERSION_SUFFIX@">0</token>
     </macros>
     <creator>
@@ -126,7 +126,7 @@
             <param name="labels" value="input/input9.zarr"/>
             <param name="features" value="input/input9-features.tsv"/>
             <param name="rules" value="input/input9-rules1.tsv"/>
-            <expand macro="tests/label_image_diff" name="output" value="output/input9-rules1.tiff" ftype="tiff"/>
+            <output name="output" ftype="tiff" value="output/input9-rules1.tiff" compare="sim_size" delta="0" delta_frac="0"/>
             <assert_stdout>
                 <has_line line='Spurious rules columns: "extra_column"'/>
             </assert_stdout>
@@ -135,11 +135,7 @@
             <param name="labels" value="input/input9.zarr"/>
             <param name="features" value="input/input9-features.tsv"/>
             <param name="rules" value="input/input9-rules2.tsv"/>
-            <output name="output" ftype="tiff">
-                <assert_contents>
-                    <has_image_n_labels n="0" exclude_labels="0"/><!-- all background -->
-                </assert_contents>
-            </output>
+            <output name="output" ftype="tiff" value="output/input9-rules2.tiff" compare="sim_size" delta="0" delta_frac="0"/>
             <assert_stdout>
                 <has_line line='Spurious rules columns: "extra_column"'/>
             </assert_stdout>
