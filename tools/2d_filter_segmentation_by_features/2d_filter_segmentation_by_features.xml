@@ -87,7 +87,7 @@
             <param name="features" value="input/input12-features1.tsv"/>
             <param name="rules" value="input/input12-rules2.tsv"/>
             <assert_stderr>
-                <has_text text='Rule requires "not_a_feature" but this feature is missing.'/>
+                <has_text text='Rules require features that are missing: not_a_feature'/>
             </assert_stderr>
         </test>
         <test expect_failure="true">

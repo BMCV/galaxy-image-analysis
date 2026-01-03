@@ -18,6 +18,8 @@ if __name__ == "__main__":
     features.columns = features.columns.str.strip()  # remove whitespaces from header names
     rules = pd.read_csv(tool.args.raw_args.rules, delimiter='\t')
     rules.columns = rules.columns.str.strip()  # remove whitespaces from header names
+    rules['feature'] = rules['feature'].str.strip()  # remove whitespaces from feature names
+    rules_dict = rules.to_dict(orient='records')
 
     # Write info to stdout that might be useful to the user if something is not working
     required_rules_columns = frozenset(('feature', 'min', 'max'))
@@ -31,6 +33,10 @@ if __name__ == "__main__":
         if (missing_rules_columns := required_rules_columns - frozenset(rules.columns)):
             raise ValueError(f'Missing rules columns: {", ".join(missing_rules_columns)}')
         print('Rules for:', ', '.join(feature_name.strip() for feature_name in rules['feature']))
+
+        # Validate the features
+        if (missing_features := frozenset(r['feature'] for r in rules_dict) - frozenset(features.columns)):
+            raise ValueError(f'Rules require features that are missing: {", ".join(missing_features)}')
 
         # Validate the input image
         label_image = tool.args.input_images['labels']
@@ -66,10 +72,8 @@ if __name__ == "__main__":
 
                 # Check the rules for the object
                 else:
-                    for rule in rules.to_dict(orient='records'):
-                        feature_name = rule['feature'].strip()
-                        if feature_name not in features.columns:
-                            raise ValueError(f'Rule requires "{feature_name}" but this feature is missing.')
+                    for rule in rules_dict:
+                        feature_name = rule['feature']
                         feature_value = features.loc[label, feature_name]
 
                         # Keep the object if it passes the rule
