@@ -4,8 +4,6 @@ import pandas as pd
 import scipy.ndimage as ndi
 import skimage.measure
 
-from giatools__0_7_2__cli__ToolBaseplate import parse_args  # noqa: I202
-
 # Fail early if an optional backend is not available
 giatools.require_backend('omezarr')
 
@@ -42,7 +40,7 @@ if __name__ == '__main__':
     tool.add_input_image('labels')
     tool.add_input_image('intensities', required=False)
     tool.parser.add_argument('--output', type=str)
-    parse_args(tool)  # TODO: Revert to `tool.parse_args` when 0.7.2 is on Conda
+    tool.parse_args()
 
     # Validate the input image
     try:
