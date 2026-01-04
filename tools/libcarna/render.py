@@ -3,8 +3,6 @@ import libcarna
 import libcarna._imshow
 import pandas as pd
 
-from giatools__0_7_2__cli__ToolBaseplate import parse_args  # noqa: I202
-
 # Fail early if an optional backend is not available
 giatools.require_backend('omezarr')
 
@@ -34,7 +32,7 @@ if __name__ == "__main__":
     tool.add_input_image('mask', required=False)
     tool.parser.add_argument('--colormap', type=str)
     tool.parser.add_argument('--html', type=str)
-    parse_args(tool)  # TODO: Revert to `tool.parse_args` when 0.7.2 is on Conda
+    tool.parse_args()
 
     # Load custom colormap
     if tool.args.raw_args.colormap:

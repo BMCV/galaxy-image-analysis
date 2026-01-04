@@ -51,7 +51,7 @@
         <requirement type="package" version="@TOOL_VERSION@">libcarna-python</requirement>
         <requirement type="package" version="1.26.4">numpy</requirement>
         <requirement type="package" version="4.3.2">ffmpeg</requirement>
-        <requirement type="package" version="0.7.1">giatools</requirement>
+        <requirement type="package" version="0.7.3">giatools</requirement>
         <requirement type="package" version="0.12.2">ome-zarr</requirement>
         <requirement type="package" version="2.3.3">pandas</requirement>
     </requirements>
