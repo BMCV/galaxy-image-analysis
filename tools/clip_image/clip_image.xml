@@ -3,7 +3,7 @@
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
-        <token name="@TOOL_VERSION@">0.7.1</token>
+        <token name="@TOOL_VERSION@">0.7.3</token>
         <token name="@VERSION_SUFFIX@">0</token>
         <xml name="bound" tokens="name,label,help">
             <param name="@NAME@" type="float" label="@LABEL@" help="@HELP@"/>
