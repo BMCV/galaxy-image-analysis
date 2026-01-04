@@ -57,7 +57,7 @@
     <requirements>
         <requirement type="package" version="@TOOL_VERSION@">scikit-image</requirement>
         <requirement type="package" version="2.2.2">pandas</requirement>
-        <requirement type="package" version="0.7.1">giatools</requirement>
+        <requirement type="package" version="0.7.3">giatools</requirement>
         <requirement type="package" version="0.12.2">ome-zarr</requirement>
     </requirements>
     <required_files>
