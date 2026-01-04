@@ -1,4 +1,4 @@
-<tool id="clip_image" name="Clip image intensities" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
+<tool id="clip_image" name="Clip image intensities" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="25.1">
     <description>with giatools</description>
     <macros>
         <import>creators.xml</import>
@@ -6,15 +6,7 @@
         <token name="@TOOL_VERSION@">0.7.3</token>
         <token name="@VERSION_SUFFIX@">0</token>
         <xml name="bound" tokens="name,label,help">
-            <param name="@NAME@" type="float" label="@LABEL@" help="@HELP@"/>
-        </xml>
-        <xml name="lower_bound">
-            <expand macro="bound" name="lower_bound" label="Lower bound"
-                    help="Image intensities below this value will be set to this value."/>
-        </xml>
-        <xml name="upper_bound">
-            <expand macro="bound" name="upper_bound" label="Upper bound"
-                    help="Image intensities above this value will be set to this value."/>
+            <param name="@NAME@" type="float" optional="true" label="@LABEL@" help="@HELP@"/>
         </xml>
     </macros>
     <creator>
@@ -55,12 +47,12 @@
         <configfile name="params"><![CDATA[
             {
 
-            #if "lower" in str($setup.mode)
-                "lower_bound": $setup.lower_bound,
+            #if str($lower_bound) != ""
+                "lower_bound": $lower_bound,
             #end if
 
-            #if "upper" in str($setup.mode)
-                "upper_bound": $setup.upper_bound,
+            #if str($upper_bound) != ""
+                "upper_bound": $upper_bound,
             #end if
 
                 "": null
@@ -69,23 +61,10 @@
     </configfiles>
     <inputs>
         <param name="input" type="data" format="tiff,zarr,png,jpg" label="Input image"/>
-        <conditional name="setup">
-            <param name="mode" type="select" label="Clipping">
-                <option value="lower-upper" selected="true">Clip to lower and upper bounds</option>
-                <option value="lower">Clip to lower bound</option>
-                <option value="upper">Clip to upper bound</option>
-            </param>
-            <when value="lower-upper">
-                <expand macro="lower_bound"/>
-                <expand macro="upper_bound"/>
-            </when>
-            <when value="lower">
-                <expand macro="lower_bound"/>
-            </when>
-            <when value="upper">
-                <expand macro="upper_bound"/>
-            </when>
-        </conditional>
+        <expand macro="bound" name="lower_bound" label="Lower bound"
+                help="Image intensities below this value will be set to this value."/>
+        <expand macro="bound" name="upper_bound" label="Upper bound"
+                help="Image intensities above this value will be set to this value."/>
     </inputs>
     <outputs>
         <data format="tiff" name="output" from_work_dir="output.tiff"/>
@@ -93,10 +72,7 @@
     <tests>
         <test>
             <param name="input" value="input/input4_float16.tiff"/>
-            <conditional name="setup">
-                <param name="mode" value="lower"/>
-                <param name="lower_bound" value="0.5"/>
-            </conditional>
+            <param name="lower_bound" value="0.5"/>
             <expand macro="tests/intensity_image_diff" name="output" value="output/input4.tiff" ftype="tiff"/>
             <assert_stdout>
                 <has_line line="[input] Input image axes: ZYX"/>
@@ -112,10 +88,7 @@
         </test>
         <test>
             <param name="input" value="input/input5.jpg"/>
-            <conditional name="setup">
-                <param name="mode" value="upper"/>
-                <param name="upper_bound" value="100.5"/>
-            </conditional>
+            <param name="upper_bound" value="100.5"/>
             <expand macro="tests/intensity_image_diff" name="output" value="output/input5.tiff" ftype="tiff"/>
             <assert_stdout>
                 <has_line line="[input] Input image axes: YXC"/>
@@ -129,22 +102,16 @@
         </test>
         <test expect_failure="true">
             <param name="input" value="input/input5.jpg"/>
-            <conditional name="setup">
-                <param name="mode" value="lower-upper"/>
-                <param name="lower_bound" value="60"/>
-                <param name="upper_bound" value="50"/>
-            </conditional>
+            <param name="lower_bound" value="60"/>
+            <param name="upper_bound" value="50"/>
             <assert_stderr>
                 <has_line line="Lower bound (60) must be less or equal compared to the upper bound (50)."/>
             </assert_stderr>
         </test>
         <test>
             <param name="input" value="input/input6_yx.zarr"/>
-            <conditional name="setup">
-                <param name="mode" value="lower-upper"/>
-                <param name="lower_bound" value="-21.5"/>
-                <param name="upper_bound" value="101.5"/>
-            </conditional>
+            <param name="lower_bound" value="-21.5"/>
+            <param name="upper_bound" value="101.5"/>
             <expand macro="tests/intensity_image_diff" name="output" value="output/input6.tiff" ftype="tiff"/>
             <assert_stdout>
                 <has_line line="[input] Input image axes: YX"/>
@@ -156,6 +123,21 @@
                 <has_line line="[output] Output image shape: (200, 200)"/>
                 <has_line line="[output] Output image dtype: float64"/>
                 <has_line line="[output] Output image resolution=(1.0, 1.0), unit='um'"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <param name="input" value="input/input4_float16.tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="input/input4_float16.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="[input] Input image axes: ZYX"/>
+                <has_line line="[input] Input image shape: (10, 15, 18)"/>
+                <has_line line="[input] Input image dtype: float16"/>
+                <has_line line="[input] Input image resolution=(2.0, 1.0), unit='inch', z_spacing=2.0"/>
+                <has_line line="Applying clipping: [-inf, inf]"/>
+                <has_line line="[output] Output image axes: ZYX"/>
+                <has_line line="[output] Output image shape: (10, 15, 18)"/>
+                <has_line line="[output] Output image dtype: float16"/>
+                <has_line line="[output] Output image resolution=(2.0, 1.0), unit='inch', z_spacing=2.0"/>
             </assert_stdout>
         </test>
     </tests>
