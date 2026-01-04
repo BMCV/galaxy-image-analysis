@@ -1,0 +1,156 @@
+<tool id="clip_image" name="Clip image intensities" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="25.1">
+    <description>with giatools</description>
+    <macros>
+        <import>creators.xml</import>
+        <import>tests.xml</import>
+        <token name="@TOOL_VERSION@">0.7.3</token>
+        <token name="@VERSION_SUFFIX@">0</token>
+        <xml name="bound" tokens="name,label,help">
+            <param name="@NAME@" type="float" optional="true" label="@LABEL@" help="@HELP@"/>
+        </xml>
+    </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+        <expand macro="creators/kostrykin"/>
+    </creator>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="bio.tools">galaxy_image_analysis</xref>
+        <xref type="bio.tools">giatools</xref>
+        <xref type="bio.tools">numpy</xref>
+    </xrefs>
+    <requirements>
+        <requirement type="package" version="@TOOL_VERSION@">giatools</requirement>
+        <requirement type="package" version="0.12.2">ome-zarr</requirement>
+    </requirements>
+    <required_files>
+        <include type="literal" path="clip_image.py"/>
+    </required_files>
+    <command detect_errors="aggressive"><![CDATA[
+
+        python '$__tool_directory__/clip_image.py'
+
+        #if $input.extension == "zarr"
+            --input '$input.extra_files_path/$input.metadata.store_root'
+        #else
+            --input '$input'
+        #end if
+
+        --output 'output.tiff'
+        --params '$params'
+        --verbose
+
+    ]]></command>
+    <configfiles>
+        <configfile name="params"><![CDATA[
+            {
+
+            #if str($lower_bound) != ""
+                "lower_bound": $lower_bound,
+            #end if
+
+            #if str($upper_bound) != ""
+                "upper_bound": $upper_bound,
+            #end if
+
+                "": null
+            }
+        ]]></configfile>
+    </configfiles>
+    <inputs>
+        <param name="input" type="data" format="tiff,zarr,png,jpg" label="Input image"/>
+        <expand macro="bound" name="lower_bound" label="Lower bound"
+                help="Image intensities below this value will be set to this value."/>
+        <expand macro="bound" name="upper_bound" label="Upper bound"
+                help="Image intensities above this value will be set to this value."/>
+    </inputs>
+    <outputs>
+        <data format="tiff" name="output" from_work_dir="output.tiff"/>
+    </outputs>
+    <tests>
+        <test>
+            <param name="input" value="input/input4_float16.tiff"/>
+            <param name="lower_bound" value="0.5"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input4.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="[input] Input image axes: ZYX"/>
+                <has_line line="[input] Input image shape: (10, 15, 18)"/>
+                <has_line line="[input] Input image dtype: float16"/>
+                <has_line line="[input] Input image resolution=(2.0, 1.0), unit='inch', z_spacing=2.0"/>
+                <has_line line="Applying clipping: [0.5, inf]"/>
+                <has_line line="[output] Output image axes: ZYX"/>
+                <has_line line="[output] Output image shape: (10, 15, 18)"/>
+                <has_line line="[output] Output image dtype: float16"/>
+                <has_line line="[output] Output image resolution=(2.0, 1.0), unit='inch', z_spacing=2.0"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <param name="input" value="input/input5.jpg"/>
+            <param name="upper_bound" value="100.5"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input5.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="[input] Input image axes: YXC"/>
+                <has_line line="[input] Input image shape: (10, 10, 3)"/>
+                <has_line line="[input] Input image dtype: uint8"/>
+                <has_line line="Applying clipping: [-inf, 100.5]"/>
+                <has_line line="[output] Output image axes: YXC"/>
+                <has_line line="[output] Output image shape: (10, 10, 3)"/>
+                <has_line line="[output] Output image dtype: uint8"/>
+            </assert_stdout>
+        </test>
+        <test expect_failure="true">
+            <param name="input" value="input/input5.jpg"/>
+            <param name="lower_bound" value="60"/>
+            <param name="upper_bound" value="50"/>
+            <assert_stderr>
+                <has_line line="Lower bound (60) must be less or equal compared to the upper bound (50)."/>
+            </assert_stderr>
+        </test>
+        <test>
+            <param name="input" value="input/input6_yx.zarr"/>
+            <param name="lower_bound" value="-21.5"/>
+            <param name="upper_bound" value="101.5"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input6.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="[input] Input image axes: YX"/>
+                <has_line line="[input] Input image shape: (200, 200)"/>
+                <has_line line="[input] Input image dtype: float64"/>
+                <has_line line="[input] Input image resolution=(1.0, 1.0), unit='um'"/>
+                <has_line line="Applying clipping: [-21.5, 101.5]"/>
+                <has_line line="[output] Output image axes: YX"/>
+                <has_line line="[output] Output image shape: (200, 200)"/>
+                <has_line line="[output] Output image dtype: float64"/>
+                <has_line line="[output] Output image resolution=(1.0, 1.0), unit='um'"/>
+            </assert_stdout>
+        </test>
+        <test>
+            <param name="input" value="input/input4_float16.tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="input/input4_float16.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="[input] Input image axes: ZYX"/>
+                <has_line line="[input] Input image shape: (10, 15, 18)"/>
+                <has_line line="[input] Input image dtype: float16"/>
+                <has_line line="[input] Input image resolution=(2.0, 1.0), unit='inch', z_spacing=2.0"/>
+                <has_line line="Applying clipping: [-inf, inf]"/>
+                <has_line line="[output] Output image axes: ZYX"/>
+                <has_line line="[output] Output image shape: (10, 15, 18)"/>
+                <has_line line="[output] Output image dtype: float16"/>
+                <has_line line="[output] Output image resolution=(2.0, 1.0), unit='inch', z_spacing=2.0"/>
+            </assert_stdout>
+        </test>
+    </tests>
+    <help>
+
+**Applies intensity clipping to an image.**
+
+Supports 2-D and 3-D images, single-channel and multi-channel images, and arbitrary series of images (e.g., temporal image sequences).
+
+This tool preserves the image pixel data type and—subject to clipping—the image brightness and the range of values.
+
+    </help>
+    <citations>
+        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
+    </citations>
+</tool>

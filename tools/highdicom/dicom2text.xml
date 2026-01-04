@@ -1,0 +1,72 @@
+<tool id="highdicom_dicom2text" name="Export DICOM metadata" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="24.01">
+    <expand macro="description"/>
+    <macros>
+        <import>macros.xml</import>
+        <import>creators.xml</import>
+    </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+        <expand macro="creators/kostrykin"/>
+    </creator>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <expand macro="xrefs"/>
+    <expand macro="requirements"/>
+    <command><![CDATA[
+
+    python '$__tool_directory__/dicom2text.py'
+    '$input'
+
+    #if $export_to == "json"
+        ./output.json
+    #elif $export_to == "yaml"
+        ./output.yaml
+    #end if
+
+    ]]>
+    </command>
+    <inputs>
+        <param name="input" type="data" format="binary" label="DICOM dataset"/>
+        <param name="export_to" type="select" label="Export to">
+            <option value="json" selected="true">JSON</option>
+            <option value="yaml">YAML</option>
+        </param>
+    </inputs>
+    <outputs>
+        <data format="json" name="output_json" from_work_dir="output.json" label="${tool.name} on ${on_string} (JSON)">
+            <filter>export_to == 'json'</filter>
+        </data>
+        <data format="yaml" name="output_yaml" from_work_dir="output.yaml" label="${tool.name} on ${on_string} (YAML)">
+            <filter>export_to == 'yaml'</filter>
+        </data>
+    </outputs>
+    <tests>
+        <test expect_num_outputs="1">
+            <param name="input" value="highdicom/ct_image.dcm"/>
+            <param name="export_to" value="json"/>
+            <output name="output_json" ftype="json">
+                <assert_contents>
+                    <has_json_property_with_value property="00080080" value='{"vr": "LO", "Value": ["JFK IMAGING CENTER"]}'/>
+                </assert_contents>
+            </output>
+        </test>
+        <test expect_num_outputs="1">
+            <param name="input" value="highdicom/sm_image.dcm"/>
+            <param name="export_to" value="yaml"/>
+            <output name="output_yaml" ftype="yaml">
+                <assert_contents>
+                    <has_text_matching expression="00080104:\n +Value:\n +- Brightfield illumination\n"/>
+                </assert_contents>
+            </output>
+        </test>
+    </tests>
+    <help>
+
+        **Exports the metadata of a DICOM dataset as JSON or YAML.**
+
+        @DICOM_INTRO@
+
+    </help>
+    <expand macro="citations"/>
+</tool>

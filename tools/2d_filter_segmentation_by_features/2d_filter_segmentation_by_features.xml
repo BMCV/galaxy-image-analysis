@@ -1,48 +1,190 @@
-<tool id="ip_2d_filter_segmentation_by_features" name="Filter label map by rules" version="0.0.1-4" profile="20.05">
-    <description></description>
+<tool id="ip_2d_filter_segmentation_by_features" name="Filter label map by rules" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
+    <description>with giatools</description>
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
+        <import>validators.xml</import>
+        <token name="@TOOL_VERSION@">0.7.3</token>
+        <token name="@VERSION_SUFFIX@">0</token>
     </macros>
     <creator>
-        <expand macro="creators/bmcv" />
+        <expand macro="creators/bmcv"/>
+        <expand macro="creators/kostrykin"/>
     </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
     <xrefs>
         <xref type="bio.tools">galaxy_image_analysis</xref>
+        <xref type="bio.tools">giatools</xref>
     </xrefs>
     <requirements>
-        <requirement type="package" version="0.18.1">scikit-image</requirement>
+        <requirement type="package" version="@TOOL_VERSION@">giatools</requirement>
+        <requirement type="package" version="0.25.2">scikit-image</requirement>
         <requirement type="package" version="2.2.2">pandas</requirement>
-        <requirement type="package" version="2020.10.1">tifffile</requirement>
-        <requirement type="package" version="0.1">giatools</requirement>
     </requirements>
+    <required_files>
+        <include type="literal" path="2d_filter_segmentation_by_features.py"/>
+    </required_files>
     <command detect_errors="aggressive"><![CDATA[
 
         python '$__tool_directory__/2d_filter_segmentation_by_features.py'
 
-        '$input'
-        '$output'
-        '$feature_file'
-        '$rule_file'
+        #if $labels.extension == "zarr"
+            --labels '$labels.extra_files_path/$labels.metadata.store_root'
+        #else
+            --labels '$labels'
+        #end if
+
+        --output   'output.tiff'
+        --features '$features'
+        --rules    '$rules'
+        --params   '$params'
+
+        --verbose
 
     ]]></command>
+    <configfiles>
+        <configfile name="params"><![CDATA[
+            {
+
+                "missing": "$missing"
+
+            }
+        ]]></configfile>
+    </configfiles>
     <inputs>
-        <param name="input" type="data" format="tiff" label="Label map" />
-        <param name="feature_file" type="data" format="tabular" label="Features" />
-        <param name="rule_file" type="data" format="tabular" label="Rules" />
+        <param name="labels" type="data" format="tiff,zarr,png" label="Label map">
+            <expand macro="validators/is_single_channel"/>
+            <expand macro="validators/is_single_frame"/>
+        </param>
+        <param name="features" type="data" format="tabular" label="Features"/>
+        <param name="rules" type="data" format="tabular" label="Rules">
+            <validator type="dataset_metadata_in_range" metadata_name="columns" min="3" message="Input needs to have at least 3 columns."/>
+        </param>
+        <param name="missing" type="select" label="Processing of objects without features"
+               help="Correspondences of objects within the label map and the features table are established via their label (the value in the label column corresponds to the intensity value in the label map). Rules cannot be applied to objects in the label map that have no corresponding row in the features table.">
+            <option value="fail" selected="true">Fail if features are missing for an object</option>
+            <option value="remove">Remove objects without features</option>
+            <option value="keep">Keep objects without features</option>
+        </param>
     </inputs>
     <outputs>
-       <data format="tiff" name="output" />
+       <data format="tiff" name="output" from_work_dir="output.tiff"/>
     </outputs>
     <tests>
+        <!-- Single-channel 2-D -->
         <test>
-            <param name="input" value="in.tiff"/>
-            <param name="feature_file" value="features.tabular"/>
-            <param name="rule_file" value="rules.tabular"/>
-            <expand macro="tests/label_image_diff" name="output" value="out.tiff" ftype="tiff"/>
+            <param name="labels" value="input/input12.png"/>
+            <param name="features" value="input/input12-features1.tsv"/>
+            <param name="rules" value="input/input12-rules1.tsv"/>
+            <expand macro="tests/label_image_diff" name="output" value="output/input12.tiff" ftype="tiff">
+                <has_image_n_labels n="2" exclude_labels="0"/><!-- 5, 20 -->
+            </expand>
+        </test>
+        <test expect_failure="true">
+            <param name="labels" value="input/input12.png"/>
+            <param name="features" value="input/input12-features1.tsv"/>
+            <param name="rules" value="input/input12-rules2.tsv"/>
+            <assert_stderr>
+                <has_text text='Rules require features that are missing: not_a_feature'/>
+            </assert_stderr>
+        </test>
+        <test expect_failure="true">
+            <param name="labels" value="input/input12.png"/>
+            <param name="features" value="input/input12-features2.tsv"/><!-- removed labels: 8, 20 -->
+            <param name="rules" value="input/input12-rules1.tsv"/>
+            <param name="missing" value="fail"/>
+            <assert_stderr>
+                <has_text text="No features available for label: 8"/>
+            </assert_stderr>
+        </test>
+        <test>
+            <param name="labels" value="input/input12.png"/>
+            <param name="features" value="input/input12-features2.tsv"/><!-- removed labels: 8, 20 -->
+            <param name="rules" value="input/input12-rules1.tsv"/>
+            <param name="missing" value="remove"/>
+            <output name="output" ftype="tiff">
+                <assert_contents>
+                    <has_image_n_labels n="1" exclude_labels="0"/><!-- 5 -->
+                </assert_contents>
+            </output>
+        </test>
+        <test>
+            <param name="labels" value="input/input12.png"/>
+            <param name="features" value="input/input12-features2.tsv"/><!-- removed labels: 8, 20 -->
+            <param name="rules" value="input/input12-rules1.tsv"/>
+            <param name="missing" value="keep"/>
+            <output name="output" ftype="tiff">
+                <assert_contents>
+                    <has_image_n_labels n="3" exclude_labels="0"/><!-- 5, 8, 20 -->
+                </assert_contents>
+            </output>
+        </test>
+        <!-- Single-channel 3-D -->
+        <test>
+            <param name="labels" value="input/input9.zarr"/>
+            <param name="features" value="input/input9-features.tsv"/>
+            <param name="rules" value="input/input9-rules1.tsv"/>
+            <!--
+            Preferrably, we would use the `tests/label_image_diff` macro here, but the `iou` metric currently does not support 3-D images.
+            As a fallback, we would the `tests/intensity_image_diff` macro, but this is currently bugged for bool images.
+
+            TODO: Employ
+            ```
+                <expand macro="tests/intensity_image_diff" name="output" value="output/input9-rules1.tiff" ftype="tiff"/>
+            ```
+            when https://github.com/galaxyproject/galaxy/pull/21527 is merged.
+            -->
+            <output name="output" ftype="tiff" value="output/input9-rules1.tiff" compare="sim_size" delta="0" delta_frac="0"/>
+            <assert_stdout>
+                <has_line line='Spurious rules columns: "extra_column"'/>
+            </assert_stdout>
+        </test>
+        <test>
+            <param name="labels" value="input/input9.zarr"/>
+            <param name="features" value="input/input9-features.tsv"/>
+            <param name="rules" value="input/input9-rules2.tsv"/>
+            <!--
+            Preferrably, we would use a content assertion here, but this is currently blocked by a bug.
+
+            TODO: Employ
+            ```
+                <output name="output" ftype="tiff">
+                    <assert_contents>
+                        <has_image_n_labels n="0" exclude_labels="0"/><!- all background ->
+                    </assert_contents>
+                </output>
+            ```
+            when https://github.com/galaxyproject/galaxy/pull/21527 is merged.
+            -->
+            <output name="output" ftype="tiff" value="output/input9-rules2.tiff" compare="sim_size" delta="0" delta_frac="0"/>
+            <assert_stdout>
+                <has_line line='Spurious rules columns: "extra_column"'/>
+            </assert_stdout>
+        </test>
+        <!-- Multi-channel (forbidden) -->
+        <test expect_failure="true">
+            <param name="labels" value="input/input3_uint16.tiff"/>
+            <param name="features" value="input/input12-features1.tsv"/>
+            <param name="rules" value="input/input12-rules1.tsv"/>
+            <assert_stderr>
+                <!-- Rejected by validator -->
+                <has_n_lines n="0"/>
+            </assert_stderr>
+            <assert_stdout>
+                <!-- Rejected by validator -->
+                <has_n_lines n="0"/>
+            </assert_stdout>
+        </test>
+        <test expect_failure="true">
+            <param name="labels" value="input/input10.zarr"/>
+            <param name="features" value="input/input12-features1.tsv"/>
+            <param name="rules" value="input/input12-rules1.tsv"/>
+            <assert_stderr>
+                <!-- Rejected by py-script -->
+                <has_text text="This tool is not applicable to images with CYX axes."/>
+            </assert_stderr>
         </test>
     </tests>
     <help>
@@ -66,20 +208,20 @@
         | 4     | 14320 | 0.17131009631035327 |
         +-------+-------+---------------------+
 
-        The rules also must be supplied in a specific tabular format with three rows.
-        The top-left cell is empty, and the rest of the first row corresponds to the feature names (such as ``feature1`` or ``feature2``, see above).
-        The rest of the first column corresponds to the two values ``min`` and ``max``.
-        Each of the rows defines the minimum and maximum values for the corresponding features.
-        A labeled image region is retrained if and only if it passes all checks with repsect to the given ``min`` and ``max`` values.
+        The rules also must be supplied in a specific tabular format with three columns.
+        The first row contains the header names of the columns (``feature``, ``min``, ``max``).
+        Each subsequent row starts with the name of a feature (such as ``feature1`` or ``feature2``, see above),
+        followed by the corresponding minimum and maximum allowed values for that feature.
+        A labeled image region is retained in the label map if and only if it passes all checks with respect to the given ``min`` and ``max`` values.
         An example is given below.
 
-        +-----+--------+--------------+
-        |     | area   | eccentricity |
-        +-----+--------+--------------+
-        | min | 500    | 0.           |
-        +-----+--------+--------------+
-        | max | 100000 | 0.5          |
-        +-----+--------+--------------+
+        +--------------+--------+--------------+
+        | feature      | min    | max          |
+        +--------------+--------+--------------+
+        | area         | 500    | 100000       |
+        +--------------+--------+--------------+
+        | eccentricity | 0.     | 0.5          |
+        +--------------+--------+--------------+
 
     </help>
     <citations>

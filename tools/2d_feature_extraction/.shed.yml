@@ -1,7 +1,7 @@
 categories:
   - Imaging
-description: 2D feature extraction
-long_description: Extraction of various features in 2D.
+description: Image feature extraction
+long_description: Extraction of various features in 2-D or 3-D images.
 name: 2d_feature_extraction 
 owner: imgteam
 homepage_url: https://github.com/bmcv

@@ -42,4 +42,14 @@
             ><![CDATA[getattr(value.metadata, "depth", None) in (None, '') or int(value.metadata.depth) >= 2]]></validator>
     </xml>
 
+    <xml name="validators/is_binary">
+        <!--
+        The OME-Zarr datatype in Galaxy is currently not derived from the Image datatype, and it does
+        hence not inherit the metadata fields like `num_unique_values`. To cope with that, we allow all
+        datasets except those where we *know* that they are *not* binary.
+        -->
+        <validator type="expression" message="Dataset is not a binary image"
+            ><![CDATA[getattr(value.metadata, "num_unique_values", None) in (None, '') or int(value.metadata.num_unique_values) <= 2]]></validator>
+    </xml>
+
 </macros>
