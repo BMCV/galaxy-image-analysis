@@ -6,14 +6,14 @@
         <import>colormaps.xml</import>
         <token name="@TOOL_VERSION@">0.2.0</token>
         <token name="@VERSION_SUFFIX@">0</token>
-        <xml name="params/intensity" tokens="name,label">
+        <xml name="params/intensity" tokens="name,label,value">
             <section name="@NAME@" title="@LABEL@" expanded="true">
                 <param name="type" type="select" label="@LABEL@"
                        help="For relative intensity values, 0 is the minimum intensity of the image, and 1 is the maximum intensity.">
-                    <option value="absolute" selected="true">Absolute intensity value</option>
-                    <option value="relative">Relative intensity value</option>
+                    <option value="absolute">Absolute intensity value</option>
+                    <option value="relative" selected="true">Relative intensity value</option>
                 </param>
-                <param name="value" type="float" label="Intensity value"/>
+                <param name="value" type="float" value="@VALUE@" label="Intensity value"/>
             </section>
         </xml>
         <xml name="params/builtin_cmap">
@@ -24,8 +24,8 @@
                     <option value="true">Enabled</option>
                 </param>
                 <when value="true">
-                    <expand macro="params/intensity" name="start" label="Ramp start"/>
-                    <expand macro="params/intensity" name="end" label="Ramp end"/>
+                    <expand macro="params/intensity" name="start" value="0" label="Ramp start"/>
+                    <expand macro="params/intensity" name="end" value="0.5" label="Ramp end"/>
                 </when>
                 <when value="false"/>
             </conditional>
