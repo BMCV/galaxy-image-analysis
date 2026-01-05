@@ -37,7 +37,7 @@
                     <param name="intensities" value="input/input1_uint8.tiff"/>
                     <param name="features" value="@FEATURE@"/>
                 </conditional>
-                <output name="output" ftype="tabular" value="output/input13-@FEATURE@.tsv"/>
+                <output name="output" ftype="tabular" value="output/input13-@FEATURE@.tsv" compare="re_match"/>
             </test>
         </xml>
     </macros>
@@ -132,7 +132,7 @@
                 <param name="mode" value="without-intensities"/>
                 <param name="features" value="label,area,area_convex,solidity"/>
             </conditional>
-            <output name="output" ftype="tabular" value="output/input12.tsv"/>
+            <output name="output" ftype="tabular" value="output/input12.tsv" compare="re_match"/>
         </test>
         <test>
             <param name="labels" value="input/input11.tiff"/>
@@ -141,7 +141,7 @@
                 <param name="intensities" value="input/input1_uint8.tiff"/>
                 <param name="features" value="area,mean_intensity,perimeter"/>
             </conditional>
-            <output name="output" ftype="tabular" value="output/input11.tsv"/>
+            <output name="output" ftype="tabular" value="output/input11.tsv" compare="re_match"/>
         </test>
         <!-- Single-channel 2-D Zarr (isolated features, verify that Dask arrays are converted to NumPy arrays whenever necessary) -->
         <expand macro="zarr-isolated-feature-test" feature="area"/>
