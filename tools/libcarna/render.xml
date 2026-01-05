@@ -35,6 +35,10 @@
                 <expand macro="params/builtin_cmap"/>
             </when>
         </xml>
+        <xml name="params/sample_rate_override">
+            <!-- CI tests use software rendering which requires very low sample rates -->
+            <param name="sample_rate_override" value="5"/>
+        </xml>
         <xml name="assert_stdout">
             <assert_stdout>
                 <has_line_matching expression="^EGL Vendor: .+"/>
@@ -105,8 +109,12 @@
         <configfile name="params"><![CDATA[
             {
 
-                "axes": "$axes",
+                #if str($sample_rate_override) != ""
+                    #set $sample_rate = int($sample_rate_override)
+                #end if
+
                 "sample_rate": $sample_rate,
+                "axes": "$axes",
                 "width": $width,
                 "height": $height,
                 "mode": "$mode.name",
@@ -166,6 +174,7 @@
         </param>
         <param name="sample_rate" type="integer" min="100" value="800" label="Sample rate"
                help="Samples per pixel for volume rendering (ray marching)."/>
+        <param name="sample_rate_override" type="hidden" value="0"/><!-- For testing purposes -->
         <param name="width" type="integer" min="50" max="1024" value="800" label="Width of the video (in pixels)"/>
         <param name="height" type="integer" min="50" max="1024" value="450" label="Height of the video (in pixels)"/>
         <conditional name="mode">
@@ -228,6 +237,7 @@
         <!-- Test with MIP -->
         <test>
             <param name="intensities" value="input/float32_10z_32y_40x.tiff"/>
+            <expand macro="params/sample_rate_override"/>
             <section name="camera">
                 <param name="distance" value="50"/>
             </section>
@@ -237,6 +247,7 @@
         <!-- Test with DVR, ramp colormap, and mask -->
         <test>
             <param name="intensities" value="input/float32_10z_32y_40x.tiff"/>
+            <expand macro="params/sample_rate_override"/>
             <conditional name="mode">
                 <param name="name" value="dvr"/>
                 <param name="translucency" value="0"/>
@@ -268,6 +279,7 @@
         <!-- Test with custom colormap -->
         <test>
             <param name="intensities" value="input/float32_10z_32y_40x.tiff"/>
+            <expand macro="params/sample_rate_override"/>
             <param name="axes" value="XYZ"/>
             <conditional name="colormap">
                 <param name="name" value="custom"/>
@@ -282,6 +294,7 @@
         <!-- Test with Zarr and missing `z_spacing` metadata -->
         <test>
             <param name="intensities" value="input/float32_5z_16y_20x-no_z_spacing.zarr"/>
+            <expand macro="params/sample_rate_override"/>
             <section name="camera">
                 <param name="distance" value="50"/>
             </section>

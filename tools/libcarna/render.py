@@ -45,6 +45,7 @@ if __name__ == "__main__":
                 raise ValueError(f'This tool is not applicable to images with {image.original_axes} axes.')
 
         # Create and configure frame renderer
+        print('Sample rate:', tool.args.params['sample_rate'])
         mode = getattr(libcarna, tool.args.params['mode'])(
             GEOMETRY_TYPE_INTENSITIES,
             sr=tool.args.params['sample_rate'],
