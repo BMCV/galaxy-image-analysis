@@ -35,6 +35,12 @@
                 <expand macro="params/builtin_cmap"/>
             </when>
         </xml>
+        <xml name="assert_stdout">
+            <assert_stdout>
+                <has_line_matching expression="^EGL Vendor: .+"/>
+                <yield/>
+            </assert_stdout>
+        </xml>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
@@ -48,12 +54,21 @@
         <xref type="bio.tools">giatools</xref>
     </xrefs>
     <requirements>
-        <requirement type="package" version="@TOOL_VERSION@">libcarna-python</requirement>
-        <requirement type="package" version="1.26.4">numpy</requirement>
-        <requirement type="package" version="4.3.2">ffmpeg</requirement>
-        <requirement type="package" version="0.7.3">giatools</requirement>
-        <requirement type="package" version="0.12.2">ome-zarr</requirement>
-        <requirement type="package" version="2.3.3">pandas</requirement>
+    <!--
+        We employ here a custom Docker image until https://github.com/bioconda/bioconda-containers/issues/87 gets a better solution.
+
+        The Docker image is an extension of the BioContainer for the following packages:
+
+            <requirement type="package" version="@TOOL_VERSION@">libcarna-python</requirement>
+            <requirement type="package" version="1.26.4">numpy</requirement>
+            <requirement type="package" version="4.3.2">ffmpeg</requirement>
+            <requirement type="package" version="0.7.3">giatools</requirement>
+            <requirement type="package" version="0.12.2">ome-zarr</requirement>
+            <requirement type="package" version="2.3.3">pandas</requirement>
+
+        See https://github.com/kostrykin/LibCarna-Python-Docker for details of the image.
+        -->
+        <container type="docker">docker.io/kostrykin/libcarna-python:@TOOL_VERSION@-0</container>
     </requirements>
     <required_files>
         <include type="literal" path="clip_image.py"/>
@@ -216,6 +231,7 @@
                 <param name="distance" value="50"/>
             </section>
             <output name="html" ftype="html" value="output/float32_10z_32y_40x-mip.html" compare="sim_size" delta="10000"/>
+            <expand macro="assert_stdout"/>
         </test>
         <!-- Test with DVR, ramp colormap, and mask -->
         <test>
@@ -246,6 +262,7 @@
                 <param name="image" value="input/uint8_10z_32y_40x.tiff"/>
             </conditional>
             <output name="html" ftype="html" value="output/float32_10z_32y_40x-dvr-mask.html" compare="sim_size" delta="10000"/>
+            <expand macro="assert_stdout"/>
         </test>
         <!-- Test with custom colormap -->
         <test>
@@ -259,6 +276,7 @@
                 <param name="distance" value="50"/>
             </section>
             <output name="html" ftype="html" value="output/float32_10z_32y_40x-colormap.html" compare="sim_size" delta="10000"/>
+            <expand macro="assert_stdout"/>
         </test>
         <!-- Test with Zarr and missing `z_spacing` metadata -->
         <test>
@@ -267,6 +285,7 @@
                 <param name="distance" value="50"/>
             </section>
             <output name="html" ftype="html" value="output/float32_5z_16y_20x.html" compare="sim_size" delta="10000"/>
+            <expand macro="assert_stdout"/>
         </test>
     </tests>
     <help>

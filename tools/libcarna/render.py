@@ -60,6 +60,7 @@ if __name__ == "__main__":
             tool.args.params['height'],
             [mode, mask_renderer],
         )
+        print('EGL Vendor:', r.gl_context.vendor)
 
         # Build the scene graph
         root = libcarna.node()
