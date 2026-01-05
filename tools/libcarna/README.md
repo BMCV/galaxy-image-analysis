@@ -1,5 +1,11 @@
 # libcarna
 
+## HTML output
+
+The tool produces HTML output that needs to be added to the allow list.
+
+## GPU support
+
 The following extra Docker parameters are required to run this tool with GPU support:
 ```bash
 --gpus all -e NVIDIA_VISIBLE_DEVICES=all -e NVIDIA_DRIVER_CAPABILITIES=graphics,compute
