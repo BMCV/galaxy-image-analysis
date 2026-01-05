@@ -35,11 +35,13 @@
                 <expand macro="params/builtin_cmap"/>
             </when>
         </xml>
-        <xml name="params/sample_rate_override">
+        <xml name="test/params">
             <!-- CI tests use software rendering which requires very low sample rates -->
             <param name="sample_rate_override" value="5"/>
+            <param name="width" value="200"/>
+            <param name="height" value="110"/>
         </xml>
-        <xml name="assert_stdout">
+        <xml name="test/assert_stdout">
             <assert_stdout>
                 <has_line_matching expression="^EGL Vendor: .+"/>
                 <yield/>
@@ -237,17 +239,16 @@
         <!-- Test with MIP -->
         <test>
             <param name="intensities" value="input/float32_10z_32y_40x.tiff"/>
-            <expand macro="params/sample_rate_override"/>
             <section name="camera">
                 <param name="distance" value="50"/>
             </section>
-            <output name="html" ftype="html" value="output/float32_10z_32y_40x-mip.html" compare="sim_size" delta="10000"/>
-            <expand macro="assert_stdout"/>
+            <output name="html" ftype="html" value="output/float32_10z_32y_40x-mip.html" compare="sim_size" delta="1000"/>
+            <expand macro="test/params"/>
+            <expand macro="test/assert_stdout"/>
         </test>
         <!-- Test with DVR, ramp colormap, and mask -->
         <test>
             <param name="intensities" value="input/float32_10z_32y_40x.tiff"/>
-            <expand macro="params/sample_rate_override"/>
             <conditional name="mode">
                 <param name="name" value="dvr"/>
                 <param name="translucency" value="0"/>
@@ -273,13 +274,13 @@
                 <param name="enabled" value="true"/>
                 <param name="image" value="input/uint8_10z_32y_40x.tiff"/>
             </conditional>
-            <output name="html" ftype="html" value="output/float32_10z_32y_40x-dvr-mask.html" compare="sim_size" delta="10000"/>
-            <expand macro="assert_stdout"/>
+            <output name="html" ftype="html" value="output/float32_10z_32y_40x-dvr-mask.html" compare="sim_size" delta="1000"/>
+            <expand macro="test/params"/>
+            <expand macro="test/assert_stdout"/>
         </test>
         <!-- Test with custom colormap -->
         <test>
             <param name="intensities" value="input/float32_10z_32y_40x.tiff"/>
-            <expand macro="params/sample_rate_override"/>
             <param name="axes" value="XYZ"/>
             <conditional name="colormap">
                 <param name="name" value="custom"/>
@@ -288,18 +289,19 @@
             <section name="camera">
                 <param name="distance" value="50"/>
             </section>
-            <output name="html" ftype="html" value="output/float32_10z_32y_40x-colormap.html" compare="sim_size" delta="10000"/>
-            <expand macro="assert_stdout"/>
+            <output name="html" ftype="html" value="output/float32_10z_32y_40x-colormap.html" compare="sim_size" delta="1000"/>
+            <expand macro="test/params"/>
+            <expand macro="test/assert_stdout"/>
         </test>
         <!-- Test with Zarr and missing `z_spacing` metadata -->
         <test>
             <param name="intensities" value="input/float32_5z_16y_20x-no_z_spacing.zarr"/>
-            <expand macro="params/sample_rate_override"/>
             <section name="camera">
                 <param name="distance" value="50"/>
             </section>
-            <output name="html" ftype="html" value="output/float32_5z_16y_20x.html" compare="sim_size" delta="10000"/>
-            <expand macro="assert_stdout"/>
+            <output name="html" ftype="html" value="output/float32_5z_16y_20x.html" compare="sim_size" delta="1000"/>
+            <expand macro="test/params"/>
+            <expand macro="test/assert_stdout"/>
         </test>
     </tests>
     <help>
