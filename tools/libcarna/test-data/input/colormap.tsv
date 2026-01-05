@@ -1,0 +1,4 @@
+color	intensity	type
+#ff00007f	0	absolute
+#ffff00ff	0.5	absolute
+#00ffffff	1.0	relative

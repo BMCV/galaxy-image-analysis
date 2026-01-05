@@ -1,0 +1,339 @@
+<tool id="libcarna_render" name="Render 3-D image data" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
+    <description>with LibCarna</description>
+    <macros>
+        <import>creators.xml</import>
+        <import>validators.xml</import>
+        <import>colormaps.xml</import>
+        <token name="@TOOL_VERSION@">0.2.0</token>
+        <token name="@VERSION_SUFFIX@">0</token>
+        <xml name="params/intensity" tokens="name,label">
+            <section name="@NAME@" title="@LABEL@" expanded="true">
+                <param name="type" type="select" label="@LABEL@"
+                       help="For relative intensity values, 0 is the minimum intensity of the image, and 1 is the maximum intensity.">
+                    <option value="absolute" selected="true">Absolute intensity value</option>
+                    <option value="relative">Relative intensity value</option>
+                </param>
+                <param name="value" type="float" label="Intensity value"/>
+            </section>
+        </xml>
+        <xml name="params/builtin_cmap">
+            <conditional name="ramp">
+                <param name="enabled" type="select" label="Ramp function"
+                       help="Use a piecewise linear ramp function for the alpha channel of the colormap.">
+                    <option value="false" selected="true">Disabled</option>
+                    <option value="true">Enabled</option>
+                </param>
+                <when value="true">
+                    <expand macro="params/intensity" name="start" label="Ramp start"/>
+                    <expand macro="params/intensity" name="end" label="Ramp end"/>
+                </when>
+                <when value="false"/>
+            </conditional>
+        </xml>
+        <xml name="when/builtin_cmap" tokens="value">
+            <when value="@VALUE@">
+                <expand macro="params/builtin_cmap"/>
+            </when>
+        </xml>
+        <xml name="test/params">
+            <!-- CI tests use software rendering which requires very low sample rates -->
+            <param name="sample_rate_override" value="5"/>
+            <param name="width" value="200"/>
+            <param name="height" value="110"/>
+        </xml>
+        <xml name="test/assert_stdout">
+            <assert_stdout>
+                <has_line_matching expression="^EGL Vendor: .+"/>
+                <yield/>
+            </assert_stdout>
+        </xml>
+    </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+        <expand macro="creators/kostrykin"/>
+    </creator>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="bio.tools">galaxy_image_analysis</xref>
+        <xref type="bio.tools">giatools</xref>
+    </xrefs>
+    <requirements>
+    <!--
+        We employ here a custom Docker image until https://github.com/bioconda/bioconda-containers/issues/87 gets a better solution.
+
+        The Docker image is an extension of the BioContainer for the following packages:
+
+            <requirement type="package" version="@TOOL_VERSION@">libcarna-python</requirement>
+            <requirement type="package" version="1.26.4">numpy</requirement>
+            <requirement type="package" version="4.3.2">ffmpeg</requirement>
+            <requirement type="package" version="0.7.3">giatools</requirement>
+            <requirement type="package" version="0.12.2">ome-zarr</requirement>
+            <requirement type="package" version="2.3.3">pandas</requirement>
+
+        See https://github.com/kostrykin/LibCarna-Python-Docker for details of the image.
+        -->
+        <container type="docker">docker.io/kostrykin/libcarna-python:@TOOL_VERSION@-0</container>
+    </requirements>
+    <required_files>
+        <include type="literal" path="clip_image.py"/>
+        <exclude type="literal" path="README.md"/>
+    </required_files>
+    <command detect_errors="aggressive"><![CDATA[
+
+        python '$__tool_directory__/render.py'
+
+        #if $intensities.extension == "zarr"
+            --intensities '$intensities.extra_files_path/$intensities.metadata.store_root'
+        #else
+            --intensities '$intensities'
+        #end if
+        
+        #if str($colormap.name) == "custom"
+            --colormap '$colormap.custom'
+        #end if
+
+        #if str($mask.enabled) == "true":
+            #if $mask.image.extension == "zarr"
+                --mask '$mask.image.extra_files_path/$mask.image.metadata.store_root'
+            #else
+                --mask '$mask.image'
+            #end if
+        #end if
+
+        --html '$html'
+        --params '$params'
+        --verbose
+
+    ]]></command>
+    <configfiles>
+        <configfile name="params"><![CDATA[
+            {
+
+                #if str($sample_rate_override) != ""
+                    #set $sample_rate = int($sample_rate_override)
+                #end if
+
+                "sample_rate": $sample_rate,
+                "axes": "$axes",
+                "width": $width,
+                "height": $height,
+                "mode": "$mode.name",
+
+                "mode_kwargs": {
+                    #if str($mode.name) == "dvr"
+                        "translucency": $mode.translucency,
+                        "diffuse": $mode.diffuse
+                    #end if
+                },
+
+                "colormap": "$colormap.name",
+
+                #if str($colormap.name) != "custom"
+                    "ramp": {
+                        #if str($colormap.ramp.enabled) == "true"
+                            "start_type": "$colormap.ramp.start.type",
+                            "start_value": $colormap.ramp.start.value,
+                            "end_type": "$colormap.ramp.end.type",
+                            "end_value": $colormap.ramp.end.value
+                        #end if
+                    },
+                #end if
+
+                "camera": {
+                    "distance": $camera.distance,
+                    "kwargs": {
+                        "fov": $camera.fov,
+                        "z_near": $camera.z_near,
+                        "z_far": $camera.z_far
+                    }
+                },
+                "video": {
+                    "frames": $video.frames,
+                    "fps": $video.fps
+                },
+
+                "mask": $mask.enabled,
+                "mask_renderer_kwargs": {
+                    #if str($mask.enabled) == "true"
+                        "color": "$mask.color"
+                    #end if
+                }
+
+            }
+        ]]></configfile>
+    </configfiles>
+    <inputs>
+        <param name="intensities" type="data" format="tiff,zarr" label="Input image (3-D)">
+            <expand macro="validators/is_single_channel"/>
+            <expand macro="validators/is_single_frame"/>
+            <expand macro="validators/is_3d"/>
+        </param>
+        <param name="axes" type="select" label="Coordinate system">
+            <option value="XZY" selected="true">Point Z to the top</option>
+            <option value="XYZ">Point Y to the top</option>
+        </param>
+        <param name="sample_rate" type="integer" min="100" value="800" label="Sample rate"
+               help="Samples per pixel for volume rendering (ray marching)."/>
+        <param name="sample_rate_override" type="hidden" value="0"/><!-- For testing purposes -->
+        <param name="width" type="integer" min="50" max="1024" value="800" label="Width of the video (in pixels)"/>
+        <param name="height" type="integer" min="50" max="1024" value="450" label="Height of the video (in pixels)"/>
+        <conditional name="mode">
+            <param name="name" type="select" label="Rendering mode">
+                <option value="mip" selected="true">Maximum Intensity Projection (MIP)</option>
+                <option value="dvr">Direct Volume Rendering (DVR)</option>
+            </param>
+            <when value="mip"/>
+            <when value="dvr">
+                <param name="translucency" type="float" min="0" value="1" label="Translucency"/>
+                <param name="diffuse" type="float" min="0" max="1" value="0.8" label="Directional light"
+                       help="Balances the amount of ambient vs directional light. The light is fully ambient for 0 and fully directional for 1."/>
+            </when>
+        </conditional>
+        <conditional name="colormap">
+            <param name="name" type="select" label="Color map">
+                <option value="custom">Custom</option>
+                <expand macro="option/builtin_cmap_list"/>
+            </param>
+            <when value="custom">
+                <param name="custom" type="data" format="tabular" label="Custom colormap">
+                    <validator type="dataset_metadata_in_range" metadata_name="columns" min="3" message="Colormap needs to have at least 3 columns."/>
+                </param>
+            </when>
+            <expand macro="when/builtin_cmap_list"/>
+        </conditional>
+        <section name="camera" title="Camera parameters" expanded="true">
+            <param name="fov" type="float" min="10" max="170" value="90" label="Field of view (in degrees)"/>
+            <param name="distance" type="float" min="1" value="200" label="Distance"
+                   help="Distance between the camera and the center of the 3-D image."/>
+            <param name="z_near" type="float" min="0.01" value="10" label="Near clipping plane"
+                   help="Position of the near clipping plane along the z-axis."/>
+            <param name="z_far" type="float" min="100" value="1000" label="Far clipping plane"
+                   help="Position of the far clipping plane along the z-axis."/>
+        </section>
+        <conditional name="mask">
+            <param name="enabled" type="select" label="Render mask overlay">
+                <option value="false" selected="true">No overlay</option>
+                <option value="true">Render mask overlay</option>
+            </param>
+            <when value="false"/>
+            <when value="true">
+                <param name="image" type="data" format="tiff,zarr" label="Mask overlay (3-D)">
+                    <expand macro="validators/is_single_channel"/>
+                    <expand macro="validators/is_single_frame"/>
+                    <expand macro="validators/is_3d"/>
+                </param>
+                <param name="color" type="color" value="#00ff00" label="Color of the overlay"/>
+            </when>
+        </conditional>
+        <section name="video" title="Video parameters" expanded="false">
+            <param name="frames" type="integer" min="10" value="200" label="Frames"/>
+            <param name="fps" type="integer" min="1" max="60" value="25" label="Frames per second"/>
+        </section>
+    </inputs>
+    <outputs>
+        <data format="html" name="html"/>
+    </outputs>
+    <tests>
+        <!-- Test with MIP -->
+        <test>
+            <param name="intensities" value="input/float32_10z_32y_40x.tiff"/>
+            <section name="camera">
+                <param name="distance" value="50"/>
+            </section>
+            <output name="html" ftype="html" value="output/float32_10z_32y_40x-mip.html" compare="sim_size" delta="1000"/>
+            <expand macro="test/params"/>
+            <expand macro="test/assert_stdout"/>
+        </test>
+        <!-- Test with DVR, ramp colormap, and mask -->
+        <test>
+            <param name="intensities" value="input/float32_10z_32y_40x.tiff"/>
+            <conditional name="mode">
+                <param name="name" value="dvr"/>
+                <param name="translucency" value="0"/>
+            </conditional>
+            <conditional name="colormap">
+                <param name="name" value="BrBG"/>
+                <conditional name="ramp">
+                    <param name="enabled" value="true"/>
+                    <section name="start">
+                        <param name="type" value="relative"/>
+                        <param name="value" value="0.33"/>
+                    </section>
+                    <section name="end">
+                        <param name="type" value="relative"/>
+                        <param name="value" value="0.37"/>
+                    </section>
+                </conditional>
+            </conditional>
+            <section name="camera">
+                <param name="distance" value="50"/>
+            </section>
+            <conditional name="mask">
+                <param name="enabled" value="true"/>
+                <param name="image" value="input/uint8_10z_32y_40x.tiff"/>
+            </conditional>
+            <output name="html" ftype="html" value="output/float32_10z_32y_40x-dvr-mask.html" compare="sim_size" delta="1000"/>
+            <expand macro="test/params"/>
+            <expand macro="test/assert_stdout"/>
+        </test>
+        <!-- Test with custom colormap -->
+        <test>
+            <param name="intensities" value="input/float32_10z_32y_40x.tiff"/>
+            <param name="axes" value="XYZ"/>
+            <conditional name="colormap">
+                <param name="name" value="custom"/>
+                <param name="custom" value="input/colormap.tsv"/>
+            </conditional>
+            <section name="camera">
+                <param name="distance" value="50"/>
+            </section>
+            <output name="html" ftype="html" value="output/float32_10z_32y_40x-colormap.html" compare="sim_size" delta="1000"/>
+            <expand macro="test/params"/>
+            <expand macro="test/assert_stdout"/>
+        </test>
+        <!-- Test with Zarr and missing `z_spacing` metadata -->
+        <test>
+            <param name="intensities" value="input/float32_5z_16y_20x-no_z_spacing.zarr"/>
+            <section name="camera">
+                <param name="distance" value="50"/>
+            </section>
+            <output name="html" ftype="html" value="output/float32_5z_16y_20x.html" compare="sim_size" delta="1000"/>
+            <expand macro="test/params"/>
+            <expand macro="test/assert_stdout"/>
+        </test>
+    </tests>
+    <help>
+
+**Renders videos for visualization of 3-D image data.**
+
+The image data is rotated to facilitate grasping visual information from different angles.
+
+LibCarna employs a volume rendering technique called *ray marching* and permits different visualization modes, including *maximum intensity projections* (MIP) and *direct volume rendering* (DVR). In addition, the renderings can be augmented with binary or label masks (e.g., segmentation overlays).
+
+.. image:: dvr.gif
+  :width: 438px
+  :scale: 100%
+
+An overview of the available colormaps is available at `matplotlib.org`_.
+
+.. _matplotlib.org: https://matplotlib.org/stable/users/explain/colors/colormaps.html
+
+When using custom colormaps, a tabular file with at least 3 columns must be used (`intensity`, `type`, `color`). Each pair of consecutive rows defines a linear segment of the colormap. The `intensity` values can be given either as absolute intensity values, or as relative values where 0 and 1 correspond to the minimum and maximum intensities of the image data, respectively. The `type` column indicates whether the corresponding `intensity` value is `absolute` or `relative`. The `color` must be given in hexadecimal notation with a ``#`` prefix and must be either 6 or 8 digits long (6 for RGB and 8 for RGBA). An example is given below.
+
++-----------+------------+----------+
+| color     | intensity  | type     |
++-----------+------------+----------+
+| #ff00007f | 0          | absolute |
++-----------+------------+----------+
+| #ffff00ff | 0.5        | absolute |
++-----------+------------+----------+
+| #00ffffff | 1.0        | relative |
++-----------+------------+----------+
+
+    </help>
+    <citations>
+        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
+    </citations>
+</tool>

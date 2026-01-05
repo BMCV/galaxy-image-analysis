@@ -1,0 +1,46 @@
+{
+  "attributes": {
+    "ome": {
+      "version": "0.5",
+      "multiscales": [
+        {
+          "datasets": [
+            {
+              "path": "0",
+              "coordinateTransformations": [
+                {
+                  "type": "scale",
+                  "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                  ]
+                }
+              ]
+            }
+          ],
+          "name": "/",
+          "axes": [
+            {
+              "name": "Z",
+              "type": "space",
+              "unit": "mm"
+            },
+            {
+              "name": "Y",
+              "type": "space",
+              "unit": "mm"
+            },
+            {
+              "name": "X",
+              "type": "space",
+              "unit": "mm"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "zarr_format": 3,
+  "node_type": "group"
+}
