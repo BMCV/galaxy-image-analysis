@@ -19,7 +19,7 @@
         <xml name="params/builtin_cmap">
             <conditional name="ramp">
                 <param name="enabled" type="select" label="Ramp function"
-                       help="Use a piecewise linear ramp function for the alpha channel of the colormap.">
+                       help="Use a piecewise linear ramp function for the alpha channel of the color map.">
                     <option value="false" selected="true">Disabled</option>
                     <option value="true">Enabled</option>
                 </param>
@@ -77,7 +77,7 @@
         <container type="docker">docker.io/kostrykin/libcarna-python:@TOOL_VERSION@-0</container>
     </requirements>
     <required_files>
-        <include type="literal" path="clip_image.py"/>
+        <include type="literal" path="render.py"/>
         <exclude type="literal" path="README.md"/>
     </required_files>
     <command detect_errors="aggressive"><![CDATA[
@@ -129,6 +129,7 @@
                 },
 
                 "colormap": "$colormap.name",
+                "colorbar": $colorbar,
 
                 #if str($colormap.name) != "custom"
                     "ramp": {
@@ -197,12 +198,13 @@
                 <expand macro="option/builtin_cmap_list"/>
             </param>
             <when value="custom">
-                <param name="custom" type="data" format="tabular" label="Custom colormap">
-                    <validator type="dataset_metadata_in_range" metadata_name="columns" min="3" message="Colormap needs to have at least 3 columns."/>
+                <param name="custom" type="data" format="tabular" label="Custom color map">
+                    <validator type="dataset_metadata_in_range" metadata_name="columns" min="3" message="Color map needs to have at least 3 columns."/>
                 </param>
             </when>
             <expand macro="when/builtin_cmap_list"/>
         </conditional>
+        <param name="colorbar" type="boolean" checked="true" label="Add a color bar"/>
         <section name="camera" title="Camera parameters" expanded="true">
             <param name="fov" type="float" min="10" max="170" value="90" label="Field of view (in degrees)"/>
             <param name="distance" type="float" min="1" value="200" label="Distance"
@@ -316,11 +318,11 @@ LibCarna employs a volume rendering technique called *ray marching* and permits 
   :width: 438px
   :scale: 100%
 
-An overview of the available colormaps is available at `matplotlib.org`_.
+An overview of the available color maps is available at `matplotlib.org`_.
 
 .. _matplotlib.org: https://matplotlib.org/stable/users/explain/colors/colormaps.html
 
-When using custom colormaps, a tabular file with at least 3 columns must be used (`intensity`, `type`, `color`). Each pair of consecutive rows defines a linear segment of the colormap. The `intensity` values can be given either as absolute intensity values, or as relative values where 0 and 1 correspond to the minimum and maximum intensities of the image data, respectively. The `type` column indicates whether the corresponding `intensity` value is `absolute` or `relative`. The `color` must be given in hexadecimal notation with a ``#`` prefix and must be either 6 or 8 digits long (6 for RGB and 8 for RGBA). An example is given below.
+When using custom color maps, a tabular file with at least 3 columns must be used (`intensity`, `type`, `color`). Each pair of consecutive rows defines a linear segment of the color map. The `intensity` values can be given either as absolute intensity values, or as relative values where 0 and 1 correspond to the minimum and maximum intensities of the image data, respectively. The `type` column indicates whether the corresponding `intensity` value is `absolute` or `relative`. The `color` must be given in hexadecimal notation with a ``#`` prefix and must be either 6 or 8 digits long (6 for RGB and 8 for RGBA). An example is given below.
 
 +-----------+------------+----------+
 | color     | intensity  | type     |
