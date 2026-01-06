@@ -199,7 +199,7 @@
             </param>
             <when value="custom">
                 <param name="custom" type="data" format="tabular" label="Custom color map">
-                    <validator type="dataset_metadata_in_range" metadata_name="columns" min="3" message="Colormap needs to have at least 3 columns."/>
+                    <validator type="dataset_metadata_in_range" metadata_name="columns" min="3" message="Color map needs to have at least 3 columns."/>
                 </param>
             </when>
             <expand macro="when/builtin_cmap_list"/>
