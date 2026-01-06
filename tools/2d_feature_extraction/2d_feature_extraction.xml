@@ -4,7 +4,7 @@
         <import>creators.xml</import>
         <import>validators.xml</import>
         <token name="@TOOL_VERSION@">0.25.2</token>
-        <token name="@VERSION_SUFFIX@">0</token>
+        <token name="@VERSION_SUFFIX@">1</token>
         <xml name="features">
             <param name="features" type="select" label="Available features" multiple="true" display="checkboxes"
                    help="*) Features marked with an asterisk are only available for 2-D images (not for 3-D images).">
@@ -231,7 +231,7 @@ Supported Features
 
 **Bounding box:** Bounding box `(min_row, min_col, max_row, max_col)`. Pixels belonging to the bounding box are in the half-open interval `[min_row; max_row)` and `[min_col; max_col)`.
 
-**Centroid:** Centroid coordinate tuple `(row, col)`.
+**Centroid:** Centroid coordinates in separate columns ``centroid_x``, ``centroid_y``, and ``centroid_z`` when processing 3-D data.
 
 **Eccentricity:** Eccentricity of the ellipse that has the same second-moments as the region. The eccentricity is the ratio of the focal distance (distance between focal points) over the major axis length. The value is in the interval [0, 1). When it is 0, the ellipse becomes a circle.
 
