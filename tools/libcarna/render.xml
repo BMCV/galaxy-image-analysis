@@ -5,7 +5,7 @@
         <import>validators.xml</import>
         <import>colormaps.xml</import>
         <token name="@TOOL_VERSION@">0.2.0</token>
-        <token name="@VERSION_SUFFIX@">1</token>
+        <token name="@VERSION_SUFFIX@">2</token>
         <xml name="params/intensity" tokens="name,label,value">
             <section name="@NAME@" title="@LABEL@" expanded="true">
                 <param name="type" type="select" label="@LABEL@"
@@ -77,7 +77,7 @@
         <container type="docker">docker.io/kostrykin/libcarna-python:@TOOL_VERSION@-0</container>
     </requirements>
     <required_files>
-        <include type="literal" path="clip_image.py"/>
+        <include type="literal" path="render.py"/>
         <exclude type="literal" path="README.md"/>
     </required_files>
     <command detect_errors="aggressive"><![CDATA[
