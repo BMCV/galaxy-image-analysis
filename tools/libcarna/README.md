@@ -10,7 +10,7 @@ The following extra Docker parameters are required to run this tool with GPU sup
 ```bash
 --gpus all -e NVIDIA_VISIBLE_DEVICES=all -e NVIDIA_DRIVER_CAPABILITIES=graphics,compute
 ```
-Otherwise, the tool runs with software rendering, whuch is much slower.
+Otherwise, the tool runs with software rendering, which is much slower.
 
 When using `planemo test`, the full command line is:
 ```bash
