@@ -111,7 +111,7 @@
         <configfile name="params"><![CDATA[
             {
 
-                #if str($sample_rate_override) > "0"
+                #if int($sample_rate_override) > 0
                     #set $sample_rate = int($sample_rate_override)
                 #end if
 
@@ -176,7 +176,7 @@
         </param>
         <param name="sample_rate" type="integer" min="100" value="800" label="Sample rate"
                help="Samples per pixel for volume rendering (ray marching)."/>
-        <param name="sample_rate_override" type="hidden" value=""/><!-- For testing purposes -->
+        <param name="sample_rate_override" type="hidden" value="0"/><!-- For testing purposes -->
         <param name="width" type="integer" min="50" max="1024" value="800" label="Width of the video (in pixels)"/>
         <param name="height" type="integer" min="50" max="1024" value="450" label="Height of the video (in pixels)"/>
         <conditional name="mode">
