@@ -126,17 +126,7 @@
             <param name="labels" value="input/input9.zarr"/>
             <param name="features" value="input/input9-features.tsv"/>
             <param name="rules" value="input/input9-rules1.tsv"/>
-            <!--
-            Preferrably, we would use the `tests/label_image_diff` macro here, but the `iou` metric currently does not support 3-D images.
-            As a fallback, we would the `tests/intensity_image_diff` macro, but this is currently bugged for bool images.
-
-            TODO: Employ
-            ```
-                <expand macro="tests/intensity_image_diff" name="output" value="output/input9-rules1.tiff" ftype="tiff"/>
-            ```
-            when https://github.com/galaxyproject/galaxy/pull/21527 is merged.
-            -->
-            <output name="output" ftype="tiff" value="output/input9-rules1.tiff" compare="sim_size" delta="0" delta_frac="0"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input9-rules1.tiff" ftype="tiff"/>
             <assert_stdout>
                 <has_line line='Spurious rules columns: "extra_column"'/>
             </assert_stdout>
@@ -145,20 +135,11 @@
             <param name="labels" value="input/input9.zarr"/>
             <param name="features" value="input/input9-features.tsv"/>
             <param name="rules" value="input/input9-rules2.tsv"/>
-            <!--
-            Preferrably, we would use a content assertion here, but this is currently blocked by a bug.
-
-            TODO: Employ
-            ```
-                <output name="output" ftype="tiff">
-                    <assert_contents>
-                        <has_image_n_labels n="0" exclude_labels="0"/><!- all background ->
-                    </assert_contents>
-                </output>
-            ```
-            when https://github.com/galaxyproject/galaxy/pull/21527 is merged.
-            -->
-            <output name="output" ftype="tiff" value="output/input9-rules2.tiff" compare="sim_size" delta="0" delta_frac="0"/>
+            <output name="output" ftype="tiff">
+                <assert_contents>
+                    <has_image_n_labels n="0" exclude_labels="0"/><!-- all background -->
+                </assert_contents>
+            </output>
             <assert_stdout>
                 <has_line line='Spurious rules columns: "extra_column"'/>
             </assert_stdout>
