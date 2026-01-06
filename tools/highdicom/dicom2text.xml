@@ -27,7 +27,7 @@
     ]]>
     </command>
     <inputs>
-        <param name="input" type="data" format="binary" label="DICOM dataset"/>
+        <param name="input" type="data" format="dicom" label="DICOM dataset"/>
         <param name="export_to" type="select" label="Export to">
             <option value="json" selected="true">JSON</option>
             <option value="yaml">YAML</option>
