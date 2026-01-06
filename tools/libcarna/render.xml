@@ -5,7 +5,7 @@
         <import>validators.xml</import>
         <import>colormaps.xml</import>
         <token name="@TOOL_VERSION@">0.2.0</token>
-        <token name="@VERSION_SUFFIX@">0</token>
+        <token name="@VERSION_SUFFIX@">1</token>
         <xml name="params/intensity" tokens="name,label,value">
             <section name="@NAME@" title="@LABEL@" expanded="true">
                 <param name="type" type="select" label="@LABEL@"
@@ -111,7 +111,7 @@
         <configfile name="params"><![CDATA[
             {
 
-                #if str($sample_rate_override) != ""
+                #if int($sample_rate_override) > 0
                     #set $sample_rate = int($sample_rate_override)
                 #end if
 
