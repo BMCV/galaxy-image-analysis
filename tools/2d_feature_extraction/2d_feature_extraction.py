@@ -45,11 +45,11 @@ if __name__ == '__main__':
     # Validate the input image
     try:
         label_image = tool.args.input_images['labels']
-        if any(label_image.shape[label_image.axes.index(axis)] > 1 for axis in label_image.axes if axis not in 'ZYX'):
+        if any(label_image.shape[label_image.axes.index(axis)] > 1 for axis in label_image.axes if axis not in 'XYZ'):
             raise ValueError(f'This tool is not applicable to images with {label_image.original_axes} axes.')
 
         # Extract the image features
-        for section in tool.run('ZYX'):  # the validation code above guarantees that we will have only a single iteration
+        for section in tool.run('XYZ'):  # the validation code above guarantees that we will have only a single iteration
             df = pd.DataFrame()
 
             # Get the labels array and cast to `uint8` if it is `bool` (`skimage.measure.regionprops` refuses `bool` typed arrays)
@@ -88,6 +88,14 @@ if __name__ == '__main__':
                     df['perimeter'] = df['it'].map(
                         lambda ait: surface(labels_section_data, regions[ait].label),  # `skimage.measure.regionprops` cannot compute perimeters for 3-D data
                     )
+
+                # Add the object centroid using separate columns for the different coordinates
+                elif feature_name == 'centroid':
+                    for axis_idx, axis in enumerate(section['labels'].axes):  # XYZ
+                        if section['labels'].shape[axis_idx] > 1:
+                            df[f'{feature_name}_{axis.lower()}'] = df['it'].map(
+                                lambda ait: getattr(regions[ait], feature_name)[axis_idx],
+                            )
 
                 # Skip features that are not available when processing 3-D images
                 elif feature_name in ('eccentricity', 'moments_hu', 'orientation') and labels_section_data.ndim == 3:
