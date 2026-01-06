@@ -86,6 +86,7 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 - [Compute image segmentation and object detection performance measures](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/segmetrics/ip_segmetrics) with SegMetrics
 - [Evaluate segmentation](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/visceral_evaluatesegmentation/ip_visceral_evaluatesegmentation) with EvaluateSegmentation
 - [Overlay images](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/overlay_images/ip_overlay_images)
+- [Render 3-D image data](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/libcarna_render/libcarna_render) with LibCarna
 - [Visualize detections](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/detection_viz/ip_detection_viz)
 
 ### Miscellaneous
@@ -103,6 +104,7 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 This work has been funded by the BMFTR (Federal Ministry of Research, Technology and Space), Heidelberg Center for Human Bioinformatics (HD-HuB) within the German Network for Bioinformatics Infrastructure (de.NBI) & ELIXIR-DE, and LiBiS (Baden-Württemberg Institute for Bioinformatics Infrastructure).
 
 <img width="4198" height="371" alt="GIA Logos" src="https://github.com/user-attachments/assets/5724b1d7-d9ae-40c1-9c50-9d129d11d8de" />
+
 
 
 
