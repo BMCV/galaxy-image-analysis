@@ -126,12 +126,15 @@ if __name__ == "__main__":
             mode.cmap(tool.args.params['colormap'], **cmap_kwargs)
 
         # Render
+        colorbars = list()
+        if tool.args.params['colorbar']:
+            colorbars.append(mode.cmap.bar(intensities_volume))
         html = libcarna.imshow(
             libcarna.animate(
                 libcarna.animate.rotate_local(camera),
                 n_frames=tool.args.params['video']['frames'],
             ).render(r, camera),
-            mode.cmap.bar(intensities_volume),
+            *colorbars,
             fps=tool.args.params['video']['fps'],
         )
 
