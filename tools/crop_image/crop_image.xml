@@ -25,17 +25,32 @@
         mkdir ./output &&
         python '$__tool_directory__/crop_image.py'
 
-        '$image'
-        '$labelmap'
+        #if $image.extension == "zarr"
+            '$image.extra_files_path/$image.metadata.store_root'
+        #else
+            '$image'
+        #end if
+
+        #if $labelmap.extension == "zarr"
+            '$labelmap.extra_files_path/$labelmap.metadata.store_root'
+        #else
+            '$labelmap'
+        #end if
+
         '$skip_labels'
-        '${image.ext}'
+
+        #if str($image.ext).lower() == 'png'
+            'png'
+        #else
+            'tiff'
+        #end if
 
         ./output
 
     ]]></command>
     <inputs>
-        <param name="image" type="data" format="png,tiff" label="Image file" help="The image to be cropped."/>
-        <param name="labelmap" type="data" format="png,tiff" label="Label map" help="Each label identifies an individual region of interest, for which a cropped image is produced."/>
+        <param name="image" type="data" format="png,tiff,zarr" label="Image file" help="The image to be cropped."/>
+        <param name="labelmap" type="data" format="png,tiff,zarr" label="Label map" help="Each label identifies an individual region of interest, for which a cropped image is produced."/>
         <param name="skip_labels" type="text" label="Skip labels" value="0" optional="true" help="Comma-separated list of labels for which no cropped image shall be produced.">
             <validator type="regex">^\d+(,\d+)*$|^$</validator>
         </param>
@@ -83,12 +98,20 @@
                 <expand macro="tests/intensity_image_diff/element" name="1" value="zyx_uint16_uint8_1.tiff" ftype="tiff"/>
             </output_collection>
         </test>
-        <!-- Test PNG -->
+        <!-- Test PNG (multi-channel) -->
         <test>
             <param name="image" value="yxc_uint8.png" ftype="png"/>
             <param name="labelmap" value="yxc_uint8_mask.png"/>
             <output_collection name="output" type="list" count="1">
                 <expand macro="tests/intensity_image_diff/element" name="2" value="yxc_uint8_uint8_2.png" ftype="png"/>
+            </output_collection>
+        </test>
+        <!-- Test Zarr (multi-channel `image` with single-channel `labelmap`) -->
+        <test>
+            <param name="image" value="yxc_uint8.png" ftype="png"/><!-- TODO: replace by Zarr... -->
+            <param name="labelmap" value="yx_uint8_mask.zarr"/>
+            <output_collection name="output" type="list" count="1">
+                <expand macro="tests/intensity_image_diff/element" name="2" value="yxc_uint8_uint8_2.png" ftype="png"/><!-- FIXME: ...this will be TIFF then -->
             </output_collection>
         </test>
     </tests>
@@ -98,7 +121,8 @@
 
         The image is cropped using a label map that identifies individual regions of interest. The image and the label map must be of equal size.
 
-        This operation preserves the file type of the image, the brightness, and the range of values.
+        This operation preserves the file format of the image (if it is PNG or TIFF), the brightness, and the range of values.
+        The output file format is TIFF if the input image is not a PNG or TIFF.
 
     </help>
     <citations>
