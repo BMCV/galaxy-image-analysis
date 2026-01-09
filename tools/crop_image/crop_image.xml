@@ -3,16 +3,18 @@
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
-        <token name="@TOOL_VERSION@">0.4.1</token>
+        <token name="@TOOL_VERSION@">0.7.3</token>
         <token name="@VERSION_SUFFIX@">0</token>
     </macros>
     <creator>
-        <expand macro="creators/bmcv" />
+        <expand macro="creators/bmcv"/>
+        <expand macro="creators/kostrykin"/>
     </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
     <xrefs>
+        <xref type="bio.tools">galaxy_image_analysis</xref>
         <xref type="bio.tools">giatools</xref>
     </xrefs>
     <requirements>

@@ -18,8 +18,8 @@ def crop_image(
     if image.axes != labelmap.axes:
         raise ValueError(f'Axes mismatch between image ({image.axes}) and label map ({labelmap.axes}).')
 
-    if image.data.shape != labelmap.data.shape:
-        raise ValueError(f'Shape mismatch between image ({image.data.shape}) and label map ({labelmap.data.shape}).')
+    if image.shape != labelmap.shape:
+        raise ValueError(f'Shape mismatch between image ({image.shape}) and label map ({labelmap.shape}).')
 
     for label in np.unique(labelmap.data):
         if label in skip_labels:
