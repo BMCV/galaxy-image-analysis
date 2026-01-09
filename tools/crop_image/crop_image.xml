@@ -154,8 +154,8 @@
         compatible size. The sizes are compatible if they are equal, or, if the label map can be broadcasted to the size of the image
         (e.g., if the image is a multi-channel image and the label map is single-channel but has identical width and height).
 
-        This operation preserves the brightness and the range of values of the input image. The file format is also preseved, unless
-        the input image is a Zarr, for which the output image image file format is TIFF.
+        This operation preserves the brightness and the range of values of the input image. The file format is also preserved, unless
+        the input image is a Zarr, for which the output image file format is TIFF.
 
     </help>
     <citations>
