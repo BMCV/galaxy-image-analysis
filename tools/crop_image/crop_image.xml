@@ -49,8 +49,10 @@
 
     ]]></command>
     <inputs>
-        <param name="image" type="data" format="png,tiff,zarr" label="Image file" help="The image to be cropped."/>
-        <param name="labelmap" type="data" format="png,tiff,zarr" label="Label map" help="Each label identifies an individual region of interest, for which a cropped image is produced."/>
+        <param name="image" type="data" format="png,tiff,zarr" label="Image file"
+               help="The image to be cropped."/>
+        <param name="labelmap" type="data" format="png,tiff,zarr" label="Label map"
+               help="Each label identifies an individual region of interest, for which a cropped image is produced."/>
         <param name="skip_labels" type="text" label="Skip labels" value="0" optional="true" help="Comma-separated list of labels for which no cropped image shall be produced.">
             <validator type="regex">^\d+(,\d+)*$|^$</validator>
         </param>
@@ -95,7 +97,11 @@
             <param name="image" value="zyx_uint16.tiff"/>
             <param name="labelmap" value="yxz_uint8.tiff"/>
             <output_collection name="output" type="list" count="1">
-                <expand macro="tests/intensity_image_diff/element" name="1" value="zyx_uint16_uint8_1.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="1" value="zyx_uint16_uint8_1.tiff" ftype="tiff">
+                    <has_image_width width="5"/>
+                    <has_image_height height="3"/>
+                    <has_image_depth depth="6"/>
+                </expand>
             </output_collection>
         </test>
         <!-- Test PNG (multi-channel) -->
@@ -103,21 +109,40 @@
             <param name="image" value="yxc_uint8.png"/>
             <param name="labelmap" value="yxc_uint8_mask.png"/>
             <output_collection name="output" type="list" count="1">
-                <expand macro="tests/intensity_image_diff/element" name="2" value="yxc_uint8_uint8_2.png" ftype="png"/>
+                <expand macro="tests/intensity_image_diff/element" name="2" value="yxc_uint8_uint8_2.png" ftype="png">
+                    <has_image_width width="10"/>
+                    <has_image_height height="12"/>
+                    <has_image_channels channels="3"/>
+                </expand>
             </output_collection>
         </test>
-        <!-- Test PNG+Zarr (multi-channel `image` with single-channel `labelmap`) -->
+        <!-- Test PNG+Zarr (multi-channel `image` PNG with single-channel `labelmap` Zarr) -->
         <test>
-            <!--<param name="image" value="cyx_uint8.zarr"/>-->
             <param name="image" value="yxc_uint8.png"/>
             <param name="labelmap" value="yx_uint8_mask.zarr"/>
+            <output_collection name="output" type="list" count="1">
+                <expand macro="tests/intensity_image_diff/element" name="2" value="yxc_uint8_uint8_2.png" ftype="png">
+                    <has_image_width width="10"/>
+                    <has_image_height height="12"/>
+                    <has_image_channels channels="3"/>
+                </expand>
+            </output_collection>
+        </test>
+        <!-- Test Zarr+TIFF (multi-channel `image` Zarr with single-channel `labelmap` TIFF) -->
+        <test>
+            <param name="image" value="cyx_uint8.zarr"/>
+            <param name="labelmap" value="yx_uint8_mask.tiff"/>
             <output_collection name="output" type="list" count="1">
                 <!--
                 OME-Zarr requires a specific axes order. For this reason, it is not possible to generally write "any" image as an OME-Zarr.
                 This would require adapting the axes order, which is do-able, but changes the image. This might be unintended or unexpected
                 in many cases, which is why it is not happening automatically. We might change this behaviour somehow in the future.
                 -->
-                <expand macro="tests/intensity_image_diff/element" name="2" value="yxc_uint8_uint8_2.png" ftype="png"/>
+                <expand macro="tests/intensity_image_diff/element" name="2" value="cyx_uint8_uint8.tiff" ftype="tiff">
+                    <has_image_width width="10"/>
+                    <has_image_height height="12"/>
+                    <has_image_channels channels="3"/>
+                </expand>
             </output_collection>
         </test>
     </tests>
@@ -125,10 +150,12 @@
 
         **Crops an image using one or more regions of interest.**
 
-        The image is cropped using a label map that identifies individual regions of interest. The image and the label map must be of equal size.
+        The image is cropped using a label map that identifies individual regions of interest. The image and the label map must be of
+        compatible size. The sizes are compatible if they are equal, or, if the label map can be broadcasted to the size of the label
+        map (e.g., if the image is a multi-channel image and the label map is single-channel but has identical width and height).
 
-        This operation preserves the file format of the image (if it is PNG or TIFF), the brightness, and the range of values.
-        The output file format is TIFF if the input image is not a PNG or TIFF.
+        This operation preserves the brightness and the range of values of the input image. The file format is also preseved, unless
+        the input image is a Zarr, for which the output image image file format is TIFF.
 
     </help>
     <citations>
