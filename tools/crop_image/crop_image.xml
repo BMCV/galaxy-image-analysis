@@ -106,9 +106,10 @@
                 <expand macro="tests/intensity_image_diff/element" name="2" value="yxc_uint8_uint8_2.png" ftype="png"/>
             </output_collection>
         </test>
-        <!-- Test Zarr (multi-channel `image` with single-channel `labelmap`) -->
+        <!-- Test PNG+Zarr (multi-channel `image` with single-channel `labelmap`) -->
         <test>
-            <param name="image" value="cyx_uint8.zarr"/>
+            <!--<param name="image" value="cyx_uint8.zarr"/>-->
+            <param name="image" value="yxc_uint8.png"/>
             <param name="labelmap" value="yx_uint8_mask.zarr"/>
             <output_collection name="output" type="list" count="1">
                 <!--
@@ -116,7 +117,7 @@
                 This would require adapting the axes order, which is do-able, but changes the image. This might be unintended or unexpected
                 in many cases, which is why it is not happening automatically. We might change this behaviour somehow in the future.
                 -->
-                <expand macro="tests/intensity_image_diff/element" name="2" value="yxc_uint8_uint8_2.png" ftype="tiff"/><!-- FIXME: ...this will be TIFF then -->
+                <expand macro="tests/intensity_image_diff/element" name="2" value="yxc_uint8_uint8_2.png" ftype="png"/>
             </output_collection>
         </test>
     </tests>
