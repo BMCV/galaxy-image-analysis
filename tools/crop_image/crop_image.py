@@ -28,7 +28,7 @@ def crop_image(
             target_shape = list(labelmap.shape)
             target_shape[axis_idx] = image_s
 
-            # Broadcast the image data to the target shape without copying
+            # Broadcast the labelmap data to the target shape without copying
             if hasattr(labelmap.data, 'compute'):
                 labelmap.data = da.broadcast_to(labelmap.data, target_shape)  # `data` is Dask array
             else:
