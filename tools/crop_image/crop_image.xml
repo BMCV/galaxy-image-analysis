@@ -63,7 +63,7 @@
     <tests>
         <!-- Test 2D TIFF -->
         <test>
-            <param name="image" value="yx_float32.tiff" ftype="tiff"/>
+            <param name="image" value="yx_float32.tiff"/>
             <param name="labelmap" value="yx_uint8.tiff"/>
             <output_collection name="output" type="list" count="2">
                 <expand macro="tests/intensity_image_diff/element" name="1" value="yx_float32_uint8_1.tiff" ftype="tiff"/>
@@ -72,7 +72,7 @@
         </test>
         <!-- Test with `skip_labels` -->
         <test>
-            <param name="image" value="yx_float32.tiff" ftype="tiff"/>
+            <param name="image" value="yx_float32.tiff"/>
             <param name="labelmap" value="yx_uint8.tiff"/>
             <param name="skip_labels" value="0,1"/>
             <output_collection name="output" type="list" count="1">
@@ -81,7 +81,7 @@
         </test>
         <!-- Test with empty `skip_labels` -->
         <test>
-            <param name="image" value="yx_float32.tiff" ftype="tiff"/>
+            <param name="image" value="yx_float32.tiff"/>
             <param name="labelmap" value="yx_uint8.tiff"/>
             <param name="skip_labels" value=""/>
             <output_collection name="output" type="list" count="3">
@@ -92,7 +92,7 @@
         </test>
         <!-- Test 3D TIFF (multi-frame) -->
         <test>
-            <param name="image" value="zyx_uint16.tiff" ftype="tiff"/>
+            <param name="image" value="zyx_uint16.tiff"/>
             <param name="labelmap" value="yxz_uint8.tiff"/>
             <output_collection name="output" type="list" count="1">
                 <expand macro="tests/intensity_image_diff/element" name="1" value="zyx_uint16_uint8_1.tiff" ftype="tiff"/>
@@ -100,7 +100,7 @@
         </test>
         <!-- Test PNG (multi-channel) -->
         <test>
-            <param name="image" value="yxc_uint8.png" ftype="png"/>
+            <param name="image" value="yxc_uint8.png"/>
             <param name="labelmap" value="yxc_uint8_mask.png"/>
             <output_collection name="output" type="list" count="1">
                 <expand macro="tests/intensity_image_diff/element" name="2" value="yxc_uint8_uint8_2.png" ftype="png"/>
@@ -108,10 +108,15 @@
         </test>
         <!-- Test Zarr (multi-channel `image` with single-channel `labelmap`) -->
         <test>
-            <param name="image" value="yxc_uint8.png" ftype="png"/><!-- TODO: replace by Zarr... -->
+            <param name="image" value="cyx_uint8.zarr"/>
             <param name="labelmap" value="yx_uint8_mask.zarr"/>
             <output_collection name="output" type="list" count="1">
-                <expand macro="tests/intensity_image_diff/element" name="2" value="yxc_uint8_uint8_2.png" ftype="png"/><!-- FIXME: ...this will be TIFF then -->
+                <!--
+                OME-Zarr requires a specific axes order. For this reason, it is not possible to generally write "any" image as an OME-Zarr.
+                This would require adapting the axes order, which is do-able, but changes the image. This might be unintended or unexpected
+                in many cases, which is why it is not happening automatically. We might change this behaviour somehow in the future.
+                -->
+                <expand macro="tests/intensity_image_diff/element" name="2" value="yxc_uint8_uint8_2.png" ftype="tiff"/><!-- FIXME: ...this will be TIFF then -->
             </output_collection>
         </test>
     </tests>
