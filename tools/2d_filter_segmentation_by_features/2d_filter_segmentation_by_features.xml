@@ -5,7 +5,7 @@
         <import>tests.xml</import>
         <import>validators.xml</import>
         <token name="@TOOL_VERSION@">0.7.3</token>
-        <token name="@VERSION_SUFFIX@">0</token>
+        <token name="@VERSION_SUFFIX@">1</token>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
@@ -118,6 +118,16 @@
             <output name="output" ftype="tiff">
                 <assert_contents>
                     <has_image_n_labels n="3" exclude_labels="0"/><!-- 5, 8, 20 -->
+                </assert_contents>
+            </output>
+        </test>
+        <test>
+            <param name="labels" value="input/input12.png"/>
+            <param name="features" value="input/input12-features1.tsv"/>
+            <param name="rules" value="input/input12-rules3.tsv"/><!-- filter by label: 5 -->
+            <output name="output" ftype="tiff">
+                <assert_contents>
+                    <has_image_n_labels n="1" exclude_labels="0"/><!-- 5 -->
                 </assert_contents>
             </output>
         </test>
