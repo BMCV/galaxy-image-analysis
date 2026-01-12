@@ -58,8 +58,8 @@
             <expand macro="validators/is_single_channel"/>
             <expand macro="validators/is_single_frame"/>
         </param>
-        <param name="features" type="data" format="tabular" label="Features"/>
-        <param name="rules" type="data" format="tabular" label="Rules">
+        <param name="features" type="data" format="tabular,tsv" label="Features"/>
+        <param name="rules" type="data" format="tabular,tsv" label="Rules">
             <validator type="dataset_metadata_in_range" metadata_name="columns" min="3" message="Input needs to have at least 3 columns."/>
         </param>
         <param name="missing" type="select" label="Processing of objects without features"
