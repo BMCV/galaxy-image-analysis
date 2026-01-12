@@ -35,7 +35,7 @@ if __name__ == "__main__":
         print('Rules for:', ', '.join(feature_name.strip() for feature_name in rules['feature']))
 
         # Validate the features
-        if (missing_features := frozenset(r['feature'] for r in rules_dict) - frozenset(features.columns)):
+        if (missing_features := frozenset(r['feature'] for r in rules_dict) - (frozenset(features.columns) | set(['label']))):
             raise ValueError(f'Rules require features that are missing: {", ".join(missing_features)}')
 
         # Validate the input image
@@ -74,7 +74,7 @@ if __name__ == "__main__":
                 else:
                     for rule in rules_dict:
                         feature_name = rule['feature']
-                        feature_value = features.loc[label, feature_name]
+                        feature_value = label if feature_name == 'label' else features.loc[label, feature_name]
 
                         # Keep the object if it passes the rule
                         min_value = rule['min']
