@@ -5,10 +5,10 @@
         <import>validators.xml</import>
         <import>colormaps.xml</import>
         <token name="@TOOL_VERSION@">0.2.0</token>
-        <token name="@VERSION_SUFFIX@">1</token>
-        <xml name="params/intensity" tokens="name,label,value">
-            <section name="@NAME@" title="@LABEL@" expanded="true">
-                <param name="type" type="select" label="@LABEL@"
+        <token name="@VERSION_SUFFIX@">2</token>
+        <xml name="params/intensity" tokens="name,label,value,help" token_help="">
+            <section name="@NAME@" title="@LABEL@" expanded="true" help="@HELP@">
+                <param name="type" type="select" label="Type of the intensity value"
                        help="For relative intensity values, 0 is the minimum intensity of the image, and 1 is the maximum intensity.">
                     <option value="absolute">Absolute intensity value</option>
                     <option value="relative" selected="true">Relative intensity value</option>
@@ -24,8 +24,10 @@
                     <option value="true">Enabled</option>
                 </param>
                 <when value="true">
-                    <expand macro="params/intensity" name="start" value="0" label="Ramp start"/>
-                    <expand macro="params/intensity" name="end" value="0.5" label="Ramp end"/>
+                    <expand macro="params/intensity" name="start" value="0" label="Ramp start"
+                            help="Image voxels with this intensity and below will be invisible."/>
+                    <expand macro="params/intensity" name="end" value="0.5" label="Ramp end"
+                            help="Image voxels with this intensity and above will have full visibility."/>
                 </when>
                 <when value="false"/>
             </conditional>
@@ -116,6 +118,7 @@
                 #end if
 
                 "sample_rate": $sample_rate,
+                "units": "$units",
                 "axes": "$axes",
                 "width": $width,
                 "height": $height,
@@ -170,6 +173,10 @@
             <expand macro="validators/is_single_channel"/>
             <expand macro="validators/is_single_frame"/>
             <expand macro="validators/is_3d"/>
+        </param>
+        <param name="units" type="select" label="Unit of the intensity values">
+            <option value="raw" selected="true">No unit</option>
+            <option value="hu">Hounsfield</option>
         </param>
         <param name="axes" type="select" label="Coordinate system">
             <option value="XZY" selected="true">Point Z to the top</option>
