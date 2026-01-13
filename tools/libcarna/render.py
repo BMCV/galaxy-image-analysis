@@ -124,6 +124,7 @@ if __name__ == "__main__":
                         value if val_type == 'relative' else intensities_volume.normalized(value),
                     )
                 cmap_kwargs['ramp'] = tuple(ramp_values)
+                cmap_kwargs['n_samples'] = 1000  # high precision is required when sampling ramps to avoid "soft" corners
             mode.cmap(tool.args.params['colormap'], **cmap_kwargs)
 
         # Render
