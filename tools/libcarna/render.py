@@ -70,6 +70,7 @@ if __name__ == "__main__":
             GEOMETRY_TYPE_INTENSITIES,
             intensities.normalize_axes_like(tool.args.params['axes']).data,
             parent=root,
+            units=tool.args.params['units'],
             spacing=[
                 {
                     'X': intensities.metadata.pixel_size[0] or 1,

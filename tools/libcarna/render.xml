@@ -5,7 +5,7 @@
         <import>validators.xml</import>
         <import>colormaps.xml</import>
         <token name="@TOOL_VERSION@">0.2.0</token>
-        <token name="@VERSION_SUFFIX@">1</token>
+        <token name="@VERSION_SUFFIX@">2</token>
         <xml name="params/intensity" tokens="name,label,value">
             <section name="@NAME@" title="@LABEL@" expanded="true">
                 <param name="type" type="select" label="@LABEL@"
@@ -116,6 +116,7 @@
                 #end if
 
                 "sample_rate": $sample_rate,
+                "units": "$units",
                 "axes": "$axes",
                 "width": $width,
                 "height": $height,
@@ -170,6 +171,10 @@
             <expand macro="validators/is_single_channel"/>
             <expand macro="validators/is_single_frame"/>
             <expand macro="validators/is_3d"/>
+        </param>
+        <param name="units" type="select" label="Unit of the intensity values">
+            <option value="raw" selected="true">No unit</option>
+            <option value="hu">Hounsfield</option>
         </param>
         <param name="axes" type="select" label="Coordinate system">
             <option value="XZY" selected="true">Point Z to the top</option>
