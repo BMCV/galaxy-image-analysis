@@ -1,5 +1,5 @@
 <tool id="bf2raw" name="Convert to OME-Zarr" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@">
-    <description>with Bioformats</description>
+    <description>with Bio-Formats</description>
     <macros>
         <import>creators.xml</import>
         <token name="@TOOL_VERSION@">0.7.0</token>
@@ -132,7 +132,7 @@ $bf2raw_params.droptop
 
         **Converts images to OME-Zarr.**
 
-        Bioformats-based tool that converts a wide range of image file formats to the cloud-optimised format
+        Tool based on Bio-Formats that converts a wide range of image file formats to the cloud-optimised format
         OME-Zarr following the `OME-NGFF`_ specification.
 
         .. _OME-NGFF: https://ngff.openmicroscopy.org/latest
