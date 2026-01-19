@@ -2,7 +2,7 @@ categories:
   - Imaging
   - Convert Formats
 description: Convert image
-long_description: Convert image using biotools
+long_description: Convert image using Bio-Formats
 name: bfconvert 
 owner: imgteam
 homepage_url: https://github.com/bmcv
