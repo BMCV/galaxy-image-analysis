@@ -1,5 +1,5 @@
 <tool id="ip_convertimage" name="Convert image format" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
-    <description>with Bio-Formats</description>
+    <description>with Bioformats</description>
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
@@ -204,7 +204,7 @@
 
         **Converts image format.**
 
-        Universial image converter using Bio-Formats.
+        Universial image converter using bioformats.
 
     </help>
     <citations>
