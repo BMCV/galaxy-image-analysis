@@ -97,7 +97,7 @@ $bf2raw_params.droptop
         </section>
     </inputs>
     <outputs>
-        <data name="output" format="zarr" label="OME-Zarr Output" />
+        <data name="output" format="zarr" label="${io_options.output_name}" />
     </outputs>
     <tests>
         <test expect_num_outputs="1">
