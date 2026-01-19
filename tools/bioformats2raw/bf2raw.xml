@@ -27,7 +27,7 @@ fi;
     #set input_path=$io_options.input
 #end if
 
-export _JAVA_OPTIONS="-Djava.io.tmpdir=/usr/local/man/" && bioformats2raw $input_path $output.files_path/$io_options.output_name
+export _JAVA_OPTIONS="-Djava.io.tmpdir=/usr/local/man/" && bioformats2raw $input_path $output.files_path
 #if $bf2raw_params.multiscales['options'] == 'auto':
     --target-min-size $bf2raw_params.multiscales.min_xy_size
 #elif $bf2raw_params.multiscales['options'] == 'manual':
@@ -49,9 +49,8 @@ $bf2raw_params.droptop
 
     ]]></command>
     <inputs>
-        <section name="io_options" title="Input-output paths" expanded="true">
+        <section name="io_options" title="Input-output paths" expanded="true"><!-- TODO: remove the section -->
             <param name="input" type="data" format="scn,ndpi,tf8,vms,xml,pcx,binary,hdr,mov,psd,pbm,nrrd,tiff,pgm,ppm,txt,tf2,zip,top,gif,wav,btf,bmp,png,gz,cif,fli,btf,jpg,avi,html,sif,csv,ome.tiff,par,fits,jp2,eps,nhdr,svs,mrc" label="Input image located in Galaxy history"/>
-            <param name="output_name" type="text" value="output.ome.zarr" label="Name of the generated OME-Zarr"/>
         </section>
         <section name="bf2raw_params" title="Parameters fed to file conversion module">
             <conditional name="multiscales" >
@@ -97,34 +96,31 @@ $bf2raw_params.droptop
         </section>
     </inputs>
     <outputs>
-        <data name="output" format="zarr" label="${io_options.output_name}" />
+        <data name="output" format="zarr"/>
     </outputs>
     <tests>
         <test expect_num_outputs="1">
             <section name="io_options">
                 <param name="input" value="xyz_8bit__mitotic_plate_calibrated.tif"/>
-                <param name="output_name" value="xyz_8bit__mitotic_plate_calibrated.ome.zarr" />
             </section>
             <output name="output" ftype="zarr">
-                <extra_files type="file" name="xyz_8bit__mitotic_plate_calibrated.ome.zarr/.zattrs" value="xyz_8bit__mitotic_plate_calibrated.ome.zarr/.zattrs" />
+                <extra_files type="file" name=".zattrs" value="xyz_8bit__mitotic_plate_calibrated.ome.zarr/.zattrs"/>
             </output>
         </test>
         <test expect_num_outputs="1">
             <section name="io_options">
                 <param name="input" value="coins.png"/>
-                <param name="output_name" value="coins.ome.zarr" />
             </section>
             <output name="output" ftype="zarr">
-                <extra_files type="file" name="coins.ome.zarr/.zgroup" value="coins.ome.zarr/.zgroup" />
+                <extra_files type="file" name=".zgroup" value="coins.ome.zarr/.zgroup"/>
             </output>
         </test>
         <test expect_num_outputs="1">
             <section name="io_options">
                 <param name="input" value="camera.jpg"/>
-                <param name="output_name" value="camera.ome.zarr" />
             </section>
             <output name="output" ftype="zarr">
-                <extra_files type="file" name="camera.ome.zarr/.zattrs" value="camera.ome.zarr/.zattrs" />
+                <extra_files type="file" name=".zattrs" value="camera.ome.zarr/.zattrs"/>
             </output>
         </test>
     </tests>
