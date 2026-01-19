@@ -66,7 +66,7 @@ $bf2raw_params.droptop
     <inputs>
         <section name="io_options" title="Input/Output" expanded="true">
             <param name="input" type="data"
-                   format="scn,ndpi,tf8,vms,xml,pcx,binary,hdr,mov,psd,pbm,nrrd,tiff,pgm,ppm,txt,tf2,zip,top,gif,wav,btf,bmp,png,gz,cif,fli,btf,jpg,avi,html,sif,csv,ome.tiff,par,fits,jp2,eps,nhdr,svs,mrc"
+                   format="scn,ndpi,tf8,vms,xml,pcx,binary,hdr,mov,psd,pbm,nrrd,tiff,pgm,ppm,txt,tf2,zip,top,gif,wav,btf,bmp,png,gz,cif,fli,btf,jpg,avi,html,sif,csv,ome.tiff,par,fits,jp2,eps,nhdr,svs,mrc,zarr,ome_zarr"
                    label="Input image"/>
             <param name="subgroup" type="text" value="" optional="true" label="Select a subgroup"
                    help='Only export a subgroup of the Zarr dataset (e.g., use "&lt;tt&gt;0&lt;/tt&gt;" to only export the &lt;tt&gt;/0&lt;/tt&gt; subgroup of the Zarr). Leave empty to export the full Zarr.'/>
@@ -120,7 +120,7 @@ $bf2raw_params.droptop
     <tests>
         <test expect_num_outputs="1">
             <section name="io_options">
-                <param name="input" value="xyz_8bit__mitotic_plate_calibrated.tif"/><!-- TODO: rename to TIFF -->
+                <param name="input" value="xyz_8bit__mitotic_plate_calibrated.tiff"/>
             </section>
             <output name="output" ftype="zarr">
                 <extra_files type="file" name=".zattrs" value="xyz_8bit__mitotic_plate_calibrated.ome.zarr/.zattrs"/>
