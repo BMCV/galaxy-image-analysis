@@ -15,19 +15,21 @@
         <container type="docker">quay.io/biocontainers/mulled-v2-ea5a9ffc5f22f92a78f0cd24aac43eb503c0e523:4c010c399f61cde74da64343581999ada3e11e24-0</container>
     </requirements>
     <command><![CDATA[
-if [ ! -d $output.files_path ];then
+
+if [ ! -d $output.files_path ]; then
     mkdir -p $output.files_path;
 fi;
 
-#if str($io_options.input.ext)=='zarr':
+#if str($io_options.input.ext) == 'zarr':
     #set dirlist=os.listdir($io_options.input.files_path)
     #assert len($dirlist) > 0
     #set input_path=os.path.join(str($io_options.input.files_path), str($dirlist[0]))
 #else:
     #set input_path=$io_options.input
 #end if
+ln -s $input_path ./input;
 
-export _JAVA_OPTIONS="-Djava.io.tmpdir=/usr/local/man/" && bioformats2raw $input_path $output.files_path
+export _JAVA_OPTIONS="-Djava.io.tmpdir=/usr/local/man/" && bioformats2raw ./input $output.files_path
 #if $bf2raw_params.multiscales['options'] == 'auto':
     --target-min-size $bf2raw_params.multiscales.min_xy_size
 #elif $bf2raw_params.multiscales['options'] == 'manual':
@@ -47,10 +49,21 @@ $bf2raw_params.droptop
 #end if
 --overwrite &> /dev/null;
 
+#if str($io_options.subgroup) != ''
+    mv ${output.files_path}/${io_options.subgroup} ./subdir;
+    mv ${output.files_path}/OME ./subdir/OME;
+    rm -rf ${output.files_path};
+    mv ./subdir ${output.files_path};
+#end if
+
     ]]></command>
     <inputs>
-        <section name="io_options" title="Input-output paths" expanded="true"><!-- TODO: remove the section -->
-            <param name="input" type="data" format="scn,ndpi,tf8,vms,xml,pcx,binary,hdr,mov,psd,pbm,nrrd,tiff,pgm,ppm,txt,tf2,zip,top,gif,wav,btf,bmp,png,gz,cif,fli,btf,jpg,avi,html,sif,csv,ome.tiff,par,fits,jp2,eps,nhdr,svs,mrc" label="Input image located in Galaxy history"/>
+        <section name="io_options" title="Input/Output" expanded="true">
+            <param name="input" type="data"
+                   format="scn,ndpi,tf8,vms,xml,pcx,binary,hdr,mov,psd,pbm,nrrd,tiff,pgm,ppm,txt,tf2,zip,top,gif,wav,btf,bmp,png,gz,cif,fli,btf,jpg,avi,html,sif,csv,ome.tiff,par,fits,jp2,eps,nhdr,svs,mrc"
+                   label="Input image"/>
+            <param name="subgroup" type="text" value="" optional="true" label="Select a subgroup"
+                   help='Only export a subgroup of the Zarr dataset (e.g., use "&lt;tt&gt;0&lt;/tt&gt;" to only export the &lt;tt&gt;/0&lt;/tt&gt; subgroup of the Zarr). Leave empty to export the full Zarr.'/>
         </section>
         <section name="bf2raw_params" title="Parameters fed to file conversion module">
             <conditional name="multiscales" >
@@ -101,10 +114,12 @@ $bf2raw_params.droptop
     <tests>
         <test expect_num_outputs="1">
             <section name="io_options">
-                <param name="input" value="xyz_8bit__mitotic_plate_calibrated.tif"/>
+                <param name="input" value="xyz_8bit__mitotic_plate_calibrated.tif"/><!-- TODO: rename to TIFF -->
             </section>
             <output name="output" ftype="zarr">
                 <extra_files type="file" name=".zattrs" value="xyz_8bit__mitotic_plate_calibrated.ome.zarr/.zattrs"/>
+                <extra_files type="file" name=".zgroup" value="xyz_8bit__mitotic_plate_calibrated.ome.zarr/.zgroup"/>
+                <extra_files type="file" name="OME/METADATA.ome.xml" value="xyz_8bit__mitotic_plate_calibrated.ome.zarr/OME/METADATA.ome.xml"/>
             </output>
         </test>
         <test expect_num_outputs="1">
@@ -112,7 +127,9 @@ $bf2raw_params.droptop
                 <param name="input" value="coins.png"/>
             </section>
             <output name="output" ftype="zarr">
+                <extra_files type="file" name=".zattrs" value="coins.ome.zarr/.zattrs"/>
                 <extra_files type="file" name=".zgroup" value="coins.ome.zarr/.zgroup"/>
+                <extra_files type="file" name="OME/METADATA.ome.xml" value="coins.ome.zarr/OME/METADATA.ome.xml"/>
             </output>
         </test>
         <test expect_num_outputs="1">
@@ -121,6 +138,19 @@ $bf2raw_params.droptop
             </section>
             <output name="output" ftype="zarr">
                 <extra_files type="file" name=".zattrs" value="camera.ome.zarr/.zattrs"/>
+                <extra_files type="file" name=".zgroup" value="camera.ome.zarr/.zgroup"/>
+                <extra_files type="file" name="OME/METADATA.ome.xml" value="camera.ome.zarr/OME/METADATA.ome.xml"/>
+            </output>
+        </test>
+        <test expect_num_outputs="1">
+            <section name="io_options">
+                <param name="input" value="coins.png"/>
+                <param name="subgroup" value="0"/>
+            </section>
+            <output name="output" ftype="zarr">
+                <extra_files type="file" name=".zattrs" value="coins.ome.zarr/0/.zattrs"/>
+                <extra_files type="file" name=".zgroup" value="coins.ome.zarr/0/.zgroup"/>
+                <extra_files type="file" name="OME/METADATA.ome.xml" value="coins.ome.zarr/OME/METADATA.ome.xml"/>
             </output>
         </test>
     </tests>
