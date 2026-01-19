@@ -19,7 +19,7 @@ if [ ! -d $output.files_path ];then
     mkdir -p $output.files_path;
 fi;
 
-#if str($io_options.input.ext)=='html':
+#if str($io_options.input.ext)=='zarr':
     #set dirlist=os.listdir($io_options.input.files_path)
     #assert len($dirlist) > 0
     #set input_path=os.path.join(str($io_options.input.files_path), str($dirlist[0]))
@@ -97,7 +97,7 @@ $bf2raw_params.droptop
         </section>
     </inputs>
     <outputs>
-        <data name="output" format="html" label="OME-Zarr Output" />
+        <data name="output" format="zarr" label="OME-Zarr Output" />
     </outputs>
     <tests>
         <test expect_num_outputs="1">
@@ -105,7 +105,7 @@ $bf2raw_params.droptop
                 <param name="input" value="xyz_8bit__mitotic_plate_calibrated.tif"/>
                 <param name="output_name" value="xyz_8bit__mitotic_plate_calibrated.ome.zarr" />
             </section>
-            <output name="output" ftype="html">
+            <output name="output" ftype="zarr">
                 <extra_files type="file" name="xyz_8bit__mitotic_plate_calibrated.ome.zarr/.zattrs" value="xyz_8bit__mitotic_plate_calibrated.ome.zarr/.zattrs" />
             </output>
         </test>
@@ -114,7 +114,7 @@ $bf2raw_params.droptop
                 <param name="input" value="coins.png"/>
                 <param name="output_name" value="coins.ome.zarr" />
             </section>
-            <output name="output" ftype="html">
+            <output name="output" ftype="zarr">
                 <extra_files type="file" name="coins.ome.zarr/.zgroup" value="coins.ome.zarr/.zgroup" />
             </output>
         </test>
@@ -123,7 +123,7 @@ $bf2raw_params.droptop
                 <param name="input" value="camera.jpg"/>
                 <param name="output_name" value="camera.ome.zarr" />
             </section>
-            <output name="output" ftype="html">
+            <output name="output" ftype="zarr">
                 <extra_files type="file" name="camera.ome.zarr/.zattrs" value="camera.ome.zarr/.zattrs" />
             </output>
         </test>
