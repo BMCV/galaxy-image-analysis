@@ -22,13 +22,22 @@
     </requirements>
     <command><![CDATA[
 
+## Create final output directory
 if [ ! -d $output.files_path ]; then
     mkdir -p $output.files_path;
 fi;
 
+## Use an intermediate output directory if only a subgroup of the Zarr is wanted for export
+#if str($io_options.subgroup) == ''
+    ln -s $output.files_path ./output;
+#else
+    mkdir ./output;
+#end if
+
+## Input symlink to obscure the dataset directory for reproducible results
 ln -s ${io_options.input} ./input;
 
-export _JAVA_OPTIONS="-Djava.io.tmpdir=/usr/local/man/" && bioformats2raw ./input $output.files_path
+export _JAVA_OPTIONS="-Djava.io.tmpdir=/usr/local/man/" && bioformats2raw ./input ./output/.
 #if $bf2raw_params.multiscales['options'] == 'auto':
     --target-min-size $bf2raw_params.multiscales.min_xy_size
 #elif $bf2raw_params.multiscales['options'] == 'manual':
@@ -48,11 +57,10 @@ $bf2raw_params.droptop
 #end if
 --overwrite &> /dev/null;
 
+## Optionally, export a subgroup of the Zarr
 #if str($io_options.subgroup) != ''
-    mv ${output.files_path}/${io_options.subgroup} ./subdir;
-    mv ${output.files_path}/OME ./subdir/OME;
-    rm -rf ${output.files_path};
-    mv ./subdir ${output.files_path};
+    mv ./output/${io_options.subgroup}/* ./output/${io_options.subgroup}/.* ${output.files_path}/;
+    mv ./output/OME ${output.files_path}/OME;
 #end if
 
     ]]></command>
