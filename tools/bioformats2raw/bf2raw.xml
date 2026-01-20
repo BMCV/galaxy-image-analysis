@@ -3,7 +3,7 @@
     <macros>
         <import>creators.xml</import>
         <token name="@TOOL_VERSION@">0.7.0</token>
-        <token name="@VERSION_SUFFIX@">4</token>
+        <token name="@VERSION_SUFFIX@">5</token>
     </macros>
     <creator>
         <expand macro="creators/bugraoezdemir"/>
@@ -22,13 +22,22 @@
     </requirements>
     <command><![CDATA[
 
+## Create final output directory
 if [ ! -d $output.files_path ]; then
     mkdir -p $output.files_path;
 fi;
 
+## Use an intermediate output directory if only a subgroup of the Zarr is wanted for export
+#if str($io_options.subgroup) == ''
+    ln -s $output.files_path ./output;
+#else
+    mkdir ./output;
+#end if
+
+## Input symlink to obscure the dataset directory for reproducible results
 ln -s ${io_options.input} ./input;
 
-export _JAVA_OPTIONS="-Djava.io.tmpdir=/usr/local/man/" && bioformats2raw ./input $output.files_path
+export _JAVA_OPTIONS="-Djava.io.tmpdir=/usr/local/man/" && bioformats2raw ./input ./output/.
 #if $bf2raw_params.multiscales['options'] == 'auto':
     --target-min-size $bf2raw_params.multiscales.min_xy_size
 #elif $bf2raw_params.multiscales['options'] == 'manual':
@@ -48,11 +57,10 @@ $bf2raw_params.droptop
 #end if
 --overwrite &> /dev/null;
 
+## Optionally, export a subgroup of the Zarr
 #if str($io_options.subgroup) != ''
-    mv ${output.files_path}/${io_options.subgroup} ./subdir;
-    mv ${output.files_path}/OME ./subdir/OME;
-    rm -rf ${output.files_path};
-    mv ./subdir ${output.files_path};
+    mv "./output/${io_options.subgroup}"/* "./output/${io_options.subgroup}"/.* "${output.files_path}/";
+    mv "./output/OME" "${output.files_path}/OME";
 #end if
 
     ]]></command>
@@ -62,7 +70,11 @@ $bf2raw_params.droptop
                    format="scn,ndpi,tf8,vms,xml,pcx,binary,hdr,mov,psd,pbm,nrrd,tiff,pgm,ppm,txt,tf2,zip,top,gif,wav,btf,bmp,png,gz,cif,fli,btf,jpg,avi,html,sif,csv,ome.tiff,par,fits,jp2,eps,nhdr,svs,mrc"
                    label="Input image"/>
             <param name="subgroup" type="text" value="" optional="true" label="Select a subgroup"
-                   help='Only export a subgroup of the Zarr dataset (e.g., use "&lt;tt&gt;0&lt;/tt&gt;" to only export the &lt;tt&gt;/0&lt;/tt&gt; subgroup of the Zarr). Leave empty to export the full Zarr.'/>
+                   help='Only export a subgroup of the Zarr dataset (e.g., use "&lt;tt&gt;0&lt;/tt&gt;" to only export the &lt;tt&gt;/0&lt;/tt&gt; subgroup of the Zarr). Leave empty to export the full Zarr.'>
+                <validator type="regex" message="Subgroup name cannot be empty." negate="true">.*//.*</validator>
+                <validator type="expression" message='Subgroup name must not start with a "/"' negate="true">value.startswith("/")</validator>
+                <validator type="expression" message='Subgroup name must not end with a "/"' negate="true">value.endswith("/")</validator>
+            </param>
         </section>
         <section name="bf2raw_params" title="Parameters fed to file conversion module">
             <conditional name="multiscales" >
