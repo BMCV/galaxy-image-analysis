@@ -3,7 +3,7 @@
     <macros>
         <import>creators.xml</import>
         <token name="@TOOL_VERSION@">0.7.0</token>
-        <token name="@VERSION_SUFFIX@">4</token>
+        <token name="@VERSION_SUFFIX@">5</token>
     </macros>
     <creator>
         <expand macro="creators/bugraoezdemir"/>
