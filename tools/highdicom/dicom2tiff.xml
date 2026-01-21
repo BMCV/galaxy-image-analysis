@@ -29,7 +29,7 @@
     ]]>
     </command>
     <inputs>
-        <param name="input" type="data" format="binary" label="DICOM dataset"/>
+        <param name="input" type="data" format="dicom" label="DICOM dataset"/>
         <param name="multiframe_axis" type="select" label="Fall-back axis for DICOM frames" help="If DICOM frames cannot be resolved to a specific TIFF axis automatically, this axis will be used.">
             <option value="T" selected="true">T-axis (frames of a temporal image sequence)</option>
             <option value="Z">Z-axis (slices of a 3-D image or image sequence)</option>
