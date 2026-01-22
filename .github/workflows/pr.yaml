@@ -261,6 +261,39 @@ jobs:
         name: 'File size report'
         path: file_size_report.txt
 
+  gialint:
+    name: Lint GIA
+    needs: setup
+    if: ${{ github.event_name == 'pull_request' && needs.setup.outputs.repository-list != '' }}
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - uses: actions/setup-python@v6
+      with:
+        python-version: '3.10'
+    - name: Install requirements
+      run: |
+        pip install gialint
+    - name: Run gialint
+      run: |
+        set -o nounset
+        set -o pipefail
+        failed=0
+        while IFS= read -r file; do
+          if [ -f gialint.err ]; then
+            rm gialint.err
+          fi
+          python -m gialint --tool_path "$file" 2>gialint.err || failed=1
+          if [[ -s gialint.err ]]; then
+            echo '|'
+            sed 's/^/│ /' gialint.err
+            echo ' '
+          fi
+        done <<< "${{ needs.setup.outputs.tool-list }}"
+        exit "$failed"
+
   # Planemo test the changed repositories, each chunk creates an artifact
   # containing HTML and JSON reports for the executed tests
   test:
