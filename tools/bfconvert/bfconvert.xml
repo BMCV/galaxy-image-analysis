@@ -21,6 +21,8 @@
     </requirements>
     <command> 
         <![CDATA[  
+        ln -s '$input_file' 'input.$input_file.ext'
+        
         bfconvert  
         #if $series_options['extract'] == 'True'
           -series $series_options.series
@@ -52,7 +54,7 @@
         #if $compression != 'False'
           -compression $compression
         #end if  
-        '$input_file' './res.$out_format' &&
+        'input.$input_file.ext' './res.$out_format' &&
         mv './res.$out_format' ./result_image
         ]]>
     </command>
