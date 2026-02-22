@@ -4,7 +4,7 @@
         <import>creators.xml</import>
         <import>tests.xml</import>
         <token name="@TOOL_VERSION@">0.2.0</token>
-        <token name="@VERSION_SUFFIX@">2</token>
+        <token name="@VERSION_SUFFIX@">3</token>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
@@ -25,12 +25,13 @@
         Pin the dependencies to specific versions for reproducibility:
         https://github.com/BMCV/SuperDSM#dependency-version-considerations
         -->
-        <requirement type="package" version="1.20">numpy</requirement>
+        <requirement type="package" version="1.20.3">numpy</requirement>
         <requirement type="package" version="1.6.3">scipy</requirement>
         <requirement type="package" version="0.18.1">scikit-image</requirement>
         <requirement type="package" version="1.2.6">cvxopt</requirement>
         <requirement type="package" version="1.1.13">cvxpy</requirement>
         <requirement type="package" version="1.6.0">ray-core</requirement>
+        <requirement type="package" version="4.25.3">protobuf</requirement>
 
         <!--
         2020.0 is the last version of MKL which supports the "MKL_DEBUG_CPU_TYPE" environment variable.
@@ -46,6 +47,11 @@
         -->
         <requirement type="package" version="1.0=mkl">blas</requirement>
 
+        <!--
+        Package required to read LZW-compressed TIFF files.
+        -->
+        <requirement type="package" version="2024.12.30">imagecodecs</requirement>
+
     </requirements>
     <command detect_errors="aggressive">
     <![CDATA[
@@ -60,8 +66,8 @@
     #end if
     #if 'overlay' in $outputs:
         --do-overlay 'overlay.png'
-        #if $seg_border.value % 2 == 1:
-            #set $seg_border = "%d" % ($seg_border.value + 1)
+        #if int($seg_border) % 2 == 1:
+            #set $seg_border = "%d" % (int($seg_border) + 1)
             --do-overlay-border $seg_border
         #else:
             --do-overlay-border $seg_border
@@ -179,7 +185,7 @@
             </output>
         </test>
         <test expect_num_outputs="1">
-            <param name="dataset" value="BBBC033_C2_z28.png" />
+            <param name="dataset" value="BBBC033_C2_z28-lzw.tiff" />
             <param name="global_energy_minimization_pruning" value="exact" />
             <param name="outputs" value="cfg" />
             <output name="cfg" value="cfg.tsv" ftype="tsv" compare="diff" />
