@@ -4,7 +4,7 @@
         <import>creators.xml</import>
         <import>tests.xml</import>
         <token name="@TOOL_VERSION@">0.2.0</token>
-        <token name="@VERSION_SUFFIX@">2</token>
+        <token name="@VERSION_SUFFIX@">3</token>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
@@ -46,6 +46,11 @@
         https://github.com/BMCV/SuperDSM#dependency-version-considerations
         -->
         <requirement type="package" version="1.0=mkl">blas</requirement>
+
+        <!--
+        Package required to read LZW-compressed TIFF files.
+        -->
+        <requirement type="package" version="2024.12.30">imagecodecs</requirement>
 
     </requirements>
     <command detect_errors="aggressive">
