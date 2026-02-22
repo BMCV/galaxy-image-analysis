@@ -25,12 +25,13 @@
         Pin the dependencies to specific versions for reproducibility:
         https://github.com/BMCV/SuperDSM#dependency-version-considerations
         -->
-        <requirement type="package" version="1.20">numpy</requirement>
+        <requirement type="package" version="1.20.3">numpy</requirement>
         <requirement type="package" version="1.6.3">scipy</requirement>
         <requirement type="package" version="0.18.1">scikit-image</requirement>
         <requirement type="package" version="1.2.6">cvxopt</requirement>
         <requirement type="package" version="1.1.13">cvxpy</requirement>
         <requirement type="package" version="1.6.0">ray-core</requirement>
+        <requirement type="package" version="4.25.3">protobuf</requirement>
 
         <!--
         2020.0 is the last version of MKL which supports the "MKL_DEBUG_CPU_TYPE" environment variable.
