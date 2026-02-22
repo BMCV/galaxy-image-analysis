@@ -130,3 +130,6 @@ if __name__ == "__main__":
             print(f'Writing masks to: {args.do_masks}')
             masks = superdsm.render.rasterize_labels(data)
             superdsm.io.imwrite(args.do_masks, masks)
+
+        # Shutdown ray before the temporary directory is attempted to be cleared
+        ray.shutdown()
