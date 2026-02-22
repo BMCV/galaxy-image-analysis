@@ -66,8 +66,8 @@
     #end if
     #if 'overlay' in $outputs:
         --do-overlay 'overlay.png'
-        #if $seg_border.value % 2 == 1:
-            #set $seg_border = "%d" % ($seg_border.value + 1)
+        #if int($seg_border) % 2 == 1:
+            #set $seg_border = "%d" % (int($seg_border) + 1)
             --do-overlay-border $seg_border
         #else:
             --do-overlay-border $seg_border
