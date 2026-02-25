@@ -1,10 +1,9 @@
 import argparse
 import os
-
-import cv2
-
 from pathlib import Path
 from typing import Union
+
+import cv2
 
 
 def extract_frames(output_dir: Union[str, Path], video_path: Union[str, Path], start_time: int, end_time: int, convert_to_grey: str = "false") -> Path:
