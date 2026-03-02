@@ -17,7 +17,7 @@ rgb_from_he = np.array([
     [0.63595444, 0.0010000, 0.77172660],
 ])
 
-convOptions = { 
+convOptions = {
     # General color space conversion operations
     'hed2rgb': lambda img_raw: skimage.color.hed2rgb(img_raw),
     'hsv2rgb': lambda img_raw: skimage.color.hsv2rgb(img_raw),
