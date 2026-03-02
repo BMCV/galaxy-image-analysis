@@ -3,6 +3,7 @@
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
+        <import>validators.xml</import>
         <token name="@TOOL_VERSION@">0.2.0</token>
         <token name="@VERSION_SUFFIX@">4</token>
     </macros>
@@ -132,7 +133,11 @@
 
     </environment_variables>
     <inputs>
-        <param name="dataset" type="data" format="tiff,png" label="Dataset" />
+        <param name="dataset" type="data" format="tiff,png" label="Dataset">
+            <expand macro="validators/is_single_channel"/>
+            <expand macro="validators/is_single_frame"/>
+            <expand macro="validators/is_2d"/>
+        </param>
         <param argument="--global_energy_minimization_pruning" type="select" label="Graph pruning for global energy minimization" help="Exact graph pruning corresponds to the original algorithm, which provably yields globally optimal results. Robust graph pruning is more greedy and has a provably bounded approximation error. Depending on the data, this can be significantly faster than exact graph pruning, without degrading the segmentation or cluster splitting performance.">
             <option value="exact">Exact graph pruning (Kostrykin and Rohr, TPAMI 2023)</option>
             <option value="isbi24" selected="true">Robust graph pruning (Kostrykin and Rohr, ISBI 2024)</option>
