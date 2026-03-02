@@ -53,7 +53,7 @@
         <requirement type="package" version="2024.12.30">imagecodecs</requirement>
 
     </requirements>
-    <command detect_errors="aggressive">
+    <command detect_errors="exit_code">
     <![CDATA[
     python '$__tool_directory__/run-superdsm.py'
     '${dataset}'
