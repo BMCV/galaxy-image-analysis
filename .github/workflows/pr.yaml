@@ -264,7 +264,7 @@ jobs:
   gialint:
     name: Lint GIA
     needs: setup
-    if: ${{ github.event_name == 'pull_request' && needs.setup.outputs.repository-list != '' }}
+    if: ${{ github.event_name == 'pull_request' && needs.setup.outputs.tool-list != '' }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
