@@ -3,8 +3,9 @@
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
+        <import>validators.xml</import>
         <token name="@TOOL_VERSION@">0.2.0</token>
-        <token name="@VERSION_SUFFIX@">3</token>
+        <token name="@VERSION_SUFFIX@">4</token>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
@@ -53,7 +54,7 @@
         <requirement type="package" version="2024.12.30">imagecodecs</requirement>
 
     </requirements>
-    <command detect_errors="aggressive">
+    <command detect_errors="exit_code">
     <![CDATA[
     python '$__tool_directory__/run-superdsm.py'
     '${dataset}'
@@ -125,9 +126,18 @@
         -->
         <environment_variable name="MKL_DEBUG_CPU_TYPE">5</environment_variable>
 
+        <!--
+        Suppress warning that Ray Dashboard is not installed:
+        -->
+        <environment_variable name="RAY_DISABLE_IMPORT_WARNING">1</environment_variable>
+
     </environment_variables>
     <inputs>
-        <param name="dataset" type="data" format="tiff,png" label="Dataset" />
+        <param name="dataset" type="data" format="tiff,png" label="Dataset">
+            <expand macro="validators/is_single_channel"/>
+            <expand macro="validators/is_single_frame"/>
+            <expand macro="validators/is_2d"/>
+        </param>
         <param argument="--global_energy_minimization_pruning" type="select" label="Graph pruning for global energy minimization" help="Exact graph pruning corresponds to the original algorithm, which provably yields globally optimal results. Robust graph pruning is more greedy and has a provably bounded approximation error. Depending on the data, this can be significantly faster than exact graph pruning, without degrading the segmentation or cluster splitting performance.">
             <option value="exact">Exact graph pruning (Kostrykin and Rohr, TPAMI 2023)</option>
             <option value="isbi24" selected="true">Robust graph pruning (Kostrykin and Rohr, ISBI 2024)</option>
