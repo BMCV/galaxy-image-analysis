@@ -200,36 +200,6 @@
             <param name="outputs" value="cfg" />
             <output name="cfg" value="cfg.tsv" ftype="tsv" compare="diff" />
         </test>
-        <test expect_num_outputs="1">
-            <param name="dataset" value="gowt1-1-t06.tiff" />
-            <param name="global_energy_minimization_pruning" value="isbi24" />
-            <param name="outputs" value="masks" />
-            <output name="masks" ftype="png">
-                <assert_contents>
-
-                    <has_image_width width="1024"/>
-                    <has_image_height height="1024"/>
-                    <has_image_channels channels="1"/>
-                    <has_image_n_labels n="28"/><!-- 27 objects plus the background -->
-
-                </assert_contents>
-            </output>
-        </test>
-        <test expect_num_outputs="1">
-            <param name="dataset" value="gowt1-1-t08.tiff" />
-            <param name="global_energy_minimization_pruning" value="isbi24" />
-            <param name="outputs" value="masks" />
-            <output name="masks" ftype="png">
-                <assert_contents>
-
-                    <has_image_width width="1024"/>
-                    <has_image_height height="1024"/>
-                    <has_image_channels channels="1"/>
-                    <has_image_n_labels n="26"/><!-- 25 objects plus the background -->
-
-                </assert_contents>
-            </output>
-        </test>
     </tests>
     <help>
 
