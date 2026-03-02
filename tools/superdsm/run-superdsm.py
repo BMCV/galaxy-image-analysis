@@ -15,7 +15,7 @@ import shutil
 import tempfile
 
 
-hyperparameters = [ 
+hyperparameters = [
     ('AF_scale', float),
     ('c2f-region-analysis/min_atom_radius', float),
     ('c2f-region-analysis/min_norm_energy_improvement', float),
@@ -130,4 +130,5 @@ if __name__ == "__main__":
             print(f'Writing masks to: {args.do_masks}')
             masks = superdsm.render.rasterize_labels(data)
             superdsm.io.imwrite(args.do_masks, masks)
+
 
