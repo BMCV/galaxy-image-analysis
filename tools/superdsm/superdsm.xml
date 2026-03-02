@@ -4,7 +4,7 @@
         <import>creators.xml</import>
         <import>tests.xml</import>
         <token name="@TOOL_VERSION@">0.2.0</token>
-        <token name="@VERSION_SUFFIX@">3</token> 
+        <token name="@VERSION_SUFFIX@">3</token>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
@@ -213,4 +213,5 @@
         <citation type="doi">10.1109/TPAMI.2022.3185583</citation>
     </citations>
 </tool>
+
 
