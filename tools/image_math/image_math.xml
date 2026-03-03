@@ -23,6 +23,9 @@
     
     python '$__tool_directory__/image_math.py'
     --expression='$expression'
+    #if '$dtype' != '':
+        --dtype='$dtype'
+    #end if
     #for $item in $inputs:
         --input='$item.name:$item.image'
     #end for
@@ -35,7 +38,19 @@
     </command>
     <inputs>
         <param argument="--expression" type="text" label="Expression" optional="false">
-            <validator type="regex">^[a-zA-Z0-9-_\*\+ \(\)/]+$</validator>
+            <validator type="regex">^[a-zA-Z0-9-_\*\+ \(\)/\.]+$</validator>
+        </param>
+        <param name="dtype" type="select" label="Data type of the produced TIFF image">
+            <option value="" selected="true">Determine automatically</option>
+            <option value="float16">16-bit floating point</option>
+            <option value="float32">32-bit floating point</option>
+            <option value="float64">64-bit floating point</option>
+            <option value="int8">8-bit signed integer</option>
+            <option value="int16">16-bit signed integer</option>
+            <option value="int32">32-bit signed integer</option>
+            <option value="uint8">8-bit unsigned integer</option>
+            <option value="uint16">16-bit unsigned integer</option>
+            <option value="uint32">32-bit unsigned integer</option>
         </param>
         <repeat name="inputs" title="Input images" min="1">
             <param name="image" type="data" format="png,tiff" label="Image" />
@@ -100,6 +115,16 @@
                 <param name="name" value="input" />
             </repeat>
             <expand macro="tests/intensity_image_diff" name="result" value="input1_abs.tiff" ftype="tiff"/>
+        </test>
+        <!-- Decimal, conversion to explicit `dtype` -->
+        <test>
+            <param name="expression" value="input1 / 0.5" />
+            <param name="dtype" value="uint8" />
+            <repeat name="inputs">
+                <param name="image" value="input1.tiff" />
+                <param name="name" value="input1" />
+            </repeat>
+            <expand macro="tests/intensity_image_diff" name="result" value="input1_times_2_uint8.tiff" ftype="tiff"/>
         </test>
     </tests>
     <help>

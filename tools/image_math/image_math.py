@@ -70,6 +70,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--expression', type=str, required=True)
+    parser.add_argument('--dtype', type=str, default=None)
     parser.add_argument('--output', type=str, required=True)
     parser.add_argument('--input', default=list(), action='append', required=True)
     args = parser.parse_args()
@@ -87,5 +88,11 @@ if __name__ == '__main__':
             assert im.shape == im_shape, 'Input images differ in size and/or number of channels.'
 
     result = eval_expression(args.expression, inputs)
+
+    # Perform explicit `dtype` conversion
+    if args.dtype:
+        if args.dtype.startswith('uint'):
+            result = result.clip(0, np.inf)
+        result = result.astype(args.dtype)
 
     skimage.io.imsave(args.output, result)
