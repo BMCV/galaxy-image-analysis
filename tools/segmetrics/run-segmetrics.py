@@ -1,5 +1,5 @@
 """
-Copyright 2022-2023 Leonid Kostrykin, Biomedical Computer Vision Group, Heidelberg University.
+Copyright 2022-2026 Leonid Kostrykin, Biomedical Computer Vision Group, Heidelberg University.
 
 Distributed under the MIT license.
 See file LICENSE for detail or copy at https://opensource.org/licenses/MIT

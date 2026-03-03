@@ -178,8 +178,8 @@
             </when>
         </conditional>
 
-        <param name="is_seg_unique" type="boolean" checked="false" truevalue="--seg_unique" falsevalue="" label="Segmentation is uniquely labeled" />
-        <param name="is_gt_unique"  type="boolean" checked="false" truevalue="--gt_unique"  falsevalue="" label="Ground truth is uniquely labeled" />
+        <param name="is_seg_unique" type="boolean" checked="false" truevalue="--seg_unique" falsevalue="" label="Segmentation is uniquely labeled"/>
+        <param name="is_gt_unique"  type="boolean" checked="false" truevalue="--gt_unique"  falsevalue="" label="Ground truth is uniquely labeled"/>
 
         <repeat name="measures" title="Performance measure(s)" min="1">
             <conditional name="measure_type">
