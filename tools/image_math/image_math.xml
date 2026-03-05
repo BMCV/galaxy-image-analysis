@@ -65,6 +65,14 @@
     <tests>
         <!-- Multiplication with a scalar -->
         <test>
+            <!--
+                GIA204: :relax_indent:
+                python '$__tool_directory__/image_math.py'
+                    ––expression='input1 * 2'
+                    ––dtype=''
+                    ––input='input1:input1.tiff'
+                    ––output='./result.tiff'
+            -->
             <param name="expression" value="input1 * 2" />
             <repeat name="inputs">
                 <param name="image" value="input1.tiff" />
@@ -74,6 +82,14 @@
         </test>
         <!-- Unary negation operator -->
         <test>
+            <!--
+                GIA204: :relax_indent:
+                python '$__tool_directory__/image_math.py'
+                    ––expression='-input1'
+                    ––dtype=''
+                    ––input='input1:input1.tiff'
+                    ––output='./result.tiff'
+            -->
             <param name="expression" value="-input1" />
             <repeat name="inputs">
                 <param name="image" value="input1.tiff" />
@@ -83,6 +99,15 @@
         </test>
         <!-- Binary addition, neutral element, addition with scalar -->
         <test>
+            <!--
+                GIA204: :relax_indent:
+                python '$__tool_directory__/image_math.py'
+                    ––expression='input1 + input2 + 1'
+                    ––dtype=''
+                    ––input='input1:input1.tiff'
+                    ––input='input2:minus_input1.tiff'
+                    ––output='./result.tiff'
+            -->
             <param name="expression" value="input1 + input2 + 1" />
             <repeat name="inputs">
                 <param name="image" value="input1.tiff" />
@@ -96,6 +121,15 @@
         </test>
         <!-- Parentheses -->
         <test>
+            <!--
+                GIA204: :relax_indent:
+                python '$__tool_directory__/image_math.py'
+                    ––expression='(input1 + input2) / 2'
+                    ––dtype=''
+                    ––input='input1:input1.tiff'
+                    ––input='input2:ones.tiff'
+                    ––output='./result.tiff'
+            -->
             <param name="expression" value="(input1 + input2) / 2" />
             <repeat name="inputs">
                 <param name="image" value="input1.tiff" />
@@ -109,6 +143,14 @@
         </test>
         <!-- Abs -->
         <test>
+            <!--
+                GIA204: :relax_indent:
+                python '$__tool_directory__/image_math.py'
+                    ––expression='abs(input)'
+                    ––dtype=''
+                    ––input='input:input1.tiff'
+                    ––output='./result.tiff'
+            -->
             <param name="expression" value="abs(input)" />
             <repeat name="inputs">
                 <param name="image" value="input1.tiff" />
@@ -118,6 +160,14 @@
         </test>
         <!-- Decimal, conversion to explicit `dtype` -->
         <test>
+            <!--
+                GIA204: :relax_indent:
+                python '$__tool_directory__/image_math.py'
+                    ––expression='input1 / 0.5'
+                    ––dtype='uint8'
+                    ––input='input1:input1.tiff'
+                    ––output='./result.tiff'
+            -->
             <param name="expression" value="input1 / 0.5" />
             <param name="dtype" value="uint8" />
             <repeat name="inputs">
