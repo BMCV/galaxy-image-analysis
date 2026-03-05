@@ -270,6 +270,38 @@
     <tests>
         <!-- Tests with: Pair of individual segmented/ground truth images -->
         <test>
+            <!--
+                GIA204: :relax_indent:
+
+                mkdir -p ./inputs/seg &&
+                mkdir -p ./inputs/gt &&
+
+                ln -s 'input1.png' ./inputs/seg/p0 &&
+                ln -s 'input2.png' ./inputs/gt/p0 &&
+
+                python '$__tool_directory__/run-segmetrics.py'
+                    ./inputs/seg
+                    ./inputs/gt
+                    '$sample_ids'
+                    ./results.tsv
+                    ––seg_unique
+                    ––gt_unique
+                    'sm.Dice()'
+                    'sm.ISBIScore(min_ref_size=1, )'
+                    'sm.JaccardCoefficient()'
+                    'sm.JaccardIndex()'
+                    'sm.RandIndex()'
+                    'sm.AdjustedRandIndex()'
+                    'sm.Hausdorff(mode="sym", quantile=1.0, ).object_based()'
+                    'sm.Hausdorff(mode="sym", quantile=0.9, ).object_based()'
+                    'sm.Hausdorff(mode="sym", quantile=1.0, ).object_based()'
+                    'sm.NSD().object_based()'
+                    'sm.NSD().object_based()'
+                    'sm.FalseSplit(aggregation="mean", )'
+                    'sm.FalseMerge(aggregation="mean", )'
+                    'sm.FalsePositive(aggregation="mean", )'
+                    'sm.FalseNegative(aggregation="mean", )'
+            -->
             <conditional name="inputs">
                 <param name="type" value="single"/>
                 <param name="seg" value="input1.png"/>
@@ -282,6 +314,35 @@
         </test>
         <!-- Tests with: List of pairs of segmented/ground truth images -->
         <test>
+            <!--
+                GIA204: :relax_indent:
+
+                mkdir -p ./inputs/seg &&
+                mkdir -p ./inputs/gt &&
+
+                python '$__tool_directory__/run-segmetrics.py'
+                    ./inputs/seg
+                    ./inputs/gt
+                    '$sample_ids'
+                    ./results.tsv
+                    ––seg_unique
+                    ––gt_unique
+                    'sm.Dice()'
+                    'sm.ISBIScore(min_ref_size=1, )'
+                    'sm.JaccardCoefficient()'
+                    'sm.JaccardIndex()'
+                    'sm.RandIndex()'
+                    'sm.AdjustedRandIndex()'
+                    'sm.Hausdorff(mode="sym", quantile=1.0, ).object_based()'
+                    'sm.Hausdorff(mode="sym", quantile=0.9, ).object_based()'
+                    'sm.Hausdorff(mode="sym", quantile=1.0, ).object_based()'
+                    'sm.NSD().object_based()'
+                    'sm.NSD().object_based()'
+                    'sm.FalseSplit(aggregation="mean", )'
+                    'sm.FalseMerge(aggregation="mean", )'
+                    'sm.FalsePositive(aggregation="mean", )'
+                    'sm.FalseNegative(aggregation="mean", )'
+            -->
             <conditional name="inputs">
                 <param name="type" value="paired"/>
                 <param name="pairs" value="">
