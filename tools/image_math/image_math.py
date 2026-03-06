@@ -2,9 +2,8 @@ import argparse
 import ast
 import operator
 
-import giatools.io
+import giatools
 import numpy as np
-import skimage.io
 
 
 supported_operators = {
@@ -70,6 +69,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--expression', type=str, required=True)
+    parser.add_argument('--dtype', type=str, default=None)
     parser.add_argument('--output', type=str, required=True)
     parser.add_argument('--input', default=list(), action='append', required=True)
     args = parser.parse_args()
@@ -78,9 +78,9 @@ if __name__ == '__main__':
     im_shape = None
     for input in args.input:
         name, filepath = input.split(':')
-        im = giatools.io.imread(filepath)
+        im = giatools.Image.read(filepath)
         assert name not in inputs, 'Input name "{name}" is ambiguous.'
-        inputs[name] = im
+        inputs[name] = im.data
         if im_shape is None:
             im_shape = im.shape
         else:
@@ -88,4 +88,16 @@ if __name__ == '__main__':
 
     result = eval_expression(args.expression, inputs)
 
-    skimage.io.imsave(args.output, result)
+    # Perform explicit `dtype` conversion
+    if args.dtype:
+        if args.dtype.startswith('uint'):
+            result = result.clip(0, np.inf)
+        result = result.astype(args.dtype)
+
+    # Write result image (preserve metadata from last input image)
+    im.data = result
+    im.normalize_axes_like(
+        im.original_axes,
+    ).write(
+        args.output,
+    )
