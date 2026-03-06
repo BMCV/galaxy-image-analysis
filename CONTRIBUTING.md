@@ -32,7 +32,7 @@ Tools with **intensity image inputs** should accept PNG and TIFF files. Tools wi
 ### giatools
 
 In tool wrappers which use a Python script, image loading should be performed by using the `giatools` package ([docs](https://giatools.readthedocs.io)).
-This gives you out-of-the-box support for a veriety of file types, including TIFF, PNG, JPG, and OME-Zarr.
+This gives you out-of-the-box support for a veriety of file types, including TIFF, PNG, JPG, and OME-Zarr, and generally reduces the amount of redundant boilerplate code.
 
 Another advantage is that `giatools` gives you out-of-the-box support for 3-D images, multi-channel-images, and other rather exotic format flavors, even if the wrapped image processing/analysis operation only supports 2-D image data.
 For example, if the wrapped operation only support single-channel 2-D images, the following tool wrapper code structure can be used to process all slices of 3-D images, all channels of multi-channel images, and so on:
@@ -75,7 +75,7 @@ See the [docs](https://giatools.readthedocs.io/en/latest/giatools.image.html#gia
 
 ### numpy
 
-Instead of using functions from the global namespace of the `numpy` package to process the `section` or `image.data`, it is preferred to use the methods of the `section` and `image.data` objects directly. This is because, for some file types (e.g., OME-Zarr), those objects will be Dask arrays, and although these should fit in transparently into the NumPy framework, using implementation-specific methods promises greater efficiency of the computational performance, especially for large datasets.
+Instead of using functions from the global namespace of the `numpy` package to process the `section` or `image.data`, it is preferred to use the methods of the `section` and `image.data` objects directly (e.g., prefer `image.data.mean()` over `numpy.mean(image.data)`). This is because, for some file types (e.g., OME-Zarr), those objects will be Dask arrays, and although these should fit in transparently into the NumPy framework, using implementation-specific methods promises greater efficiency of the computational performance, especially for large datasets.
 
 ## Testing
 
