@@ -1,12 +1,10 @@
-<tool id="ip_spot_detection_2d" name="Perform 2-D spot detection" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
+<tool id="ip_spot_detection_2d" name="Perform 2-D spot detection" version="0.2" profile="20.05">
     <description></description>
     <macros>
         <import>creators.xml</import>
-        <token name="@TOOL_VERSION@">0.1</token>
-        <token name="@VERSION_SUFFIX@">0</token>
     </macros>
     <creator>
-        <expand macro="creators/bmcv" />
+        <expand macro="creators/bmcv"/>
     </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
@@ -21,6 +19,9 @@
         <requirement type="package" version="0.21">scikit-image</requirement>
         <requirement type="package" version="2024.6.18">tifffile</requirement>
     </requirements>
+    <required_files>
+        <include type="glob" path="*.py"/>
+    </required_files>
     <command detect_errors="aggressive">
     <![CDATA[
          python '$__tool_directory__/spot_detection_2d.py'

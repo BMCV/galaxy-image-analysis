@@ -1,4 +1,4 @@
-<tool id="ip_points_association_nn" name="Perform linking in time series (nearest neighbors)" version="0.0.4" profile="20.05"> 
+<tool id="ip_points_association_nn" name="Perform linking in time series (nearest neighbors)" version="0.0.5" profile="20.05"> 
     <description></description>
     <macros>
         <import>creators.xml</import>
@@ -17,6 +17,9 @@
         <requirement type="package" version="2.2.2">pandas</requirement>
         <requirement type="package" version="0.25.2">scikit-image</requirement>
     </requirements>
+    <required_files>
+        <include type="glob" path="*.py"/>
+    </required_files>
     <command>
     <![CDATA[
 
@@ -38,7 +41,7 @@
     </inputs>
     <outputs>
         <collection type="list" name="output" label="Tracks in ${on_string}">
-            <discover_datasets directory="output" pattern="__name__" format="tsv"/>
+            <discover_datasets directory="output" pattern="__name__" format="tabular"/>
         </collection>
     </outputs>
     <tests>
@@ -48,9 +51,9 @@
             <param name="thres" value="25"/>
             <param name="minlen" value="50"/>
             <output_collection name="output" type="list" count="70">
-                <element name="track1.tsv" value="output1/track1.tsv" ftype="tsv" compare="diff"/>
-                <element name="track2.tsv" value="output1/track2.tsv" ftype="tsv" compare="diff"/>
-                <element name="track3.tsv" value="output1/track3.tsv" ftype="tsv" compare="diff"/>
+                <element name="track1.tsv" value="output1/track1.tsv" ftype="tabular" compare="diff"/>
+                <element name="track2.tsv" value="output1/track2.tsv" ftype="tabular" compare="diff"/>
+                <element name="track3.tsv" value="output1/track3.tsv" ftype="tabular" compare="diff"/>
             </output_collection>
         </test>
     </tests>
