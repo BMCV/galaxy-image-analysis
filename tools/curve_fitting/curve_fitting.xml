@@ -1,4 +1,4 @@
-<tool id="ip_curve_fitting" name="Perform curve fitting" version="0.0.4" profile="20.05">
+<tool id="ip_curve_fitting" name="Perform curve fitting" version="0.0.5" profile="20.05">
     <description></description>
     <macros>
         <import>creators.xml</import>
@@ -17,6 +17,9 @@
         <requirement type="package" version="2.2.2">pandas</requirement>
         <requirement type="package" version="1.16.3">scipy</requirement>
     </requirements>
+    <required_files>
+        <include type="glob" path="*.py"/>
+    </required_files>
     <command>
     <![CDATA[
 
