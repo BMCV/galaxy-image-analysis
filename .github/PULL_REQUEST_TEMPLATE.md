@@ -4,10 +4,9 @@ PLEASE DESCRIBE YOUR PR HERE
 
 ### Check-list for the contributor
 
-Please make sure you have read the [CONTRIBUTING.md](https://github.com/BMCV/galaxy-image-analysis/blob/master/CONTRIBUTING.md) document (last updated: 2026/03/06).
-
 **Mandatory checks:**
 
+* [ ] I have read the [CONTRIBUTING.md](https://github.com/BMCV/galaxy-image-analysis/blob/master/CONTRIBUTING.md) document (last updated: 2026/03/06).
 * [ ] License permits unrestricted use (educational + commercial).
 * [ ] I agree to license these and all my past contributions to the Galaxy Image Analysis codebase under the [MIT license](https://github.com/BMCV/galaxy-image-analysis/blob/master/LICENSE.md).
 
