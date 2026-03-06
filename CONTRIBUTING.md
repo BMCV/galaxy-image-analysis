@@ -20,7 +20,7 @@ This document is the attempt to collect some rough rules for tools to follow in 
 
 **Intensity images** are images which generally are *not* label maps (and thus neither binary images).
 
-## File types
+## Image data representations and file types
 
 Tools with **label map inputs** should accept PNG and TIFF files. Tools with **label map outputs** should produce either `uint16` single-channel PNG or `uint16` single-channel TIFF. Using `uint8` instead of `uint16` is also acceptable, if there definetely are no more than 256 different labels. Using `uint8` should be preferred for binary images.
 
@@ -71,7 +71,7 @@ image = giatools.Image.read(args.input)
 for source_slice, section in image.iterate_jointly('XY'):
     ...  # process the 2-D `section` of the image
 ```
-See the [docs](https://giatools.readthedocs.io/en/latest/giatools.image.html#giatools.image.Image.iterate_jointly) for details. You can also access the pixel/voxel data of the image directly via `image.data`, that is a NumPy or Dask array.
+See the [docs](https://giatools.readthedocs.io/en/latest/giatools.image.html#giatools.image.Image.iterate_jointly) for details. You can also access the pixel/voxel data of the image directly (described below).
 
 ### numpy
 
