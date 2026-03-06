@@ -54,7 +54,7 @@
     </inputs>
     <outputs>
         <collection type="list" name="output" label="Curve fitting on ${on_string}">
-            <discover_datasets directory="output" pattern="__name__" format="tsv"/>
+            <discover_datasets directory="output" pattern="__name__" format="tabular"/>
         </collection>
     </outputs>
     <tests>
@@ -64,7 +64,7 @@
             <param name="penalty" value="abs"/>
             <param name="alpha" value="0.01"/>
             <output_collection name="output" type="list" count="1">
-                <element name="curve1.tsv" value="output1/curve1.tsv" ftype="tsv" compare="diff"/>
+                <element name="curve1.tsv" value="output1/curve1.tsv" ftype="tabular" compare="diff"/>
             </output_collection>
         </test>
         <test>
@@ -73,8 +73,8 @@
             <param name="penalty" value="abs"/>
             <param name="alpha" value="0.01"/>
             <output_collection name="output" type="list" count="2">
-                <element name="curve1.tsv" value="output2/curve1.tsv" ftype="tsv" compare="diff"/>
-                <element name="curve2.tsv" value="output2/curve2.tsv" ftype="tsv" compare="diff"/>
+                <element name="curve1.tsv" value="output2/curve1.tsv" ftype="tabular" compare="diff"/>
+                <element name="curve2.tsv" value="output2/curve2.tsv" ftype="tabular" compare="diff"/>
             </output_collection>
         </test>
     </tests>
