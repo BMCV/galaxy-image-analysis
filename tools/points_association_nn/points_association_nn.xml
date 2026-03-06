@@ -1,4 +1,4 @@
-<tool id="ip_points_association_nn" name="Perform linking in time series (nearest neighbors)" version="0.0.4" profile="20.05"> 
+<tool id="ip_points_association_nn" name="Perform linking in time series (nearest neighbors)" version="0.0.5" profile="20.05"> 
     <description></description>
     <macros>
         <import>creators.xml</import>
