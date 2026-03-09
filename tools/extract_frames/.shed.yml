@@ -2,7 +2,7 @@ categories:
   - Imaging
 description: Extract frames from .MP4 and .AVI
 long_description: This tools extract a user defined range of frames from an .MP4 or .AVI file and convert them to .TIFF files for further downstream analysis
-name: extract_frames 
-owner: ufz
-homepage_url: https://github.com/bmcv
+name: cv2_extract_frames 
+owner: imgteam
+homepage_url: https://opencv.org
 remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tree/master/tools/extract_frames
