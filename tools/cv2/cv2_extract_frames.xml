@@ -12,6 +12,9 @@
     <requirements>
         <requirement type="package" version="4.13.0">opencv</requirement>
     </requirements>
+    <required_files>
+        <include type="literal" path="cv2_extract_frames.py"/>
+    </required_files>
     <command detect_errors="aggressive">
         <![CDATA[
         mkdir ./output_frames &&

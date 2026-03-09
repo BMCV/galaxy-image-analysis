@@ -6,7 +6,7 @@ description: cv2 wrappers
 long_description:  |
     The cv2 python module allows to perform image and video processing using the OpenCV framework, the world's biggest computer vision library.
     OpenCV is open source, contains over 2500 algorithms, and is operated by the non-profit Open Source Vision Foundation. 
-remote_repository_url: https://github.com/BMCV/galaxy-image-analysis
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tools/cv2
 homepage_url: https://github.com/opencv/opencv
 auto_tool_repositories:
   name_template: "{{ tool_id }}"
