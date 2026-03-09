@@ -89,8 +89,12 @@
         Frames captured within a specified time interval (in seconds) will be extracted from the video file as individual TIFF images. 
         Optionally, the extracted frames can be converted to grayscale. 
 
-        **Codecs Support:** The library cv2 from OpenCV supports various video codecs including MPEG1, MPEG2, MPEG4, H264, HEVC, VP8, VP9, and more. Check
-        the documentation for more information on the supported codecs.
+        **Codecs Support:** 
+        The tool was tested with the following video codecs:
+        - H264
+        - H265 (HEVC)
+        The tool may support other codecs, though this has not been tested yet. 
+        If you have successfully converted files using alternative video formats or codecs, we would be grateful for your feedback at https://github.com/BMCV/galaxy-image-analysis.
 
     </help>
     <citations>
