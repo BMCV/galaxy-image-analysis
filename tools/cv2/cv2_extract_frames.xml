@@ -9,6 +9,12 @@
     <creator>
         <expand macro="creators/rmassei"/>
     </creator>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="biii">opencv</xref>
+    </xrefs>
     <requirements>
         <requirement type="package" version="4.13.0">opencv</requirement>
     </requirements>
@@ -93,9 +99,7 @@
         Optionally, the extracted frames can be converted to grayscale. 
 
         **Codecs Support:** 
-        The tool was tested with the following video codecs:
-        - H264
-        - H265 (HEVC)
+        The tool was tested with H.264 and H.265 (HEVC) video codecs.
         The tool may support other codecs, though this has not been tested yet. 
         If you have successfully converted files using alternative video formats or codecs, we would be grateful for your feedback at https://github.com/BMCV/galaxy-image-analysis.
 
