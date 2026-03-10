@@ -1,19 +1,29 @@
-name: cv2
 owner: imgteam
-categories:
-- Imaging
-description: cv2 wrappers
-long_description:  |
-    The cv2 python module allows to perform image and video processing using the OpenCV framework, the world's biggest computer vision library.
-    OpenCV is open source, contains over 2500 algorithms, and is operated by the non-profit Open Source Vision Foundation. 
-remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tools/cv2
-homepage_url: https://github.com/opencv/opencv
+
+suite:
+  name: suite_cv2
+
+  description: Suite of tools for wrapping the cv2 python module
+
+  long_description: |
+    OpenCV is a library of programming functions mainly for real-time computer vision. OpenCV is the world's biggest and open source vision library
+    with more the 2500 algorithms for tasks such as object detection, facial recognition, and image stitching, 
+    The Python interface cv2 allows accessing the functionalities provided by the OpenCV library.
+
+    This tool suite provides wrappers for the cv2 Python package enabling processing of image and video in Galaxy using OpenCV.
+ 
+
 auto_tool_repositories:
   name_template: "{{ tool_id }}"
-  description_template: "Wrapper of cv2: {{ tool_name }}."
-suite:
-  name: "suite_cv2"
-  description: "A suite of tools designed to bring the cv2 python module into Galaxy."
-  long_description: |
-      The cv2 python module allows to perform image and video processing using the OpenCV framework, the world's biggest computer vision library.
-      OpenCV is open source, contains over 2500 algorithms, and is operated by the non-profit Open Source Vision Foundation. 
+  description_template: "{{ tool_name }}"
+
+long_description: |
+  Enables processing image and video in Galaxy using OpenCV. Based on the cv2 Python package.
+
+type: unrestricted
+
+categories:
+  - Imaging
+
+homepage_url: https://github.com/opencv/opencv
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tools/cv2
