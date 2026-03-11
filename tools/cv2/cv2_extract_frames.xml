@@ -3,6 +3,7 @@
     <macros>
         <token name="@TOOL_VERSION@">4.13.0</token>
         <token name="@VERSION_SUFFIX@">0</token>
+        <token name="@HELP_SECONDS@">Use a negative value to specify the time from the end of the video (e.g., a value of -1 corresponds to "1 second before the end of the video").</token>
         <import>tests.xml</import>
         <import>creators.xml</import>
     </macros>
@@ -28,7 +29,9 @@
         python "$__tool_directory__/cv2_extract_frames.py" output_frames
         -v $video_path 
         -s $start_time 
-        -e $end_time 
+        #if str($end_time) != ""
+            -e $end_time 
+        #end if
         -c $convert_to_grey
 
         && ls -l ./output_frames
@@ -36,9 +39,12 @@
     </command>
     <inputs>
         <param name="video_path" type="data" optional="False" format="mp4,avi" label="Input video to convert"/>
-        <param name="start_time" type="float" value= "0" min="0" optional="False" label="Start time (seconds)" help="Start time in seconds"/>
-        <param name="end_time" type="float" value= "-1" optional="False" label="End time (seconds)" help="End time in seconds"/>
-        <param name="convert_to_grey" type="boolean" label="Convert output to single-channel grayscale?" help="Convert the file to grayscale (will be RGB otherwise)."/>
+        <param name="start_time" type="float" value="0" optional="false" label="Start time"
+               help="Start time in seconds. @HELP_SECONDS@"/>
+        <param name="end_time" type="float" optional="true" label="End time"
+               help="End time in seconds (optional). Leave empty to extract the sequence until the end of the video. @HELP_SECONDS@"/>
+        <param name="convert_to_grey" type="boolean" label="Convert output to single-channel grayscale?"
+               help="Convert the file to grayscale (will be RGB otherwise)."/>
     </inputs>
      <outputs>
         <collection name="frames" type="list" label="Output frames">
@@ -93,7 +99,7 @@
     </tests>
     <help>
 
-        **Extract a range of frames as TIFFs from MP4 and AVI files.**
+        **Extract a sequence of image frames as TIFFs from MP4 and AVI files.**
 
         Frames captured within a specified time interval (in seconds) will be extracted from the video file as individual TIFF images. 
         Optionally, the extracted frames can be converted to grayscale. 

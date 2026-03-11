@@ -1,12 +1,40 @@
 import argparse
 import os
 from pathlib import Path
-from typing import Union
+from typing import Optional, Union
 
 import cv2
 
 
-def extract_frames(output_dir: Union[str, Path], video_path: Union[str, Path], start_time: int, end_time: int, convert_to_grey: str = "false") -> Path:
+def _normalize_frame_number(
+    frame_count: int,
+    frame: int,
+) -> int:
+    """
+    Translate negative frame numbers into positives by counting from the end.
+
+    Raises:
+    -------
+        ValueError: The given frame is beyond the end of the sequence.
+
+    Returns:
+    --------
+        Integer number between 0 and num_frames - 1.
+    """
+    if frame >= frame_count:
+        raise ValueError(
+            f"Frame {frame} is beyond the end of the sequence ({frame_count} frames).",
+        )
+    return frame % frame_count
+
+
+def extract_frames(
+    output_dir: Union[str, Path],
+    video_path: Union[str, Path],
+    start_time: float,
+    end_time: Optional[float],
+    convert_to_grey: str = "false",
+) -> Path:
     """
     Extract frames from a video within a specified time range in seconds
 
@@ -37,14 +65,27 @@ def extract_frames(output_dir: Union[str, Path], video_path: Union[str, Path], s
         frame_count = video.get(cv2.CAP_PROP_FRAME_COUNT)
         print('Total frames:', frame_count)
 
-        start_frame = round(start_time * fps)
-        end_frame = round(end_time * fps)
-        if end_frame >= frame_count:
-            exit("End frame is beyond the end of the sequence.")
-        end_frame %= frame_count
+        # determine first and last frame of the sequence to extract
+        start_frame = _normalize_frame_number(
+            frame_count,
+            round(start_time * fps),
+        )
+        end_frame = (
+            _normalize_frame_number(
+                frame_count,
+                round(end_time * fps),
+            )
+            if end_time is not None
+            else frame_count - 1
+        )
         if start_frame > end_frame:
-            exit("Start frame is beyond the end frame.")
-        print(f'Starting extracting from frame {start_frame} until {end_frame}...')
+            raise ValueError(
+                f"Start frame {start_frame} is beyond the end frame {end_frame}.",
+            )
+        else:
+            print(
+                f'Starting extracting from frame {start_frame} until {end_frame}...',
+            )
 
         video.set(cv2.CAP_PROP_POS_FRAMES, start_frame)
         current_frame = start_frame
@@ -69,13 +110,16 @@ def extract_frames(output_dir: Union[str, Path], video_path: Union[str, Path], s
     except IOError:
         exit("Cannot open video file.")
 
+    except ValueError as err:
+        exit(err.args[0])
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Extract frames from video files")
     parser.add_argument('output_dir', help="Name of the output folder")
     parser.add_argument('-v', '--video_path', required=True, help="Path to the video to convert")
     parser.add_argument('-s', '--start_time', required=True, type=float, help="Start time in seconds")
-    parser.add_argument('-e', '--end_time', required=True, type=float, help="End time in seconds")
+    parser.add_argument('-e', '--end_time', type=float, help="End time in seconds")
     parser.add_argument('-c', '--convert_to_grey', required=False, type=str, help="Convert the file to grayscale")
 
     args = parser.parse_args()
