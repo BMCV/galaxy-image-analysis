@@ -36,7 +36,7 @@
     </command>
     <inputs>
         <param name="video_path" type="data" optional="False" format="mp4,avi" label="Input video to convert"/>
-        <param name="start_time" type="float" value= "0" optional="False" label="Start time (seconds)" help="Start time in seconds"/>
+        <param name="start_time" type="float" value= "0" min="0" optional="False" label="Start time (seconds)" help="Start time in seconds"/>
         <param name="end_time" type="float" value= "-1" optional="False" label="End time (seconds)" help="End time in seconds"/>
         <param name="convert_to_grey" type="boolean" label="Convert output to single-channel grayscale?" help="Convert the file to grayscale (will be RGB otherwise)."/>
     </inputs>

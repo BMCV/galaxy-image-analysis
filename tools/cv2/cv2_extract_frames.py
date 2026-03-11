@@ -37,8 +37,13 @@ def extract_frames(output_dir: Union[str, Path], video_path: Union[str, Path], s
         frame_count = video.get(cv2.CAP_PROP_FRAME_COUNT)
         print('Total frames:', frame_count)
 
-        start_frame = int(start_time * fps)
-        end_frame = int(end_time * fps)
+        start_frame = round(start_time * fps)
+        end_frame = round(end_time * fps)
+        if end_frame >= frame_count:
+            exit("End frame is beyond the end of the sequence.")
+        end_frame %= frame_count
+        if start_frame > end_frame:
+            exit("Start frame is beyond the end frame.")
         print(f'Starting extracting from frame {start_frame} until {end_frame}...')
 
         video.set(cv2.CAP_PROP_POS_FRAMES, start_frame)
@@ -62,7 +67,7 @@ def extract_frames(output_dir: Union[str, Path], video_path: Union[str, Path], s
         print('Extraction was successfully executed. Enjoy your frames.')
 
     except IOError:
-        print("Cannot open video file")
+        exit("Cannot open video file.")
 
 
 if __name__ == "__main__":
