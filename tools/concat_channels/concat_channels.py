@@ -1,9 +1,9 @@
 import argparse
 from typing import Any
 
+import attrs
 import giatools
 import numpy as np
-import skimage.io
 import skimage.util
 
 
@@ -31,7 +31,7 @@ def concat_channels(
             arr = skimage.util.img_as_float(arr)
 
         # Record the metadata
-        for metadata_key, metadata_value in img.metadata.items():
+        for metadata_key, metadata_value in attrs.asdict(img.metadata).items():
             metadata.setdefault(metadata_key, list())
             metadata[metadata_key].append(metadata_value)
 
@@ -61,15 +61,15 @@ def concat_channels(
 
     # Determine consensual metadata
     # TODO: Convert metadata of images with different units of measurement into a common unit
-    final_metadata = dict()
+    final_metadata = giatools.metadata.Metadata()
     for metadata_key, metadata_values in metadata.items():
-        if (metadata_value := reduce_metadata(metadata_values)) is not None:
-            final_metadata[metadata_key] = metadata_value
+        if (metadata_value := _reduce_metadata(metadata_values)) is not None:
+            setattr(final_metadata, metadata_key, metadata_value)
 
     # Update the `z_spacing` metadata, if concatenating along the Z-axis and `z_position` is available for all images
     if axis == 'Z' and len(images) >= 2 and len(z_positions := metadata.get('z_position', list())) == len(images):
         z_positions = sorted(z_positions)  # don't mutate the `metadata` dictionary for easier future code maintenance
-        final_metadata['z_spacing'] = abs(np.subtract(z_positions[1:], z_positions[:-1]).mean())
+        final_metadata.z_spacing = abs(np.subtract(z_positions[1:], z_positions[:-1]).mean())
 
     # Do the concatenation
     axis_pos = giatools.default_normalized_axes.index(axis)
@@ -84,11 +84,11 @@ def concat_channels(
     res = res.squeeze()
     print('Output TIFF shape:', res.data.shape)
     print('Output TIFF axes:', res.axes)
-    print('Output TIFF', metadata_to_str(final_metadata))
+    print('Output TIFF', _metadata_to_str(final_metadata))
     res.write(output_image_path, backend='tifffile')
 
 
-def reduce_metadata(values: list[Any]) -> Any | None:
+def _reduce_metadata(values: list[Any]) -> Any | None:
     non_none_values = list(filter(lambda value: value is not None, values))
 
     # Reduction is not possible if more than one type is involved (or none)
@@ -113,13 +113,13 @@ def reduce_metadata(values: list[Any]) -> Any | None:
         return None
 
 
-def metadata_to_str(metadata: dict) -> str:
+def _metadata_to_str(metadata: dict) -> str:
     tokens = list()
-    for key in sorted(metadata.keys()):
-        value = metadata[key]
-        if isinstance(value, tuple):
-            value = '(' + ', '.join([f'{val}' for val in value]) + ')'
-        tokens.append(f'{key}: {value}')
+    for key in sorted(attrs.asdict(metadata).keys()):
+        if (value := getattr(metadata, key)) is not None:
+            if isinstance(value, tuple):
+                value = '(' + ', '.join([f'{val}' for val in value]) + ')'
+            tokens.append(f'{key}: {value}')
     return ', '.join(tokens)
 
 
