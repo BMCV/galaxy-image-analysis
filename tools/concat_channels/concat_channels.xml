@@ -3,6 +3,12 @@
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
+        <xml name="inputs/spacing/rel_value">
+            <param name="value" type="float" value="0.1" min="0" max="1" label="Relative spacing"/>
+        </xml>
+        <xml name="inputs/spacing/intensity_value">
+            <param name="intensity_value" type="float" value="0" label="Intensity value used for spacing"/>
+        </xml>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
@@ -36,6 +42,10 @@
             --sort_by '$sort_by'
         #end if
 
+        #if $spacing.type != ""
+            --spacing '$spacing.type:$spacing.value:$spacing.intensity_value'
+        #end if
+
     ]]></command>
     <inputs>
         <param name="inputs" type="data" multiple="true" format="tiff,png" label="Images to concatenate"/>
@@ -55,6 +65,28 @@
             <option value="" selected="true">Do not sort (keep the order of the datasets)</option>
             <option value="z_position">Sort images by their position along the Z-axis</option>
         </param>
+        <conditional name="spacing">
+            <param name="type" type="select" label="Spacing between images">
+                <option value="" selected="true">None</option>
+                <option value="abs">Absolute</option>
+                <option value="rel_min">Relative of minimum</option>
+                <option value="rel_max">Relative of maximum</option>
+            </param>
+            <when value=""/>
+            <when value="abs">
+                <param name="value" type="integer" value="1" min="0" label="Absolute spacing"
+                       help="For concatenations along spatial axes, this is in pixels/voxels. For concatenations along the T-axis, this is in time steps, and analogously for other axes."/>
+                <expand macro="inputs/spacing/intensity_value"/>
+            </when>
+            <when value="rel_min">
+                <expand macro="inputs/spacing/rel_value"/>
+                <expand macro="inputs/spacing/intensity_value"/>
+            </when>
+            <when value="rel_max">
+                <expand macro="inputs/spacing/rel_value"/>
+                <expand macro="inputs/spacing/intensity_value"/>
+            </when>
+        </conditional>
     </inputs>
     <outputs>
         <data format="tiff" name="output"/>
@@ -210,6 +242,60 @@
                 <has_line line="Output TIFF shape: (3, 512, 512)"/>
                 <has_line line="Output TIFF axes: ZYX"/>
                 <has_line line="Output TIFF resolution: (1.137778101526753, 1.137778101526753), unit: mm, z_position: -220.27666766666667, z_spacing: 3.75"/>
+            </assert_stdout>
+        </test>
+        <!-- Test with absolute spacing, horizontal concatenation -->
+        <test>
+            <param name="inputs" value="red.tiff,green.tiff,blue.tiff"/>
+            <param name="axis" value="X"/>
+            <param name="mode" value=""/>
+            <param name="sort_by" value=""/>
+            <conditional name="spacing">
+                <param name="type" value="abs"/>
+                <param name="value" value="10"/>
+                <param name="intensity_value" value="1.0"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="rgb_spacing-10px.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Output TIFF shape: (10, 80, 3)"/>
+                <has_line line="Output TIFF axes: YXC"/>
+                <has_line line="Output TIFF resolution: (1.0, 1.0)"/>
+            </assert_stdout>
+        </test>
+        <!-- Test with `rel_min` spacing, horizontal concatenation -->
+        <test>
+            <param name="inputs" value="red.tiff,green.tiff,blue.tiff"/>
+            <param name="axis" value="X"/>
+            <param name="mode" value=""/>
+            <param name="sort_by" value=""/>
+            <conditional name="spacing">
+                <param name="type" value="rel_min"/>
+                <param name="value" value="0.1"/>
+                <param name="intensity_value" value="1.0"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="rgb_spacing-1px.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Output TIFF shape: (10, 62, 3)"/>
+                <has_line line="Output TIFF axes: YXC"/>
+                <has_line line="Output TIFF resolution: (1.0, 1.0)"/>
+            </assert_stdout>
+        </test>
+        <!-- Test with `rel_max` spacing, horizontal concatenation -->
+        <test>
+            <param name="inputs" value="red.tiff,green.tiff,blue.tiff"/>
+            <param name="axis" value="X"/>
+            <param name="mode" value=""/>
+            <param name="sort_by" value=""/>
+            <conditional name="spacing">
+                <param name="type" value="rel_max"/>
+                <param name="value" value="0.1"/>
+                <param name="intensity_value" value="1.0"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="rgb_spacing-3px.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="Output TIFF shape: (10, 66, 3)"/>
+                <has_line line="Output TIFF axes: YXC"/>
+                <has_line line="Output TIFF resolution: (1.0, 1.0)"/>
             </assert_stdout>
         </test>
     </tests>

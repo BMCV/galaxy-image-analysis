@@ -1,4 +1,5 @@
 import argparse
+import itertools
 from typing import Any
 
 import attrs
@@ -13,6 +14,7 @@ def concat_channels(
     axis: str,
     preserve_values: bool,
     sort_by: str | None,
+    spacing: dict | None,
 ):
     # Create list of arrays to be concatenated
     images = list()
@@ -71,8 +73,30 @@ def concat_channels(
         z_positions = sorted(z_positions)  # don't mutate the `metadata` dictionary for easier future code maintenance
         final_metadata.z_spacing = abs(np.subtract(z_positions[1:], z_positions[:-1]).mean())
 
-    # Do the concatenation
+    # Optionally add spacing between the images
     axis_pos = giatools.default_normalized_axes.index(axis)
+    if spacing:
+        if spacing['type'] == 'abs':
+            spacing_abs_value = int(spacing['value'])
+        else:
+            sizes = [arr.shape[axis_pos] for arr in images]
+            spacing_abs_value = round(
+                spacing['value'] *
+                dict(
+                    rel_min=min,
+                    rel_max=max,
+                )[
+                    spacing['type']
+                ](
+                    sizes,
+                )
+            )
+        spacer_shape = list(images[0].shape)
+        spacer_shape[axis_pos] = spacing_abs_value
+        spacer = np.full(spacer_shape, spacing['intensity_value'])
+        images = list(itertools.chain.from_iterable((arr, spacer) for arr in images))[:-1]
+
+    # Do the concatenation
     arr = np.concatenate(images, axis_pos)
     res = giatools.Image(
         data=arr,
@@ -130,12 +154,29 @@ if __name__ == "__main__":
     parser.add_argument('axis', type=str)
     parser.add_argument('--preserve_values', default=False, action='store_true')
     parser.add_argument('--sort_by', type=str, default=None)
+    parser.add_argument('--spacing', type=str, default=None)  # type:value:intensity_value
     args = parser.parse_args()
 
-    concat_channels(
-        args.input_files,
-        args.out_file,
-        args.axis,
-        args.preserve_values,
-        args.sort_by,
+    # Parse `--spacing` as an optional dictionary
+    if args.spacing:
+        _spacing = args.spacing.split(':')
+    spacing = (
+        None if args.spacing is None
+        else {
+            'type': _spacing[0],
+            'value': float(_spacing[1]),
+            'intensity_value': float(_spacing[2]),
+        }
     )
+
+    try:
+        concat_channels(
+            args.input_files,
+            args.out_file,
+            args.axis,
+            args.preserve_values,
+            args.sort_by,
+            spacing,
+        )
+    except ValueError as err:
+        exit(err.args[0])
