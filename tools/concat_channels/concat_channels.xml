@@ -94,6 +94,10 @@
     <tests>
         <!-- Test with "preserve brightness", vertical concatenation -->
         <test>
+            <!--
+                GIA204: :relax_linewrap: :relax_whitespace:
+                python '$__tool_directory__/concat_channels.py' 'input1_uint8.png' 'input2_float.tiff' '$output' 'Y'
+            -->
             <param name="inputs" value="input1_uint8.png,input2_float.tiff"/>
             <param name="axis" value="Y"/>
             <param name="mode" value=""/>
@@ -107,6 +111,10 @@
         </test>
         <!-- Test with "preserve range of values", vertical concatenation -->
         <test>
+            <!--
+                GIA204: :relax_linewrap: :relax_whitespace:
+                python '$__tool_directory__/concat_channels.py' 'input1_uint8.png' 'input2_float.tiff' '$output' 'Y' ––preserve_values
+            -->
             <param name="inputs" value="input1_uint8.png,input2_float.tiff"/>
             <param name="axis" value="Y"/>
             <param name="mode" value="--preserve_values"/>
@@ -132,6 +140,10 @@
         </test>
         <!-- Test concatenation of channels (axis *exists* in both images) -->
         <test>
+            <!--
+                GIA204: :relax_linewrap: :relax_whitespace:
+                python '$__tool_directory__/concat_channels.py' 'input1_uint8.png' 'input2_float.tiff' '$output' 'C'
+            -->
             <param name="inputs" value="input1_uint8.png,input2_float.tiff"/>
             <param name="axis" value="C"/>
             <param name="sort_by" value=""/>
@@ -152,6 +164,10 @@
         </test>
         <!-- Test concatenation of frames (axis *does not* exist in both images) -->
         <test>
+            <!--
+                GIA204: :relax_linewrap: :relax_whitespace:
+                python '$__tool_directory__/concat_channels.py' 'input1_uint8.png' 'input2_float.tiff' '$output' 'T'
+            -->
             <param name="inputs" value="input1_uint8.png,input2_float.tiff"/>
             <param name="axis" value="T"/>
             <param name="sort_by" value=""/>
@@ -172,6 +188,12 @@
         </test>
         <!-- Test concatenation of z-slices with metadata -->
         <test>
+            <!--
+                GIA204: :relax_linewrap: :relax_whitespace:
+                python '$__tool_directory__/concat_channels.py'
+                    'heart_ct_4043.tiff' 'heart_ct_3983.tiff' 'heart_ct_3953.tiff' 'heart_ct_3923.tiff'
+                    '$output' 'Z'  ––preserve_values
+            -->
             <param name="inputs" value="heart_ct_4043.tiff,heart_ct_3983.tiff,heart_ct_3953.tiff,heart_ct_3923.tiff"/>
             <param name="axis" value="Z"/>
             <param name="mode" value="--preserve_values"/>
@@ -197,6 +219,12 @@
         </test>
         <!-- Test concatenation of z-slices with metadata + sorting by `z_position` (inputs in wrong order) -->
         <test>
+            <!--
+                GIA204: :relax_linewrap: :relax_whitespace:
+                python '$__tool_directory__/concat_channels.py'
+                    'heart_ct_3953.tiff' 'heart_ct_3983.tiff' 'heart_ct_4043.tiff' 'heart_ct_3923.tiff'
+                    '$output' 'Z'  ––preserve_values ––sort_by 'z_position'
+            -->
             <param name="inputs" value="heart_ct_3953.tiff,heart_ct_3983.tiff,heart_ct_4043.tiff,heart_ct_3923.tiff"/>
             <param name="axis" value="Z"/>
             <param name="mode" value="--preserve_values"/>
@@ -222,6 +250,12 @@
         </test>
         <!-- Test concatenation of z-slices with a missing slice in between (`z_position` must increase) -->
         <test>
+            <!--
+                GIA204: :relax_linewrap: :relax_whitespace:
+                python '$__tool_directory__/concat_channels.py'
+                    'heart_ct_4043.tiff' 'heart_ct_3983.tiff' 'heart_ct_3923.tiff'
+                    '$output' 'Z'  ––preserve_values
+            -->
             <param name="inputs" value="heart_ct_4043.tiff,heart_ct_3983.tiff,heart_ct_3923.tiff"/>
             <param name="axis" value="Z"/>
             <param name="mode" value="--preserve_values"/>
@@ -246,6 +280,12 @@
         </test>
         <!-- Test with absolute spacing, horizontal concatenation -->
         <test>
+            <!--
+                GIA204: :relax_linewrap: :relax_whitespace:
+                python '$__tool_directory__/concat_channels.py'
+                    'red.tiff' 'green.tiff' 'blue.tiff'
+                    '$output' 'X'  ––spacing 'abs:10:1.0'
+            -->
             <param name="inputs" value="red.tiff,green.tiff,blue.tiff"/>
             <param name="axis" value="X"/>
             <param name="mode" value=""/>
@@ -264,6 +304,12 @@
         </test>
         <!-- Test with `rel_min` spacing, horizontal concatenation -->
         <test>
+            <!--
+                GIA204: :relax_linewrap: :relax_whitespace:
+                python '$__tool_directory__/concat_channels.py'
+                    'red.tiff' 'green.tiff' 'blue.tiff'
+                    '$output' 'X'  ––spacing 'rel_min:0.1:1.0'
+            -->
             <param name="inputs" value="red.tiff,green.tiff,blue.tiff"/>
             <param name="axis" value="X"/>
             <param name="mode" value=""/>
@@ -282,6 +328,12 @@
         </test>
         <!-- Test with `rel_max` spacing, horizontal concatenation -->
         <test>
+            <!--
+                GIA204: :relax_linewrap: :relax_whitespace:
+                python '$__tool_directory__/concat_channels.py'
+                    'red.tiff' 'green.tiff' 'blue.tiff'
+                    '$output' 'X'  ––spacing 'rel_max:0.1:1.0'
+            -->
             <param name="inputs" value="red.tiff,green.tiff,blue.tiff"/>
             <param name="axis" value="X"/>
             <param name="mode" value=""/>
