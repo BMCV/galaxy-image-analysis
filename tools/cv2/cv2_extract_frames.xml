@@ -39,7 +39,7 @@
     </command>
     <inputs>
         <param name="video_path" type="data" optional="False" format="mp4,avi" label="Input video to convert"/>
-        <param name="start_time" type="float" value="0" min = "0" optional="false" label="Start time"
+        <param name="start_time" type="float" value="0" optional="false" label="Start time"
                help="Start time in seconds. @HELP_SECONDS@"/>
         <param name="end_time" type="float" optional="true" label="End time"
                help="End time in seconds (optional). Leave empty to extract the sequence until the end of the video. @HELP_SECONDS@"/>
