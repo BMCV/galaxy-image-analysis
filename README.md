@@ -35,7 +35,7 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 
 ### Image conversion [[…]](https://github.com/BMCV/galaxy-image-analysis/issues?q=label%3A%22Image%20Conversion%22)
 
-- [Concatenate images or channels](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/concat_channels/ip_concat_channels)
+- [Concatenate images](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/concat_channels/ip_concat_channels)
 - [Convert binary image to label map](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/binary2labelimage/ip_binary_to_labelimage)
 - [Convert binary image to points (center of masses)](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/binaryimage2points/ip_binaryimage_to_points)
 - [Convert binary image to points (point coordinates)](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/coordinates_of_roi/ip_coordinates_of_roi)
