@@ -56,22 +56,22 @@
             <!-- test MP4 w/o grayscale conversion -->
             <param name="video_path" value="input1.mp4"/>
             <param name="start_time" value="0"/>
-            <param name="end_time" value="1"/>
+            <param name="end_time" value="0.1"/>
             <param name="convert_to_grey" value="False"/>
             <output_collection name="frames" type="list">
-                <expand macro="tests/intensity_image_diff/element" name="frame_00001.tiff" value="frame_00001.tiff" ftype="tiff"/>
-                <expand macro="tests/intensity_image_diff/element" name="frame_00002.tiff" value="frame_00002.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="frame_0.tiff" value="frame_0.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="frame_1.tiff" value="frame_1.tiff" ftype="tiff"/>
             </output_collection>
         </test>
         <test>
             <!-- test MP4 w grayscale conversion -->
             <param name="video_path" value="input1.mp4"/>
             <param name="start_time" value="0"/>
-            <param name="end_time" value="1"/>
+            <param name="end_time" value="0.1"/>
             <param name="convert_to_grey" value="True"/>
             <output_collection name="frames" type="list">
-                <expand macro="tests/intensity_image_diff/element" name="frame_00003.tiff" value="frame_00003.tiff" ftype="tiff"/>
-                <expand macro="tests/intensity_image_diff/element" name="frame_00004.tiff" value="frame_00004.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="frame_2.tiff" value="frame_2.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="frame_3.tiff" value="frame_3.tiff" ftype="tiff"/>
             </output_collection>
         </test>
         <test>
@@ -81,8 +81,8 @@
             <param name="end_time" value="1"/>
             <param name="convert_to_grey" value="False"/>
             <output_collection name="frames" type="list">
-                <expand macro="tests/intensity_image_diff/element" name="frame_00005.tiff" value="frame_00005.tiff" ftype="tiff"/>
-                <expand macro="tests/intensity_image_diff/element" name="frame_00006.tiff" value="frame_00006.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="frame_4.tiff" value="frame_4.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="frame_5.tiff" value="frame_5.tiff" ftype="tiff"/>
             </output_collection>
         </test>
         <test>
@@ -92,9 +92,25 @@
             <param name="end_time" value="1"/>
             <param name="convert_to_grey" value="True"/>
             <output_collection name="frames" type="list">
-                <expand macro="tests/intensity_image_diff/element" name="frame_00007.tiff" value="frame_00007.tiff" ftype="tiff"/>
-                <expand macro="tests/intensity_image_diff/element" name="frame_00008.tiff" value="frame_00008.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="frame_6.tiff" value="frame_6.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="frame_7.tiff" value="frame_7.tiff" ftype="tiff"/>
             </output_collection>
+        </test>
+        <test>
+            <!-- test AVI with endtime 0 -->
+            <param name="video_path" value="input2.avi"/>
+            <param name="start_time" value="0"/>
+            <param name="end_time" value="0"/>
+            <param name="convert_to_grey" value="True"/>
+            <output_collection name="frames" type="list" count="1"/>
+        </test>
+        <test>
+            <!-- test MP4 with endtime negative-->
+            <param name="video_path" value="input1.mp4"/>
+            <param name="start_time" value="0"/>
+            <param name="end_time" value="-1"/>
+            <param name="convert_to_grey" value="True"/>
+            <output_collection name="frames" type="list" count="238"/>
         </test>
     </tests>
     <help>
