@@ -96,7 +96,7 @@ def extract_frames(
                 break
 
             # Convert to single-channel grayscale
-            output_path = os.path.join(output_dir, f"frame_{current_frame:05d}.tiff")
+            output_path = os.path.join(output_dir, f"frame_{int(current_frame):d}.tiff")
             if convert_to_grey == "true":
                 cv2.imwrite(output_path, cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY), [cv2.IMWRITE_TIFF_COMPRESSION, 1])
             else:
