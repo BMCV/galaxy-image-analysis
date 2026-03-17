@@ -26,7 +26,7 @@
         <![CDATA[
         mkdir ./output_frames &&
 
-        python "$__tool_directory__/cv2_extract_frames.py" output_frames
+        python '$__tool_directory__/cv2_extract_frames.py' output_frames
         -v '$video_path' 
         -s '$start_time' 
         #if str($end_time) != ""
