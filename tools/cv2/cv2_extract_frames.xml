@@ -27,12 +27,12 @@
         mkdir ./output_frames &&
 
         python "$__tool_directory__/cv2_extract_frames.py" output_frames
-        -v $video_path 
-        -s $start_time 
+        -v '$video_path' 
+        -s '$start_time' 
         #if str($end_time) != ""
-            -e $end_time 
+            -e '$end_time' 
         #end if
-        -c $convert_to_grey
+        -c '$convert_to_grey'
 
         && ls -l ./output_frames
         ]]>
