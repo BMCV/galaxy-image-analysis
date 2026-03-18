@@ -68,33 +68,36 @@ if __name__ == '__main__':
     np.random.seed(0)
 
     # Load image and normalize
-    im = giatools.io.imread(args.input)
+    im = giatools.Image.read(args.input).data
     im = np.squeeze(im)
-    assert im.ndim == 2
+    if im.ndim == 2:
 
-    # Build adjacency graph of the labels
-    G = build_label_adjacency_graph(im, args.radius, args.bg_label)
+        # Build adjacency graph of the labels
+        G = build_label_adjacency_graph(im, args.radius, args.bg_label)
+    
+        # Apply greedy coloring
+        graph_coloring = nx.greedy_color(G)
+        unique_colors = frozenset(graph_coloring.values())
+    
+        # Assign colors to nodes based on the greedy coloring
+        colors = get_n_unique_mpl_colors(
+            n=len(unique_colors),
+            phase_offset=args.phase,
+        )
+        graph_color_to_mpl_color = dict(zip(unique_colors, colors))
+        node_colors = [graph_color_to_mpl_color[graph_coloring[n]] for n in G.nodes()]
+    
+        # Render result
+        bg_color_rgb = color_hex_to_rgb_tuple(args.bg_color)
+        result = np.dstack([np.full(im.shape, bg_color_rgb[ch], np.uint8) for ch in range(3)])
+        for label, label_color in zip(G.nodes(), node_colors):
+    
+            cc = (im == label)
+            for ch in range(3):
+                result[:, :, ch][cc] = label_color[ch]
+    
+        # Write result image
+        skimage.io.imsave(args.output, result)
 
-    # Apply greedy coloring
-    graph_coloring = nx.greedy_color(G)
-    unique_colors = frozenset(graph_coloring.values())
-
-    # Assign colors to nodes based on the greedy coloring
-    colors = get_n_unique_mpl_colors(
-        n=len(unique_colors),
-        phase_offset=args.phase,
-    )
-    graph_color_to_mpl_color = dict(zip(unique_colors, colors))
-    node_colors = [graph_color_to_mpl_color[graph_coloring[n]] for n in G.nodes()]
-
-    # Render result
-    bg_color_rgb = color_hex_to_rgb_tuple(args.bg_color)
-    result = np.dstack([np.full(im.shape, bg_color_rgb[ch], np.uint8) for ch in range(3)])
-    for label, label_color in zip(G.nodes(), node_colors):
-
-        cc = (im == label)
-        for ch in range(3):
-            result[:, :, ch][cc] = label_color[ch]
-
-    # Write result image
-    skimage.io.imsave(args.output, result)
+    else:
+        exit('Input image has unsupported dimensions.')
