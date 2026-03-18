@@ -26,6 +26,7 @@
     --radius $radius
     --bg_label $bg_label
     --bg_color '$bg_color'
+    --phase $phase
 
     ## Outputs
 
@@ -38,6 +39,8 @@
         <param argument="--radius" type="integer" min="1" value="10" label="Radius of the neighborhood" help="Defines the neighborhood (in pixels) where labels are considered to be adjacent." />
         <param argument="--bg_label" type="integer" value="0" label="Background label" />
         <param argument="--bg_color" type="color" value="#000000" label="Background color"/>
+        <param argument="--phase" type="float" min="0" max="1" value="0.55" label="Label phase"
+               help="Phase for sampling a color beam. Governs the overall teint of the colorization. Lower values tend to produce bluish colors, while higher values tend to favor reddish colors."/>
     </inputs>
     <outputs>
        <data format="png" name="output" from_work_dir="output.png" />
@@ -45,30 +48,33 @@
     <tests>
         <!-- int64 -->
         <test>
-            <param name="input" value="input1.tiff" />
-            <param name="radius" value="1" />
-            <param name="bg_label" value="0" />
-            <param name="bg_color" value="#5a5a5a" />
+            <param name="input" value="input1.tiff"/>
+            <param name="radius" value="1"/>
+            <param name="bg_label" value="0"/>
+            <param name="bg_color" value="#5a5a5a"/>
+            <param name="phase" value="0" />
             <expand macro="tests/intensity_image_diff" name="output" value="output1.png" ftype="png">
                 <has_image_channels channels="3"/>
             </expand>
         </test>
         <!-- uint8 -->
         <test>
-            <param name="input" value="input2.tiff" />
-            <param name="radius" value="10" />
-            <param name="bg_label" value="0" />
-            <param name="bg_color" value="#ffffff" />
+            <param name="input" value="input2.tiff"/>
+            <param name="radius" value="10"/>
+            <param name="bg_label" value="0"/>
+            <param name="bg_color" value="#ffffff"/>
+            <param name="phase" value="0.55"/>
             <expand macro="tests/intensity_image_diff" name="output" value="output2.png" ftype="png">
                 <has_image_channels channels="3"/>
             </expand>
         </test>
         <!-- uint16 -->
         <test>
-            <param name="input" value="input3.tiff" />
-            <param name="radius" value="100" />
-            <param name="bg_label" value="0" />
-            <param name="bg_color" value="#ffffff" />
+            <param name="input" value="input3.tiff"/>
+            <param name="radius" value="100"/>
+            <param name="bg_label" value="0"/>
+            <param name="bg_color" value="#ffffff"/>
+            <param name="phase" value="0.55"/>
             <expand macro="tests/intensity_image_diff" name="output" value="output3.png" ftype="png">
                 <has_image_channels channels="3"/>
             </expand>

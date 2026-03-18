@@ -43,12 +43,11 @@ def build_label_adjacency_graph(im, radius, bg_label):
     return G
 
 
-def get_n_unique_mpl_colors(n: int, colormap: str = 'jet'):
+def get_n_unique_mpl_colors(n: int, phase_offset: float, colormap: str = 'jet'):
     """
     Yields `n` unique colors from the given `colormap`.
     """
     cmap = plt.get_cmap(colormap)
-    phase_offset = np.random.rand()
     for t in np.linspace(0, 1, num=n, endpoint=False):
         f = (t + phase_offset) % 1
         yield np.multiply(255, cmap(f))
@@ -61,6 +60,7 @@ if __name__ == '__main__':
     parser.add_argument('--bg_label', type=int)
     parser.add_argument('--bg_color', type=str)
     parser.add_argument('--radius', type=int)
+    parser.add_argument('--phase', type=float)
     parser.add_argument('--output', type=str)
     args = parser.parse_args()
 
@@ -80,7 +80,11 @@ if __name__ == '__main__':
     unique_colors = frozenset(graph_coloring.values())
 
     # Assign colors to nodes based on the greedy coloring
-    graph_color_to_mpl_color = dict(zip(unique_colors, get_n_unique_mpl_colors(len(unique_colors))))
+    colors = get_n_unique_mpl_colors(
+        n=len(unique_colors),
+        phase_offset=args.phase,
+    )
+    graph_color_to_mpl_color = dict(zip(unique_colors, colors))
     node_colors = [graph_color_to_mpl_color[graph_coloring[n]] for n in G.nodes()]
 
     # Render result
