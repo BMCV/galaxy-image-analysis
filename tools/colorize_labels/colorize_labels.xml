@@ -3,6 +3,7 @@
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
+        <import>validators.xml</import>
         <token name="@TOOL_VERSION@">3.6.1</token>
         <token name="@VERSION_SUFFIX@">0</token>
     </macros>
@@ -37,7 +38,11 @@
     ]]>
     </command>
     <inputs>
-        <param name="input" type="data" format="tiff,png" label="Input image (label map)" />
+        <param name="input" type="data" format="tiff,png" label="Input image (label map)">
+            <expand macro="validators/is_single_channel"/>
+            <expand macro="validators/is_single_frame"/>
+            <expand macro="validators/is_2d"/>
+        </param>
         <param name="radius" type="integer" min="1" value="10" label="Radius of the neighborhood" help="Defines the neighborhood (in pixels) where labels are considered to be adjacent." />
         <param name="bg_label" type="integer" value="0" label="Background label" />
         <param name="bg_color" type="color" value="#000000" label="Background color"/>
