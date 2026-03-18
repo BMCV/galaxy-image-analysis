@@ -43,16 +43,15 @@ def build_label_adjacency_graph(im, radius, bg_label):
     return G
 
 
-def get_n_unique_mpl_colors(n, colormap='jet', cyclic=False):
+def get_n_unique_mpl_colors(n: int, colormap: str = 'jet'):
     """
     Yields `n` unique colors from the given `colormap`.
-
-    Set `cyclic` to `True` if the `colormap` is cyclic.
     """
     cmap = plt.get_cmap(colormap)
-    m = n if cyclic else n - 1
-    for i in range(n):
-        yield np.multiply(255, cmap(i / m))
+    phase_offset = np.random.rand()
+    for t in np.linspace(0, 1, num=n, endpoint=False):
+        f = (t + phase_offset) % 1
+        yield np.multiply(255, cmap(f))
 
 
 if __name__ == '__main__':
@@ -64,6 +63,9 @@ if __name__ == '__main__':
     parser.add_argument('--radius', type=int)
     parser.add_argument('--output', type=str)
     args = parser.parse_args()
+
+    # Set random seed for reproducibility
+    np.random.seed(0)
 
     # Load image and normalize
     im = giatools.io.imread(args.input)
