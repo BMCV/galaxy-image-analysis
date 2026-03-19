@@ -23,28 +23,31 @@
         <requirement type="package" version="0.25.2">scikit-image</requirement>
         <requirement type="package" version="0.7.3">giatools</requirement>
         <requirement type="package" version="3.10.8">matplotlib-base</requirement>
+        <requirement type="package" version="0.12.2">ome-zarr</requirement>
     </requirements>
     <required_files>
         <include type="glob" path="*.py"/>
     </required_files>
     <command><![CDATA[
 
-    ## Inputs
+        python '$__tool_directory__/colorize_labels.py'
 
-    python '$__tool_directory__/colorize_labels.py' '$input'
-    --radius $radius
-    --bg_label $bg_label
-    --bg_color '$bg_color'
-    --phase $phase
+        #if $input.extension == "zarr"
+            '$input.extra_files_path/$input.metadata.store_root'
+        #else
+            '$input'
+        #end if
 
-    ## Outputs
-
-    --output output.png
+        --radius $radius
+        --bg_label $bg_label
+        --bg_color '$bg_color'
+        --phase $phase
+        --output output.png
 
     ]]>
     </command>
     <inputs>
-        <param name="input" type="data" format="tiff,png" label="Input image (label map)">
+        <param name="input" type="data" format="tiff,png,zarr" label="Input image (label map)">
             <expand macro="validators/is_single_channel"/>
             <expand macro="validators/is_single_frame"/>
             <expand macro="validators/is_2d"/>
@@ -70,7 +73,7 @@
                 <has_image_channels channels="3"/>
             </expand>
         </test>
-        <!-- uint8 -->
+        <!-- uint8, background label does not exist in image -->
         <test>
             <param name="input" value="input2.tiff"/>
             <param name="radius" value="10"/>
@@ -78,6 +81,17 @@
             <param name="bg_color" value="#ffffff"/>
             <param name="phase" value="0.55"/>
             <expand macro="tests/intensity_image_diff" name="output" value="output2.png" ftype="png">
+                <has_image_channels channels="3"/>
+            </expand>
+        </test>
+        <!-- uint8, Zarr -->
+        <test>
+            <param name="input" value="input13.zarr"/>
+            <param name="radius" value="100"/>
+            <param name="bg_label" value="0"/>
+            <param name="bg_color" value="#ffffff"/>
+            <param name="phase" value="1.0"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="output13.png" ftype="png">
                 <has_image_channels channels="3"/>
             </expand>
         </test>

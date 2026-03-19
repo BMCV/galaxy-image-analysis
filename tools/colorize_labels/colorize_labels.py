@@ -68,7 +68,7 @@ if __name__ == '__main__':
     np.random.seed(0)
 
     # Load image and normalize
-    im = giatools.Image.read(args.input).data
+    im = np.asarray(giatools.Image.read(args.input).data)
     im = np.squeeze(im)
     if im.ndim == 2:
 
