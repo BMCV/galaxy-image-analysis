@@ -43,16 +43,14 @@ def build_label_adjacency_graph(im, radius, bg_label):
     return G
 
 
-def get_n_unique_mpl_colors(n, colormap='jet', cyclic=False):
+def get_n_unique_mpl_colors(n: int, phase_offset: float, colormap: str = 'jet'):
     """
     Yields `n` unique colors from the given `colormap`.
-
-    Set `cyclic` to `True` if the `colormap` is cyclic.
     """
     cmap = plt.get_cmap(colormap)
-    m = n if cyclic else n - 1
-    for i in range(n):
-        yield np.multiply(255, cmap(i / m))
+    for t in np.linspace(0, 1, num=n, endpoint=False):
+        f = (t + phase_offset) % 1
+        yield np.multiply(255, cmap(f))
 
 
 if __name__ == '__main__':
@@ -62,33 +60,44 @@ if __name__ == '__main__':
     parser.add_argument('--bg_label', type=int)
     parser.add_argument('--bg_color', type=str)
     parser.add_argument('--radius', type=int)
+    parser.add_argument('--phase', type=float)
     parser.add_argument('--output', type=str)
     args = parser.parse_args()
 
+    # Set random seed for reproducibility
+    np.random.seed(0)
+
     # Load image and normalize
-    im = giatools.io.imread(args.input)
+    im = np.asarray(giatools.Image.read(args.input).data)
     im = np.squeeze(im)
-    assert im.ndim == 2
+    if im.ndim == 2:
 
-    # Build adjacency graph of the labels
-    G = build_label_adjacency_graph(im, args.radius, args.bg_label)
+        # Build adjacency graph of the labels
+        G = build_label_adjacency_graph(im, args.radius, args.bg_label)
 
-    # Apply greedy coloring
-    graph_coloring = nx.greedy_color(G)
-    unique_colors = frozenset(graph_coloring.values())
+        # Apply greedy coloring
+        graph_coloring = nx.greedy_color(G)
+        unique_colors = frozenset(graph_coloring.values())
 
-    # Assign colors to nodes based on the greedy coloring
-    graph_color_to_mpl_color = dict(zip(unique_colors, get_n_unique_mpl_colors(len(unique_colors))))
-    node_colors = [graph_color_to_mpl_color[graph_coloring[n]] for n in G.nodes()]
+        # Assign colors to nodes based on the greedy coloring
+        colors = get_n_unique_mpl_colors(
+            n=len(unique_colors),
+            phase_offset=args.phase,
+        )
+        graph_color_to_mpl_color = dict(zip(unique_colors, colors))
+        node_colors = [graph_color_to_mpl_color[graph_coloring[n]] for n in G.nodes()]
 
-    # Render result
-    bg_color_rgb = color_hex_to_rgb_tuple(args.bg_color)
-    result = np.dstack([np.full(im.shape, bg_color_rgb[ch], np.uint8) for ch in range(3)])
-    for label, label_color in zip(G.nodes(), node_colors):
+        # Render result
+        bg_color_rgb = color_hex_to_rgb_tuple(args.bg_color)
+        result = np.dstack([np.full(im.shape, bg_color_rgb[ch], np.uint8) for ch in range(3)])
+        for label, label_color in zip(G.nodes(), node_colors):
 
-        cc = (im == label)
-        for ch in range(3):
-            result[:, :, ch][cc] = label_color[ch]
+            cc = (im == label)
+            for ch in range(3):
+                result[:, :, ch][cc] = label_color[ch]
 
-    # Write result image
-    skimage.io.imsave(args.output, result)
+        # Write result image
+        skimage.io.imsave(args.output, result)
+
+    else:
+        exit('Input image has unsupported dimensions.')
