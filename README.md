@@ -47,6 +47,7 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 - [Convert single-channel to multi-channel image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/repeat_channels/repeat_channels) with NumPy
 - [Convert to OME-Zarr](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/bioformats2raw/bf2raw) with Bio-Formats
 - [Export DICOM metadata](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/highdicom_dicom2text/highdicom_dicom2text) with highdicom
+- [Extract video frames](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/cv2_extract_frames/cv2_extract_frames) with cv2
 - [Perform color deconvolution or transformation](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/color_deconvolution/ip_color_deconvolution)
 - [Permutate image axes](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/permutate_axis/ip_permutate_axis)
 - [Slice image into patches](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/slice_image/ip_slice_image)
