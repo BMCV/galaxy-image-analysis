@@ -275,6 +275,7 @@ if __name__ == '__main__':
             geojson = json.load(f)
 
     # Rasterize the image from GeoJSON
+    bg_value = 0
     img = np.full(shape, dtype=np.uint16, fill_value=bg_value)
     for mask, label in rasterize(
         geojson,
