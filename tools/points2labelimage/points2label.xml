@@ -24,14 +24,25 @@
     <command detect_errors="aggressive"><![CDATA[
 
         python '$__tool_directory__/points2label.py'
+
         '$input.file_ext'
         '$input'
         '$output'
+
         $shapex
         $shapey
-        $has_header
-        $swap_xy
-        $binary
+
+        #if $has_header
+            --has_header
+        #end if
+
+        #if $swap_xy
+            --swap_xy
+        #end if
+
+        #if $binary
+            --binary
+        #end if
 
     ]]></command>
     <inputs>

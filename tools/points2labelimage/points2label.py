@@ -252,9 +252,11 @@ if __name__ == '__main__':
     parser.add_argument('out_file', type=str, help='Output file path (TIFF)')
     parser.add_argument('shapex', type=int, help='Output image width')
     parser.add_argument('shapey', type=int, help='Output image height')
-    parser.add_argument('--has_header', dest='has_header', default=False, help='Set True if tabular file has a header')
-    parser.add_argument('--swap_xy', dest='swap_xy', default=False, help='Swap X and Y coordinates')
-    parser.add_argument('--binary', dest='binary', default=False, help='Produce binary image')
+    parser.add_argument('--bg_value', type=int, default=0, help='Label used for image background')
+    parser.add_argument('--has_header', default=False, help='Set if tabular file has a header', action='store_true')
+    parser.add_argument('--swap_xy', default=False, help='Swap X and Y coordinates', action='store_true')
+    parser.add_argument('--binary', default=False, help='Produce binary image', action='store_true')
+    parser.add_argument('--split', default=False, help='Split rasterizations into one file per object', action='store_true')
     args = parser.parse_args()
 
     # Determine target shape
@@ -275,14 +277,22 @@ if __name__ == '__main__':
             geojson = json.load(f)
 
     # Rasterize the image from GeoJSON
-    bg_value = 0
-    img = np.full(shape, dtype=np.uint16, fill_value=bg_value)
+    img = None
     for mask, label in rasterize(
         geojson,
         shape,
+        bg_value=args.bg_value,
         fg_value=0xffff if args.binary else None,
     ):
+        if args.split or img is None:
+            img = np.full(shape, dtype=np.uint16, fill_value=args.bg_value)
+
+        # Blend the rasterization into the target image
         img[mask] = label
+
+        # TODO: write image to file if `args.split`
+
+    # Swap axes if requested
     if args.swap_xy:
         img = img.T
 
