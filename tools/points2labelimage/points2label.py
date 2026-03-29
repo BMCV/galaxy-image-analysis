@@ -4,6 +4,7 @@ import warnings
 from typing import (
     Any,
     Dict,
+    Iterator,
     Optional,
     Tuple,
 )
@@ -79,7 +80,7 @@ def rasterize(
     shape: Tuple[int, int],
     bg_value: int = 0,
     fg_value: Optional[int] = None,
-) -> npt.NDArray:
+) -> Iterator[Tuple[npt.NDArray, int]]:
     """
     Rasterize GeoJSON into a pixel image, that is returned as a NumPy array.
     """
@@ -99,7 +100,6 @@ def rasterize(
     autolabel = AutoLabel(reserved_labels)
 
     # Rasterize the image
-    img = np.full(shape, dtype=np.uint16, fill_value=bg_value)
     for feature in geojson['features']:
         geom_type = feature['geometry']['type'].lower()
         coords = feature['geometry']['coordinates']
@@ -140,11 +140,8 @@ def rasterize(
         else:
             label = fg_value
 
-        # Blend the current `mask` with the rasterized image
-        img[mask] = label
-
-    # Return the rasterized image
-    return img
+        # Yield the current `mask` and `label`
+        yield mask, label
 
 
 def convert_tabular_to_geojson(
@@ -260,6 +257,11 @@ if __name__ == '__main__':
     parser.add_argument('--binary', dest='binary', default=False, help='Produce binary image')
     args = parser.parse_args()
 
+    # Determine target shape
+    shape = (args.shapey, args.shapex)
+    if args.swap_xy:
+        shape = shape[::-1]
+
     # Validate command-line arguments
     assert args.in_ext in ('tabular', 'geojson'), (
         f'Unexpected input file format: {args.in_ext}'
@@ -273,12 +275,13 @@ if __name__ == '__main__':
             geojson = json.load(f)
 
     # Rasterize the image from GeoJSON
-    shape = (args.shapey, args.shapex)
-    img = rasterize(
+    img = np.full(shape, dtype=np.uint16, fill_value=bg_value)
+    for mask, label in rasterize(
         geojson,
-        shape if not args.swap_xy else shape[::-1],
+        shape,
         fg_value=0xffff if args.binary else None,
-    )
+    ):
+        img[mask] = label
     if args.swap_xy:
         img = img.T
 
