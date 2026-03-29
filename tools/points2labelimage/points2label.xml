@@ -32,9 +32,9 @@
         $shapex
         $shapey
 
-        --has_header
-        --swap_xy
-        --binary
+        $has_header
+        $swap_xy
+        $binary
 
     ]]></command>
     <inputs>

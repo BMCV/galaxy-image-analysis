@@ -53,11 +53,11 @@ class AutoLabel:
             self.next_autolabel += 1
 
 
-def get_feature_label(feature: Dict) -> Optional[int]:
+def get_feature_label(feature: Dict, label_property: str) -> Optional[int]:
     """
     Get the label of a GeoJSON feature, or `None` if there is no proper label.
     """
-    label = feature.get('properties', {}).get('name', None)
+    label = feature.get('properties', {}).get(label_property, None)
     if label is None:
         return None
 
@@ -80,6 +80,7 @@ def rasterize(
     shape: Tuple[int, int],
     bg_value: int = 0,
     fg_value: Optional[int] = None,
+    label_property: str = 'name',
 ) -> Iterator[Tuple[npt.NDArray, int]]:
     """
     Rasterize GeoJSON into a pixel image, that is returned as a NumPy array.
@@ -89,7 +90,7 @@ def rasterize(
     reserved_labels = [bg_value]
     if fg_value is None:
         for feature in geojson['features']:
-            label = get_feature_label(feature)
+            label = get_feature_label(feature, label_property)
             if label is not None:
                 reserved_labels.append(label)
 
@@ -134,7 +135,7 @@ def rasterize(
 
         # Determine the `label` for the current `mask`
         if fg_value is None:
-            label = get_feature_label(feature)
+            label = get_feature_label(feature, label_property)
             if label is None:
                 label = autolabel.next()
         else:
@@ -253,6 +254,7 @@ if __name__ == '__main__':
     parser.add_argument('shapex', type=int, help='Output image width')
     parser.add_argument('shapey', type=int, help='Output image height')
     parser.add_argument('--bg_value', type=int, default=0, help='Label used for image background')
+    parser.add_argument('--label_property', type=str, default='name', help='GeoJSON property used as labels')
     parser.add_argument('--has_header', default=False, help='Set if tabular file has a header', action='store_true')
     parser.add_argument('--swap_xy', default=False, help='Swap X and Y coordinates', action='store_true')
     parser.add_argument('--binary', default=False, help='Produce binary image', action='store_true')
@@ -283,6 +285,7 @@ if __name__ == '__main__':
         shape,
         bg_value=args.bg_value,
         fg_value=0xffff if args.binary else None,
+        label_property=args.label_property,
     ):
         if args.split or img is None:
             img = np.full(shape, dtype=np.uint16, fill_value=args.bg_value)
