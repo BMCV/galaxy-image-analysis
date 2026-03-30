@@ -1,4 +1,4 @@
-<tool id="ip_spot_detection_2d" name="Perform 2-D spot detection" version="0.2" profile="20.05">
+<tool id="ip_spot_detection_2d" name="Perform 2-D spot detection" version="0.3" profile="20.05">
     <description></description>
     <macros>
         <import>creators.xml</import>
