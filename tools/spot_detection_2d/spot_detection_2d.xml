@@ -26,26 +26,45 @@
     <required_files>
         <include type="glob" path="*.py"/>
     </required_files>
-    <command detect_errors="aggressive">
-    <![CDATA[
-         python '$__tool_directory__/spot_detection_2d.py'
-         '$fn_in'
-         '$fn_out'
-         '$frame_1st'
-         '$frame_end'
-         '$method.type'
-         #if str($method.type) in ('LoG', 'DoG', 'DoH'):
-            $method.min_scale
-            $method.max_scale
-         #else
-            0
-            0
-         #end if
-         '$abs_threshold'
-         '$rel_threshold'
-         '$boundary'
-    ]]>
-    </command>
+    <command detect_errors="aggressive"><![CDATA[
+
+        python '$__tool_directory__/spot_detection_2d.py'
+
+        --intensities '$fn_in'
+        --output '$fn_out'
+        --params '$params'
+        --verbose
+
+    ]]></command>
+    <configfiles>
+        <configfile name="params"><![CDATA[
+            {
+
+                "frame_1st": $frame_1st,
+                "frame_end": $frame_end,
+                "method": "$method.type",
+                "method_kwargs": {
+
+                    #if str($method.type) == "local_max":
+
+                        "sigma": 1.0,
+                        "intensity_offset": [-1, -1]
+
+                    #else:
+
+                        "min_sigma": $method.min_scale,
+                        "max_sigma": $method.max_scale
+
+                    #end if
+
+                },
+                "abs_threshold": $abs_threshold,
+                "rel_threshold": $rel_threshold,
+                "boundary": $boundary
+
+            }
+        ]]></configfile>
+    </configfiles>
     <inputs>
         <param name="fn_in" type="data" format="tiff" label="Intensity image or a stack of images">
             <expand macro="validators/is_single_channel"/>

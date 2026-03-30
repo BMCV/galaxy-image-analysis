@@ -1,14 +1,13 @@
-"""
-Copyright 2021-2022 Biomedical Computer Vision Group, Heidelberg University.
+'''
+Copyright 2021-2026 Biomedical Computer Vision Group, Heidelberg University.
 Authors:
 - Qi Gao (qi.gao@bioquant.uni-heidelberg.de)
 - Leonid Kostrykin (leonid.kostrykin@bioquant.uni-heidelberg.de)
 
 Distributed under the MIT license.
 See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
-"""
+'''
 
-import argparse
 from typing import Iterator
 
 import giatools
@@ -83,8 +82,8 @@ def mean_intensity(img: NDArray, y: int, x: int, radius: int) -> float:
 
 
 def spot_detection(
-    fn_in: str,
-    fn_out: str,
+    image: giatools.Image,
+    output: str,
     frame_1st: int,
     frame_end: int,
     method: str,
@@ -93,15 +92,7 @@ def spot_detection(
     rel_threshold: float,
     boundary: int,
 ) -> None:
-
-    # Load the single-channel 2-D input image (or stack thereof)
-    img = giatools.Image.read(fn_in, normalize_axes='TYX')
-    stack = img.data
-
-    # Normalize input image so that it is a stack of images (possibly a stack of a single image)
-    assert stack.ndim in (2, 3)
-    if stack.ndim == 2:
-        stack = stack.reshape(1, *stack.shape)
+    stack = image.normalize_axes_like('TYX').data
 
     # Slice the stack
     assert frame_1st >= 1
@@ -136,48 +127,26 @@ def spot_detection(
 
     # Build and save dataframe
     df = pd.DataFrame.from_dict(detections)
-    df.to_csv(fn_out, index=False, float_format='%.2f', sep="\t")
+    df.to_csv(output, index=False, float_format='%.2f', sep='\t')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
+    tool = giatools.ToolBaseplate()
+    tool.add_input_image('intensities')
+    tool.parser.add_argument('--output', type=str, required=True)
+    tool.parse_args()
 
-    parser = argparse.ArgumentParser(description="Spot detection")
+    # Validate the input image(s)
+    try:
+        image = tool.args.input_images['intensities']
+        if any(image.shape[image.axes.index(axis)] > 1 for axis in image.axes if axis not in 'TYX'):
+            raise ValueError(f'This tool is not applicable to images with {image.original_axes} axes.')
 
-    parser.add_argument("fn_in", help="Name of input image or image stack.")
-    parser.add_argument("fn_out", help="Name of output file to write the detections into.")
-    parser.add_argument("frame_1st", type=int, help="Index for the starting frame to detect spots (1 for first frame of the stack).")
-    parser.add_argument("frame_end", type=int, help="Index for the last frame to detect spots (0 for the last frame of the stack).")
-    parser.add_argument("method", help="Detection method")
-    parser.add_argument("min_scale", type=float, help="The minimum scale to consider for multi-scale detection.")
-    parser.add_argument("max_scale", type=float, help="The maximum scale to consider for multi-scale detection.")
-    parser.add_argument("abs_threshold", type=float, help=(
-        "Filter responses below this threshold will be ignored. Only filter responses above this thresholding will be considered as blobs. "
-        "This threshold is ignored if the relative threshold (below) corresponds to a higher response.")
-    )
-    parser.add_argument("rel_threshold", type=float, help=(
-        "Same as the absolute threshold (above), but as a fraction of the overall maximal filter response of an image. "
-        "This threshold is ignored if it corresponds to a response below the absolute threshold.")
-    )
-    parser.add_argument("boundary", type=int, help="Width of image boundaries (in pixel) where spots will be ignored.")
+        spot_detection(
+            image=image,
+            output=tool.args.raw_args.output,
+            **tool.args.params,
+        )
 
-    args = parser.parse_args()
-
-    method_kwargs = dict()
-    if args.method == 'local_max':
-        method_kwargs['sigma'] = 1
-        method_kwargs['intensity_offset'] = (-1, -1)
-    else:
-        method_kwargs['min_sigma'] = args.min_scale
-        method_kwargs['max_sigma'] = args.max_scale
-
-    spot_detection(
-        args.fn_in,
-        args.fn_out,
-        frame_1st=args.frame_1st,
-        frame_end=args.frame_end,
-        method=args.method,
-        method_kwargs=method_kwargs,
-        abs_threshold=args.abs_threshold,
-        rel_threshold=args.rel_threshold,
-        boundary=args.boundary,
-    )
+    except ValueError as err:
+        exit(err.args[0])
