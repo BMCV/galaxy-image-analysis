@@ -107,7 +107,7 @@ if __name__ == "__main__":
     parser.add_argument("fn_out", help="Name of output file to write the detections into.")
     parser.add_argument("frame_1st", type=int, help="Index for the starting frame to detect spots (1 for first frame of the stack).")
     parser.add_argument("frame_end", type=int, help="Index for the last frame to detect spots (0 for the last frame of the stack).")
-    parser.add_argument("filter_type", help="Detection filter")
+    parser.add_argument("method", help="Detection method")
     parser.add_argument("min_scale", type=float, help="The minimum scale to consider for multi-scale detection.")
     parser.add_argument("max_scale", type=float, help="The maximum scale to consider for multi-scale detection.")
     parser.add_argument("abs_threshold", type=float, help=(
@@ -123,7 +123,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     spot_detection(args.fn_in, args.fn_out,
                    frame_1st=args.frame_1st, frame_end=args.frame_end,
-                   filter_type=args.filter_type,
+                   filter_type=args.method,
                    min_scale=args.min_scale, max_scale=args.max_scale,
                    abs_threshold=args.abs_threshold, rel_threshold=args.rel_threshold,
                    boundary=args.boundary)

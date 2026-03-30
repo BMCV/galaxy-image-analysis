@@ -3,6 +3,10 @@
     <macros>
         <import>creators.xml</import>
         <import>validators.xml</import>
+        <xml name="param/multiscale">
+            <param name="min_scale" type="float" value="1.0" min="1.0" label="Minimum scale" />
+            <param name="max_scale" type="float" value="2.0" min="1.0" label="Maximum scale" />
+        </xml>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
@@ -29,9 +33,9 @@
          '$fn_out'
          '$frame_1st'
          '$frame_end'
-         '$filter_type'
-         '$min_scale'
-         '$max_scale'
+         '$method.type'
+         '$method.min_scale'
+         '$method.max_scale'
          '$abs_threshold'
          '$rel_threshold'
          '$boundary'
@@ -44,13 +48,24 @@
         </param>
         <param name="frame_1st" type="integer" value="1" label="Starting time point (1 for the first frame of the stack)" />
         <param name="frame_end" type="integer" value="0" label="Ending time point (0 for the last frame of the stack)" />
-        <param name="filter_type" type="select" label="Detection filter">
-            <option value="LoG" selected="True">Laplacian of Gaussian</option>
-            <option value="DoG">Difference of Gaussians</option>
-            <option value="DoH">Determinant of Hessian</option>
-        </param>
-        <param name="min_scale" type="float" value="1.0" min="1.0" label="Minimum scale" />
-        <param name="max_scale" type="float" value="2.0" min="1.0" label="Maximum scale" />
+        <conditional name="method">
+            <param name="type" type="select" label="Detection method">
+                <option value="LoG" selected="True">Laplacian of Gaussian</option>
+                <option value="DoG">Difference of Gaussians</option>
+                <option value="DoH">Determinant of Hessian</option>
+                <option value="local_maxima">Local intensity maxima</option>
+            </param>
+            <when value="LoG">
+                <expand macro="param/multiscale"/>
+            </when>
+            <when value="DoG">
+                <expand macro="param/multiscale"/>
+            </when>
+            <when value="DoH">
+                <expand macro="param/multiscale"/>
+            </when>
+            <when value="local_maxima"/>
+        </conditional>
         <param name="abs_threshold" type="float" value=".25" min="0" label="Minimum filter response (absolute)" help="Filter responses below this threshold will be ignored. Only filter responses above this thresholding will be considered as blobs. This threshold is ignored if the relative threshold (below) corresponds to a higher response." />
         <param name="rel_threshold" type="float" value="0" min="0" max="1" label="Minimum filter response (relative)" help="Same as the absolute threshold (above), but as a fraction of the overall maximum filter response of an image. This threshold is ignored if it corresponds to a response below the absolute threshold." />
         <param name="boundary" type="integer" value="10" min="0" label="Image boundary" help="Width of image boundaries (in pixel) where spots will be ignored." />
@@ -64,9 +79,11 @@
             <param name="fn_in" value="input1_tyx.tiff"/>
             <param name="frame_1st" value="1"/>
             <param name="frame_end" value="0"/>
-            <param name="filter_type" value="LoG"/>
-            <param name="min_scale" value="1"/>
-            <param name="max_scale" value="2"/>
+            <conditional name="method">
+                <param name="type" value="LoG"/>
+                <param name="min_scale" value="1"/>
+                <param name="max_scale" value="2"/>
+            </conditional>
             <param name="abs_threshold" value="0"/>
             <param name="rel_threshold" value="0.1"/>
             <param name="boundary" value="10"/>
@@ -77,9 +94,12 @@
             <param name="fn_in" value="input2_yx.tiff"/>
             <param name="frame_1st" value="1"/>
             <param name="frame_end" value="0"/>
-            <param name="filter_type" value="LoG"/>
-            <param name="min_scale" value="1"/>
-            <param name="max_scale" value="2"/>
+            <conditional name="method">
+                <param name="type" value="LoG"/>
+                <param name="min_scale" value="1"/>
+                <param name="max_scale" value="2"/>
+            </conditional>
+            <param name="abs_threshold" value="0"/>
             <param name="abs_threshold" value="0.04"/>
             <param name="rel_threshold" value="0"/>
             <param name="boundary" value="10"/>
