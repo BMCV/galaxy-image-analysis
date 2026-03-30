@@ -15,12 +15,33 @@ import numpy as np
 import pandas as pd
 import scipy.ndimage as ndi
 from numpy.typing import NDArray
-from skimage.feature import blob_dog, blob_doh, blob_log
+from skimage.feature import blob_dog, blob_doh, blob_log, peak_local_max
 
-blob_filters = {
+
+def blob_local_maxima(img: NDArray, sigma: float, threshold: float, threshold_rel: float) -> list[tuple[float, float, float]]:
+    import skimage.filters
+    img = skimage.filters.gaussian(img.astype(np.float64), sigma=sigma)  # TODO: migrate to ndi?
+
+    # Handle images with negative intensities
+    if img.min() < 0:
+        img -= img.min()
+
+    # Perform thresholding
+    img_max = img.max()
+    img[img < threshold] = 0
+    img[img < threshold_rel * img_max] = 0
+
+    # Find local maxima
+    yx_list = peak_local_max(img, min_distance=1)
+    scale = 1 / (2 * np.sqrt(2))
+    return [tuple(yx) + (scale,) for yx in yx_list]
+
+
+blob_methods = {
     'dog': blob_dog,
     'doh': blob_doh,
     'log': blob_log,
+    'local_max': blob_local_maxima,
 }
 
 
@@ -41,9 +62,8 @@ def spot_detection(
     fn_out: str,
     frame_1st: int,
     frame_end: int,
-    filter_type: str,
-    min_scale: float,
-    max_scale: float,
+    method: str,
+    method_kwargs: dict,
     abs_threshold: float,
     rel_threshold: float,
     boundary: int,
@@ -66,13 +86,13 @@ def spot_detection(
         stack = stack[:-frame_end]
 
     # Select the blob detection filter
-    assert filter_type.lower() in blob_filters.keys()
-    blob_filter = blob_filters[filter_type.lower()]
+    assert method.lower() in blob_methods.keys()
+    blob_method = blob_methods[method.lower()]
 
     # Perform blob detection on each image of the stack
     detections = list()
     for img_idx, img in enumerate(stack):
-        blobs = blob_filter(img, threshold=abs_threshold, threshold_rel=rel_threshold, min_sigma=min_scale, max_sigma=max_scale)
+        blobs = blob_method(img, threshold=abs_threshold, threshold_rel=rel_threshold, **method_kwargs)
         for blob in blobs:
             y, x, scale = blob
 
@@ -121,9 +141,22 @@ if __name__ == "__main__":
     parser.add_argument("boundary", type=int, help="Width of image boundaries (in pixel) where spots will be ignored.")
 
     args = parser.parse_args()
-    spot_detection(args.fn_in, args.fn_out,
-                   frame_1st=args.frame_1st, frame_end=args.frame_end,
-                   filter_type=args.method,
-                   min_scale=args.min_scale, max_scale=args.max_scale,
-                   abs_threshold=args.abs_threshold, rel_threshold=args.rel_threshold,
-                   boundary=args.boundary)
+
+    method_kwargs = dict()
+    if args.method == 'local_max':
+        method_kwargs['sigma'] = 1
+    else:
+        method_kwargs['min_sigma'] = args.min_scale
+        method_kwargs['max_sigma'] = args.max_scale
+
+    spot_detection(
+        args.fn_in,
+        args.fn_out,
+        frame_1st=args.frame_1st,
+        frame_end=args.frame_end,
+        method=args.method,
+        method_kwargs=method_kwargs,
+        abs_threshold=args.abs_threshold,
+        rel_threshold=args.rel_threshold,
+        boundary=args.boundary,
+    )

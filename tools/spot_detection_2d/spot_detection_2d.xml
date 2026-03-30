@@ -58,7 +58,7 @@
                 <option value="LoG" selected="True">Laplacian of Gaussian</option>
                 <option value="DoG">Difference of Gaussians</option>
                 <option value="DoH">Determinant of Hessian</option>
-                <option value="local_maxima">Local intensity maxima</option>
+                <option value="local_max">Local intensity maxima</option>
             </param>
             <when value="LoG">
                 <expand macro="param/multiscale"/>
@@ -69,7 +69,7 @@
             <when value="DoH">
                 <expand macro="param/multiscale"/>
             </when>
-            <when value="local_maxima"/>
+            <when value="local_max"/>
         </conditional>
         <param name="abs_threshold" type="float" value=".25" min="0" label="Minimum filter response (absolute)" help="Filter responses below this threshold will be ignored. Only filter responses above this thresholding will be considered as blobs. This threshold is ignored if the relative threshold (below) corresponds to a higher response." />
         <param name="rel_threshold" type="float" value="0" min="0" max="1" label="Minimum filter response (relative)" help="Same as the absolute threshold (above), but as a fraction of the overall maximum filter response of an image. This threshold is ignored if it corresponds to a response below the absolute threshold." />
@@ -128,7 +128,7 @@
             <param name="frame_1st" value="1"/>
             <param name="frame_end" value="0"/>
             <conditional name="method">
-                <param name="type" value="local_maxima"/>
+                <param name="type" value="local_max"/>
             </conditional>
             <param name="abs_threshold" value="0"/>
             <param name="rel_threshold" value="0.1"/>
