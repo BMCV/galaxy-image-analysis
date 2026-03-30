@@ -136,9 +136,10 @@ if __name__ == '__main__':
     tool.parser.add_argument('--output', type=str, required=True)
     tool.parse_args()
 
-    # Validate the input image(s)
     try:
         image = tool.args.input_images['intensities']
+
+        # Validate the input image(s)
         if any(image.shape[image.axes.index(axis)] > 1 for axis in image.axes if axis not in 'TYX'):
             raise ValueError(f'This tool is not applicable to images with {image.original_axes} axes.')
 
