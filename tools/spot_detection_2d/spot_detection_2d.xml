@@ -135,7 +135,6 @@
                 <param name="min_scale" value="1"/>
                 <param name="max_scale" value="2"/>
             </conditional>
-            <param name="abs_threshold" value="0"/>
             <param name="abs_threshold" value="0.04"/>
             <param name="rel_threshold" value="0"/>
             <param name="boundary" value="10"/>
