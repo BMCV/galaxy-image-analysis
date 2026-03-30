@@ -83,11 +83,28 @@ def mean_intensity(img: NDArray, y: int, x: int, radius: int) -> float:
         return img[mask].mean()
 
 
+def normalize_frame_number(n_frames: int, frame: int) -> int:
+    """
+    Translate negative frame numbers into positives by counting from the end.
+
+    Raises:
+        ValueError: The given frame is beyond the end of the sequence.
+
+    Returns:
+        Integer number between 0 and num_frames - 1.
+    """
+    if frame >= n_frames:
+        raise ValueError(
+            f'Frame {frame} is beyond the end of the sequence ({n_frames} frames).',
+        )
+    return frame % n_frames
+
+
 def spot_detection(
     image: giatools.Image,
     output: str,
     frame_1st: int,
-    frame_end: int,
+    frame_end: int | None,
     method: str,
     method_kwargs: dict,
     abs_threshold: float,
@@ -97,11 +114,17 @@ def spot_detection(
     stack = image.normalize_axes_like('TYX').data
 
     # Slice the stack
-    assert frame_1st >= 1
-    assert frame_end >= 0
-    stack = stack[frame_1st - 1:]
-    if frame_end > 0:
-        stack = stack[:-frame_end]
+    frame_1st = normalize_frame_number(stack.shape[0], frame_1st)
+    if frame_end is not None:
+        frame_end = normalize_frame_number(stack.shape[0], frame_end)
+        if frame_1st >= frame_end:
+            raise ValueError(
+                f'Frist frame of the sequence (frame {frame_1st}) '
+                f'is beyond the end of the sequence (frame {frame_end}).',
+            )
+        stack = stack[frame_1st:frame_end]
+    else:
+        stack = stack[frame_1st:]
 
     # Select the blob detection filter
     assert method.lower() in blob_methods.keys()
@@ -120,7 +143,7 @@ def spot_detection(
             # Add the detection to the list of detections
             detections.append(
                 {
-                    'frame': img_idx + 1,
+                    'frame': img_idx,
                     'pos_x': x,
                     'pos_y': y,
                 }
