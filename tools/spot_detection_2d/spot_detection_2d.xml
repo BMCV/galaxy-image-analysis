@@ -77,11 +77,12 @@
         <param name="frame_1st" type="integer" value="1" label="Starting time point (1 for the first frame of the stack)" />
         <param name="frame_end" type="integer" value="0" label="Ending time point (0 for the last frame of the stack)" />
         <conditional name="method">
-            <param name="type" type="select" label="Detection method">
+            <param name="type" type="select" label="Filter type"
+                   help="Choose &lt;i&gt;Laplacian of Gaussian&lt;/i&gt;, &lt;i&gt;Difference of Gaussian&lt;/i&gt;, or &lt;i&gt;Determinant of Hessian&lt;/i&gt; for scale-based detections of bright spots (higher image intensities) on dark backgrounds (lower image intensities). Choose &lt;i&gt;Gaussian filtering&lt;/i&gt; for detections based on local intensity maxima within the filtering response.">
                 <option value="LoG" selected="True">Laplacian of Gaussian</option>
                 <option value="DoG">Difference of Gaussians</option>
                 <option value="DoH">Determinant of Hessian</option>
-                <option value="local_max">Local intensity maxima</option>
+                <option value="local_max">Gaussian filtering</option>
             </param>
             <when value="LoG">
                 <expand macro="param/multiscale"/>
@@ -178,9 +179,14 @@
         - ``frame``: The frame of the image stack
         - ``pos_x``: The horizontal coordinate of the detection
         - ``pos_y``: The vertical coordinate of the detection
+        - ``intensity``: The mean intensity of the spot
+
+        In addition, the following two columns are added if a *scale-based* detection method is used:
+
         - ``scale``: The scale at which the detection was found
         - ``radius``: The radius of the detected spot
-        - ``intensity``: The mean intensity of the spot
+
+        The order of the columns is: ``frame``, ``pos_x``, ``pos_y``, ``scale``, ``radius``, ``intensity``.
 
     </help>
     <citations>
