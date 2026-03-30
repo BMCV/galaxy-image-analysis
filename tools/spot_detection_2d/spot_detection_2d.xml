@@ -4,8 +4,8 @@
         <import>creators.xml</import>
         <import>validators.xml</import>
         <xml name="param/multiscale">
-            <param name="min_scale" type="float" value="1.0" min="1.0" label="Minimum scale" />
-            <param name="max_scale" type="float" value="2.0" min="1.0" label="Maximum scale" />
+            <param name="min_scale" type="float" value="1.0" min="0.1" label="Minimum scale" />
+            <param name="max_scale" type="float" value="2.0" min="0.1" label="Maximum scale" />
         </xml>
     </macros>
     <creator>
@@ -34,8 +34,13 @@
          '$frame_1st'
          '$frame_end'
          '$method.type'
-         '$method.min_scale'
-         '$method.max_scale'
+         #if str($method.type) in ('LoG', 'DoG', 'DoH'):
+            $method.min_scale
+            $method.max_scale
+         #else
+            0
+            0
+         #end if
          '$abs_threshold'
          '$rel_threshold'
          '$boundary'
@@ -87,7 +92,7 @@
             <param name="abs_threshold" value="0"/>
             <param name="rel_threshold" value="0.1"/>
             <param name="boundary" value="10"/>
-            <output name="fn_out" value="input1_tyx.tsv" ftype="tabular" />
+            <output name="fn_out" value="input1_tyx.tsv" ftype="tabular"/>
         </test>
         <!-- Single-frame input -->
         <test>
@@ -103,7 +108,7 @@
             <param name="abs_threshold" value="0.04"/>
             <param name="rel_threshold" value="0"/>
             <param name="boundary" value="10"/>
-            <output name="fn_out" value="input2_yx.tsv" ftype="tabular" />
+            <output name="fn_out" value="input2_yx.tsv" ftype="tabular"/>
         </test>
         <!-- 3-D image input (forbidden) -->
         <test expect_failure="true">
@@ -116,6 +121,19 @@
                 <!-- Rejected by validator -->
                 <has_n_lines n="0"/>
             </assert_stdout>
+        </test>
+        <!-- Local intensity maxima (regression test) -->
+        <test>
+            <param name="fn_in" value="input3_tyx.tiff"/>
+            <param name="frame_1st" value="1"/>
+            <param name="frame_end" value="0"/>
+            <conditional name="method">
+                <param name="type" value="local_maxima"/>
+            </conditional>
+            <param name="abs_threshold" value="0"/>
+            <param name="rel_threshold" value="0.1"/>
+            <param name="boundary" value="10"/>
+            <output name="fn_out" value="input3_tyx.tsv" ftype="tabular"/>
         </test>
     </tests>
     <help>
