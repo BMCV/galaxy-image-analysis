@@ -48,7 +48,7 @@
 
                     #if str($method.type) == "local_max":
 
-                        "sigma": 1.0,
+                        "sigma": $method.sigma,
                         "intensity_offset": [
                             $method.intensity_offset_y,
                             $method.intensity_offset_x
@@ -94,6 +94,7 @@
                 <expand macro="param/multiscale"/>
             </when>
             <when value="local_max">
+                <param name="sigma" type="float" value="1" min="0.0" label="Sigma" help="The half width of the Gaussian bell (in pixels)."/>
                 <param name="intensity_offset_x" type="integer" value="0" label="Intensity coordinate x-offset (in pixels)" help="@INTENSITY_OFFSET_HELP@"/>
                 <param name="intensity_offset_y" type="integer" value="0" label="Intensity coordinate y-offset (in pixels)" help="@INTENSITY_OFFSET_HELP@"/>
             </when>
