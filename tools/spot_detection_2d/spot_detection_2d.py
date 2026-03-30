@@ -1,26 +1,73 @@
-"""
-Copyright 2021-2022 Biomedical Computer Vision Group, Heidelberg University.
+'''
+Copyright 2021-2026 Biomedical Computer Vision Group, Heidelberg University.
 Authors:
 - Qi Gao (qi.gao@bioquant.uni-heidelberg.de)
 - Leonid Kostrykin (leonid.kostrykin@bioquant.uni-heidelberg.de)
 
 Distributed under the MIT license.
 See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
-"""
+'''
 
-import argparse
+from typing import Iterator
 
-import giatools.io
+import giatools
 import numpy as np
 import pandas as pd
 import scipy.ndimage as ndi
 from numpy.typing import NDArray
-from skimage.feature import blob_dog, blob_doh, blob_log
+from skimage.feature import blob_dog, blob_doh, blob_log, peak_local_max
 
-blob_filters = {
-    'dog': blob_dog,
-    'doh': blob_doh,
-    'log': blob_log,
+
+def local_max_detector(
+    img: NDArray,
+    sigma: float,
+    threshold: float,
+    threshold_rel: float,
+    intensity_offset: tuple[int, int],
+) -> Iterator[tuple[int, int, dict]]:
+
+    if sigma > 0:
+        img = ndi.gaussian_filter(img.astype(np.float64), sigma)
+    img_smooth = img.copy()
+
+    # Handle images with negative intensities
+    if img.min() < 0:
+        img_min = img.min()
+        img -= img_min
+        threshold -= img_min
+
+    # Perform thresholding
+    img_max = img.max()
+    img[img < threshold] = 0
+    img[img < threshold_rel * img_max] = 0
+
+    # Find local maxima
+    yx_list = peak_local_max(img, min_distance=1).round().astype(int)
+    for y, x in yx_list:
+        intensity_yx = tuple(np.add((y, x), intensity_offset))
+        if (
+            0 <= intensity_yx[0] < img.shape[0] and
+            0 <= intensity_yx[1] < img.shape[1]
+        ):
+            intensity = img_smooth[intensity_yx]
+            yield y, x, dict(intensity=intensity)
+
+
+def create_multiscale_blob_detector(func):
+    def impl(img: NDArray, **kwargs):
+        for y, x, scale in func(img, **kwargs):
+            y, x = round(y), round(x)
+            radius = scale * np.sqrt(2) * 2
+            intensity = mean_intensity(img, y, x, round(radius))
+            yield y, x, dict(scale=scale, radius=radius, intensity=intensity)
+    return impl
+
+
+methods = {
+    'dog': create_multiscale_blob_detector(blob_dog),
+    'doh': create_multiscale_blob_detector(blob_doh),
+    'log': create_multiscale_blob_detector(blob_log),
+    'local_max': local_max_detector,
 }
 
 
@@ -36,93 +83,95 @@ def mean_intensity(img: NDArray, y: int, x: int, radius: int) -> float:
         return img[mask].mean()
 
 
+def normalize_frame_number(n_frames: int, frame: int) -> int:
+    """
+    Translate negative frame numbers into positives by counting from the end.
+
+    Raises:
+        ValueError: The given frame is beyond the end of the sequence.
+
+    Returns:
+        Integer number between 0 and num_frames - 1.
+    """
+    if frame >= n_frames:
+        raise ValueError(
+            f'Frame {frame} is beyond the end of the sequence ({n_frames} frames).',
+        )
+    return frame % n_frames
+
+
 def spot_detection(
-    fn_in: str,
-    fn_out: str,
+    image: giatools.Image,
+    output: str,
     frame_1st: int,
-    frame_end: int,
-    filter_type: str,
-    min_scale: float,
-    max_scale: float,
+    frame_end: int | None,
+    method: str,
+    method_kwargs: dict,
     abs_threshold: float,
     rel_threshold: float,
     boundary: int,
 ) -> None:
-
-    # Load the single-channel 2-D input image (or stack thereof)
-    stack = giatools.io.imread(fn_in)
-
-    # Normalize input image so that it is a stack of images (possibly a stack of a single image)
-    assert stack.ndim in (2, 3)
-    if stack.ndim == 2:
-        stack = stack.reshape(1, *stack.shape)
+    stack = image.normalize_axes_like('TYX').data
 
     # Slice the stack
-    assert frame_1st >= 1
-    assert frame_end >= 0
-    stack = stack[frame_1st - 1:]
-    if frame_end > 0:
-        stack = stack[:-frame_end]
+    frame_1st = normalize_frame_number(stack.shape[0], frame_1st)
+    if frame_end is not None:
+        frame_end = normalize_frame_number(stack.shape[0], frame_end)
+        if frame_1st >= frame_end:
+            raise ValueError(
+                f'Frist frame of the sequence (frame {frame_1st}) '
+                f'is beyond the end of the sequence (frame {frame_end}).',
+            )
+        stack = stack[frame_1st:frame_end]
+    else:
+        stack = stack[frame_1st:]
 
-    # Select the blob detection filter
-    assert filter_type.lower() in blob_filters.keys()
-    blob_filter = blob_filters[filter_type.lower()]
+    # Select the detection method
+    detector = methods[method.lower()]
 
-    # Perform blob detection on each image of the stack
+    # Perform detection on each image of the stack
     detections = list()
     for img_idx, img in enumerate(stack):
-        blobs = blob_filter(img, threshold=abs_threshold, threshold_rel=rel_threshold, min_sigma=min_scale, max_sigma=max_scale)
-        for blob in blobs:
-            y, x, scale = blob
+        spots = detector(img, threshold=abs_threshold, threshold_rel=rel_threshold, **method_kwargs)
+        for y, x, spot_info in spots:
 
             # Skip the detection if it is too close to the boundary of the image
             if y < boundary or x < boundary or y >= img.shape[0] - boundary or x >= img.shape[1] - boundary:
                 continue
 
             # Add the detection to the list of detections
-            radius = scale * np.sqrt(2) * 2
-            intensity = mean_intensity(img, round(y), round(x), round(radius))
             detections.append(
                 {
-                    'frame': img_idx + 1,
-                    'pos_x': round(x),
-                    'pos_y': round(y),
-                    'scale': scale,
-                    'radius': radius,
-                    'intensity': intensity,
+                    'frame': img_idx,
+                    'pos_x': x,
+                    'pos_y': y,
                 }
+                | spot_info
             )
 
     # Build and save dataframe
     df = pd.DataFrame.from_dict(detections)
-    df.to_csv(fn_out, index=False, float_format='%.2f', sep="\t")
+    df.to_csv(output, index=False, float_format='%.2f', sep='\t')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
+    tool = giatools.ToolBaseplate()
+    tool.add_input_image('intensities')
+    tool.parser.add_argument('--output', type=str, required=True)
+    tool.parse_args()
 
-    parser = argparse.ArgumentParser(description="Spot detection")
+    try:
+        image = tool.args.input_images['intensities']
 
-    parser.add_argument("fn_in", help="Name of input image or image stack.")
-    parser.add_argument("fn_out", help="Name of output file to write the detections into.")
-    parser.add_argument("frame_1st", type=int, help="Index for the starting frame to detect spots (1 for first frame of the stack).")
-    parser.add_argument("frame_end", type=int, help="Index for the last frame to detect spots (0 for the last frame of the stack).")
-    parser.add_argument("filter_type", help="Detection filter")
-    parser.add_argument("min_scale", type=float, help="The minimum scale to consider for multi-scale detection.")
-    parser.add_argument("max_scale", type=float, help="The maximum scale to consider for multi-scale detection.")
-    parser.add_argument("abs_threshold", type=float, help=(
-        "Filter responses below this threshold will be ignored. Only filter responses above this thresholding will be considered as blobs. "
-        "This threshold is ignored if the relative threshold (below) corresponds to a higher response.")
-    )
-    parser.add_argument("rel_threshold", type=float, help=(
-        "Same as the absolute threshold (above), but as a fraction of the overall maximal filter response of an image. "
-        "This threshold is ignored if it corresponds to a response below the absolute threshold.")
-    )
-    parser.add_argument("boundary", type=int, help="Width of image boundaries (in pixel) where spots will be ignored.")
+        # Validate the input image(s)
+        if any(image.shape[image.axes.index(axis)] > 1 for axis in image.axes if axis not in 'TYX'):
+            raise ValueError(f'This tool is not applicable to images with {image.original_axes} axes.')
 
-    args = parser.parse_args()
-    spot_detection(args.fn_in, args.fn_out,
-                   frame_1st=args.frame_1st, frame_end=args.frame_end,
-                   filter_type=args.filter_type,
-                   min_scale=args.min_scale, max_scale=args.max_scale,
-                   abs_threshold=args.abs_threshold, rel_threshold=args.rel_threshold,
-                   boundary=args.boundary)
+        spot_detection(
+            image=image,
+            output=tool.args.raw_args.output,
+            **tool.args.params,
+        )
+
+    except ValueError as err:
+        exit(err.args[0])

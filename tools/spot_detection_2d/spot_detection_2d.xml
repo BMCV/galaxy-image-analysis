@@ -1,7 +1,14 @@
-<tool id="ip_spot_detection_2d" name="Perform 2-D spot detection" version="0.2" profile="20.05">
+<tool id="ip_spot_detection_2d" name="Perform 2-D spot detection" version="0.3" profile="20.05">
     <description></description>
     <macros>
         <import>creators.xml</import>
+        <import>validators.xml</import>
+        <xml name="param/multiscale">
+            <param name="min_scale" type="float" value="1.0" min="0.1" label="Minimum scale" />
+            <param name="max_scale" type="float" value="2.0" min="0.1" label="Maximum scale" />
+        </xml>
+        <token name="@INTENSITY_OFFSET_HELP@">The offset of the coordinates where the intensities of the detections are sampled. An offset of 0 corresponds to the location of the detection.</token>
+        <token name="@FRAME_HELP@">Use a negative value to specify the frames from the end of the stack</token>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
@@ -13,74 +20,193 @@
         <xref type="bio.tools">galaxy_image_analysis</xref>
     </xrefs>
     <requirements>
-        <requirement type="package" version="0.2.0">giatools</requirement>
-        <requirement type="package" version="1.26.4">numpy</requirement>
-        <requirement type="package" version="1.2.4">pandas</requirement>
-        <requirement type="package" version="0.21">scikit-image</requirement>
-        <requirement type="package" version="2024.6.18">tifffile</requirement>
+        <requirement type="package" version="0.7.3">giatools</requirement>
+        <requirement type="package" version="2.3.5">numpy</requirement>
+        <requirement type="package" version="2.2.2">pandas</requirement>
+        <requirement type="package" version="0.25.2">scikit-image</requirement>
     </requirements>
     <required_files>
         <include type="glob" path="*.py"/>
     </required_files>
-    <command detect_errors="aggressive">
-    <![CDATA[
-         python '$__tool_directory__/spot_detection_2d.py'
-         '$fn_in'
-         '$fn_out'
-         '$frame_1st'
-         '$frame_end'
-         '$filter_type'
-         '$min_scale'
-         '$max_scale'
-         '$abs_threshold'
-         '$rel_threshold'
-         '$boundary'
-    ]]>
-    </command>
+    <command detect_errors="aggressive"><![CDATA[
+
+        python '$__tool_directory__/spot_detection_2d.py'
+
+        --intensities '$fn_in'
+        --output '$fn_out'
+        --params '$params'
+        --verbose
+
+    ]]></command>
+    <configfiles>
+        <configfile name="params"><![CDATA[
+            {
+
+                "frame_1st": $frame_1st,
+                "method": "$method.type",
+                "method_kwargs": {
+
+                    #if str($method.type) == "local_max":
+
+                        "sigma": $method.sigma,
+                        "intensity_offset": [
+                            $method.intensity_offset_y,
+                            $method.intensity_offset_x
+                        ]
+
+                    #else:
+
+                        "min_sigma": $method.min_scale,
+                        "max_sigma": $method.max_scale
+
+                    #end if
+
+                },
+                "abs_threshold": $abs_threshold,
+                "rel_threshold": $rel_threshold,
+                "boundary": $boundary,
+
+                #if str($frame_end) != "":
+                    "frame_end": $frame_end
+                #else:
+                    "frame_end": null
+                #end if
+
+            }
+        ]]></configfile>
+    </configfiles>
     <inputs>
-        <param name="fn_in" type="data" format="tiff" label="Intensity image or a stack of images" />
-        <param name="frame_1st" type="integer" value="1" label="Starting time point (1 for the first frame of the stack)" />
-        <param name="frame_end" type="integer" value="0" label="Ending time point (0 for the last frame of the stack)" />
-        <param name="filter_type" type="select" label="Detection filter">
-            <option value="LoG" selected="True">Laplacian of Gaussian</option>
-            <option value="DoG">Difference of Gaussians</option>
-            <option value="DoH">Determinant of Hessian</option>
+        <param name="fn_in" type="data" format="tiff" label="Intensity image or a stack of images">
+            <expand macro="validators/is_single_channel"/>
+            <expand macro="validators/is_2d"/>
         </param>
-        <param name="min_scale" type="float" value="1.0" min="1.0" label="Minimum scale" />
-        <param name="max_scale" type="float" value="2.0" min="1.0" label="Maximum scale" />
-        <param name="abs_threshold" type="float" value=".25" min="0" label="Minimum filter response (absolute)" help="Filter responses below this threshold will be ignored. Only filter responses above this thresholding will be considered as blobs. This threshold is ignored if the relative threshold (below) corresponds to a higher response." />
-        <param name="rel_threshold" type="float" value="0" min="0" max="1" label="Minimum filter response (relative)" help="Same as the absolute threshold (above), but as a fraction of the overall maximum filter response of an image. This threshold is ignored if it corresponds to a response below the absolute threshold." />
-        <param name="boundary" type="integer" value="10" min="0" label="Image boundary" help="Width of image boundaries (in pixel) where spots will be ignored." />
+        <param name="frame_1st" type="integer" value="0" label="Starting time point (0 for the first frame of the stack)"
+               help="@FRAME_HELP@ (e.g., a value of -10 corresponds to the last 10 frames of the stack)."/>
+        <param name="frame_end" type="integer" value="" optional="true" label="Ending time point (exclusive)"
+               help="@FRAME_HELP@ (e.g., a value of -10 will remove the last 10 frames of the stack). Leave empty to use all remaining frames of the stack."/>
+        <conditional name="method">
+            <param name="type" type="select" label="Filter type"
+                   help="Choose &lt;i&gt;Laplacian of Gaussian&lt;/i&gt;, &lt;i&gt;Difference of Gaussian&lt;/i&gt;, or &lt;i&gt;Determinant of Hessian&lt;/i&gt; for scale-based detections of bright spots (higher image intensities) on dark backgrounds (lower image intensities). Choose &lt;i&gt;Gaussian filtering&lt;/i&gt; for detections based on local maxima of the smoothed image intensities.">
+                <option value="LoG" selected="True">Laplacian of Gaussian</option>
+                <option value="DoG">Difference of Gaussians</option>
+                <option value="DoH">Determinant of Hessian</option>
+                <option value="local_max">Gaussian filtering</option>
+            </param>
+            <when value="LoG">
+                <expand macro="param/multiscale"/>
+            </when>
+            <when value="DoG">
+                <expand macro="param/multiscale"/>
+            </when>
+            <when value="DoH">
+                <expand macro="param/multiscale"/>
+            </when>
+            <when value="local_max">
+                <param name="sigma" type="float" value="1" min="0.0" label="Sigma" help="The half width of the Gaussian bell (in pixels)."/>
+                <param name="intensity_offset_x" type="integer" value="0" label="Intensity coordinate x-offset (in pixels)" help="@INTENSITY_OFFSET_HELP@"/>
+                <param name="intensity_offset_y" type="integer" value="0" label="Intensity coordinate y-offset (in pixels)" help="@INTENSITY_OFFSET_HELP@"/>
+            </when>
+        </conditional>
+        <param name="abs_threshold" type="float" value=".25" label="Minimum filter response (absolute)"
+               help="Filter responses below this threshold will be ignored. Only filter responses above this thresholding will be considered as detections. This threshold is ignored if the relative threshold (see below) corresponds to a higher response."/>
+        <param name="rel_threshold" type="float" value="0" min="0" max="1" label="Minimum filter response (relative)"
+               help="Same as the absolute threshold (above), but as a fraction of the overall maximum filter response of an image. This threshold is ignored if it corresponds to a response below the absolute threshold." />
+        <param name="boundary" type="integer" value="10" min="0" label="Image boundary"
+               help="Width of image boundaries (in pixel) where detections will be ignored."/>
     </inputs>
     <outputs>
-        <data format="tabular" name="fn_out" />
+        <data format="tabular" name="fn_out"/>
     </outputs>
     <tests>
-        <!-- Multi-frame input -->
+        <!-- Multi-frame input (no slicing) -->
         <test>
-            <param name="fn_in" value="input1.tiff"/>
-            <param name="frame_1st" value="1"/>
-            <param name="frame_end" value="0"/>
-            <param name="filter_type" value="LoG"/>
-            <param name="min_scale" value="1"/>
-            <param name="max_scale" value="2"/>
+            <param name="fn_in" value="input1_tyx.tiff"/>
+            <conditional name="method">
+                <param name="type" value="LoG"/>
+                <param name="min_scale" value="1"/>
+                <param name="max_scale" value="2"/>
+            </conditional>
             <param name="abs_threshold" value="0"/>
             <param name="rel_threshold" value="0.1"/>
             <param name="boundary" value="10"/>
-            <output name="fn_out" value="output1.tsv" ftype="tabular" />
+            <output name="fn_out" value="input1_tyx.tsv" ftype="tabular"/>
+        </test>
+        <!-- Multi-frame input with slicing -->
+        <test>
+            <param name="fn_in" value="input1_tyx.tiff"/>
+            <param name="frame_1st" value="2"/>
+            <param name="abs_threshold" value="0"/>
+            <param name="rel_threshold" value="0.1"/>
+            <output name="fn_out" ftype="tabular">
+                <assert_contents>
+                    <has_line_matching expression="^0\t.*"/><!-- Verify that indexing still starts with 0 -->
+                    <has_line_matching expression="^3\t.*" negate="true"/><!-- Verify that there are only 3 frames -->
+                </assert_contents>
+            </output>
+        </test>
+        <test>
+            <param name="fn_in" value="input1_tyx.tiff"/>
+            <param name="frame_1st" value="2"/>
+            <param name="frame_end" value="4"/>
+            <param name="abs_threshold" value="0"/>
+            <param name="rel_threshold" value="0.1"/>
+            <output name="fn_out" ftype="tabular">
+                <assert_contents>
+                    <has_line_matching expression="^0\t.*"/><!-- Verify that indexing still starts with 0 -->
+                    <has_line_matching expression="^2\t.*" negate="true"/><!-- Verify that there are only 2 frames -->
+                </assert_contents>
+            </output>
+        </test>
+        <test>
+            <param name="fn_in" value="input1_tyx.tiff"/>
+            <param name="frame_1st" value="-3"/>
+            <param name="frame_end" value="-1"/>
+            <param name="abs_threshold" value="0"/>
+            <param name="rel_threshold" value="0.1"/>
+            <output name="fn_out" ftype="tabular">
+                <assert_contents>
+                    <has_line_matching expression="^0\t.*"/><!-- Verify that indexing still starts with 0 -->
+                    <has_line_matching expression="^2\t.*" negate="true"/><!-- Verify that there are only 2 frames -->
+                </assert_contents>
+            </output>
         </test>
         <!-- Single-frame input -->
         <test>
-            <param name="fn_in" value="input2.tiff"/>
-            <param name="frame_1st" value="1"/>
-            <param name="frame_end" value="0"/>
-            <param name="filter_type" value="LoG"/>
-            <param name="min_scale" value="1"/>
-            <param name="max_scale" value="2"/>
+            <param name="fn_in" value="input2_yx.tiff"/>
+            <conditional name="method">
+                <param name="type" value="LoG"/>
+                <param name="min_scale" value="1"/>
+                <param name="max_scale" value="2"/>
+            </conditional>
             <param name="abs_threshold" value="0.04"/>
             <param name="rel_threshold" value="0"/>
             <param name="boundary" value="10"/>
-            <output name="fn_out" value="output2.tsv" ftype="tabular" />
+            <output name="fn_out" value="input2_yx.tsv" ftype="tabular"/>
+        </test>
+        <!-- 3-D image input (forbidden) -->
+        <test expect_failure="true">
+            <param name="fn_in" value="input1_zyx.tiff"/>
+            <assert_stderr>
+                <!-- Rejected by validator -->
+                <has_n_lines n="0"/>
+            </assert_stderr>
+            <assert_stdout>
+                <!-- Rejected by validator -->
+                <has_n_lines n="0"/>
+            </assert_stdout>
+        </test>
+        <!-- Local intensity maxima (regression test) -->
+        <test>
+            <param name="fn_in" value="input3_tyx.tiff"/>
+            <conditional name="method">
+                <param name="type" value="local_max"/>
+                <param name="intensity_offset_x" value="-1"/>
+                <param name="intensity_offset_y" value="-1"/>
+            </conditional>
+            <param name="abs_threshold" value="0"/>
+            <param name="rel_threshold" value="0.1"/>
+            <param name="boundary" value="10"/>
+            <output name="fn_out" value="input3_tyx.tsv" ftype="tabular"/>
         </test>
     </tests>
     <help>
@@ -91,12 +217,17 @@
 
         The tool produces a TSV file containing all detections, with the following columns:
 
-        - ``frame``: The frame of the image stack
+        - ``frame``: The frame of the image stack (0 is the starting time point)
         - ``pos_x``: The horizontal coordinate of the detection
         - ``pos_y``: The vertical coordinate of the detection
+        - ``intensity``: The mean intensity of the spot
+
+        In addition, the following two columns are added if a *scale-based* detection method is used:
+
         - ``scale``: The scale at which the detection was found
         - ``radius``: The radius of the detected spot
-        - ``intensity``: The mean intensity of the spot
+
+        The order of the columns is: ``frame``, ``pos_x``, ``pos_y``, ``scale``, ``radius``, ``intensity``.
 
     </help>
     <citations>
