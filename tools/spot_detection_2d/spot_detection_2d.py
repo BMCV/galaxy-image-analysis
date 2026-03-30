@@ -9,6 +9,7 @@ See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
 """
 
 import argparse
+from typing import Iterator
 
 import giatools
 import numpy as np
@@ -18,9 +19,17 @@ from numpy.typing import NDArray
 from skimage.feature import blob_dog, blob_doh, blob_log, peak_local_max
 
 
-def blob_local_maxima(img: NDArray, sigma: float, threshold: float, threshold_rel: float) -> list[tuple[float, float, float]]:
+def local_max_detector(
+    img: NDArray,
+    sigma: float,
+    threshold: float,
+    threshold_rel: float,
+    intensity_offset: tuple[int, int],
+) -> Iterator[tuple[int, int, dict]]:
+
     import skimage.filters
     img = skimage.filters.gaussian(img.astype(np.float64), sigma=sigma)  # TODO: migrate to ndi?
+    img_smooth = img.copy()
 
     # Handle images with negative intensities
     if img.min() < 0:
@@ -32,16 +41,32 @@ def blob_local_maxima(img: NDArray, sigma: float, threshold: float, threshold_re
     img[img < threshold_rel * img_max] = 0
 
     # Find local maxima
-    yx_list = peak_local_max(img, min_distance=1)
-    scale = 1 / (2 * np.sqrt(2))
-    return [tuple(yx) + (scale,) for yx in yx_list]
+    yx_list = peak_local_max(img, min_distance=1).round().astype(int)
+    for y, x in yx_list:
+        intensity_yx = tuple(np.add((y, x), intensity_offset))
+        if (
+            0 <= intensity_yx[0] < img.shape[0] and
+            0 <= intensity_yx[1] < img.shape[1]
+        ):
+            intensity = img_smooth[intensity_yx]
+            yield y, x, dict(intensity=intensity)
+
+
+def create_multiscale_blob_detector(func):
+    def impl(img: NDArray, **kwargs):
+        for y, x, scale in func(img, **kwargs):
+            y, x = round(y), round(x)
+            radius = scale * np.sqrt(2) * 2
+            intensity = mean_intensity(img, y, x, round(radius))
+            yield y, x, dict(scale=scale, radius=radius, intensity=intensity)
+    return impl
 
 
 blob_methods = {
-    'dog': blob_dog,
-    'doh': blob_doh,
-    'log': blob_log,
-    'local_max': blob_local_maxima,
+    'dog': create_multiscale_blob_detector(blob_dog),
+    'doh': create_multiscale_blob_detector(blob_doh),
+    'log': create_multiscale_blob_detector(blob_log),
+    'local_max': local_max_detector,
 }
 
 
@@ -93,25 +118,20 @@ def spot_detection(
     detections = list()
     for img_idx, img in enumerate(stack):
         blobs = blob_method(img, threshold=abs_threshold, threshold_rel=rel_threshold, **method_kwargs)
-        for blob in blobs:
-            y, x, scale = blob
+        for y, x, blob_info in blobs:
 
             # Skip the detection if it is too close to the boundary of the image
             if y < boundary or x < boundary or y >= img.shape[0] - boundary or x >= img.shape[1] - boundary:
                 continue
 
             # Add the detection to the list of detections
-            radius = scale * np.sqrt(2) * 2
-            intensity = mean_intensity(img, round(y), round(x), round(radius))
             detections.append(
                 {
                     'frame': img_idx + 1,
-                    'pos_x': round(x),
-                    'pos_y': round(y),
-                    'scale': scale,
-                    'radius': radius,
-                    'intensity': intensity,
+                    'pos_x': x,
+                    'pos_y': y,
                 }
+                | blob_info
             )
 
     # Build and save dataframe
@@ -145,6 +165,7 @@ if __name__ == "__main__":
     method_kwargs = dict()
     if args.method == 'local_max':
         method_kwargs['sigma'] = 1
+        method_kwargs['intensity_offset'] = (-1, -1)
     else:
         method_kwargs['min_sigma'] = args.min_scale
         method_kwargs['max_sigma'] = args.max_scale
