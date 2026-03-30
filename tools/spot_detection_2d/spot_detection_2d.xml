@@ -2,6 +2,7 @@
     <description></description>
     <macros>
         <import>creators.xml</import>
+        <import>validators.xml</import>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
@@ -13,11 +14,10 @@
         <xref type="bio.tools">galaxy_image_analysis</xref>
     </xrefs>
     <requirements>
-        <requirement type="package" version="0.2.0">giatools</requirement>
-        <requirement type="package" version="1.26.4">numpy</requirement>
-        <requirement type="package" version="1.2.4">pandas</requirement>
-        <requirement type="package" version="0.21">scikit-image</requirement>
-        <requirement type="package" version="2024.6.18">tifffile</requirement>
+        <requirement type="package" version="0.7.3">giatools</requirement>
+        <requirement type="package" version="2.3.5">numpy</requirement>
+        <requirement type="package" version="2.2.2">pandas</requirement>
+        <requirement type="package" version="0.25.2">scikit-image</requirement>
     </requirements>
     <required_files>
         <include type="glob" path="*.py"/>
@@ -38,7 +38,10 @@
     ]]>
     </command>
     <inputs>
-        <param name="fn_in" type="data" format="tiff" label="Intensity image or a stack of images" />
+        <param name="fn_in" type="data" format="tiff" label="Intensity image or a stack of images">
+            <expand macro="validators/is_single_channel"/>
+            <expand macro="validators/is_2d"/>
+        </param>
         <param name="frame_1st" type="integer" value="1" label="Starting time point (1 for the first frame of the stack)" />
         <param name="frame_end" type="integer" value="0" label="Ending time point (0 for the last frame of the stack)" />
         <param name="filter_type" type="select" label="Detection filter">
@@ -58,7 +61,7 @@
     <tests>
         <!-- Multi-frame input -->
         <test>
-            <param name="fn_in" value="input1.tiff"/>
+            <param name="fn_in" value="input1_tyx.tiff"/>
             <param name="frame_1st" value="1"/>
             <param name="frame_end" value="0"/>
             <param name="filter_type" value="LoG"/>
@@ -67,11 +70,11 @@
             <param name="abs_threshold" value="0"/>
             <param name="rel_threshold" value="0.1"/>
             <param name="boundary" value="10"/>
-            <output name="fn_out" value="output1.tsv" ftype="tabular" />
+            <output name="fn_out" value="input1_tyx.tsv" ftype="tabular" />
         </test>
         <!-- Single-frame input -->
         <test>
-            <param name="fn_in" value="input2.tiff"/>
+            <param name="fn_in" value="input2_yx.tiff"/>
             <param name="frame_1st" value="1"/>
             <param name="frame_end" value="0"/>
             <param name="filter_type" value="LoG"/>
@@ -80,7 +83,19 @@
             <param name="abs_threshold" value="0.04"/>
             <param name="rel_threshold" value="0"/>
             <param name="boundary" value="10"/>
-            <output name="fn_out" value="output2.tsv" ftype="tabular" />
+            <output name="fn_out" value="input2_yx.tsv" ftype="tabular" />
+        </test>
+        <!-- 3-D image input (forbidden) -->
+        <test expect_failure="true">
+            <param name="fn_in" value="input1_zyx.tiff"/>
+            <assert_stderr>
+                <!-- Rejected by validator -->
+                <has_n_lines n="0"/>
+            </assert_stderr>
+            <assert_stdout>
+                <!-- Rejected by validator -->
+                <has_n_lines n="0"/>
+            </assert_stdout>
         </test>
     </tests>
     <help>

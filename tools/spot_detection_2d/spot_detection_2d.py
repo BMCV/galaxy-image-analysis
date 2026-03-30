@@ -10,7 +10,7 @@ See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
 
 import argparse
 
-import giatools.io
+import giatools
 import numpy as np
 import pandas as pd
 import scipy.ndimage as ndi
@@ -50,7 +50,8 @@ def spot_detection(
 ) -> None:
 
     # Load the single-channel 2-D input image (or stack thereof)
-    stack = giatools.io.imread(fn_in)
+    img = giatools.Image.read(fn_in, normalize_axes='TYX')
+    stack = img.data
 
     # Normalize input image so that it is a stack of images (possibly a stack of a single image)
     assert stack.ndim in (2, 3)
