@@ -86,7 +86,7 @@
                help="@FRAME_HELP@ (e.g., a value of -10 will remove the last 10 frames of the stack). Leave empty to use all remaining frames of the stack."/>
         <conditional name="method">
             <param name="type" type="select" label="Filter type"
-                   help="Choose &lt;i&gt;Laplacian of Gaussian&lt;/i&gt;, &lt;i&gt;Difference of Gaussian&lt;/i&gt;, or &lt;i&gt;Determinant of Hessian&lt;/i&gt; for scale-based detections of bright spots (higher image intensities) on dark backgrounds (lower image intensities). Choose &lt;i&gt;Gaussian filtering&lt;/i&gt; for detections based on local intensity maxima within the filtering response.">
+                   help="Choose &lt;i&gt;Laplacian of Gaussian&lt;/i&gt;, &lt;i&gt;Difference of Gaussian&lt;/i&gt;, or &lt;i&gt;Determinant of Hessian&lt;/i&gt; for scale-based detections of bright spots (higher image intensities) on dark backgrounds (lower image intensities). Choose &lt;i&gt;Gaussian filtering&lt;/i&gt; for detections based on local maxima of the smoothed image intensities.">
                 <option value="LoG" selected="True">Laplacian of Gaussian</option>
                 <option value="DoG">Difference of Gaussians</option>
                 <option value="DoH">Determinant of Hessian</option>

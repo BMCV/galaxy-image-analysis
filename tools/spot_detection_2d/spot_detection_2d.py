@@ -63,7 +63,7 @@ def create_multiscale_blob_detector(func):
     return impl
 
 
-blob_methods = {
+methods = {
     'dog': create_multiscale_blob_detector(blob_dog),
     'doh': create_multiscale_blob_detector(blob_doh),
     'log': create_multiscale_blob_detector(blob_log),
@@ -126,15 +126,14 @@ def spot_detection(
     else:
         stack = stack[frame_1st:]
 
-    # Select the blob detection filter
-    assert method.lower() in blob_methods.keys()
-    blob_method = blob_methods[method.lower()]
+    # Select the detection method
+    detector = methods[method.lower()]
 
-    # Perform blob detection on each image of the stack
+    # Perform detection on each image of the stack
     detections = list()
     for img_idx, img in enumerate(stack):
-        blobs = blob_method(img, threshold=abs_threshold, threshold_rel=rel_threshold, **method_kwargs)
-        for y, x, blob_info in blobs:
+        spots = detector(img, threshold=abs_threshold, threshold_rel=rel_threshold, **method_kwargs)
+        for y, x, spot_info in spots:
 
             # Skip the detection if it is too close to the boundary of the image
             if y < boundary or x < boundary or y >= img.shape[0] - boundary or x >= img.shape[1] - boundary:
@@ -147,7 +146,7 @@ def spot_detection(
                     'pos_x': x,
                     'pos_y': y,
                 }
-                | blob_info
+                | spot_info
             )
 
     # Build and save dataframe
