@@ -26,8 +26,7 @@ def local_max_detector(
     intensity_offset: tuple[int, int],
 ) -> Iterator[tuple[int, int, dict]]:
 
-    import skimage.filters
-    img = skimage.filters.gaussian(img.astype(np.float64), sigma=sigma)  # TODO: migrate to ndi?
+    img = ndi.gaussian_filter(img.astype(np.float64), sigma)
     img_smooth = img.copy()
 
     # Handle images with negative intensities
