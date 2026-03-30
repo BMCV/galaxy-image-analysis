@@ -31,7 +31,9 @@ def local_max_detector(
 
     # Handle images with negative intensities
     if img.min() < 0:
-        img -= img.min()
+        img_min = img.min()
+        img -= img_min
+        threshold -= img_min
 
     # Perform thresholding
     img_max = img.max()

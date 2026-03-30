@@ -97,12 +97,15 @@
                 <param name="intensity_offset_y" type="integer" value="0" label="Intensity coordinate y-offset (in pixels)" help="@INTENSITY_OFFSET_HELP@"/>
             </when>
         </conditional>
-        <param name="abs_threshold" type="float" value=".25" min="0" label="Minimum filter response (absolute)" help="Filter responses below this threshold will be ignored. Only filter responses above this thresholding will be considered as blobs. This threshold is ignored if the relative threshold (below) corresponds to a higher response." />
-        <param name="rel_threshold" type="float" value="0" min="0" max="1" label="Minimum filter response (relative)" help="Same as the absolute threshold (above), but as a fraction of the overall maximum filter response of an image. This threshold is ignored if it corresponds to a response below the absolute threshold." />
-        <param name="boundary" type="integer" value="10" min="0" label="Image boundary" help="Width of image boundaries (in pixel) where spots will be ignored." />
+        <param name="abs_threshold" type="float" value=".25" label="Minimum filter response (absolute)"
+               help="Filter responses below this threshold will be ignored. Only filter responses above this thresholding will be considered as detections. This threshold is ignored if the relative threshold (below) corresponds to a higher response."/>
+        <param name="rel_threshold" type="float" value="0" min="0" max="1" label="Minimum filter response (relative)"
+               help="Same as the absolute threshold (above), but as a fraction of the overall maximum filter response of an image. This threshold is ignored if it corresponds to a response below the absolute threshold." />
+        <param name="boundary" type="integer" value="10" min="0" label="Image boundary"
+               help="Width of image boundaries (in pixel) where detections will be ignored."/>
     </inputs>
     <outputs>
-        <data format="tabular" name="fn_out" />
+        <data format="tabular" name="fn_out"/>
     </outputs>
     <tests>
         <!-- Multi-frame input -->
