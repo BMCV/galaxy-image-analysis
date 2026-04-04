@@ -99,17 +99,20 @@
 
         <!-- TIFF tests -->
         <test>
-            <param name="input" value="zcyx.tiff" />
-            <param name="axis" value="Z" />
-            <param name="squeeze" value="false" />
-            <output_collection name="output" type="list" count="25">
-                <expand macro="tests/intensity_image_diff/element" name="01.tiff" value="zcyx_slice01.tiff" ftype="tiff"/>
-                <expand macro="tests/intensity_image_diff/element" name="25.tiff" value="zcyx_slice25.tiff" ftype="tiff"/>
+            <param name="input" value="zcyx.tiff"/>
+            <param name="axis" value="Z"/>
+            <param name="squeeze" value="false"/>
+            <param name="offset" value="9"/>
+            <param name="step" value="2"/>
+            <param name="count" value="5"/>
+            <output_collection name="output" type="list" count="5">
+                <expand macro="tests/intensity_image_diff/element" name="10.tiff" value="zcyx_slice10.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="18.tiff" value="zcyx_slice18.tiff" ftype="tiff"/>
             </output_collection>
             <assert_stdout>
                 <has_line line="Input image axes: ZCYX"/>
                 <has_line line="Input image shape: (25, 2, 50, 50)"/>
-                <has_line line="Writing 25 out of 25 image(s)"/>
+                <has_line line="Writing 5 out of 25 image(s)"/>
                 <has_line line="Output axes: ZCYX"/>
                 <has_line line="Output shape: (1, 2, 50, 50)"/>
             </assert_stdout>
