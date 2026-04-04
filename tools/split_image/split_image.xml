@@ -29,11 +29,17 @@
         '$axis'
         output
 
+        $offset
+        $step
         $squeeze
+
+        #if str($count) != ""
+            --count $count
+        #end if
 
     ]]></command>
     <inputs>
-        <param name="input" type="data" format="tiff,png" label="Image to split" />
+        <param name="input" type="data" format="tiff,png" label="Image to split"/>
         <param name="axis" type="select" label="Axis to split along">
             <option value="T">T-axis (split the frames of a temporal image sequence)</option>
             <option value="Z">Z-axis (split the slices of a 3-D image or image sequence)</option>
@@ -43,11 +49,17 @@
             <option value="">Split dataset that contains multiple images (e.g., multi-series TIFF)</option>
         </param>
         <param name="squeeze" type="boolean" checked="false" truevalue="--squeeze" falsevalue="" label="Squeeze result images"
-               help="Only non-singleton axes (axes with more than one element) will be retained in the result images. This does not apply for the X and Y axes which always are retained." />
+               help="Only non-singleton axes (axes with more than one element) will be retained in the result images. This does not apply for the X and Y axes which always are retained."/>
+        <param name="offset" type="integer" value="0" min="0" label="Offset"
+               help="Number of slices to skip at the beginning."/>
+        <param name="step" type="integer" value="1" min="1" label="Step"
+               help="Number of slices between extracted images (each slice is extracted for a value of 1, each second slice is extracted for a value of two, and so on)."/>
+        <param name="count" type="integer" optional="true" min="1" label="Count"
+               help="Maximum number of slices to extract."/>
     </inputs>
     <outputs>
         <collection type="list" name="output" label="Split ${on_string} along ${axis} axis">
-            <discover_datasets directory="output" pattern="__name__" format="tiff" />
+            <discover_datasets directory="output" pattern="__name__" format="tiff"/>
         </collection>
     </outputs>
     <tests>
@@ -65,7 +77,7 @@
             <assert_stdout>
                 <has_line line="Input image axes: YXC"/>
                 <has_line line="Input image shape: (32, 32, 3)"/>
-                <has_line line="Writing 3 image(s)"/>
+                <has_line line="Writing 3 out of 3 image(s)"/>
                 <has_line line="Output axes: YXC"/>
                 <has_line line="Output shape: (32, 32, 1)"/>
             </assert_stdout>
@@ -79,7 +91,7 @@
             </output_collection>
             <assert_stdout>
                 <has_line line="Found 1 image(s) in file"/>
-                <has_line line="Writing 1 image(s)"/>
+                <has_line line="Writing 1 out of 1 image(s)"/>
                 <has_line line="Output axes: YXC"/>
                 <has_line line="Output shape: (32, 32, 3)"/>
             </assert_stdout>
@@ -97,7 +109,7 @@
             <assert_stdout>
                 <has_line line="Input image axes: ZCYX"/>
                 <has_line line="Input image shape: (25, 2, 50, 50)"/>
-                <has_line line="Writing 25 image(s)"/>
+                <has_line line="Writing 25 out of 25 image(s)"/>
                 <has_line line="Output axes: ZCYX"/>
                 <has_line line="Output shape: (1, 2, 50, 50)"/>
             </assert_stdout>
@@ -113,7 +125,7 @@
             <assert_stdout>
                 <has_line line="Input image axes: QYX"/>
                 <has_line line="Input image shape: (2, 256, 256)"/>
-                <has_line line="Writing 2 image(s)"/>
+                <has_line line="Writing 2 out of 2 image(s)"/>
                 <has_line line="Output axes: QYX"/>
                 <has_line line="Output shape: (1, 256, 256)"/>
             </assert_stdout>
@@ -141,7 +153,7 @@
             </output_collection>
             <assert_stdout>
                 <has_line line="Found 6 image(s) in file"/>
-                <has_line line="Writing 6 image(s)"/>
+                <has_line line="Writing 6 out of 6 image(s)"/>
                 <has_line line="Output 1 axes: CYX"/>
                 <has_line line="Output 1 shape: (4, 5, 5)"/>
                 <has_line line="Output 2 axes: CYX"/>
@@ -170,7 +182,7 @@
             <assert_stdout>
                 <has_line line="Input image axes: YXC"/>
                 <has_line line="Input image shape: (32, 32, 3)"/>
-                <has_line line="Writing 3 image(s)"/>
+                <has_line line="Writing 3 out of 3 image(s)"/>
                 <has_line line="Output axes: YX"/>
                 <has_line line="Output shape: (32, 32)"/>
             </assert_stdout>
@@ -187,7 +199,7 @@
             <assert_stdout>
                 <has_line line="Input image axes: YXC"/>
                 <has_line line="Input image shape: (32, 32, 3)"/>
-                <has_line line="Writing 1 image(s)"/>
+                <has_line line="Writing 1 out of 1 image(s)"/>
                 <has_line line="Output axes: YXC"/>
                 <has_line line="Output shape: (32, 32, 3)"/>
             </assert_stdout>
