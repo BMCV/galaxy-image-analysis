@@ -35,7 +35,7 @@ class OutputWriter:
         if self.last_pos in self.positions:
             if self.squeeze:
                 img = img.squeeze()
-            if self.last_pos == 1 or self.verbose:
+            if self.last_pos == self.positions[0] or self.verbose:
                 prefix = f'Output {self.last_pos}' if self.verbose else 'Output'
                 print(f'{prefix} axes:', img.axes)
                 print(f'{prefix} shape:', img.data.shape)
