@@ -78,7 +78,7 @@
                 <expand macro="tests/intensity_image_diff/element" name="1.tiff" value="rgb1.tiff" ftype="tiff"/>
             </output_collection>
             <assert_stdout>
-                <has_line line="Not a TIFF file"/>
+                <has_line line="Found 1 image(s) in file"/>
                 <has_line line="Writing 1 image(s)"/>
                 <has_line line="Output axes: YXC"/>
                 <has_line line="Output shape: (32, 32, 3)"/>
@@ -126,7 +126,7 @@
                 <expand macro="tests/intensity_image_diff/element" name="1.tiff" value="qyx.tiff" ftype="tiff"/>
             </output_collection>
             <assert_stdout>
-                <has_line line="Found TIFF with 1 series"/>
+                <has_line line="Found 1 image(s) in file"/>
             </assert_stdout>
         </test>
 
@@ -140,7 +140,7 @@
                 <expand macro="tests/intensity_image_diff/element" name="6.tiff" value="multiseries_series6.tiff" ftype="tiff"/>
             </output_collection>
             <assert_stdout>
-                <has_line line="Found TIFF with 6 series"/>
+                <has_line line="Found 6 image(s) in file"/>
                 <has_line line="Writing 6 image(s)"/>
                 <has_line line="Output 1 axes: CYX"/>
                 <has_line line="Output 1 shape: (4, 5, 5)"/>

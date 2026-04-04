@@ -1,12 +1,10 @@
 import argparse
 import math
-import os
 import pathlib
-import shutil
 
 import giatools
+import giatools.io
 import numpy as np
-import tifffile
 
 
 class OutputWriter:
@@ -42,47 +40,20 @@ if __name__ == '__main__':
     # If splitting a file that contains multiple images...
     if args.axis == '':
 
-        # Peek the number of series in the input file (if it is a TIFF)
-        try:
-            with tifffile.TiffFile(args.input) as tiff:
-                num_tiff_series = len(tiff.series)
-                print(f'Found TIFF with {num_tiff_series} series')
-        except tifffile.TiffFileError:
-            num_tiff_series = 0  # not a TIFF file
-            print('Not a TIFF file')
+        # Peek the number of images
+        num_images = giatools.io.peek_num_images_in_file(args.input)
+        print(f'Found {num_images} image(s) in file')
 
-        # If the file is a multi-series TIFF, extract the individual series
-        # (for consistency, also accept only a single series if squeezing is requested)
-        if num_tiff_series >= 2 or (num_tiff_series == 1 and args.squeeze):
-            output = OutputWriter(
-                dir_path=args.output,
-                num_images=num_tiff_series,
-                squeeze=args.squeeze,
-                verbose=True,
-            )
-            for series in range(num_tiff_series):
-                img = giatools.Image.read(args.input, position=series)
-                output.write(
-                    img.squeeze_like(img.original_axes),
-                )
-
-        # Otherwise, there is nothing to be split (or squeeze)
-        # (the input is either a single-series TIFF or not a TIFF at all)
-        elif num_tiff_series == 1:  # input is a single-series TIFF (output = input)
-            try:
-                os.symlink(args.input, args.output / '1.tiff')
-            except OSError:
-                shutil.copyfile(args.input, args.output / '1.tiff')
-        else:  # input is not a TIFF, conversion needed
-            img = giatools.Image.read(args.input)
-            OutputWriter(
-                dir_path=args.output,
-                num_images=1,
-                squeeze=args.squeeze,
-                verbose=False,
-            ).write(
-                img.squeeze_like(img.original_axes),
-            )
+        # Extract the individual images
+        output = OutputWriter(
+            dir_path=args.output,
+            num_images=num_images,
+            squeeze=args.squeeze,
+            verbose=(num_images > 1),
+        )
+        for position in range(num_images):
+            img = giatools.Image.read(args.input, position=position, normalize_axes=None)
+            output.write(img)
 
     # If splitting along an image axes...
     else:
