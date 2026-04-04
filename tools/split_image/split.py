@@ -61,7 +61,7 @@ if __name__ == '__main__':
                 verbose=True,
             )
             for series in range(num_tiff_series):
-                img = giatools.Image.read(args.input, series=series)
+                img = giatools.Image.read(args.input, position=series)
                 output.write(
                     img.squeeze_like(img.original_axes),
                 )
