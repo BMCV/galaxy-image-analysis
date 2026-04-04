@@ -20,6 +20,9 @@
         <requirement type="package" version="@TOOL_VERSION@">numpy</requirement>
         <requirement type="package" version="0.7.3">giatools</requirement>
     </requirements>
+    <required_files>
+        <include type="glob" path="*.py"/>
+    </required_files>
     <command detect_errors="aggressive"><![CDATA[
 
         mkdir output &&
