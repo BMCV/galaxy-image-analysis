@@ -13,7 +13,6 @@
     </edam_operations>
     <expression type="ecma5.1">
     {
-        var output;
         return {
             'width': parseInt($job.input1.metadata.width),
             'height': parseInt($job.input1.metadata.height),
