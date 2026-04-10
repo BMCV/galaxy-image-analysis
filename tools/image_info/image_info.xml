@@ -1,8 +1,8 @@
 <tool id="ip_imageinfo" name="Show image info" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="23.0">
   <description>with Bioformats</description>
   <macros>
-    <token name="@TOOL_VERSION@">5.7.1</token>
-    <token name="@VERSION_SUFFIX@">1</token>
+    <token name="@TOOL_VERSION@">8.0.0</token>
+    <token name="@VERSION_SUFFIX@">0</token>
   </macros>
   <edam_operations>
     <edam_operation>operation_3443</edam_operation>
@@ -13,11 +13,12 @@
   <requirements>
         <requirement type="package" version="@TOOL_VERSION@">bftools</requirement>
   </requirements>
-  <command> 
-        <![CDATA[
-        showinf '$input_file' -no-upgrade -minmax -nopix > '$output'
-        ]]>
-  </command>
+  <command><![CDATA[
+
+    ln -s '$input_file' input.$input_file.ext &&
+    showinf input.$input_file.ext -no-upgrade -minmax -nopix > '$output'
+
+  ]]></command>
   <inputs>
     <param label="Input Image" name="input_file" type="data" format="scn,ndpi,tf8,vms,xml,pcx,binary,hdr,mov,psd,pbm,nrrd,tiff,pgm,ppm,txt,tf2,zip,top,gif,wav,bmp,png,gz,cif,fli,btf,jpg,avi,html,sif,tif,csv,ome.tiff,par,fits,jp2,eps,nhdr,svs,mrc"/>
   </inputs>
