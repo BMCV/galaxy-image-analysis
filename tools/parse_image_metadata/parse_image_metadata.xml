@@ -17,22 +17,106 @@
     {
         var output;
         return {
-            'width': parseInt($job.input1.metadata.width)
+            'width': parseInt($job.input1.metadata.width),
+            'height': parseInt($job.input1.metadata.height),
+            'channels': parseInt($job.input1.metadata.channels),
+            'depth': parseInt($job.input1.metadata.depth),
+            'frames': parseInt($job.input1.metadata.frames)
         };
     }
     </expression>
     <inputs>
-        <param type="data" format="tiff,ome.tiff,png" label="Input file containing parameter to parse out of" load_contents="0" name="input1"/>
+        <param type="data" format="tiff,png" label="Input file containing parameter to parse out of" load_contents="0" name="input1"/>
     </inputs>
     <outputs>
         <output type="integer" name="width" from="width"/>
+        <output type="integer" name="height" from="height"/>
+        <output type="integer" name="channels" from="channels"/>
+        <output type="integer" name="depth" from="depth"/>
+        <output type="integer" name="frames" from="frames"/>
     </outputs>
     <tests>
-        <test expect_num_outputs="1">
-            <param name="input1" value="input1.tiff"/>
+        <test expect_num_outputs="5">
+            <param name="input1" value="input_yxc.png"/>
             <output name="width">
                 <assert_contents>
                     <has_line line="265"/>
+                </assert_contents>
+            </output>
+            <output name="height">
+                <assert_contents>
+                    <has_line line="530"/>
+                </assert_contents>
+            </output>
+            <output name="channels">
+                <assert_contents>
+                    <has_line line="4"/>
+                </assert_contents>
+            </output>
+            <output name="depth">
+                <assert_contents>
+                    <has_line line="0"/>
+                </assert_contents>
+            </output>
+            <output name="frames">
+                <assert_contents>
+                    <has_line line="1"/>
+                </assert_contents>
+            </output>
+        </test>
+        <test expect_num_outputs="5">
+            <param name="input1" value="input_yxz.tiff"/>
+            <output name="width">
+                <assert_contents>
+                    <has_line line="265"/>
+                </assert_contents>
+            </output>
+            <output name="height">
+                <assert_contents>
+                    <has_line line="530"/>
+                </assert_contents>
+            </output>
+            <output name="channels">
+                <assert_contents>
+                    <has_line line="0"/>
+                </assert_contents>
+            </output>
+            <output name="depth">
+                <assert_contents>
+                    <has_line line="4"/>
+                </assert_contents>
+            </output>
+            <output name="frames">
+                <assert_contents>
+                    <has_line line="0"/>
+                </assert_contents>
+            </output>
+        </test>
+        <test expect_num_outputs="5">
+            <param name="input1" value="input_yxt.tiff"/>
+            <output name="width">
+                <assert_contents>
+                    <has_line line="265"/>
+                </assert_contents>
+            </output>
+            <output name="height">
+                <assert_contents>
+                    <has_line line="530"/>
+                </assert_contents>
+            </output>
+            <output name="channels">
+                <assert_contents>
+                    <has_line line="0"/>
+                </assert_contents>
+            </output>
+            <output name="depth">
+                <assert_contents>
+                    <has_line line="0"/>
+                </assert_contents>
+            </output>
+            <output name="frames">
+                <assert_contents>
+                    <has_line line="4"/>
                 </assert_contents>
             </output>
         </test>
