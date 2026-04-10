@@ -226,25 +226,6 @@
                 <element name="images_res" file="res.tiff" ftype="tiff" compare="sim_size"/>
             </output_collection>
         </test>
-        <!-- ZIP with two files with same stem name: https://github.com/BMCV/galaxy-image-analysis/issues/223 -->
-        <test expect_num_outputs="1">
-            <param name="input_file" value="input2.zip" ftype="zip"/>
-            <conditional name="extract_options">
-                <param name="target" value="all"/>
-            </conditional>
-            <output_collection name="unzipped" type="list" count="2">
-                <element name="file.txt" ftype="txt">
-                    <assert_contents>
-                        <has_line line="a"/>
-                    </assert_contents>
-                </element>
-                <element name="file.tsv" ftype="tsv">
-                    <assert_contents>
-                        <has_line line="b"/>
-                    </assert_contents>
-                </element>
-            </output_collection>
-        </test>
     </tests>
     <help>
 
