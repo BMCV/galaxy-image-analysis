@@ -1,12 +1,28 @@
-<tool name="Parse parameter value" id="param_value_from_file" version="0.1.0" tool_type="expression" profile="19.05">
+<tool name="Parse value from image metadata" id="param_image_metadata" version="0.1.0" tool_type="expression" profile="19.05">
     <description>
         from dataset
     </description>
+    <macros>
+        <import>creators.xml</import>
+    </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+        <expand macro="creators/kostrykin"/>
+    </creator>
     <macros/>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
     <expression type="ecma5.1">
+    {
+        var output;
+        return {
+            'width': parseInt($job.input1.metadata.width)
+        };
+    }
     </expression>
     <inputs>
-        <param type="data" label="Input file containing parameter to parse out of" load_contents="0" name="input1"/>
+        <param type="data" format="tiff,ome.tiff,png" label="Input file containing parameter to parse out of" load_contents="0" name="input1"/>
     </inputs>
     <outputs>
         <output type="integer" name="width" from="width"/>
@@ -16,7 +32,7 @@
             <param name="input1" value="input1.tiff"/>
             <output name="width">
                 <assert_contents>
-                    <has_line line="512"/>
+                    <has_line line="265"/>
                 </assert_contents>
             </output>
         </test>
