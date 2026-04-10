@@ -1,9 +1,9 @@
-<tool id="unzip" name="Unzip" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="@PROFILE@">
+<tool id="unzip" name="Unzip" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="@PROFILE@"><!-- !GIA301 -->
     <description>Unzip a file</description>
     <macros>
         <import>creators.xml</import>
         <token name="@TOOL_VERSION@">6.0</token>
-        <token name="@VERSION_SUFFIX@">3</token>
+        <token name="@VERSION_SUFFIX@">4</token>
         <token name="@PROFILE@">22.01</token>
         <xml name="regex_sanitizer">
             <sanitizer>
@@ -43,11 +43,12 @@
             #end if
         #end if
         #if $input_file.is_of_type("tar"):
+            #set $tarArgs = "--no-same-owner --no-same-permissions -xf"
             tar
             #if $extract_options['target'] == 'single'
-              xfO '$input_file' '$extract_options["pathtofile"]' > out.data
+              O $tarArgs '$input_file' '$extract_options["pathtofile"]' > out.data
             #else
-              -xf '$input_file' -C ./out/
+              $tarArgs '$input_file' -C ./out/
             #end if
         #end if
         &&
