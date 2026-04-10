@@ -101,7 +101,7 @@
             <filter>extract_options['target'] == 'single'</filter>
         </data>
         <collection name="unzipped" type="list" label="${tool.name} on ${on_string} all files as collection">
-            <discover_datasets directory="out" pattern="^(?P&lt;designation&gt;\.*[^\.]+(?:\.(?P&lt;ext&gt;.*))?)$" visible="false" format="auto"/>
+            <discover_datasets directory="out" pattern="^(?P&lt;designation&gt;\.*[^\.]+(?:\.?(?P&lt;ext&gt;.*)))$" visible="false" format="auto"/>
             <filter>extract_options['target'] != 'single'</filter>
         </collection>
     </outputs>
@@ -183,7 +183,7 @@
                         <has_size value="0"/>
                     </assert_contents>
                 </element>
-                <element name="subdir_"><!-- The suffix `.dotfile` is recognized as the extension -->
+                <element name="subdir_.dotfile">
                     <assert_contents>
                         <has_size value="0"/>
                     </assert_contents>
@@ -232,14 +232,14 @@
                 <param name="target" value="all"/>
             </conditional>
             <output_collection name="unzipped" type="list" count="2">
-                <element name="input_file.txt" ftype="txt">
-                    <assert_contents>
-                        <has_line line="a"/>
-                    </assert_contents>
-                </element>
                 <element name="input_file.tsv" ftype="tsv">
                     <assert_contents>
                         <has_line line="b"/>
+                    </assert_contents>
+                </element>
+                <element name="input_file.txt" ftype="txt">
+                    <assert_contents>
+                        <has_line line="a"/>
                     </assert_contents>
                 </element>
             </output_collection>
