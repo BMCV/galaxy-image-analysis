@@ -1,7 +1,5 @@
 <tool name="Parse value from image metadata" id="param_image_metadata" version="0.1.0" tool_type="expression" profile="19.05">
-    <description>
-        from dataset
-    </description>
+    <description/>
     <macros>
         <import>creators.xml</import>
     </macros>
@@ -121,5 +119,11 @@
             </output>
         </test>
     </tests>
-    <help/>
+    <help><![CDATA[
+
+        **Parse image metadata as parameter values.**
+
+        This tool can be used in workflows to parse parameter values from image metadata (e.g., width, height, etc.).
+
+    ]]></help>
 </tool>

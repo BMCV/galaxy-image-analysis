@@ -1,10 +1,10 @@
 categories:
 - Imaging
 
-description: Parse image metadata as integer parameters (width, height, number of channels, etc.)
+description: Parse image metadata as parameter values (width, height, number of channels, etc.)
 
 long_description: |
-  This tool can be used in workflows to create an integer parameter from image metadata.
+  This tool can be used in workflows to parse parameter values from image metadata.
 
 name: parse_image_metadata
 
