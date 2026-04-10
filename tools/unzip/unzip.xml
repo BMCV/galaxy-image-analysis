@@ -1,4 +1,4 @@
-<tool id="unzip" name="Unzip" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="@PROFILE@">
+<tool id="unzip" name="Unzip" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="@PROFILE@"><!-- !GIA301 -->
     <description>Unzip a file</description>
     <macros>
         <import>creators.xml</import>
