@@ -1,0 +1,25 @@
+<tool name="Parse parameter value" id="param_value_from_file" version="0.1.0" tool_type="expression" profile="19.05">
+    <description>
+        from dataset
+    </description>
+    <macros/>
+    <expression type="ecma5.1">
+    </expression>
+    <inputs>
+        <param type="data" label="Input file containing parameter to parse out of" load_contents="0" name="input1"/>
+    </inputs>
+    <outputs>
+        <output type="integer" name="width" from="width"/>
+    </outputs>
+    <tests>
+        <test expect_num_outputs="1">
+            <param name="input1" value="input1.tiff"/>
+            <output name="width">
+                <assert_contents>
+                    <has_line line="512"/>
+                </assert_contents>
+            </output>
+        </test>
+    </tests>
+    <help/>
+</tool>
