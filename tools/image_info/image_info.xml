@@ -20,7 +20,7 @@
 
   ]]></command>
   <inputs>
-    <param label="Input Image" name="input_file" type="data" format="scn,ndpi,tf8,vms,xml,pcx,binary,hdr,mov,psd,pbm,nrrd,tiff,pgm,ppm,txt,tf2,zip,top,gif,wav,bmp,png,gz,cif,fli,btf,jpg,avi,html,sif,tif,csv,ome.tiff,par,fits,jp2,eps,nhdr,svs,mrc"/>
+    <param label="Input Image" name="input_file" type="data" format="scn,ndpi,tf8,vms,xml,pcx,binary,hdr,mov,psd,pbm,nrrd,tiff,pgm,ppm,txt,tf2,zip,top,gif,wav,bmp,png,gz,cif,fli,btf,jpg,avi,html,sif,ome.tiff,par,fits,jp2,eps,nhdr,svs,mrc"/>
   </inputs>
   <outputs>
      <data format="txt" name="output"/>
