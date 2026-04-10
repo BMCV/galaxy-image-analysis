@@ -3,7 +3,7 @@
     <macros>
         <import>creators.xml</import>
         <token name="@TOOL_VERSION@">6.0</token>
-        <token name="@VERSION_SUFFIX@">3</token>
+        <token name="@VERSION_SUFFIX@">4</token>
         <token name="@PROFILE@">22.01</token>
         <xml name="regex_sanitizer">
             <sanitizer>
@@ -44,6 +44,7 @@
         #end if
         #if $input_file.is_of_type("tar"):
             tar
+            --no-same-owner --no-same-permissions
             #if $extract_options['target'] == 'single'
               xfO '$input_file' '$extract_options["pathtofile"]' > out.data
             #else
