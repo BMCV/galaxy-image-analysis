@@ -1,0 +1,450 @@
+{
+    "a_galaxy_workflow": "true",
+    "annotation": "",
+    "comments": [
+        {
+            "child_steps": [
+                6,
+                7
+            ],
+            "color": "turquoise",
+            "data": {
+                "title": "Convert RGBA to RGB"
+            },
+            "id": 2,
+            "position": [
+                860,
+                290
+            ],
+            "size": [
+                540,
+                190
+            ],
+            "type": "frame"
+        },
+        {
+            "child_steps": [
+                4,
+                5
+            ],
+            "color": "lime",
+            "data": {
+                "title": "Registration"
+            },
+            "id": 0,
+            "position": [
+                270,
+                280
+            ],
+            "size": [
+                530,
+                330
+            ],
+            "type": "frame"
+        },
+        {
+            "child_comments": [
+                2
+            ],
+            "child_steps": [
+                8
+            ],
+            "color": "blue",
+            "data": {
+                "title": "Visualization"
+            },
+            "id": 1,
+            "position": [
+                830,
+                90
+            ],
+            "size": [
+                860,
+                420
+            ],
+            "type": "frame"
+        }
+    ],
+    "creator": [
+        {
+            "class": "Organization",
+            "name": "BMCV"
+        }
+    ],
+    "format-version": "0.1",
+    "license": "MIT",
+    "name": "Registration of images based on landmarks",
+    "report": {
+        "markdown": "\n# Workflow Execution Report\n\n## Workflow Inputs\n```galaxy\ninvocation_inputs()\n```\n\n## Workflow Outputs\n```galaxy\ninvocation_outputs()\n```\n\n## Workflow\n```galaxy\nworkflow_display()\n```\n"
+    },
+    "steps": {
+        "0": {
+            "annotation": "",
+            "content_id": null,
+            "errors": null,
+            "id": 0,
+            "input_connections": {},
+            "inputs": [
+                {
+                    "description": "",
+                    "name": "Moving image"
+                }
+            ],
+            "label": "Moving image",
+            "name": "Input dataset",
+            "outputs": [],
+            "position": {
+                "left": 180,
+                "top": 130
+            },
+            "tool_id": null,
+            "tool_state": "{\"optional\": false, \"tag\": null}",
+            "tool_version": null,
+            "type": "data_input",
+            "uuid": "b5b22e38-8eef-4075-bb2b-e6d46a21df6e",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "1": {
+            "annotation": "",
+            "content_id": null,
+            "errors": null,
+            "id": 1,
+            "input_connections": {},
+            "inputs": [
+                {
+                    "description": "",
+                    "name": "Fixed image"
+                }
+            ],
+            "label": "Fixed image",
+            "name": "Input dataset",
+            "outputs": [],
+            "position": {
+                "left": 240,
+                "top": 0
+            },
+            "tool_id": null,
+            "tool_state": "{\"optional\": false, \"tag\": null}",
+            "tool_version": null,
+            "type": "data_input",
+            "uuid": "78b30277-0762-4327-9ce0-b3cab14abc41",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "2": {
+            "annotation": "",
+            "content_id": null,
+            "errors": null,
+            "id": 2,
+            "input_connections": {},
+            "inputs": [
+                {
+                    "description": "",
+                    "name": "Landmarks in moving image "
+                }
+            ],
+            "label": "Landmarks in moving image ",
+            "name": "Input dataset",
+            "outputs": [],
+            "position": {
+                "left": 0,
+                "top": 270
+            },
+            "tool_id": null,
+            "tool_state": "{\"optional\": false, \"tag\": null}",
+            "tool_version": null,
+            "type": "data_input",
+            "uuid": "11dad0ad-3939-4251-adc3-55b547da77cc",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "3": {
+            "annotation": "",
+            "content_id": null,
+            "errors": null,
+            "id": 3,
+            "input_connections": {},
+            "inputs": [
+                {
+                    "description": "",
+                    "name": "landmarks in reference image"
+                }
+            ],
+            "label": "landmarks in reference image",
+            "name": "Input dataset",
+            "outputs": [],
+            "position": {
+                "left": 0,
+                "top": 400
+            },
+            "tool_id": null,
+            "tool_state": "{\"optional\": false, \"tag\": null}",
+            "tool_version": null,
+            "type": "data_input",
+            "uuid": "74715778-689c-4b7f-9c8a-458199d138ba",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "4": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/landmark_registration/ip_landmark_registration/0.1.0-2",
+            "errors": null,
+            "id": 4,
+            "input_connections": {
+                "fn_lmkfix": {
+                    "id": 3,
+                    "output_name": "output"
+                },
+                "fn_lmkmov": {
+                    "id": 2,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "Perform affine image registration (landmark-based)",
+            "outputs": [
+                {
+                    "name": "fn_out",
+                    "type": "tabular"
+                }
+            ],
+            "position": {
+                "left": 300,
+                "top": 380
+            },
+            "post_job_actions": {},
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/landmark_registration/ip_landmark_registration/0.1.0-2",
+            "tool_shed_repository": {
+                "changeset_revision": "a7a21b7ac7b4",
+                "name": "landmark_registration",
+                "owner": "imgteam",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"algo_option\": {\"algo\": \"ransac\", \"__current_case__\": 0, \"res_th\": \"2.0\", \"max_ite\": \"100\"}, \"fn_lmkfix\": {\"__class__\": \"ConnectedValue\"}, \"fn_lmkmov\": {\"__class__\": \"ConnectedValue\"}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "0.1.0-2",
+            "type": "tool",
+            "uuid": "c075a452-d654-452d-9778-c358d0c96bea",
+            "when": null,
+            "workflow_outputs": [
+                {
+                    "label": "fn_out",
+                    "output_name": "fn_out",
+                    "uuid": "20e315de-7359-464f-a685-01080d5540a5"
+                }
+            ]
+        },
+        "5": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/projective_transformation/ip_projective_transformation/0.1.2-2",
+            "errors": null,
+            "id": 5,
+            "input_connections": {
+                "fixed": {
+                    "id": 1,
+                    "output_name": "output"
+                },
+                "moving": {
+                    "id": 0,
+                    "output_name": "output"
+                },
+                "tmat": {
+                    "id": 4,
+                    "output_name": "fn_out"
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "Performs projective transformation with/without labels",
+            "outputs": [
+                {
+                    "name": "warped",
+                    "type": "input"
+                }
+            ],
+            "position": {
+                "left": 570,
+                "top": 330
+            },
+            "post_job_actions": {
+                "HideDatasetActionwarped": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "warped"
+                }
+            },
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/projective_transformation/ip_projective_transformation/0.1.2-2",
+            "tool_shed_repository": {
+                "changeset_revision": "f5744f0e5a81",
+                "name": "projective_transformation",
+                "owner": "imgteam",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"fixed\": {\"__class__\": \"ConnectedValue\"}, \"moving\": {\"__class__\": \"ConnectedValue\"}, \"tmat\": {\"__class__\": \"ConnectedValue\"}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "0.1.2-2",
+            "type": "tool",
+            "uuid": "f725b631-4f80-41c0-880e-03f408e4253c",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "6": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/split_image/ip_split_image/2.3.5+galaxy1",
+            "errors": null,
+            "id": 6,
+            "input_connections": {
+                "input": {
+                    "id": 5,
+                    "output_name": "warped"
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "Split image along axes",
+            "outputs": [
+                {
+                    "name": "output",
+                    "type": "input"
+                }
+            ],
+            "position": {
+                "left": 890,
+                "top": 340
+            },
+            "post_job_actions": {
+                "HideDatasetActionoutput": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "output"
+                }
+            },
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/split_image/ip_split_image/2.3.5+galaxy1",
+            "tool_shed_repository": {
+                "changeset_revision": "7191fd16988f",
+                "name": "split_image",
+                "owner": "imgteam",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"axis\": \"C\", \"count\": \"3\", \"input\": {\"__class__\": \"ConnectedValue\"}, \"offset\": \"0\", \"squeeze\": false, \"step\": \"1\", \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "2.3.5+galaxy1",
+            "type": "tool",
+            "uuid": "821d3880-eb26-4e46-ad59-cb54e9430a4a",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "7": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/concat_channels/ip_concat_channels/0.6",
+            "errors": null,
+            "id": 7,
+            "input_connections": {
+                "inputs": {
+                    "id": 6,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "Concatenate images",
+            "outputs": [
+                {
+                    "name": "output",
+                    "type": "tiff"
+                }
+            ],
+            "position": {
+                "left": 1170,
+                "top": 340
+            },
+            "post_job_actions": {
+                "HideDatasetActionoutput": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "output"
+                }
+            },
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/concat_channels/ip_concat_channels/0.6",
+            "tool_shed_repository": {
+                "changeset_revision": "42f6ed8b1695",
+                "name": "concat_channels",
+                "owner": "imgteam",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"axis\": \"C\", \"inputs\": {\"__class__\": \"ConnectedValue\"}, \"mode\": \"--preserve_values\", \"sort_by\": \"\", \"spacing\": {\"type\": \"\", \"__current_case__\": 0}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "0.6",
+            "type": "tool",
+            "uuid": "74535140-8feb-4a7b-916a-c3eef7b42f21",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "8": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/overlay_images/ip_overlay_images/0.0.6",
+            "errors": null,
+            "id": 8,
+            "input_connections": {
+                "method_option|im1": {
+                    "id": 1,
+                    "output_name": "output"
+                },
+                "method_option|im2": {
+                    "id": 7,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool Overlay images",
+                    "name": "method_option"
+                },
+                {
+                    "description": "runtime parameter for tool Overlay images",
+                    "name": "method_option"
+                }
+            ],
+            "label": null,
+            "name": "Overlay images",
+            "outputs": [
+                {
+                    "name": "out_tiff",
+                    "type": "tiff"
+                }
+            ],
+            "position": {
+                "left": 1460,
+                "top": 200
+            },
+            "post_job_actions": {},
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/overlay_images/ip_overlay_images/0.0.6",
+            "tool_shed_repository": {
+                "changeset_revision": "aece93442819",
+                "name": "overlay_images",
+                "owner": "imgteam",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"method_option\": {\"method\": \"blending\", \"__current_case__\": 1, \"im1\": {\"__class__\": \"ConnectedValue\"}, \"im2\": {\"__class__\": \"ConnectedValue\"}, \"alpha\": \"0.5\"}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "0.0.6",
+            "type": "tool",
+            "uuid": "0a30cea8-eb18-4eca-9530-9d7acd45fbea",
+            "when": null,
+            "workflow_outputs": [
+                {
+                    "label": "out_tiff",
+                    "output_name": "out_tiff",
+                    "uuid": "62649e25-950a-44ca-85b0-514b316543fc"
+                }
+            ]
+        }
+    },
+    "tags": [
+        "BMC_Bioinform_2026"
+    ],
+    "uuid": "ae2ddb25-673b-4a5c-82d4-3cdc1940656a",
+    "version": 8
+}

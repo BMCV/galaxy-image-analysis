@@ -1,0 +1,504 @@
+{
+    "a_galaxy_workflow": "true",
+    "annotation": "Workflow for Voronoi segmentation of cell microscopy images.",
+    "comments": [],
+    "creator": [
+        {
+            "class": "Organization",
+            "name": "BMCV"
+        },
+        {
+            "class": "Person",
+            "identifier": "https://orcid.org/0000-0003-1323-3762",
+            "name": "Leonid Kostrykin"
+        }
+    ],
+    "format-version": "0.1",
+    "help": "",
+    "license": "MIT",
+    "name": "Voronoi segmentation",
+    "readme": "This workflow was originally described in:\n\n<https://github.com/BMCV/galaxy-image-analysis/issues/105#issuecomment-1994180241>\n\nSee this for details.",
+    "report": {
+        "markdown": "\n# Workflow Execution Report\n\n## Workflow Inputs\n```galaxy\ninvocation_inputs()\n```\n\n## Workflow Outputs\n```galaxy\ninvocation_outputs()\n```\n\n## Workflow\n```galaxy\nworkflow_display()\n```\n"
+    },
+    "steps": {
+        "0": {
+            "annotation": "Binary or multi-label single-channel image (2-D)",
+            "content_id": null,
+            "errors": null,
+            "id": 0,
+            "input_connections": {},
+            "inputs": [
+                {
+                    "description": "Binary or multi-label single-channel image (2-D)",
+                    "name": "seeds"
+                }
+            ],
+            "label": "seeds",
+            "name": "Input dataset",
+            "outputs": [],
+            "position": {
+                "left": 0,
+                "top": 100
+            },
+            "tool_id": null,
+            "tool_state": "{\"optional\": false, \"tag\": null}",
+            "tool_version": null,
+            "type": "data_input",
+            "uuid": "0fb58787-cd18-45e2-9633-2fc86b3e7e32",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "1": {
+            "annotation": "Single-channel intensity image (2-D)",
+            "content_id": null,
+            "errors": null,
+            "id": 1,
+            "input_connections": {},
+            "inputs": [
+                {
+                    "description": "Single-channel intensity image (2-D)",
+                    "name": "image"
+                }
+            ],
+            "label": "image",
+            "name": "Input dataset",
+            "outputs": [],
+            "position": {
+                "left": 0,
+                "top": 300
+            },
+            "tool_id": null,
+            "tool_state": "{\"optional\": false, \"tag\": null}",
+            "tool_version": null,
+            "type": "data_input",
+            "uuid": "62a5d78d-be97-461e-8576-c5096d7fc390",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "2": {
+            "annotation": "Amount of Gaussian filtering used for pre-processing",
+            "content_id": null,
+            "errors": null,
+            "id": 2,
+            "input_connections": {},
+            "inputs": [
+                {
+                    "description": "Amount of Gaussian filtering used for pre-processing",
+                    "name": "sigma"
+                }
+            ],
+            "label": "sigma",
+            "name": "Input parameter",
+            "outputs": [],
+            "position": {
+                "left": 0,
+                "top": 400
+            },
+            "tool_id": null,
+            "tool_state": "{\"default\": 3.0, \"validators\": [{\"min\": 0.1, \"max\": null, \"negate\": false, \"type\": \"in_range\"}], \"parameter_type\": \"float\", \"optional\": false}",
+            "tool_version": null,
+            "type": "parameter_input",
+            "uuid": "5671f742-d45b-4f94-9cd0-f052b68b7571",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "3": {
+            "annotation": "Threshold used for the segmentation",
+            "content_id": null,
+            "errors": null,
+            "id": 3,
+            "input_connections": {},
+            "inputs": [
+                {
+                    "description": "Threshold used for the segmentation",
+                    "name": "threshold"
+                }
+            ],
+            "label": "threshold",
+            "name": "Input parameter",
+            "outputs": [],
+            "position": {
+                "left": 300,
+                "top": 490
+            },
+            "tool_id": null,
+            "tool_state": "{\"validators\": [{\"min\": null, \"max\": null, \"negate\": false, \"type\": \"in_range\"}], \"parameter_type\": \"float\", \"optional\": false}",
+            "tool_version": null,
+            "type": "parameter_input",
+            "uuid": "fa9483b0-0321-4d92-ab43-471acfe198fd",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "4": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/binary2labelimage/ip_binary_to_labelimage/0.7.3+galaxy0",
+            "errors": null,
+            "id": 4,
+            "input_connections": {
+                "setup|input": {
+                    "id": 0,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool Convert binary image to label map",
+                    "name": "setup"
+                }
+            ],
+            "label": null,
+            "name": "Convert binary image to label map",
+            "outputs": [
+                {
+                    "name": "output",
+                    "type": "tiff"
+                }
+            ],
+            "position": {
+                "left": 300,
+                "top": 0
+            },
+            "post_job_actions": {
+                "HideDatasetActionoutput": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "output"
+                }
+            },
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/binary2labelimage/ip_binary_to_labelimage/0.7.3+galaxy0",
+            "tool_shed_repository": {
+                "changeset_revision": "364e235bf378",
+                "name": "binary2labelimage",
+                "owner": "imgteam",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"setup\": {\"method\": \"cca\", \"__current_case__\": 0, \"input\": {\"__class__\": \"ConnectedValue\"}}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "0.7.3+galaxy0",
+            "type": "tool",
+            "uuid": "50dec3ab-4d1b-417f-8898-5e8a204174b7",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "5": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/label_to_binary/label_to_binary/1.26.4+galaxy0",
+            "errors": null,
+            "id": 5,
+            "input_connections": {
+                "input": {
+                    "id": 0,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "Convert label map to binary image",
+            "outputs": [
+                {
+                    "name": "output",
+                    "type": "tiff"
+                }
+            ],
+            "position": {
+                "left": 600,
+                "top": 270
+            },
+            "post_job_actions": {
+                "HideDatasetActionoutput": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "output"
+                }
+            },
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/label_to_binary/label_to_binary/1.26.4+galaxy0",
+            "tool_shed_repository": {
+                "changeset_revision": "5da15c3bafed",
+                "name": "label_to_binary",
+                "owner": "imgteam",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"bg_label\": \"0\", \"input\": {\"__class__\": \"ConnectedValue\"}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "1.26.4+galaxy0",
+            "type": "tool",
+            "uuid": "c80a2ea8-2868-4cc1-bbf9-56fc9dd4f696",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "6": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/2d_simple_filter/ip_filter_standard/1.16.3+galaxy1",
+            "errors": null,
+            "id": 6,
+            "input_connections": {
+                "setup|filter|sigma": {
+                    "id": 2,
+                    "output_name": "output"
+                },
+                "setup|input": {
+                    "id": 1,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool Apply standard image filter",
+                    "name": "setup"
+                }
+            ],
+            "label": null,
+            "name": "Apply standard image filter",
+            "outputs": [
+                {
+                    "name": "output",
+                    "type": "tiff"
+                }
+            ],
+            "position": {
+                "left": 300,
+                "top": 320
+            },
+            "post_job_actions": {
+                "HideDatasetActionoutput": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "output"
+                }
+            },
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/2d_simple_filter/ip_filter_standard/1.16.3+galaxy1",
+            "tool_shed_repository": {
+                "changeset_revision": "59e9798010ce",
+                "name": "2d_simple_filter",
+                "owner": "imgteam",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"setup\": {\"target\": \"2d\", \"__current_case__\": 0, \"input\": {\"__class__\": \"ConnectedValue\"}, \"filter\": {\"filter_type\": \"gaussian\", \"__current_case__\": 0, \"sigma\": {\"__class__\": \"ConnectedValue\"}, \"anisotropic\": true, \"derivative\": {\"order\": \"0\", \"__current_case__\": 0}}}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "1.16.3+galaxy1",
+            "type": "tool",
+            "uuid": "24596fe8-2a57-437d-80a7-7dc86da59941",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "7": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/voronoi_tesselation/voronoi_tessellation/0.22.0+galaxy3",
+            "errors": null,
+            "id": 7,
+            "input_connections": {
+                "input": {
+                    "id": 4,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "Compute Voronoi tessellation",
+            "outputs": [
+                {
+                    "name": "result",
+                    "type": "tiff"
+                }
+            ],
+            "position": {
+                "left": 600,
+                "top": 0
+            },
+            "post_job_actions": {
+                "HideDatasetActionresult": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "result"
+                }
+            },
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/voronoi_tesselation/voronoi_tessellation/0.22.0+galaxy3",
+            "tool_shed_repository": {
+                "changeset_revision": "1944b0fccdbd",
+                "name": "voronoi_tesselation",
+                "owner": "imgteam",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"input\": {\"__class__\": \"ConnectedValue\"}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "0.22.0+galaxy3",
+            "type": "tool",
+            "uuid": "ea47a507-9526-4543-b33b-d25c7f516ed6",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "8": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/2d_auto_threshold/ip_threshold/0.25.2+galaxy0",
+            "errors": null,
+            "id": 8,
+            "input_connections": {
+                "input": {
+                    "id": 6,
+                    "output_name": "output"
+                },
+                "th_method|threshold1": {
+                    "id": 3,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool Threshold image",
+                    "name": "th_method"
+                }
+            ],
+            "label": null,
+            "name": "Threshold image",
+            "outputs": [
+                {
+                    "name": "output",
+                    "type": "tiff"
+                }
+            ],
+            "position": {
+                "left": 600,
+                "top": 440
+            },
+            "post_job_actions": {
+                "HideDatasetActionoutput": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "output"
+                }
+            },
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/2d_auto_threshold/ip_threshold/0.25.2+galaxy0",
+            "tool_shed_repository": {
+                "changeset_revision": "2ee04d2ebdcf",
+                "name": "2d_auto_threshold",
+                "owner": "imgteam",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"input\": {\"__class__\": \"ConnectedValue\"}, \"invert_output\": false, \"th_method\": {\"method_id\": \"manual\", \"__current_case__\": 0, \"threshold1\": {\"__class__\": \"ConnectedValue\"}, \"threshold2\": null, \"offset\": \"0\"}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "0.25.2+galaxy0",
+            "type": "tool",
+            "uuid": "210fdef2-d1e0-43bc-a4c2-694d9f3874f8",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "9": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/image_math/image_math/2.3.5+galaxy0",
+            "errors": null,
+            "id": 9,
+            "input_connections": {
+                "inputs_0|image": {
+                    "id": 7,
+                    "output_name": "result"
+                },
+                "inputs_1|image": {
+                    "id": 5,
+                    "output_name": "output"
+                },
+                "inputs_2|image": {
+                    "id": 8,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "Process images using arithmetic expressions",
+            "outputs": [
+                {
+                    "name": "result",
+                    "type": "tiff"
+                }
+            ],
+            "position": {
+                "left": 950,
+                "top": 100
+            },
+            "post_job_actions": {
+                "DeleteIntermediatesActionresult": {
+                    "action_arguments": {},
+                    "action_type": "DeleteIntermediatesAction",
+                    "output_name": "result"
+                }
+            },
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/image_math/image_math/2.3.5+galaxy0",
+            "tool_shed_repository": {
+                "changeset_revision": "8229f7f69d08",
+                "name": "image_math",
+                "owner": "imgteam",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"dtype\": \"\", \"expression\": \"voronoi * (thres / 255) * (1 - seeds / 255)\", \"inputs\": [{\"__index__\": 0, \"image\": {\"__class__\": \"ConnectedValue\"}, \"name\": \"voronoi\"}, {\"__index__\": 1, \"image\": {\"__class__\": \"ConnectedValue\"}, \"name\": \"seeds\"}, {\"__index__\": 2, \"image\": {\"__class__\": \"ConnectedValue\"}, \"name\": \"thres\"}], \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "2.3.5+galaxy0",
+            "type": "tool",
+            "uuid": "ff1f3361-ecf7-40c2-8c70-244ff0c8f89e",
+            "when": null,
+            "workflow_outputs": [
+                {
+                    "label": "labels",
+                    "output_name": "result",
+                    "uuid": "d1cbd981-6ac5-4d43-bcfa-f1229a33d152"
+                }
+            ]
+        },
+        "10": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/imgteam/colorize_labels/colorize_labels/3.6.1+galaxy0",
+            "errors": null,
+            "id": 10,
+            "input_connections": {
+                "input": {
+                    "id": 9,
+                    "output_name": "result"
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "Colorize label map",
+            "outputs": [
+                {
+                    "name": "output",
+                    "type": "png"
+                }
+            ],
+            "position": {
+                "left": 1250,
+                "top": 260
+            },
+            "post_job_actions": {
+                "DeleteIntermediatesActionoutput": {
+                    "action_arguments": {},
+                    "action_type": "DeleteIntermediatesAction",
+                    "output_name": "output"
+                }
+            },
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/imgteam/colorize_labels/colorize_labels/3.6.1+galaxy0",
+            "tool_shed_repository": {
+                "changeset_revision": "465a08183136",
+                "name": "colorize_labels",
+                "owner": "imgteam",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"bg_color\": \"#000000\", \"bg_label\": \"0\", \"input\": {\"__class__\": \"ConnectedValue\"}, \"phase\": \"0.55\", \"radius\": \"10\", \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "3.6.1+galaxy0",
+            "type": "tool",
+            "uuid": "64854edb-b719-46dc-8ab9-d4387b0c526d",
+            "when": null,
+            "workflow_outputs": [
+                {
+                    "label": "viz",
+                    "output_name": "output",
+                    "uuid": "ceb4024b-080c-4dbd-8ff1-d4b6292c9773"
+                }
+            ]
+        }
+    },
+    "tags": [
+        "BMC_Bioinform_2026"
+    ],
+    "uuid": "290c8e86-9bfe-4594-97d5-16ce320ba248",
+    "version": 2
+}
