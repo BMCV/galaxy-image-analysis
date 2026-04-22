@@ -23,7 +23,7 @@
     }
     </expression>
     <inputs>
-        <param type="data" format="tiff,png,jpg" label="Input file containing parameter to parse out of" load_contents="0" name="input1"/>
+        <param type="data" format="tiff,png,jpg" label="Input file to parse the metadata of" load_contents="0" name="input1"/>
     </inputs>
     <outputs>
         <output type="integer" name="width" from="width" label="Parse image width"/>
