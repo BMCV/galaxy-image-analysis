@@ -34,6 +34,7 @@
     </outputs>
     <tests>
         <test expect_num_outputs="5">
+            <!-- Test for PNG metadata -->
             <param name="input1" value="input_yxc.png"/>
             <output name="width">
                 <assert_contents>
@@ -62,6 +63,7 @@
             </output>
         </test>
         <test expect_num_outputs="5">
+            <!-- Test for TIFF metadata (with Z axis, without T axis) -->
             <param name="input1" value="input_yxz.tiff"/>
             <output name="width">
                 <assert_contents>
@@ -90,6 +92,7 @@
             </output>
         </test>
         <test expect_num_outputs="5">
+            <!-- Test for TIFF metadata (with T axis, without Z axis) -->
             <param name="input1" value="input_yxt.tiff"/>
             <output name="width">
                 <assert_contents>
@@ -118,6 +121,7 @@
             </output>
         </test>
         <test expect_num_outputs="5">
+            <!-- Test for JPG metadata -->
             <param name="input1" value="input_yxc.jpg"/>
             <output name="width">
                 <assert_contents>
