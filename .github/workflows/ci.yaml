@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 env:
   GALAXY_FORK: galaxyproject
-  GALAXY_BRANCH: release_25.0
+  GALAXY_BRANCH: release_26.0
   MAX_CHUNKS: 40
 jobs:
   setup:
