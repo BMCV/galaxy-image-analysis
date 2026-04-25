@@ -1,12 +1,93 @@
-<tool id="ip_segmetrics" name="Compute image segmentation and object detection performance measures" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="20.05">
+<tool id="ip_segmetrics" name="Compute image segmentation and object detection performance measures" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="25.1">
     <description>with SegMetrics</description>
     <macros>
         <import>creators.xml</import>
         <token name="@TOOL_VERSION@">1.4</token>
-        <token name="@VERSION_SUFFIX@">5</token>
+        <token name="@VERSION_SUFFIX@">6</token>
+        <xml name="test/measures">
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="Dice" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="ISBIScore" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="JaccardCoefficient" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="JaccardIndex" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="RandIndex" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="AdjustedRandIndex" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="Hausdorff" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="Hausdorff" />
+                    <param name="quantile" value="0.9" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="Hausdorff" />
+                    <param name="object_based" value="true" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="NSD" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="NSD" />
+                    <param name="object_based" value="true" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="FalseSplit" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="FalseMerge" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="FalsePositive" />
+                </conditional>
+            </repeat>
+            <repeat name="measures">
+                <conditional name="measure_type">
+                    <param name="measure_type_selector" value="FalseNegative" />
+                </conditional>
+            </repeat>
+        </xml>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
+        <expand macro="creators/kostrykin"/>
     </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
@@ -19,48 +100,89 @@
         <requirement type="package" version="@TOOL_VERSION@">segmetrics</requirement>
         <requirement type="package" version="0.23.4">pandas</requirement>
     </requirements>
-    <command detect_errors="aggressive">
-    <![CDATA[
-    python '$__tool_directory__/run-segmetrics.py'
-    '$input_seg'
-    '$input_gt'
-    ./results.tsv
-    $unzip
-    $is_seg_unique
-    $is_gt_unique
-    #for $m in $measures
-        #set $kwargs = ''
-        #set $suffix = ''
-        #set $is_distance = False
-        #if str($m.measure_type.measure_type_selector) == 'ISBIScore':
-            #set $kwargs = 'min_ref_size=' + str($m.measure_type.min_ref_size) + ', '
-        #elif str($m.measure_type.measure_type_selector) == 'Hausdorff':
-            #set $kwargs = 'mode="' + str($m.measure_type.mode) + '", quantile=' + str($m.measure_type.quantile) + ', '
-            #set $is_distance = True
-        #elif str($m.measure_type.measure_type_selector) == 'NSD':
-            #set $is_distance = True
+    <required_files>
+        <include type="glob" path="*.py"/>
+    </required_files>
+    <command detect_errors="aggressive"><![CDATA[
+
+        mkdir -p ./inputs/seg &&
+        mkdir -p ./inputs/gt &&
+
+        #if str($inputs.type) == 'single':
+            ln -s '$inputs.seg' ./inputs/seg/p0 &&
+            ln -s '$inputs.gt' ./inputs/gt/p0 &&
+        #else
+            #for $index, $pair in enumerate($inputs.pairs)
+                ln -s '$pair["forward"]' './inputs/seg/p$index' &&
+                ln -s '$pair["reverse"]' './inputs/gt/p$index' &&
+            #end for
         #end if
-        #if $is_distance:
-            #if $m.measure_type.object_based:
-                #set $suffix = '.object_based()'
+
+        python '$__tool_directory__/run-segmetrics.py'
+
+        ./inputs/seg
+        ./inputs/gt
+        '$sample_ids'
+        ./results.tsv
+
+        $is_seg_unique
+        $is_gt_unique
+
+        #for $m in $measures
+            #set $kwargs = ''
+            #set $suffix = ''
+            #set $is_distance = False
+            #if str($m.measure_type.measure_type_selector) == 'ISBIScore':
+                #set $kwargs = 'min_ref_size=' + str($m.measure_type.min_ref_size) + ', '
+            #elif str($m.measure_type.measure_type_selector) == 'Hausdorff':
+                #set $kwargs = 'mode="' + str($m.measure_type.mode) + '", quantile=' + str($m.measure_type.quantile) + ', '
+                #set $is_distance = True
+            #elif str($m.measure_type.measure_type_selector) == 'NSD':
+                #set $is_distance = True
             #end if
-        #end if
-        #if str($m.measure_type.aggregation) != '':
-            #set $kwargs = 'aggregation="' + str($m.measure_type.aggregation) + '", ' + $kwargs
-        #end if
-        'sm.${m.measure_type.measure_type_selector}(${kwargs})${suffix}'
-    #end for
-    ]]>
-    </command>
+            #if $is_distance:
+                #if $m.measure_type.object_based:
+                    #set $suffix = '.object_based()'
+                #end if
+            #end if
+            #if str($m.measure_type.aggregation) != '':
+                #set $kwargs = 'aggregation="' + str($m.measure_type.aggregation) + '", ' + $kwargs
+            #end if
+            'sm.${m.measure_type.measure_type_selector}(${kwargs})${suffix}'
+        #end for
+
+    ]]></command>
+    <configfiles>
+        <configfile name="sample_ids"><![CDATA[
+            {
+                #if str($inputs.type) == 'paired':
+                    #for $index, $pair in enumerate($inputs.pairs)
+                        "p$index": "$pair.element_identifier",
+                    #end for
+                    "": ""
+                #end if
+            }
+        ]]></configfile>
+    </configfiles>
     <inputs>
 
-        <param name="input_seg" type="data" format="tiff,png,zip" label="Segmented image(s)" />
-        <param name="input_gt"  type="data" format="tiff,png,zip" label="Ground truth image(s)" />
+        <conditional name="inputs">
+            <param name="type" type="select" label="Use a single pair of images or a list of pairs">
+              <option value="single" selected="true">Pair of individual segmented/ground truth images</option>
+              <option value="paired">List of pairs of segmented/ground truth images</option>
+            </param>
+            <when value="single">
+                <param name="seg" type="data" format="tiff,png" label="Segmented image"/>
+                <param name="gt"  type="data" format="tiff,png" label="Ground truth image"/>
+            </when>
+            <when value="paired">
+                <param name="pairs" type="data_collection" collection_type="list:paired" format="tiff,png"
+                       label="List of pairs of segmented/ground truth images"/>
+            </when>
+        </conditional>
 
-        <param name="unzip" type="boolean" checked="false" truevalue="-unzip" falsevalue="" label="Unzip" />
-
-        <param name="is_seg_unique" type="boolean" checked="false" truevalue="-seg_unique" falsevalue="" label="Segmentation is uniquely labeled" />
-        <param name="is_gt_unique"  type="boolean" checked="false" truevalue="-gt_unique"  falsevalue="" label="Ground truth is uniquely labeled" />
+        <param name="is_seg_unique" type="boolean" checked="false" truevalue="--seg_unique" falsevalue="" label="Segmentation is uniquely labeled"/>
+        <param name="is_gt_unique"  type="boolean" checked="false" truevalue="--gt_unique"  falsevalue="" label="Ground truth is uniquely labeled"/>
 
         <repeat name="measures" title="Performance measure(s)" min="1">
             <conditional name="measure_type">
@@ -146,185 +268,115 @@
        <data format="tsv" name="results" from_work_dir="results.tsv" />
     </outputs>
     <tests>
+        <!-- Tests with: Pair of individual segmented/ground truth images -->
         <test>
-            <param name="input_seg" value="input1.png"/>
-            <param name="input_gt"  value="input2.png"/>
+            <!--
+                GIA204: :relax_indent:
+
+                mkdir -p ./inputs/seg &&
+                mkdir -p ./inputs/gt &&
+
+                ln -s 'input1.png' ./inputs/seg/p0 &&
+                ln -s 'input2.png' ./inputs/gt/p0 &&
+
+                python '$__tool_directory__/run-segmetrics.py'
+                    ./inputs/seg
+                    ./inputs/gt
+                    '$sample_ids'
+                    ./results.tsv
+                    ––seg_unique
+                    ––gt_unique
+                    'sm.Dice()'
+                    'sm.ISBIScore(min_ref_size=1, )'
+                    'sm.JaccardCoefficient()'
+                    'sm.JaccardIndex()'
+                    'sm.RandIndex()'
+                    'sm.AdjustedRandIndex()'
+                    'sm.Hausdorff(mode="sym", quantile=1.0, ).object_based()'
+                    'sm.Hausdorff(mode="sym", quantile=0.9, ).object_based()'
+                    'sm.Hausdorff(mode="sym", quantile=1.0, ).object_based()'
+                    'sm.NSD().object_based()'
+                    'sm.NSD().object_based()'
+                    'sm.FalseSplit(aggregation="mean", )'
+                    'sm.FalseMerge(aggregation="mean", )'
+                    'sm.FalsePositive(aggregation="mean", )'
+                    'sm.FalseNegative(aggregation="mean", )'
+            -->
+            <conditional name="inputs">
+                <param name="type" value="single"/>
+                <param name="seg" value="input1.png"/>
+                <param name="gt"  value="input2.png"/>
+            </conditional>
             <output name="results" value="results1.tsv" ftype="tsv" compare="diff"/>
             <param name="is_seg_unique" value="true"/>
             <param name="is_gt_unique"  value="true"/>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="Dice" />
-                </conditional>
-            </repeat>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="ISBIScore" />
-                </conditional>
-            </repeat>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="JaccardCoefficient" />
-                </conditional>
-            </repeat>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="JaccardIndex" />
-                </conditional>
-            </repeat>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="RandIndex" />
-                </conditional>
-            </repeat>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="AdjustedRandIndex" />
-                </conditional>
-            </repeat>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="Hausdorff" />
-                </conditional>
-            </repeat>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="Hausdorff" />
-                    <param name="quantile" value="0.9" />
-                </conditional>
-            </repeat>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="Hausdorff" />
-                    <param name="object_based" value="true" />
-                </conditional>
-            </repeat>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="NSD" />
-                </conditional>
-            </repeat>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="NSD" />
-                    <param name="object_based" value="true" />
-                </conditional>
-            </repeat>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="FalseSplit" />
-                </conditional>
-            </repeat>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="FalseMerge" />
-                </conditional>
-            </repeat>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="FalsePositive" />
-                </conditional>
-            </repeat>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="FalseNegative" />
-                </conditional>
-            </repeat>
+            <expand macro="test/measures"/>
         </test>
+        <!-- Tests with: List of pairs of segmented/ground truth images -->
         <test>
-            <param name="input_seg" value="input1.zip"/>
-            <param name="input_gt"  value="input2.zip"/>
+            <!--
+                GIA204: :relax_indent:
+
+                mkdir -p ./inputs/seg &&
+                mkdir -p ./inputs/gt &&
+
+                python '$__tool_directory__/run-segmetrics.py'
+                    ./inputs/seg
+                    ./inputs/gt
+                    '$sample_ids'
+                    ./results.tsv
+                    ––seg_unique
+                    ––gt_unique
+                    'sm.Dice()'
+                    'sm.ISBIScore(min_ref_size=1, )'
+                    'sm.JaccardCoefficient()'
+                    'sm.JaccardIndex()'
+                    'sm.RandIndex()'
+                    'sm.AdjustedRandIndex()'
+                    'sm.Hausdorff(mode="sym", quantile=1.0, ).object_based()'
+                    'sm.Hausdorff(mode="sym", quantile=0.9, ).object_based()'
+                    'sm.Hausdorff(mode="sym", quantile=1.0, ).object_based()'
+                    'sm.NSD().object_based()'
+                    'sm.NSD().object_based()'
+                    'sm.FalseSplit(aggregation="mean", )'
+                    'sm.FalseMerge(aggregation="mean", )'
+                    'sm.FalsePositive(aggregation="mean", )'
+                    'sm.FalseNegative(aggregation="mean", )'
+            -->
+            <conditional name="inputs">
+                <param name="type" value="paired"/>
+                <param name="pairs" value="">
+                    <collection type="list:paired">
+                        <element name="pair1">
+                            <collection type="paired">
+                                <element name="forward" value="seg/img1.tiff"/>
+                                <element name="reverse" value="gt/img1.tiff"/>
+                            </collection>
+                        </element>
+                        <element name="pair2">
+                            <collection type="paired">
+                                <element name="forward" value="seg/img2.tiff"/>
+                                <element name="reverse" value="gt/img2.tiff"/>
+                            </collection>
+                        </element>
+                    </collection>
+                </param>
+            </conditional>
             <output name="results" value="results2.tsv" ftype="tsv" compare="diff"/>
             <param name="is_seg_unique" value="true"/>
             <param name="is_gt_unique"  value="true"/>
-            <param name="unzip" value="true"/>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="Dice" />
-                </conditional>
-            </repeat>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="ISBIScore" />
-                </conditional>
-            </repeat>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="JaccardCoefficient" />
-                </conditional>
-            </repeat>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="JaccardIndex" />
-                </conditional>
-            </repeat>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="RandIndex" />
-                </conditional>
-            </repeat>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="AdjustedRandIndex" />
-                </conditional>
-            </repeat>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="Hausdorff" />
-                </conditional>
-            </repeat>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="Hausdorff" />
-                    <param name="quantile" value="0.9" />
-                </conditional>
-            </repeat>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="Hausdorff" />
-                    <param name="object_based" value="true" />
-                </conditional>
-            </repeat>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="NSD" />
-                </conditional>
-            </repeat>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="NSD" />
-                    <param name="object_based" value="true" />
-                </conditional>
-            </repeat>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="FalseSplit" />
-                </conditional>
-            </repeat>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="FalseMerge" />
-                </conditional>
-            </repeat>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="FalsePositive" />
-                </conditional>
-            </repeat>
-            <repeat name="measures">
-                <conditional name="measure_type">
-                    <param name="measure_type_selector" value="FalseNegative" />
-                </conditional>
-            </repeat>
+            <expand macro="test/measures"/>
         </test>
     </tests>
     <help>
 
         **Computates image segmentation and object detection performance measures for 2-D image data.**
 
-        You can either use a pair of individual input images (a segmented and a ground truth image), or a pair of ZIP archives which contain the segmented and the correspondiong ground truth images. When using a pair of individual images, remember to turn off the "Unzip" option. When using ZIP archives, turn it on instead and make sure that the directory structure is the same for the segmented and the ground truth images. Correspondences are estbalished based on the file names, which should be *identical* for a pair of corresponding images.
+        You can either use a *pair of individual input images* (a segmented and a ground truth image), or a *list of pairs of such images* (each pair of images is a segmented and the correspondiong ground truth image). If you have a list of segmented images and another list of ground truth images, use the `🔧 Zip collections`_ tool to create a list of pairs for the second case.
 
-        If all objects within your segmented images are *uniquely* labeled, you can turn on the "Segmentation is uniquely labeled" switch to speed up the computations. Leave it off otherwise, or if you are unsure. The same accounts for the "Ground truth is uniquely labeled" switch and your ground turth image data.
+        .. _🔧 Zip collections: ?tool_id=__ZIP_COLLECTION__
+
+        If all objects within your segmented images are *uniquely* labeled, you can turn on the "Segmentation is uniquely labeled" switch to speed up the computations. Leave it off otherwise, or if you are unsure (connected component analysis will then be performed to uniquely re-label the images prior to evaluation). The same applies for the "Ground truth is uniquely labeled" switch and your ground turth image data.
 
     </help>
     <citations>

@@ -1,5 +1,11 @@
-<tool id="ip_curve_fitting" name="Perform curve fitting" version="0.0.3-2" profile="20.05">
+<tool id="ip_curve_fitting" name="Perform curve fitting" version="0.0.5" profile="20.05">
     <description></description>
+    <macros>
+        <import>creators.xml</import>
+    </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+    </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
@@ -7,23 +13,34 @@
         <xref type="bio.tools">galaxy_image_analysis</xref>
     </xrefs>
     <requirements>
-        <requirement type="package" version="1.20.2">numpy</requirement>
-        <requirement type="package" version="3.0.7">openpyxl</requirement>
-        <requirement type="package" version="1.2.4">pandas</requirement>
-        <requirement type="package" version="1.6.2">scipy</requirement>
+        <requirement type="package" version="2.3.5">numpy</requirement>
+        <requirement type="package" version="2.2.2">pandas</requirement>
+        <requirement type="package" version="1.16.3">scipy</requirement>
     </requirements>
+    <required_files>
+        <include type="glob" path="*.py"/>
+    </required_files>
     <command>
     <![CDATA[
-python '$__tool_directory__/curve_fitting.py'
-    '$fn_in'
-    ./output.xlsx
-    $degree
-    $penalty
-    $alpha
+
+        mkdir ./output &&
+        python '$__tool_directory__/curve_fitting.py'
+
+            #for $input in $input_list
+                #if $input
+                    --input '$input'
+                #end if
+            #end for
+
+            ./output
+            $degree
+            $penalty
+            $alpha
+
     ]]>
     </command>
     <inputs>
-        <param name="fn_in" type="data" format="xlsx" label="File name of input data points (xlsx)" />
+        <param name="input_list" type="data" format="tsv,tabular" multiple="true" label="Lists of intensity values"/>
         <param name="degree" type="select" label="Degree of the polynomial function">
             <option value="2" selected="True">2nd degree</option>
             <option value="1">1st degree</option>
@@ -36,21 +53,39 @@ python '$__tool_directory__/curve_fitting.py'
         <param name="alpha" type="float" value="0.01" label="Significance level for generating assistive curves" />
     </inputs>
     <outputs>
-        <data format="xlsx" name="fn_out" from_work_dir="output.xlsx"/>
+        <collection type="list" name="output" label="Curve fitting on ${on_string}">
+            <discover_datasets directory="output" pattern="__name__" format="tabular"/>
+        </collection>
     </outputs>
     <tests>
         <test>
-            <param name="fn_in" value="spots_linked.xlsx"/>
+            <param name="input_list" value="input1.tsv"/>
             <param name="degree" value="2"/>
             <param name="penalty" value="abs"/>
             <param name="alpha" value="0.01"/>
-            <output name="fn_out" value="curves_fitted.xlsx" ftype="xlsx" compare="sim_size"/>
+            <output_collection name="output" type="list" count="1">
+                <element name="curve1.tsv" value="output1/curve1.tsv" ftype="tabular" compare="diff"/>
+            </output_collection>
+        </test>
+        <test>
+            <param name="input_list" value="input1.tsv,input2.tsv"/>
+            <param name="degree" value="2"/>
+            <param name="penalty" value="abs"/>
+            <param name="alpha" value="0.01"/>
+            <output_collection name="output" type="list" count="2">
+                <element name="curve1.tsv" value="output2/curve1.tsv" ftype="tabular" compare="diff"/>
+                <element name="curve2.tsv" value="output2/curve2.tsv" ftype="tabular" compare="diff"/>
+            </output_collection>
         </test>
     </tests>
     <help>
-    **What it does**
 
-    This tool fits (1st- or 2nd-degree) polynomial curves to data points. Optional: Given a significance level, assistive curves will also be generated.
+        **Perform curve fitting for lists of intensity values.**
+
+        This tool fits 1st- or 2nd-order polynomial curves to 1-D data points (tabular list of values).
+
+        Optionally, given a significance level, assistive curves are generated.
+
     </help>
     <citations>
         <citation type="doi">10.1097/j.pain.0000000000002642</citation>

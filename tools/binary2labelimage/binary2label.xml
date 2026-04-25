@@ -1,83 +1,209 @@
 <tool id="ip_binary_to_labelimage" name="Convert binary image to label map" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@">
-    <description></description>
+    <description>with giatools</description>
     <macros>
         <import>creators.xml</import>
-        <token name="@TOOL_VERSION@">0.6</token>
+        <import>tests.xml</import>
+        <import>validators.xml</import>
+        <token name="@TOOL_VERSION@">0.7.3</token>
         <token name="@VERSION_SUFFIX@">0</token>
+        <xml name="input">
+            <!-- JPEG is not allowed because it is a lossy compression that has no strictly constant labels -->
+            <param name="input" type="data" format="tiff,zarr,png" label="Binary image">
+                <expand macro="validators/is_binary"/>
+                <yield/>
+            </param>
+        </xml>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
+        <expand macro="creators/kostrykin"/>
     </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
     <xrefs>
         <xref type="bio.tools">galaxy_image_analysis</xref>
+        <xref type="bio.tools">giatools</xref>
     </xrefs>
     <requirements>
-        <requirement type="package" version="0.4.0">giatools</requirement>
-        <requirement type="package" version="1.12.0">scipy</requirement>
+        <requirement type="package" version="@TOOL_VERSION@">giatools</requirement>
+        <requirement type="package" version="1.16.3">scipy</requirement>
+        <requirement type="package" version="0.12.2">ome-zarr</requirement>
     </requirements>
-    <command detect_errors="aggressive">
-        <![CDATA[
-        #if str($mode.mode_selector) == 'cca':
-            python '$__tool_directory__/binary2label.py' '$input' '$output'
-        #elif str($mode.mode_selector) == 'watershed':
-            python '$__tool_directory__/2d_split_binaryimage_by_watershed.py' '$input' '$output' $min_distance
+    <required_files>
+        <include type="literal" path="binary2label.py"/>
+    </required_files>
+    <command detect_errors="aggressive"><![CDATA[
+
+        python '$__tool_directory__/binary2label.py'
+
+        #if $setup.input.extension == "zarr"
+            --input '$setup.input.extra_files_path/$setup.input.metadata.store_root'
+        #else
+            --input '$setup.input'
         #end if
-        ]]>
-    </command>
+
+        --output 'output.tiff'
+        --params '$params'
+        --verbose
+
+    ]]></command>
+    <configfiles>
+        <configfile name="params"><![CDATA[
+            {
+
+            #if str($setup.method) == "watershed"
+                "min_distance": $setup.min_distance,
+            #end if
+
+                "method": "$setup.method"
+
+            }
+        ]]></configfile>
+    </configfiles>
     <inputs>
-        <param name="input" type="data" format="tiff,png,jpg,bmp" label="Binary image"/>
-        <conditional name="mode">
-            <param name="mode_selector" type="select" label="Mode">
+        <conditional name="setup">
+            <param name="method" type="select" label="Mode"
+                   help="Connected component analysis assigns unique labels to objects that are separated by 1 pixel or more. Watershed transform can also separate partially overlapping objects, but is only applicable to 2-D image data.">
                 <option value="cca" selected="true">Connected component analysis</option>
                 <option value="watershed">Watershed transform</option>
             </param>
             <when value="cca">
+                <expand macro="input"/>
             </when>
             <when value="watershed">
-                <param name="min_distance" type="integer" min="0" value="5" label="Minimum distance between two objects" />
+                <expand macro="input">
+                    <expand macro="validators/is_2d"/>
+                </expand>
+                <param name="min_distance" type="integer" min="0" value="5" label="Minimum distance between two objects"/>
             </when>
         </conditional>
     </inputs>
     <outputs>
-        <data format="tiff" name="output"/>
+        <data format="tiff" name="output" from_work_dir="output.tiff"/>
     </outputs>
     <tests>
+        <!-- Tests for 2-D -->
         <test>
-            <param name="input" value="galaxyIcon_noText.tiff" />
-            <conditional name="mode">
-                <param name="mode_selector" value="cca" />
+            <conditional name="setup">
+                <param name="method" value="cca"/>
+                <param name="input" value="input/input11.tiff"/>
             </conditional>
-            <output name="output" value="label.tiff" ftype="tiff" compare="image_diff"/>
+            <expand macro="tests/label_image_diff" name="output" value="output/input11-cca.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="[input] Input image axes: YX"/>
+                <has_line line="[input] Input image shape: (265, 329)"/>
+                <has_line line="[input] Input image dtype: uint16"/>
+                <has_line line="[output] Output image axes: YX"/>
+                <has_line line="[output] Output image shape: (265, 329)"/>
+                <has_line line="[output] Output image dtype: uint16"/>
+            </assert_stdout>
         </test>
         <test>
-            <param name="input" value="in.tiff"/>
-            <conditional name="mode">
-                <param name="mode_selector" value="watershed" />
-                <param name="min_distance" value="10" />
+            <conditional name="setup">
+                <param name="method" value="watershed"/>
+                <param name="input" value="input/input11.tiff"/>
+                <param name="min_distance" value="10"/>
             </conditional>
-            <output name="output" value="out.tiff" ftype="tiff" compare="image_diff"/>
+            <expand macro="tests/label_image_diff" name="output" value="output/input11-watershed.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="[input] Input image axes: YX"/>
+                <has_line line="[input] Input image shape: (265, 329)"/>
+                <has_line line="[input] Input image dtype: uint16"/>
+                <has_line line="[output] Output image axes: YX"/>
+                <has_line line="[output] Output image shape: (265, 329)"/>
+                <has_line line="[output] Output image dtype: uint16"/>
+            </assert_stdout>
         </test>
+        <!-- Tests for 3-D -->
         <test>
-            <param name="input" value="uint8_z12_x11_y10.tiff"/>
-            <conditional name="mode">
-                <param name="mode_selector" value="cca" />
+            <conditional name="setup">
+                <param name="method" value="cca"/>
+                <param name="input" value="input/input9.zarr"/>
             </conditional>
-            <output name="output" value="uint8_z12_x11_y10-output.tiff" ftype="tiff" compare="image_diff">
-                <assert_contents>
-                    <has_image_width width="11"/>
-                    <has_image_height height="10"/>
-                    <has_image_depth depth="12"/>
-                </assert_contents>
-            </output>
+            <!-- `label_image_diff` currently does not support 3-D images: https://github.com/galaxyproject/galaxy/pull/21455 -->
+            <expand macro="tests/intensity_image_diff" name="output" value="output/input9-cca.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="[input] Input image axes: ZYX"/>
+                <has_line line="[input] Input image shape: (2, 100, 100)"/>
+                <has_line line="[input] Input image dtype: bool"/>
+                <has_line line="[input] Input image resolution=(1.0, 1.0), unit='um', z_spacing=1.0"/>
+                <has_line line="[output] Output image axes: ZYX"/>
+                <has_line line="[output] Output image shape: (2, 100, 100)"/>
+                <has_line line="[output] Output image dtype: uint16"/>
+                <has_line line="[output] Output image resolution=(1.0, 1.0), unit='um', z_spacing=1.0"/>
+            </assert_stdout>
+        </test>
+        <test expect_failure="true">
+            <conditional name="setup">
+                <param name="method" value="watershed"/>
+                <param name="input" value="input/input9.zarr"/>
+            </conditional>
+            <assert_stderr>
+                <!-- Rejected by py-script -->
+                <has_text text='Method "watershed" is not applicable to 3-D images.'/>
+            </assert_stderr>
+            <assert_stdout>
+                <has_line line="[input] Input image axes: ZYX"/>
+                <has_line line="[input] Input image shape: (2, 100, 100)"/>
+                <has_line line="[input] Input image dtype: bool"/>
+                <has_line line="[input] Input image resolution=(1.0, 1.0), unit='um', z_spacing=1.0"/>
+            </assert_stdout>
+        </test>
+        <test expect_failure="true">
+            <conditional name="setup">
+                <param name="method" value="watershed"/>
+                <param name="input" value="input/input9.tiff"/>
+            </conditional>
+            <assert_stderr>
+                <!-- Rejected by validator -->
+                <has_n_lines n="0"/>
+            </assert_stderr>
+            <assert_stdout>
+                <!-- Rejected by validator -->
+                <has_n_lines n="0"/>
+            </assert_stdout>
+        </test>
+        <!-- Tests for multi-channel images -->
+        <test expect_failure="true">
+            <conditional name="setup">
+                <param name="method" value="cca"/>
+                <param name="input" value="input/input10.zarr"/>
+            </conditional>
+            <assert_stderr>
+                <!-- Rejected by py-script -->
+                <has_text text='Multi-channel images are forbidden to avoid confusion with multi-channel labels (e.g., RGB labels).'/>
+            </assert_stderr>
+            <assert_stdout>
+                <has_line line="[input] Input image axes: CYX"/>
+                <has_line line="[input] Input image shape: (2, 64, 64)"/>
+                <has_line line="[input] Input image dtype: uint8"/>
+                <has_line line="[input] Input image resolution=(1.0, 1.0)"/>
+            </assert_stdout>
+        </test>
+        <test expect_failure="true">
+            <conditional name="setup">
+                <param name="method" value="cca"/>
+                <param name="input" value="input/rgb.png"/>
+            </conditional>
+            <assert_stderr>
+                <!-- Rejected by validator -->
+                <has_n_lines n="0"/>
+            </assert_stderr>
+            <assert_stdout>
+                <!-- Rejected by validator -->
+                <has_n_lines n="0"/>
+            </assert_stdout>
         </test>
     </tests>
     <help>
-    This tool assigns each object a unique label.
 
-    Individual objects are determined using connected component analysis, or distance transform and watershed.
+        **Converts a binary image to a label map.**
+
+        This tool assigns each object a unique label.
+
+        Individual objects are determined using connected component analysis, or distance transform and watershed.
+
     </help>
     <citations>
         <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>

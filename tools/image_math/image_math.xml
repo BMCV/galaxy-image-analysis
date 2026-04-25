@@ -3,26 +3,32 @@
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
-        <token name="@TOOL_VERSION@">1.26.4</token>
-        <token name="@VERSION_SUFFIX@">2</token>
+        <token name="@TOOL_VERSION@">2.3.5</token>
+        <token name="@VERSION_SUFFIX@">0</token>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
+        <expand macro="creators/kostrykin"/>
     </creator>
     <edam_operations>
         <edam_operation>operation_3443</edam_operation>
     </edam_operations>
     <requirements>
         <requirement type="package" version="@TOOL_VERSION@">numpy</requirement>
-        <requirement type="package" version="0.22.0">scikit-image</requirement>
-        <requirement type="package" version="0.1">giatools</requirement>
+        <requirement type="package" version="0.7.3">giatools</requirement>
     </requirements>
+    <required_files>
+        <include type="glob" path="*.py"/>
+    </required_files>
     <command><![CDATA[
     
     ## Inputs
     
     python '$__tool_directory__/image_math.py'
     --expression='$expression'
+    #if '$dtype' != '':
+        --dtype='$dtype'
+    #end if
     #for $item in $inputs:
         --input='$item.name:$item.image'
     #end for
@@ -35,7 +41,19 @@
     </command>
     <inputs>
         <param argument="--expression" type="text" label="Expression" optional="false">
-            <validator type="regex">^[a-zA-Z0-9-_\*\+ \(\)/]+$</validator>
+            <validator type="regex">^[a-zA-Z0-9-_\*\+ \(\)/\.]+$</validator>
+        </param>
+        <param name="dtype" type="select" label="Data type of the produced TIFF image">
+            <option value="" selected="true">Determine automatically</option>
+            <option value="float16">16-bit floating point</option>
+            <option value="float32">32-bit floating point</option>
+            <option value="float64">64-bit floating point</option>
+            <option value="int8">8-bit signed integer</option>
+            <option value="int16">16-bit signed integer</option>
+            <option value="int32">32-bit signed integer</option>
+            <option value="uint8">8-bit unsigned integer</option>
+            <option value="uint16">16-bit unsigned integer</option>
+            <option value="uint32">32-bit unsigned integer</option>
         </param>
         <repeat name="inputs" title="Input images" min="1">
             <param name="image" type="data" format="png,tiff" label="Image" />
@@ -50,6 +68,14 @@
     <tests>
         <!-- Multiplication with a scalar -->
         <test>
+            <!--
+                GIA204: :relax_indent:
+                python '$__tool_directory__/image_math.py'
+                    ––expression='input1 * 2'
+                    ––dtype=''
+                    ––input='input1:input1.tiff'
+                    ––output='./result.tiff'
+            -->
             <param name="expression" value="input1 * 2" />
             <repeat name="inputs">
                 <param name="image" value="input1.tiff" />
@@ -59,6 +85,14 @@
         </test>
         <!-- Unary negation operator -->
         <test>
+            <!--
+                GIA204: :relax_indent:
+                python '$__tool_directory__/image_math.py'
+                    ––expression='-input1'
+                    ––dtype=''
+                    ––input='input1:input1.tiff'
+                    ––output='./result.tiff'
+            -->
             <param name="expression" value="-input1" />
             <repeat name="inputs">
                 <param name="image" value="input1.tiff" />
@@ -68,6 +102,15 @@
         </test>
         <!-- Binary addition, neutral element, addition with scalar -->
         <test>
+            <!--
+                GIA204: :relax_indent:
+                python '$__tool_directory__/image_math.py'
+                    ––expression='input1 + input2 + 1'
+                    ––dtype=''
+                    ––input='input1:input1.tiff'
+                    ––input='input2:minus_input1.tiff'
+                    ––output='./result.tiff'
+            -->
             <param name="expression" value="input1 + input2 + 1" />
             <repeat name="inputs">
                 <param name="image" value="input1.tiff" />
@@ -81,6 +124,15 @@
         </test>
         <!-- Parentheses -->
         <test>
+            <!--
+                GIA204: :relax_indent:
+                python '$__tool_directory__/image_math.py'
+                    ––expression='(input1 + input2) / 2'
+                    ––dtype=''
+                    ––input='input1:input1.tiff'
+                    ––input='input2:ones.tiff'
+                    ––output='./result.tiff'
+            -->
             <param name="expression" value="(input1 + input2) / 2" />
             <repeat name="inputs">
                 <param name="image" value="input1.tiff" />
@@ -94,12 +146,38 @@
         </test>
         <!-- Abs -->
         <test>
+            <!--
+                GIA204: :relax_indent:
+                python '$__tool_directory__/image_math.py'
+                    ––expression='abs(input)'
+                    ––dtype=''
+                    ––input='input:input1.tiff'
+                    ––output='./result.tiff'
+            -->
             <param name="expression" value="abs(input)" />
             <repeat name="inputs">
                 <param name="image" value="input1.tiff" />
                 <param name="name" value="input" />
             </repeat>
             <expand macro="tests/intensity_image_diff" name="result" value="input1_abs.tiff" ftype="tiff"/>
+        </test>
+        <!-- Decimal, conversion to explicit `dtype` -->
+        <test>
+            <!--
+                GIA204: :relax_indent:
+                python '$__tool_directory__/image_math.py'
+                    ––expression='input1 / 0.5'
+                    ––dtype='uint8'
+                    ––input='input1:input1.tiff'
+                    ––output='./result.tiff'
+            -->
+            <param name="expression" value="input1 / 0.5" />
+            <param name="dtype" value="uint8" />
+            <repeat name="inputs">
+                <param name="image" value="input1.tiff" />
+                <param name="name" value="input1" />
+            </repeat>
+            <expand macro="tests/intensity_image_diff" name="result" value="input1_times_2_uint8.tiff" ftype="tiff"/>
         </test>
     </tests>
     <help>

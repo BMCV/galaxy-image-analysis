@@ -8,6 +8,7 @@ See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
 """
 
 import argparse
+import os
 
 import numpy as np
 import pandas as pd
@@ -31,7 +32,7 @@ def find_nn(cim, icy, icx, nim, nbpx):
     mask = disk_mask(cim.shape, icy, icx, nbpx)
     iys_nim, ixs_nim = np.where(nim * mask)
     if iys_nim.size == 0:
-        return np.NaN, np.NaN
+        return np.nan, np.nan
 
     d2 = (icy - iys_nim) ** 2 + (icx - ixs_nim) ** 2
     I1 = np.argsort(d2)
@@ -43,13 +44,14 @@ def find_nn(cim, icy, icx, nim, nbpx):
     d2 = (iy_nim - iys_cim) ** 2 + (ix_nim - ixs_cim) ** 2
     I2 = np.argsort(d2)
     if not iys_cim[I2[0]] == icy or not ixs_cim[I2[0]] == icx:
-        return np.NaN, np.NaN
+        return np.nan, np.nan
 
     return iy_nim, ix_nim
 
 
-def points_linking(fn_in, fn_out, nbpx=6, th=25, minlen=50):
+def points_linking(fn_in, output, nbpx=6, th=25, minlen=50):
     data = pd.read_csv(fn_in, delimiter="\t")
+    data = data[['frame', 'pos_x', 'pos_y', 'intensity']]
     all_data = np.array(data)
     assert all_data.shape[1] in [3, 4], 'unknow collum(s) in input data!'
 
@@ -83,8 +85,8 @@ def points_linking(fn_in, fn_out, nbpx=6, th=25, minlen=50):
         spot_br = np.empty((nSlices, 1))
         track = np.empty((nSlices, 3))
         for i in range(nSlices):
-            spot_br[i] = np.NaN
-            track[i, :] = np.array((np.NaN, np.NaN, np.NaN))
+            spot_br[i] = np.nan
+            track[i, :] = np.array((np.nan, np.nan, np.nan))
 
         spot_br[iyxz[2]] = maxv
         track[iyxz[2], :] = np.array(iyxz[::-1]) + 1
@@ -148,29 +150,29 @@ def points_linking(fn_in, fn_out, nbpx=6, th=25, minlen=50):
         if maxv < th * br_max / 100 or maxv == 0:
             break
 
-    with pd.ExcelWriter(fn_out) as writer:
-        if tracks_all.shape[0] == 0:
-            df = pd.DataFrame()
-            df['No tracks found'] = np.NaN
-            df.to_excel(writer, index=False, float_format='%.2f')
-        else:
-            for i in range(tracks_all.shape[0]):
-                df = pd.DataFrame()
-                df['FRAME'] = tracks_all[i, :, 0]
-                df['POS_X'] = tracks_all[i, :, 1]
-                df['POS_Y'] = tracks_all[i, :, 2]
-                if all_data.shape[1] == 4:
-                    df['INTENSITY'] = tracks_all[i, :, 3]
-                df.to_excel(writer, sheet_name='spot%s' % (i + 1), index=False, float_format='%.2f')
-        writer.save()
+    # write tracks to files
+    for i in range(tracks_all.shape[0]):
+        track = tracks_all[i]
+
+        # remove empty rows
+        rows_to_remove = np.isnan(track[:, :3]).any(axis=1)
+        track = track[np.logical_not(rows_to_remove)]
+
+        df = pd.DataFrame()
+        df['frame'] = track[:, 0].astype(int)
+        df['pos_x'] = track[:, 1].astype(int)
+        df['pos_y'] = track[:, 2].astype(int)
+        if all_data.shape[1] == 4:
+            df['intensity'] = track[:, 3]
+        df.to_csv(os.path.join(output, f'track{i + 1}.tsv'), sep='\t', lineterminator='\n', index=False)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Association of points in consecutive frames using the nearest neighbor algorithm")
     parser.add_argument("fn_in", help="Coordinates (and intensities) of input points (tsv tabular)")
-    parser.add_argument("fn_out", help="Name of output file (xlsx)")
+    parser.add_argument("output", help="Name of output directory")
     parser.add_argument("nbpx", type=int, help="Neighborhood size (in pixel) for associating points")
     parser.add_argument("thres", type=float, help="Tracks with all intensities lower than certain percentage (%) of the global maximal intensity will be discarded")
     parser.add_argument("minlen", type=float, help="Minimum length of tracks (percentage of senquence length)")
     args = parser.parse_args()
-    points_linking(args.fn_in, args.fn_out, args.nbpx, args.thres, args.minlen)
+    points_linking(args.fn_in, args.output, args.nbpx, args.thres, args.minlen)

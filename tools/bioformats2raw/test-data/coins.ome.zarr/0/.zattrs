@@ -20,7 +20,7 @@
       "name" : "x",
       "type" : "space"
     } ],
-    "name" : "coins.png",
+    "name" : "input",
     "datasets" : [ {
       "path" : "0",
       "coordinateTransformations" : [ {

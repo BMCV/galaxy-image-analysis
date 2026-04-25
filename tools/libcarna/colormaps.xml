@@ -1,0 +1,320 @@
+<macros>
+
+    <xml name="option/builtin_cmap_list">
+        <option value="magma">magma</option>
+        <option value="inferno">inferno</option>
+        <option value="plasma">plasma</option>
+        <option value="viridis" selected="true">viridis</option>
+        <option value="cividis">cividis</option>
+        <option value="twilight">twilight</option>
+        <option value="twilight_shifted">twilight_shifted</option>
+        <option value="turbo">turbo</option>
+        <option value="berlin">berlin</option>
+        <option value="managua">managua</option>
+        <option value="vanimo">vanimo</option>
+        <option value="Blues">Blues</option>
+        <option value="BrBG">BrBG</option>
+        <option value="BuGn">BuGn</option>
+        <option value="BuPu">BuPu</option>
+        <option value="CMRmap">CMRmap</option>
+        <option value="GnBu">GnBu</option>
+        <option value="Greens">Greens</option>
+        <option value="Greys">Greys</option>
+        <option value="OrRd">OrRd</option>
+        <option value="Oranges">Oranges</option>
+        <option value="PRGn">PRGn</option>
+        <option value="PiYG">PiYG</option>
+        <option value="PuBu">PuBu</option>
+        <option value="PuBuGn">PuBuGn</option>
+        <option value="PuOr">PuOr</option>
+        <option value="PuRd">PuRd</option>
+        <option value="Purples">Purples</option>
+        <option value="RdBu">RdBu</option>
+        <option value="RdGy">RdGy</option>
+        <option value="RdPu">RdPu</option>
+        <option value="RdYlBu">RdYlBu</option>
+        <option value="RdYlGn">RdYlGn</option>
+        <option value="Reds">Reds</option>
+        <option value="Spectral">Spectral</option>
+        <option value="Wistia">Wistia</option>
+        <option value="YlGn">YlGn</option>
+        <option value="YlGnBu">YlGnBu</option>
+        <option value="YlOrBr">YlOrBr</option>
+        <option value="YlOrRd">YlOrRd</option>
+        <option value="afmhot">afmhot</option>
+        <option value="autumn">autumn</option>
+        <option value="binary">binary</option>
+        <option value="bone">bone</option>
+        <option value="brg">brg</option>
+        <option value="bwr">bwr</option>
+        <option value="cool">cool</option>
+        <option value="coolwarm">coolwarm</option>
+        <option value="copper">copper</option>
+        <option value="cubehelix">cubehelix</option>
+        <option value="flag">flag</option>
+        <option value="gist_earth">gist_earth</option>
+        <option value="gist_gray">gist_gray</option>
+        <option value="gist_heat">gist_heat</option>
+        <option value="gist_ncar">gist_ncar</option>
+        <option value="gist_rainbow">gist_rainbow</option>
+        <option value="gist_stern">gist_stern</option>
+        <option value="gist_yarg">gist_yarg</option>
+        <option value="gnuplot">gnuplot</option>
+        <option value="gnuplot2">gnuplot2</option>
+        <option value="gray">gray</option>
+        <option value="hot">hot</option>
+        <option value="hsv">hsv</option>
+        <option value="jet">jet</option>
+        <option value="nipy_spectral">nipy_spectral</option>
+        <option value="ocean">ocean</option>
+        <option value="pink">pink</option>
+        <option value="prism">prism</option>
+        <option value="rainbow">rainbow</option>
+        <option value="seismic">seismic</option>
+        <option value="spring">spring</option>
+        <option value="summer">summer</option>
+        <option value="terrain">terrain</option>
+        <option value="winter">winter</option>
+        <option value="grey">grey</option>
+        <option value="gist_grey">gist_grey</option>
+        <option value="gist_yerg">gist_yerg</option>
+        <option value="Grays">Grays</option>
+        <option value="magma_r">magma_r</option>
+        <option value="inferno_r">inferno_r</option>
+        <option value="plasma_r">plasma_r</option>
+        <option value="viridis_r">viridis_r</option>
+        <option value="cividis_r">cividis_r</option>
+        <option value="twilight_r">twilight_r</option>
+        <option value="twilight_shifted_r">twilight_shifted_r</option>
+        <option value="turbo_r">turbo_r</option>
+        <option value="berlin_r">berlin_r</option>
+        <option value="managua_r">managua_r</option>
+        <option value="vanimo_r">vanimo_r</option>
+        <option value="Blues_r">Blues_r</option>
+        <option value="BrBG_r">BrBG_r</option>
+        <option value="BuGn_r">BuGn_r</option>
+        <option value="BuPu_r">BuPu_r</option>
+        <option value="CMRmap_r">CMRmap_r</option>
+        <option value="GnBu_r">GnBu_r</option>
+        <option value="Greens_r">Greens_r</option>
+        <option value="Greys_r">Greys_r</option>
+        <option value="OrRd_r">OrRd_r</option>
+        <option value="Oranges_r">Oranges_r</option>
+        <option value="PRGn_r">PRGn_r</option>
+        <option value="PiYG_r">PiYG_r</option>
+        <option value="PuBu_r">PuBu_r</option>
+        <option value="PuBuGn_r">PuBuGn_r</option>
+        <option value="PuOr_r">PuOr_r</option>
+        <option value="PuRd_r">PuRd_r</option>
+        <option value="Purples_r">Purples_r</option>
+        <option value="RdBu_r">RdBu_r</option>
+        <option value="RdGy_r">RdGy_r</option>
+        <option value="RdPu_r">RdPu_r</option>
+        <option value="RdYlBu_r">RdYlBu_r</option>
+        <option value="RdYlGn_r">RdYlGn_r</option>
+        <option value="Reds_r">Reds_r</option>
+        <option value="Spectral_r">Spectral_r</option>
+        <option value="Wistia_r">Wistia_r</option>
+        <option value="YlGn_r">YlGn_r</option>
+        <option value="YlGnBu_r">YlGnBu_r</option>
+        <option value="YlOrBr_r">YlOrBr_r</option>
+        <option value="YlOrRd_r">YlOrRd_r</option>
+        <option value="afmhot_r">afmhot_r</option>
+        <option value="autumn_r">autumn_r</option>
+        <option value="binary_r">binary_r</option>
+        <option value="bone_r">bone_r</option>
+        <option value="brg_r">brg_r</option>
+        <option value="bwr_r">bwr_r</option>
+        <option value="cool_r">cool_r</option>
+        <option value="coolwarm_r">coolwarm_r</option>
+        <option value="copper_r">copper_r</option>
+        <option value="cubehelix_r">cubehelix_r</option>
+        <option value="flag_r">flag_r</option>
+        <option value="gist_earth_r">gist_earth_r</option>
+        <option value="gist_gray_r">gist_gray_r</option>
+        <option value="gist_heat_r">gist_heat_r</option>
+        <option value="gist_ncar_r">gist_ncar_r</option>
+        <option value="gist_rainbow_r">gist_rainbow_r</option>
+        <option value="gist_stern_r">gist_stern_r</option>
+        <option value="gist_yarg_r">gist_yarg_r</option>
+        <option value="gnuplot_r">gnuplot_r</option>
+        <option value="gnuplot2_r">gnuplot2_r</option>
+        <option value="gray_r">gray_r</option>
+        <option value="hot_r">hot_r</option>
+        <option value="hsv_r">hsv_r</option>
+        <option value="jet_r">jet_r</option>
+        <option value="nipy_spectral_r">nipy_spectral_r</option>
+        <option value="ocean_r">ocean_r</option>
+        <option value="pink_r">pink_r</option>
+        <option value="prism_r">prism_r</option>
+        <option value="rainbow_r">rainbow_r</option>
+        <option value="seismic_r">seismic_r</option>
+        <option value="spring_r">spring_r</option>
+        <option value="summer_r">summer_r</option>
+        <option value="terrain_r">terrain_r</option>
+        <option value="winter_r">winter_r</option>
+        <option value="grey_r">grey_r</option>
+        <option value="gist_grey_r">gist_grey_r</option>
+        <option value="gist_yerg_r">gist_yerg_r</option>
+        <option value="Grays_r">Grays_r</option>
+    </xml>
+    <xml name="when/builtin_cmap_list">
+        <expand macro="when/builtin_cmap" value="magma"/>
+        <expand macro="when/builtin_cmap" value="inferno"/>
+        <expand macro="when/builtin_cmap" value="plasma"/>
+        <expand macro="when/builtin_cmap" value="viridis"/>
+        <expand macro="when/builtin_cmap" value="cividis"/>
+        <expand macro="when/builtin_cmap" value="twilight"/>
+        <expand macro="when/builtin_cmap" value="twilight_shifted"/>
+        <expand macro="when/builtin_cmap" value="turbo"/>
+        <expand macro="when/builtin_cmap" value="berlin"/>
+        <expand macro="when/builtin_cmap" value="managua"/>
+        <expand macro="when/builtin_cmap" value="vanimo"/>
+        <expand macro="when/builtin_cmap" value="Blues"/>
+        <expand macro="when/builtin_cmap" value="BrBG"/>
+        <expand macro="when/builtin_cmap" value="BuGn"/>
+        <expand macro="when/builtin_cmap" value="BuPu"/>
+        <expand macro="when/builtin_cmap" value="CMRmap"/>
+        <expand macro="when/builtin_cmap" value="GnBu"/>
+        <expand macro="when/builtin_cmap" value="Greens"/>
+        <expand macro="when/builtin_cmap" value="Greys"/>
+        <expand macro="when/builtin_cmap" value="OrRd"/>
+        <expand macro="when/builtin_cmap" value="Oranges"/>
+        <expand macro="when/builtin_cmap" value="PRGn"/>
+        <expand macro="when/builtin_cmap" value="PiYG"/>
+        <expand macro="when/builtin_cmap" value="PuBu"/>
+        <expand macro="when/builtin_cmap" value="PuBuGn"/>
+        <expand macro="when/builtin_cmap" value="PuOr"/>
+        <expand macro="when/builtin_cmap" value="PuRd"/>
+        <expand macro="when/builtin_cmap" value="Purples"/>
+        <expand macro="when/builtin_cmap" value="RdBu"/>
+        <expand macro="when/builtin_cmap" value="RdGy"/>
+        <expand macro="when/builtin_cmap" value="RdPu"/>
+        <expand macro="when/builtin_cmap" value="RdYlBu"/>
+        <expand macro="when/builtin_cmap" value="RdYlGn"/>
+        <expand macro="when/builtin_cmap" value="Reds"/>
+        <expand macro="when/builtin_cmap" value="Spectral"/>
+        <expand macro="when/builtin_cmap" value="Wistia"/>
+        <expand macro="when/builtin_cmap" value="YlGn"/>
+        <expand macro="when/builtin_cmap" value="YlGnBu"/>
+        <expand macro="when/builtin_cmap" value="YlOrBr"/>
+        <expand macro="when/builtin_cmap" value="YlOrRd"/>
+        <expand macro="when/builtin_cmap" value="afmhot"/>
+        <expand macro="when/builtin_cmap" value="autumn"/>
+        <expand macro="when/builtin_cmap" value="binary"/>
+        <expand macro="when/builtin_cmap" value="bone"/>
+        <expand macro="when/builtin_cmap" value="brg"/>
+        <expand macro="when/builtin_cmap" value="bwr"/>
+        <expand macro="when/builtin_cmap" value="cool"/>
+        <expand macro="when/builtin_cmap" value="coolwarm"/>
+        <expand macro="when/builtin_cmap" value="copper"/>
+        <expand macro="when/builtin_cmap" value="cubehelix"/>
+        <expand macro="when/builtin_cmap" value="flag"/>
+        <expand macro="when/builtin_cmap" value="gist_earth"/>
+        <expand macro="when/builtin_cmap" value="gist_gray"/>
+        <expand macro="when/builtin_cmap" value="gist_heat"/>
+        <expand macro="when/builtin_cmap" value="gist_ncar"/>
+        <expand macro="when/builtin_cmap" value="gist_rainbow"/>
+        <expand macro="when/builtin_cmap" value="gist_stern"/>
+        <expand macro="when/builtin_cmap" value="gist_yarg"/>
+        <expand macro="when/builtin_cmap" value="gnuplot"/>
+        <expand macro="when/builtin_cmap" value="gnuplot2"/>
+        <expand macro="when/builtin_cmap" value="gray"/>
+        <expand macro="when/builtin_cmap" value="hot"/>
+        <expand macro="when/builtin_cmap" value="hsv"/>
+        <expand macro="when/builtin_cmap" value="jet"/>
+        <expand macro="when/builtin_cmap" value="nipy_spectral"/>
+        <expand macro="when/builtin_cmap" value="ocean"/>
+        <expand macro="when/builtin_cmap" value="pink"/>
+        <expand macro="when/builtin_cmap" value="prism"/>
+        <expand macro="when/builtin_cmap" value="rainbow"/>
+        <expand macro="when/builtin_cmap" value="seismic"/>
+        <expand macro="when/builtin_cmap" value="spring"/>
+        <expand macro="when/builtin_cmap" value="summer"/>
+        <expand macro="when/builtin_cmap" value="terrain"/>
+        <expand macro="when/builtin_cmap" value="winter"/>
+        <expand macro="when/builtin_cmap" value="grey"/>
+        <expand macro="when/builtin_cmap" value="gist_grey"/>
+        <expand macro="when/builtin_cmap" value="gist_yerg"/>
+        <expand macro="when/builtin_cmap" value="Grays"/>
+        <expand macro="when/builtin_cmap" value="magma_r"/>
+        <expand macro="when/builtin_cmap" value="inferno_r"/>
+        <expand macro="when/builtin_cmap" value="plasma_r"/>
+        <expand macro="when/builtin_cmap" value="viridis_r"/>
+        <expand macro="when/builtin_cmap" value="cividis_r"/>
+        <expand macro="when/builtin_cmap" value="twilight_r"/>
+        <expand macro="when/builtin_cmap" value="twilight_shifted_r"/>
+        <expand macro="when/builtin_cmap" value="turbo_r"/>
+        <expand macro="when/builtin_cmap" value="berlin_r"/>
+        <expand macro="when/builtin_cmap" value="managua_r"/>
+        <expand macro="when/builtin_cmap" value="vanimo_r"/>
+        <expand macro="when/builtin_cmap" value="Blues_r"/>
+        <expand macro="when/builtin_cmap" value="BrBG_r"/>
+        <expand macro="when/builtin_cmap" value="BuGn_r"/>
+        <expand macro="when/builtin_cmap" value="BuPu_r"/>
+        <expand macro="when/builtin_cmap" value="CMRmap_r"/>
+        <expand macro="when/builtin_cmap" value="GnBu_r"/>
+        <expand macro="when/builtin_cmap" value="Greens_r"/>
+        <expand macro="when/builtin_cmap" value="Greys_r"/>
+        <expand macro="when/builtin_cmap" value="OrRd_r"/>
+        <expand macro="when/builtin_cmap" value="Oranges_r"/>
+        <expand macro="when/builtin_cmap" value="PRGn_r"/>
+        <expand macro="when/builtin_cmap" value="PiYG_r"/>
+        <expand macro="when/builtin_cmap" value="PuBu_r"/>
+        <expand macro="when/builtin_cmap" value="PuBuGn_r"/>
+        <expand macro="when/builtin_cmap" value="PuOr_r"/>
+        <expand macro="when/builtin_cmap" value="PuRd_r"/>
+        <expand macro="when/builtin_cmap" value="Purples_r"/>
+        <expand macro="when/builtin_cmap" value="RdBu_r"/>
+        <expand macro="when/builtin_cmap" value="RdGy_r"/>
+        <expand macro="when/builtin_cmap" value="RdPu_r"/>
+        <expand macro="when/builtin_cmap" value="RdYlBu_r"/>
+        <expand macro="when/builtin_cmap" value="RdYlGn_r"/>
+        <expand macro="when/builtin_cmap" value="Reds_r"/>
+        <expand macro="when/builtin_cmap" value="Spectral_r"/>
+        <expand macro="when/builtin_cmap" value="Wistia_r"/>
+        <expand macro="when/builtin_cmap" value="YlGn_r"/>
+        <expand macro="when/builtin_cmap" value="YlGnBu_r"/>
+        <expand macro="when/builtin_cmap" value="YlOrBr_r"/>
+        <expand macro="when/builtin_cmap" value="YlOrRd_r"/>
+        <expand macro="when/builtin_cmap" value="afmhot_r"/>
+        <expand macro="when/builtin_cmap" value="autumn_r"/>
+        <expand macro="when/builtin_cmap" value="binary_r"/>
+        <expand macro="when/builtin_cmap" value="bone_r"/>
+        <expand macro="when/builtin_cmap" value="brg_r"/>
+        <expand macro="when/builtin_cmap" value="bwr_r"/>
+        <expand macro="when/builtin_cmap" value="cool_r"/>
+        <expand macro="when/builtin_cmap" value="coolwarm_r"/>
+        <expand macro="when/builtin_cmap" value="copper_r"/>
+        <expand macro="when/builtin_cmap" value="cubehelix_r"/>
+        <expand macro="when/builtin_cmap" value="flag_r"/>
+        <expand macro="when/builtin_cmap" value="gist_earth_r"/>
+        <expand macro="when/builtin_cmap" value="gist_gray_r"/>
+        <expand macro="when/builtin_cmap" value="gist_heat_r"/>
+        <expand macro="when/builtin_cmap" value="gist_ncar_r"/>
+        <expand macro="when/builtin_cmap" value="gist_rainbow_r"/>
+        <expand macro="when/builtin_cmap" value="gist_stern_r"/>
+        <expand macro="when/builtin_cmap" value="gist_yarg_r"/>
+        <expand macro="when/builtin_cmap" value="gnuplot_r"/>
+        <expand macro="when/builtin_cmap" value="gnuplot2_r"/>
+        <expand macro="when/builtin_cmap" value="gray_r"/>
+        <expand macro="when/builtin_cmap" value="hot_r"/>
+        <expand macro="when/builtin_cmap" value="hsv_r"/>
+        <expand macro="when/builtin_cmap" value="jet_r"/>
+        <expand macro="when/builtin_cmap" value="nipy_spectral_r"/>
+        <expand macro="when/builtin_cmap" value="ocean_r"/>
+        <expand macro="when/builtin_cmap" value="pink_r"/>
+        <expand macro="when/builtin_cmap" value="prism_r"/>
+        <expand macro="when/builtin_cmap" value="rainbow_r"/>
+        <expand macro="when/builtin_cmap" value="seismic_r"/>
+        <expand macro="when/builtin_cmap" value="spring_r"/>
+        <expand macro="when/builtin_cmap" value="summer_r"/>
+        <expand macro="when/builtin_cmap" value="terrain_r"/>
+        <expand macro="when/builtin_cmap" value="winter_r"/>
+        <expand macro="when/builtin_cmap" value="grey_r"/>
+        <expand macro="when/builtin_cmap" value="gist_grey_r"/>
+        <expand macro="when/builtin_cmap" value="gist_yerg_r"/>
+        <expand macro="when/builtin_cmap" value="Grays_r"/>
+    </xml>
+
+</macros>

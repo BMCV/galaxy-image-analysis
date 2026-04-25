@@ -4,7 +4,7 @@
         <import>creators.xml</import>
         <import>tests.xml</import>
         <token name="@TOOL_VERSION@">6.7.0</token>
-        <token name="@VERSION_SUFFIX@">3</token>
+        <token name="@VERSION_SUFFIX@">4</token>
     </macros>
     <creator>
         <expand macro="creators/alliecreason"/>
@@ -21,6 +21,8 @@
     </requirements>
     <command> 
         <![CDATA[  
+        ln -s '$input_file' 'input.$input_file.ext' &&
+        
         bfconvert  
         #if $series_options['extract'] == 'True'
           -series $series_options.series
@@ -52,12 +54,12 @@
         #if $compression != 'False'
           -compression $compression
         #end if  
-        '$input_file' './res.$out_format' &&
+        'input.$input_file.ext' './res.$out_format' &&
         mv './res.$out_format' ./result_image
         ]]>
     </command>
     <inputs>
-        <param label="Input Image" name="input_file" type="data" format="scn,ndpi,tf8,vms,xml,pcx,xml,binary,hdr,mov,psd,ome.tiff,tiff,pbm,nrrd,pgm,ppm,txt,tf2,zip,top,gif,wav,bmp,png,gz,cif,fli,btf,jpg,avi,html,sif,tif,csv,ome.tiff,par,fits,jp2,eps,nhdr,svs,mrc"/>
+        <param label="Input Image" name="input_file" type="data" format="scn,ndpi,tf8,vms,xml,pcx,xml,binary,hdr,mov,psd,ome.tiff,tiff,pbm,nrrd,pgm,ppm,txt,tf2,zip,top,gif,wav,bmp,png,gz,cif,fli,btf,jpg,avi,html,sif,ome.tiff,par,fits,jp2,eps,nhdr,svs,mrc"/>
         <param name="out_format" type="select" label="Output data type">
             <option value="tiff" selected="True">TIFF</option>
             <option value="png">PNG</option>

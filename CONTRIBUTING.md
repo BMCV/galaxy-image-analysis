@@ -20,28 +20,62 @@ This document is the attempt to collect some rough rules for tools to follow in 
 
 **Intensity images** are images which generally are *not* label maps (and thus neither binary images).
 
-## File types
+## Image data representations and file types
+
+Tools with **label map inputs** should accept PNG and TIFF files. Tools with **label map outputs** should produce either `uint16` single-channel PNG or `uint16` single-channel TIFF. Using `uint8` instead of `uint16` is also acceptable, if there definetely are no more than 256 different labels. Using `uint8` should be preferred for binary images.
+
+> [!NOTE]  
+> It is a common misconception that PNG files must be RGB or RGBA, and that only `uint8` pixel values are supported. For example, the `cv2` module (OpenCV) can be used to write single-channel PNG files, or PNG files with `uint16` pixel values. Such files can then be read by `giatools.Image.read` or `skimage.io.imread` without issues (however, `skimage.io.imwrite` seems not to be able to write such PNG files). Another common misconception is that JPG must be RGB—they can also be single-channel.
+
+Tools with **intensity image inputs** should accept PNG and TIFF files. Tools with **intensity image outputs** can be any data type and either PNG or TIFF. Image outputs meant for visualization (e.g., segmentation overlays, charts) should be PNG.
+
+### giatools
 
 In tool wrappers which use a Python script, image loading should be performed by using the `giatools` package ([docs](https://giatools.readthedocs.io)).
-This gives you out-of-the-box support for a veriety of file types, including TIFF, PNG, JPG, and OME-Zarr.
+This gives you out-of-the-box support for a veriety of file types, including TIFF, PNG, JPG, and OME-Zarr, and generally reduces the amount of redundant boilerplate code.
 
 Another advantage is that `giatools` gives you out-of-the-box support for 3-D images, multi-channel-images, and other rather exotic format flavors, even if the wrapped image processing/analysis operation only supports 2-D image data.
-For example, if the wrapped operation only support single-channel 2-D images, the following code structure can be used to process all slices of 3-D images, all channels of multi-channel images, and so on:
+For example, if the wrapped operation only support single-channel 2-D images, the following tool wrapper code structure can be used to process all slices of 3-D images, all channels of multi-channel images, and so on:
+```python
+if __name__ == '__main__':
+    tool = giatools.ToolBaseplate()
+    tool.add_input_image('input')
+    tool.add_output_image('output')
+    for section in tool.run('YX'):
+        # Process each slice, e.g., copy the input slice:
+        section['output'] = section['input'].data
+```
+This has also the advantage that the metadata of the output image will be preserved (based on the metadata of the first input image).
+The script can then be binded into the XML of the tool wrapper easily:
+```xml
+    <command detect_errors="aggressive"><![CDATA[
+        python '$__tool_directory__/script.py'
+
+        #if $input.extension == "zarr"
+            --input '$input.extra_files_path/$input.metadata.store_root'
+        #else
+            --input '$input'
+        #end if
+
+        --output 'output.tiff'
+        --verbose
+    ]]></command>
+```
+The `--verbose` argument makes sure that useful metadata information will be printed to the standard output of the tool when run in Galaxy.
+In addition, arbitrary JSON-encoded parameters can be passed to the script via the `--params` argument.
+Those are then available as a plain dictionary by accessing `tool.args.params` within the script.
+
+If you prefer to write the structure of the tool wrapper code yourself, you can also utilize `giatools` on a rather lower level:
 ```python
 image = giatools.Image.read(args.input)
 for source_slice, section in image.iterate_jointly('XY'):
     ...  # process the 2-D `section` of the image
 ```
-See the [docs](https://giatools.readthedocs.io/en/latest/giatools.image.html#giatools.image.Image.iterate_jointly) for details.
+See the [docs](https://giatools.readthedocs.io/en/latest/giatools.image.html#giatools.image.Image.iterate_jointly) for details. You can also access the pixel/voxel data of the image directly (described below).
 
-Instead of using functions from the global namespace of the `numpy` package to process the `section` or `image.data`, it is preferred to use the methods of the `section` and `image.data` objects directly. This is because, for some file types (e.g., OME-Zarr), those objects will be Dask arrays, and although these should fit in transparently into the NumPy framework, using implementation-specific methods promises greater efficiency of the computational performance, especially for large datasets.
+### numpy
 
-Tools with **label map inputs** should accept PNG and TIFF files. Tools with **label map outputs** should produce either `uint16` single-channel PNG or `uint16` single-channel TIFF. Using `uint8` instead of `uint16` is also acceptable, if there definetely are no more than 256 different labels. Using `uint8` should be preferred for binary images.
-
-> [!NOTE]  
-> It is a common misconception that PNG files must be RGB or RGBA, and that only `uint8` pixel values are supported. For example, the `cv2` module (OpenCV) can be used to create single-channel PNG files, or PNG files with `uint16` pixel values. Such files can then be read by `giatools.Image.read` or `skimage.io.imread` without issues (however, `skimage.io.imwrite` seems not to be able to write such PNG files).
-
-Tools with **intensity image inputs** should accept PNG and TIFF files. Tools with **intensity image outputs** can be any data type and either PNG or TIFF. Image outputs meant for visualization (e.g., segmentation overlays, charts) should be PNG.
+Instead of using functions from the global namespace of the `numpy` package to process the `section` or `image.data`, it is preferred to use the methods of the `section` and `image.data` objects directly (e.g., prefer `image.data.mean()` over `numpy.mean(image.data)`). This is because, for some file types (e.g., OME-Zarr), those objects will be Dask arrays, and although these should fit in transparently into the NumPy framework, using implementation-specific methods promises greater efficiency of the computational performance, especially for large datasets.
 
 ## Testing
 

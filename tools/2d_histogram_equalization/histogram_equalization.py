@@ -2,13 +2,21 @@ import argparse
 import sys
 
 import giatools.io
+import numpy as np
 import skimage.exposure
 import skimage.io
 import skimage.util
 
+
+def rescale(img):
+    assert np.issubdtype(img.dtype, np.floating), str(img.dtype)  # sanity check
+    img = img - img.min()
+    return img / img.max() if img.max() != 0 else 1
+
+
 hOptions = {
-    'default': lambda img_raw: skimage.exposure.equalize_hist(img_raw),
-    'clahe': lambda img_raw: skimage.exposure.equalize_adapthist(img_raw)
+    'default': lambda img_raw: rescale(skimage.exposure.equalize_hist(img_raw)),  # rescale needed for values to be in [0, 1]
+    'clahe': lambda img_raw: skimage.exposure.equalize_adapthist(img_raw),  # produces image with values in [0, 1]
 }
 
 if __name__ == "__main__":

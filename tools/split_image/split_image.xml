@@ -4,7 +4,7 @@
         <import>creators.xml</import>
         <import>tests.xml</import>
         <token name="@TOOL_VERSION@">2.3.5</token>
-        <token name="@VERSION_SUFFIX@">0</token>
+        <token name="@VERSION_SUFFIX@">1</token>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
@@ -18,9 +18,11 @@
     </xrefs>
     <requirements>
         <requirement type="package" version="@TOOL_VERSION@">numpy</requirement>
-        <requirement type="package" version="0.5.2">giatools</requirement>
-        <requirement type="package" version="2025.10.16">tifffile</requirement>
+        <requirement type="package" version="0.7.3">giatools</requirement>
     </requirements>
+    <required_files>
+        <include type="glob" path="*.py"/>
+    </required_files>
     <command detect_errors="aggressive"><![CDATA[
 
         mkdir output &&
@@ -30,11 +32,17 @@
         '$axis'
         output
 
+        $offset
+        $step
         $squeeze
+
+        #if str($count) != ""
+            --count $count
+        #end if
 
     ]]></command>
     <inputs>
-        <param name="input" type="data" format="tiff,png" label="Image to split" />
+        <param name="input" type="data" format="tiff,png" label="Image to split"/>
         <param name="axis" type="select" label="Axis to split along">
             <option value="T">T-axis (split the frames of a temporal image sequence)</option>
             <option value="Z">Z-axis (split the slices of a 3-D image or image sequence)</option>
@@ -44,11 +52,17 @@
             <option value="">Split dataset that contains multiple images (e.g., multi-series TIFF)</option>
         </param>
         <param name="squeeze" type="boolean" checked="false" truevalue="--squeeze" falsevalue="" label="Squeeze result images"
-               help="Only non-singleton axes (axes with more than one element) will be retained in the result images. This does not apply for the X and Y axes which always are retained." />
+               help="Only non-singleton axes (axes with more than one element) will be retained in the result images. This does not apply for the X and Y axes which always are retained."/>
+        <param name="offset" type="integer" value="0" min="0" label="Offset"
+               help="Number of slices to skip at the beginning."/>
+        <param name="step" type="integer" value="1" min="1" label="Step"
+               help="Number of slices between extracted images (each slice is extracted for a value of 1, each second slice is extracted for a value of two, and so on)."/>
+        <param name="count" type="integer" optional="true" min="1" label="Count"
+               help="Maximum number of slices to extract."/>
     </inputs>
     <outputs>
         <collection type="list" name="output" label="Split ${on_string} along ${axis} axis">
-            <discover_datasets directory="output" pattern="__name__" format="tiff" />
+            <discover_datasets directory="output" pattern="__name__" format="tiff"/>
         </collection>
     </outputs>
     <tests>
@@ -66,7 +80,7 @@
             <assert_stdout>
                 <has_line line="Input image axes: YXC"/>
                 <has_line line="Input image shape: (32, 32, 3)"/>
-                <has_line line="Writing 3 image(s)"/>
+                <has_line line="Writing 3 out of 3 image(s)"/>
                 <has_line line="Output axes: YXC"/>
                 <has_line line="Output shape: (32, 32, 1)"/>
             </assert_stdout>
@@ -79,8 +93,8 @@
                 <expand macro="tests/intensity_image_diff/element" name="1.tiff" value="rgb1.tiff" ftype="tiff"/>
             </output_collection>
             <assert_stdout>
-                <has_line line="Not a TIFF file"/>
-                <has_line line="Writing 1 image(s)"/>
+                <has_line line="Found 1 image(s) in file"/>
+                <has_line line="Writing 1 out of 1 image(s)"/>
                 <has_line line="Output axes: YXC"/>
                 <has_line line="Output shape: (32, 32, 3)"/>
             </assert_stdout>
@@ -88,17 +102,20 @@
 
         <!-- TIFF tests -->
         <test>
-            <param name="input" value="zcyx.tiff" />
-            <param name="axis" value="Z" />
-            <param name="squeeze" value="false" />
-            <output_collection name="output" type="list" count="25">
-                <expand macro="tests/intensity_image_diff/element" name="01.tiff" value="zcyx_slice01.tiff" ftype="tiff"/>
-                <expand macro="tests/intensity_image_diff/element" name="25.tiff" value="zcyx_slice25.tiff" ftype="tiff"/>
+            <param name="input" value="zcyx.tiff"/>
+            <param name="axis" value="Z"/>
+            <param name="squeeze" value="false"/>
+            <param name="offset" value="9"/>
+            <param name="step" value="2"/>
+            <param name="count" value="5"/>
+            <output_collection name="output" type="list" count="5">
+                <expand macro="tests/intensity_image_diff/element" name="10.tiff" value="zcyx_slice10.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="18.tiff" value="zcyx_slice18.tiff" ftype="tiff"/>
             </output_collection>
             <assert_stdout>
                 <has_line line="Input image axes: ZCYX"/>
                 <has_line line="Input image shape: (25, 2, 50, 50)"/>
-                <has_line line="Writing 25 image(s)"/>
+                <has_line line="Writing 5 out of 25 image(s)"/>
                 <has_line line="Output axes: ZCYX"/>
                 <has_line line="Output shape: (1, 2, 50, 50)"/>
             </assert_stdout>
@@ -114,7 +131,7 @@
             <assert_stdout>
                 <has_line line="Input image axes: QYX"/>
                 <has_line line="Input image shape: (2, 256, 256)"/>
-                <has_line line="Writing 2 image(s)"/>
+                <has_line line="Writing 2 out of 2 image(s)"/>
                 <has_line line="Output axes: QYX"/>
                 <has_line line="Output shape: (1, 256, 256)"/>
             </assert_stdout>
@@ -127,7 +144,7 @@
                 <expand macro="tests/intensity_image_diff/element" name="1.tiff" value="qyx.tiff" ftype="tiff"/>
             </output_collection>
             <assert_stdout>
-                <has_line line="Found TIFF with 1 series"/>
+                <has_line line="Found 1 image(s) in file"/>
             </assert_stdout>
         </test>
 
@@ -141,8 +158,8 @@
                 <expand macro="tests/intensity_image_diff/element" name="6.tiff" value="multiseries_series6.tiff" ftype="tiff"/>
             </output_collection>
             <assert_stdout>
-                <has_line line="Found TIFF with 6 series"/>
-                <has_line line="Writing 6 image(s)"/>
+                <has_line line="Found 6 image(s) in file"/>
+                <has_line line="Writing 6 out of 6 image(s)"/>
                 <has_line line="Output 1 axes: CYX"/>
                 <has_line line="Output 1 shape: (4, 5, 5)"/>
                 <has_line line="Output 2 axes: CYX"/>
@@ -171,7 +188,7 @@
             <assert_stdout>
                 <has_line line="Input image axes: YXC"/>
                 <has_line line="Input image shape: (32, 32, 3)"/>
-                <has_line line="Writing 3 image(s)"/>
+                <has_line line="Writing 3 out of 3 image(s)"/>
                 <has_line line="Output axes: YX"/>
                 <has_line line="Output shape: (32, 32)"/>
             </assert_stdout>
@@ -188,7 +205,7 @@
             <assert_stdout>
                 <has_line line="Input image axes: YXC"/>
                 <has_line line="Input image shape: (32, 32, 3)"/>
-                <has_line line="Writing 1 image(s)"/>
+                <has_line line="Writing 1 out of 1 image(s)"/>
                 <has_line line="Output axes: YXC"/>
                 <has_line line="Output shape: (32, 32, 3)"/>
             </assert_stdout>

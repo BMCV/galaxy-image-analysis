@@ -4,7 +4,7 @@
         <import>creators.xml</import>
         <import>tests.xml</import>
         <token name="@TOOL_VERSION@">0.22.0</token>
-        <token name="@VERSION_SUFFIX@">1</token>
+        <token name="@VERSION_SUFFIX@">2</token>
         <xml name="base_params">
             <param name="black_ridges" type="select" label="Mode of operation">
                 <option value="true" selected="true">Enhance dark ridges (low image intensities)</option>
@@ -20,6 +20,8 @@
                    help="Frangi correction constant that adjusts the filter's sensitivity to deviation from a plate-like structure."/>
             <param name="beta" type="float" min="0" value="0.5" label="Beta"
                    help="Frangi correction constant that adjusts the filter's sensitivity to deviation from a blob-like structure."/>
+            <param name="gamma" type="float" min="0" value="" label="Gamma" optional="true"
+                   help="Frangi correction constant that adjusts the filter's sensitivity to areas of high variance/texture/structure. Leave empty to use the default."/>
         </xml>
     </macros>
     <creator>
@@ -61,6 +63,9 @@
             #if $filter.filter_type == "frangi" or $filter.filter_type == "hessian"
                 "alpha": $filter.alpha,
                 "beta": $filter.beta,
+                #if str($filter.gamma) != ""
+                    "gamma": $filter.gamma,
+                #end if
             #end if
 
             #if $filter.filter_type == "laplace"

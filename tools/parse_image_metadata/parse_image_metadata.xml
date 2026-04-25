@@ -1,0 +1,160 @@
+<tool name="Parse value from image metadata" id="param_image_metadata" version="0.1.0" tool_type="expression" profile="25.1">
+    <description/>
+    <macros>
+        <import>creators.xml</import>
+    </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+        <expand macro="creators/kostrykin"/>
+    </creator>
+    <macros/>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <expression type="ecma5.1">
+    {
+        return {
+            'width': parseInt($job.input1.metadata.width),
+            'height': parseInt($job.input1.metadata.height),
+            'channels': parseInt($job.input1.metadata.channels),
+            'depth': parseInt($job.input1.metadata.depth),
+            'frames': parseInt($job.input1.metadata.frames)
+        };
+    }
+    </expression>
+    <inputs>
+        <param type="data" format="tiff,png,jpg" label="Input file to parse the metadata of" load_contents="0" name="input1"/>
+    </inputs>
+    <outputs>
+        <output type="integer" name="width" from="width" label="Parse image width"/>
+        <output type="integer" name="height" from="height" label="Parse image height"/>
+        <output type="integer" name="channels" from="channels" label="Parse image channels"/>
+        <output type="integer" name="depth" from="depth" label="Parse image depth"/>
+        <output type="integer" name="frames" from="frames" label="Parse image frames"/>
+    </outputs>
+    <tests>
+        <test expect_num_outputs="5">
+            <!-- Test for PNG metadata -->
+            <param name="input1" value="input_yxc.png"/>
+            <output name="width">
+                <assert_contents>
+                    <has_line line="265"/>
+                </assert_contents>
+            </output>
+            <output name="height">
+                <assert_contents>
+                    <has_line line="530"/>
+                </assert_contents>
+            </output>
+            <output name="channels">
+                <assert_contents>
+                    <has_line line="4"/>
+                </assert_contents>
+            </output>
+            <output name="depth">
+                <assert_contents>
+                    <has_line line="0"/>
+                </assert_contents>
+            </output>
+            <output name="frames">
+                <assert_contents>
+                    <has_line line="1"/>
+                </assert_contents>
+            </output>
+        </test>
+        <test expect_num_outputs="5">
+            <!-- Test for TIFF metadata (with Z axis, without T axis) -->
+            <param name="input1" value="input_yxz.tiff"/>
+            <output name="width">
+                <assert_contents>
+                    <has_line line="265"/>
+                </assert_contents>
+            </output>
+            <output name="height">
+                <assert_contents>
+                    <has_line line="530"/>
+                </assert_contents>
+            </output>
+            <output name="channels">
+                <assert_contents>
+                    <has_line line="0"/>
+                </assert_contents>
+            </output>
+            <output name="depth">
+                <assert_contents>
+                    <has_line line="4"/>
+                </assert_contents>
+            </output>
+            <output name="frames">
+                <assert_contents>
+                    <has_line line="0"/>
+                </assert_contents>
+            </output>
+        </test>
+        <test expect_num_outputs="5">
+            <!-- Test for TIFF metadata (with T axis, without Z axis) -->
+            <param name="input1" value="input_yxt.tiff"/>
+            <output name="width">
+                <assert_contents>
+                    <has_line line="265"/>
+                </assert_contents>
+            </output>
+            <output name="height">
+                <assert_contents>
+                    <has_line line="530"/>
+                </assert_contents>
+            </output>
+            <output name="channels">
+                <assert_contents>
+                    <has_line line="0"/>
+                </assert_contents>
+            </output>
+            <output name="depth">
+                <assert_contents>
+                    <has_line line="0"/>
+                </assert_contents>
+            </output>
+            <output name="frames">
+                <assert_contents>
+                    <has_line line="4"/>
+                </assert_contents>
+            </output>
+        </test>
+        <test expect_num_outputs="5">
+            <!-- Test for JPG metadata -->
+            <param name="input1" value="input_yxc.jpg"/>
+            <output name="width">
+                <assert_contents>
+                    <has_line line="10"/>
+                </assert_contents>
+            </output>
+            <output name="height">
+                <assert_contents>
+                    <has_line line="10"/>
+                </assert_contents>
+            </output>
+            <output name="channels">
+                <assert_contents>
+                    <has_line line="3"/>
+                </assert_contents>
+            </output>
+            <output name="depth">
+                <assert_contents>
+                    <has_line line="0"/>
+                </assert_contents>
+            </output>
+            <output name="frames">
+                <assert_contents>
+                    <has_line line="0"/>
+                </assert_contents>
+            </output>
+        </test>
+    </tests>
+    <help><![CDATA[
+
+        **Parse image metadata as parameter values.**
+
+        This tool can be used in workflows to parse parameter values from image metadata (e.g., width, height, etc.).
+
+    ]]></help>
+</tool>

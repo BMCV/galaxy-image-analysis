@@ -3,7 +3,7 @@
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
-        <token name="@TOOL_VERSION@">0.0.5</token>
+        <token name="@TOOL_VERSION@">0.0.6</token>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
@@ -24,6 +24,10 @@
         <requirement type="package" version="10.4.0">pillow</requirement>
         <requirement type="package" version="0.1">giatools</requirement>
     </requirements>
+    <required_files>
+        <include path="overlay_images.py" />
+        <include path="contours.py" />
+    </required_files>
     <command detect_errors="aggressive">
     <![CDATA[
         python '$__tool_directory__/overlay_images.py'

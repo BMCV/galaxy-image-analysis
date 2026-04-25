@@ -88,45 +88,53 @@ if __name__ == "__main__":
 
     # The explicit `dir` and `prefix` is to avoid breaking the 107 byte limit for socket paths in Biocontainers
     # See for details: https://github.com/BMCV/galaxy-image-analysis/pull/178
-    with tempfile.TemporaryDirectory(dir='/tmp', prefix='superdsm') as tmpdirname:
-        tmpdir = pathlib.Path(tmpdirname)
-        ray.init(num_cpus=num_processes, log_to_driver=True, _temp_dir=str(tmpdir / 'ray'))
+    #
+    # Skip clean up (use `tempfile.mkdtemp` instead of `tempfile.TemporaryDirectory`) to avoid race conditions
+    # with file handles on NFS
+    #
+    tmpdirname = tempfile.mkdtemp(dir='/tmp', prefix='superdsm')
 
-        img_ext = imghdr.what(args.image)
-        img_filepath = tmpdir / f'input.{img_ext}'
-        shutil.copy(str(args.image), img_filepath)
+    tmpdir = pathlib.Path(tmpdirname)
+    ray.init(num_cpus=num_processes, log_to_driver=True, _temp_dir=str(tmpdir / 'ray'))
 
-        pipeline = superdsm.pipeline.create_default_pipeline()
-        cfg = create_config(args)
-        img = giatools.io.imread(img_filepath, impl=superdsm.io.imread)
+    img_ext = imghdr.what(args.image)
+    img_filepath = tmpdir / f'input.{img_ext}'
+    shutil.copy(str(args.image), img_filepath)
 
-        # Create configuration if it is required:
-        if args.do_cfg or args.do_overlay or args.do_masks:
-            cfg, _ = superdsm.automation.create_config(pipeline, cfg, img)
+    pipeline = superdsm.pipeline.create_default_pipeline()
+    cfg = create_config(args)
+    img = giatools.io.imread(img_filepath, impl=superdsm.io.imread)
 
-        # Perform segmentation if it is required:
-        if args.do_overlay or args.do_masks:
-            print('Performing segmentation')
-            data, cfg, _ = pipeline.process_image(img, cfg)
+    # Create configuration if it is required:
+    if args.do_cfg or args.do_overlay or args.do_masks:
+        cfg, _ = superdsm.automation.create_config(pipeline, cfg, img)
 
-        # Write configuration used for segmentation, or the automatically created one, otherwise:
-        if args.do_cfg:
-            print(f'Writing config to: {args.do_cfg}')
-            with open(args.do_cfg, 'w') as fp:
-                tsv_out = csv.writer(fp, delimiter='\t')
-                tsv_out.writerow(['Hyperparameter', 'Value'])
-                rows = sorted(flatten_dict(cfg.entries).items(), key=lambda item: item[0])
-                for key, value in rows:
-                    tsv_out.writerow([key, value])
+    # Perform segmentation if it is required:
+    if args.do_overlay or args.do_masks:
+        print('Performing segmentation')
+        data, cfg, _ = pipeline.process_image(img, cfg)
 
-        # Write the overlay image:
-        if args.do_overlay:
-            print(f'Writing overlay to: {args.do_overlay}')
-            overlay = superdsm.render.render_result_over_image(data, border_width=args.do_overlay_border, normalize_img=False)
-            superdsm.io.imwrite(args.do_overlay, overlay)
+    # Write configuration used for segmentation, or the automatically created one, otherwise:
+    if args.do_cfg:
+        print(f'Writing config to: {args.do_cfg}')
+        with open(args.do_cfg, 'w') as fp:
+            tsv_out = csv.writer(fp, delimiter='\t')
+            tsv_out.writerow(['Hyperparameter', 'Value'])
+            rows = sorted(flatten_dict(cfg.entries).items(), key=lambda item: item[0])
+            for key, value in rows:
+                tsv_out.writerow([key, value])
 
-        # Write the label map:
-        if args.do_masks:
-            print(f'Writing masks to: {args.do_masks}')
-            masks = superdsm.render.rasterize_labels(data)
-            superdsm.io.imwrite(args.do_masks, masks)
+    # Write the overlay image:
+    if args.do_overlay:
+        print(f'Writing overlay to: {args.do_overlay}')
+        overlay = superdsm.render.render_result_over_image(data, border_width=args.do_overlay_border, normalize_img=False)
+        superdsm.io.imwrite(args.do_overlay, overlay)
+
+    # Write the label map:
+    if args.do_masks:
+        print(f'Writing masks to: {args.do_masks}')
+        masks = superdsm.render.rasterize_labels(data)
+        superdsm.io.imwrite(args.do_masks, masks)
+
+    # Shutdown ray before the temporary directory is attempted to be cleared
+    ray.shutdown()

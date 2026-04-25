@@ -26,25 +26,28 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 - [Apply a morphological operation](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/morphological_operations/morphological_operations) with SciPy
 - [Apply ridge filter](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/ridge_filter/ridge_filter_skimage) with scikit-image
 - [Apply standard image filter](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/2d_simple_filter/ip_filter_standard) with SciPy
+- [Clip image intensities](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/clip_image/clip_image) with giatools
 - [Crop image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/crop_image/ip_crop_image) with giatools
 - [Perform histogram equalization](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/2d_histogram_equalization/ip_histogram_equalization) with scikit-image
 - [Process images using arithmetic expressions](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/image_math/image_math) with NumPy
 - [Remove image background](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/background_removal/background_removal/0.24.0+galaxy0) with scikit-image
 - [Scale image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/scale_image/ip_scale_image) with scikit-image
-- [Show image info](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/image_info/ip_imageinfo) with Bioformats
 
 ### Image conversion [[…]](https://github.com/BMCV/galaxy-image-analysis/issues?q=label%3A%22Image%20Conversion%22)
 
-- [Concatenate images or channels](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/concat_channels/ip_concat_channels)
+- [Concatenate images](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/concat_channels/ip_concat_channels)
 - [Convert binary image to label map](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/binary2labelimage/ip_binary_to_labelimage)
 - [Convert binary image to points (center of masses)](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/binaryimage2points/ip_binaryimage_to_points)
 - [Convert binary image to points (point coordinates)](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/coordinates_of_roi/ip_coordinates_of_roi)
 - [Convert coordinates to label map](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/points2labelimage/ip_points_to_label)
-- [Convert image format](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/bfconvert/ip_convertimage) with Bioformats
+- [Convert DICOM to TIFF](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/highdicom_dicom2tiff/highdicom_dicom2tiff) with highdicom
+- [Convert image format](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/bfconvert/ip_convertimage) with Bio-Formats
 - [Convert label map to binary image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/label_to_binary/label_to_binary) with NumPy
 - [Convert label map to points (center of masses)](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/labelimage2points/ip_labelimage_to_points)
 - [Convert single-channel to multi-channel image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/repeat_channels/repeat_channels) with NumPy
-- [Convert to OME-Zarr](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/bioformats2raw/bf2raw) with Bioformats
+- [Convert to OME-Zarr](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/bioformats2raw/bf2raw) with Bio-Formats
+- [Export DICOM metadata](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/highdicom_dicom2text/highdicom_dicom2text) with highdicom
+- [Extract video frames](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/cv2_extract_frames/cv2_extract_frames) with cv2
 - [Perform color deconvolution or transformation](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/color_deconvolution/ip_color_deconvolution)
 - [Permutate image axes](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/permutate_axis/ip_permutate_axis)
 - [Slice image into patches](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/slice_image/ip_slice_image)
@@ -82,24 +85,31 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 - [Colorize labels](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/colorize_labels/colorize_labels) with NetworkX
 - [Compute image segmentation and object detection performance measures](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/segmetrics/ip_segmetrics) with SegMetrics
 - [Evaluate segmentation](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/visceral_evaluatesegmentation/ip_visceral_evaluatesegmentation) with EvaluateSegmentation
+- [Find datasets with similar ISCC-CODEs](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/iscc_sum_similarity/iscc_sum_similarity) with ISCC-SUM
+- [Generate ISCC-CODE](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/iscc_sum/iscc_sum) with ISCC-SUM
 - [Overlay images](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/overlay_images/ip_overlay_images)
+- [Render 3-D image data](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/libcarna_render/libcarna_render) with LibCarna
+- [Verify ISCC-CODE](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/iscc_sum_verify/iscc_sum_verify) with ISCC-SUM
 - [Visualize detections](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/detection_viz/ip_detection_viz)
 
 ### Miscellaneous
 
 - [Compute image features](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/mahotas_features/ip_mahotas_features) with Mahotas
 - [Extract top view](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/wsi_extract_top_view/ip_wsi_extract_top_view) with OpenSlide
-- [Generate ISCC-CODE](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/iscc_sum/iscc_sum) with ISCC-SUM
-- [Find datasets with similar ISCC-CODEs](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/iscc_sum_similarity/iscc_sum_similarity) with ISCC-SUM
 - [Perform curve fitting](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/curve_fitting/ip_curve_fitting)
+- [Show image info](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/image_info/ip_imageinfo) with Bioformats
 - [Unzip](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/unzip/unzip)
-- [Verify ISCC-CODE](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/iscc_sum_verify/iscc_sum_verify) with ISCC-SUM
 
 ## Acknowledgment
 
-This work has been funded by the BMFTR (Federal Ministry of Research, Technology and Space), Heidelberg Center for Human Bioinformatics (HD-HuB) within the German Network for Bioinformatics Infrastructure (de.NBI) & ELIXIR-DE, and LiBiS (Baden-Württemberg Institute for Bioinformatics Infrastructure).
+This work has been funded by the BMFTR (Federal Ministry of Research, Technology and Space), Heidelberg Center for Human Bioinformatics (HD-HuB), within the German Network for Bioinformatics Infrastructure (de.NBI) & ELIXIR-DE (W-de.NBI-016) and by the MWK (Baden-Württemberg Ministry of Science, Research and Arts) within LiBiS (Baden-Württemberg Institute for Bioinformatics Infrastructure).
 
 <img width="4198" height="371" alt="GIA Logos" src="https://github.com/user-attachments/assets/5724b1d7-d9ae-40c1-9c50-9d129d11d8de" />
+
+
+
+
+
 
 
 

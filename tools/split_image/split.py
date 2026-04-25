@@ -1,33 +1,45 @@
 import argparse
 import math
-import os
 import pathlib
-import shutil
 
 import giatools
+import giatools.io
 import numpy as np
-import tifffile
 
 
 class OutputWriter:
 
-    def __init__(self, dir_path: pathlib.Path, num_images: int, squeeze: bool, verbose: bool):
-        print(f'Writing {num_images} image(s)')
+    def __init__(
+        self,
+        dir_path: pathlib.Path,
+        num_images: int,
+        squeeze: bool,
+        verbose: bool,
+        offset: int = 0,
+        step: int = 1,
+        count: int | None = None,
+    ):
+        self.positions = np.arange(num_images)[offset::step] + 1
+        if count is not None:
+            self.positions = self.positions[:count]
+
+        print(f'Writing {len(self.positions)} out of {num_images} image(s)')
         decimals = math.ceil(math.log10(1 + num_images))
         self.output_filepath_pattern = str(dir_path / f'%0{decimals}d.tiff')
-        self.last_idx = 0
+        self.last_pos = 0
         self.squeeze = squeeze
         self.verbose = verbose
 
     def write(self, img: giatools.Image):
-        self.last_idx += 1
-        if self.squeeze:
-            img = img.squeeze()
-        if self.last_idx == 1 or self.verbose:
-            prefix = f'Output {self.last_idx}' if self.verbose else 'Output'
-            print(f'{prefix} axes:', img.axes)
-            print(f'{prefix} shape:', img.data.shape)
-        img.write(self.output_filepath_pattern % self.last_idx)
+        self.last_pos += 1
+        if self.last_pos in self.positions:
+            if self.squeeze:
+                img = img.squeeze()
+            if self.last_pos == self.positions[0] or self.verbose:
+                prefix = f'Output {self.last_pos}' if self.verbose else 'Output'
+                print(f'{prefix} axes:', img.axes)
+                print(f'{prefix} shape:', img.data.shape)
+            img.write(self.output_filepath_pattern % self.last_pos)
 
 
 if __name__ == '__main__':
@@ -37,52 +49,31 @@ if __name__ == '__main__':
     parser.add_argument('axis', type=str, choices=list(giatools.default_normalized_axes) + ['S', ''])
     parser.add_argument('output', type=pathlib.Path)
     parser.add_argument('--squeeze', action='store_true', default=False)
+    parser.add_argument('offset', type=int)
+    parser.add_argument('step', type=int)
+    parser.add_argument('--count', type=int)
     args = parser.parse_args()
 
     # If splitting a file that contains multiple images...
     if args.axis == '':
 
-        # Peek the number of series in the input file (if it is a TIFF)
-        try:
-            with tifffile.TiffFile(args.input) as tiff:
-                num_tiff_series = len(tiff.series)
-                print(f'Found TIFF with {num_tiff_series} series')
-        except tifffile.TiffFileError:
-            num_tiff_series = 0  # not a TIFF file
-            print('Not a TIFF file')
+        # Peek the number of images
+        num_images = giatools.io.peek_num_images_in_file(args.input)
+        print(f'Found {num_images} image(s) in file')
 
-        # If the file is a multi-series TIFF, extract the individual series
-        # (for consistency, also accept only a single series if squeezing is requested)
-        if num_tiff_series >= 2 or (num_tiff_series == 1 and args.squeeze):
-            output = OutputWriter(
-                dir_path=args.output,
-                num_images=num_tiff_series,
-                squeeze=args.squeeze,
-                verbose=True,
-            )
-            for series in range(num_tiff_series):
-                img = giatools.Image.read(args.input, series=series)
-                output.write(
-                    img.squeeze_like(img.original_axes),
-                )
-
-        # Otherwise, there is nothing to be split (or squeeze)
-        # (the input is either a single-series TIFF or not a TIFF at all)
-        elif num_tiff_series == 1:  # input is a single-series TIFF (output = input)
-            try:
-                os.symlink(args.input, args.output / '1.tiff')
-            except OSError:
-                shutil.copyfile(args.input, args.output / '1.tiff')
-        else:  # input is not a TIFF, conversion needed
-            img = giatools.Image.read(args.input)
-            OutputWriter(
-                dir_path=args.output,
-                num_images=1,
-                squeeze=args.squeeze,
-                verbose=False,
-            ).write(
-                img.squeeze_like(img.original_axes),
-            )
+        # Extract the individual images
+        output = OutputWriter(
+            dir_path=args.output,
+            num_images=num_images,
+            squeeze=args.squeeze,
+            verbose=(num_images > 1),
+            offset=args.offset,
+            step=args.step,
+            count=args.count,
+        )
+        for position in range(num_images):
+            img = giatools.Image.read(args.input, position=position, normalize_axes=None)
+            output.write(img)
 
     # If splitting along an image axes...
     else:
@@ -105,6 +96,9 @@ if __name__ == '__main__':
             num_images=arr.shape[0],
             squeeze=args.squeeze,
             verbose=False,
+            offset=args.offset,
+            step=args.step,
+            count=args.count,
         )
         for img_idx, img in enumerate(arr):
             img = np.moveaxis(img[None], 0, axis_pos)

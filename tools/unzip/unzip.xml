@@ -1,9 +1,9 @@
-<tool id="unzip" name="Unzip" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="@PROFILE@">
+<tool id="unzip" name="Unzip" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="@PROFILE@"><!-- !GIA301 -->
     <description>Unzip a file</description>
     <macros>
         <import>creators.xml</import>
         <token name="@TOOL_VERSION@">6.0</token>
-        <token name="@VERSION_SUFFIX@">2</token>
+        <token name="@VERSION_SUFFIX@">5</token>
         <token name="@PROFILE@">22.01</token>
         <xml name="regex_sanitizer">
             <sanitizer>
@@ -29,6 +29,7 @@
             Enforced containerization to minimize potential security issues due to regex hacking.
         -->
         <container type="docker">quay.io/biocontainers/mulled-v2-6a2891161dcf5f35b38c6a49fff923163de7a66d:159a5b483a078f27b97a401b0626abac09e5f2d1-0</container>
+        <container type="singularity">https://depot.galaxyproject.org/singularity/mulled-v2-6a2891161dcf5f35b38c6a49fff923163de7a66d%3A159a5b483a078f27b97a401b0626abac09e5f2d1-0</container>
     </requirements>
     <command> 
     <![CDATA[
@@ -42,11 +43,12 @@
             #end if
         #end if
         #if $input_file.is_of_type("tar"):
+            #set $tarArgs = "--no-same-owner --no-same-permissions -xf"
             tar
             #if $extract_options['target'] == 'single'
-              xfO '$input_file' '$extract_options["pathtofile"]' > out.data
+              O $tarArgs '$input_file' '$extract_options["pathtofile"]' > out.data
             #else
-              -xf '$input_file' -C ./out/
+              $tarArgs '$input_file' -C ./out/
             #end if
         #end if
         &&
@@ -100,7 +102,7 @@
             <filter>extract_options['target'] == 'single'</filter>
         </data>
         <collection name="unzipped" type="list" label="${tool.name} on ${on_string} all files as collection">
-            <discover_datasets directory="out" pattern="(?P&lt;designation&gt;\.*[^\.]+)\.?(?P&lt;ext&gt;.*)" visible="false" format="auto"/>
+            <discover_datasets directory="out" pattern="^(?P&lt;designation&gt;\.*[^\.]+(?:\.?(?P&lt;ext&gt;.*)))$" visible="false" format="auto"/>
             <filter>extract_options['target'] != 'single'</filter>
         </collection>
     </outputs>
@@ -119,8 +121,8 @@
                 <param name="target" value="all"/>
             </conditional>
             <output_collection name="unzipped" type="list" count="2">
-                <element name="input" file="input.png" ftype="png" compare="sim_size"/>
-                <element name="res" file="res.tiff" ftype="tiff" compare="sim_size"/>
+                <element name="input.png" file="input.png" ftype="png" compare="sim_size"/>
+                <element name="res.tiff" file="res.tiff" ftype="tiff" compare="sim_size"/>
             </output_collection>
         </test>
         <!-- Binary files without file extension -->
@@ -143,8 +145,8 @@
             <output_collection name="unzipped" type="list" count="4">
                 <element name="binaries_yelp" file="yelp" compare="sim_size"/>
                 <element name="binaries_yes" file="yes" compare="sim_size"/>
-                <element name="images_input" file="input.png" ftype="png" compare="sim_size"/>
-                <element name="images_res" file="res.tiff" ftype="tiff" compare="sim_size"/>
+                <element name="images_input.png" file="input.png" ftype="png" compare="sim_size"/>
+                <element name="images_res.tiff" file="res.tiff" ftype="tiff" compare="sim_size"/>
             </output_collection>
         </test>
         <test expect_num_outputs="1">
@@ -161,8 +163,8 @@
                 <param name="target" value="all"/>
             </conditional>
             <output_collection name="unzipped" type="list" count="2">
-                <element name="input" file="input.png" ftype="png" compare="sim_size"/>
-                <element name="res" file="res.tiff" ftype="tiff" compare="sim_size"/>
+                <element name="input.png" file="input.png" ftype="png" compare="sim_size"/>
+                <element name="res.tiff" file="res.tiff" ftype="tiff" compare="sim_size"/>
             </output_collection>
         </test>
         <!-- ZIP containing dotfiles and non-dotfiles -->
@@ -182,7 +184,7 @@
                         <has_size value="0"/>
                     </assert_contents>
                 </element>
-                <element name="subdir_"><!-- The suffix `.dotfile` is recognized as the extension -->
+                <element name="subdir_.dotfile">
                     <assert_contents>
                         <has_size value="0"/>
                     </assert_contents>
@@ -220,8 +222,27 @@
                 <param name="keep_regex" value="./images/.*"/>
             </conditional>
             <output_collection name="unzipped" type="list" count="2">
-                <element name="images_input" file="input.png" ftype="png" compare="sim_size"/>
-                <element name="images_res" file="res.tiff" ftype="tiff" compare="sim_size"/>
+                <element name="images_input.png" file="input.png" ftype="png" compare="sim_size"/>
+                <element name="images_res.tiff" file="res.tiff" ftype="tiff" compare="sim_size"/>
+            </output_collection>
+        </test>
+        <!-- ZIP with two files with same stem name: https://github.com/BMCV/galaxy-image-analysis/issues/223 -->
+        <test expect_num_outputs="1">
+            <param name="input_file" value="input2.zip" ftype="zip"/>
+            <conditional name="extract_options">
+                <param name="target" value="all"/>
+            </conditional>
+            <output_collection name="unzipped" type="list" count="2">
+                <element name="input_file.tsv" ftype="tsv">
+                    <assert_contents>
+                        <has_line line="b"/>
+                    </assert_contents>
+                </element>
+                <element name="input_file.txt" ftype="txt">
+                    <assert_contents>
+                        <has_line line="a"/>
+                    </assert_contents>
+                </element>
             </output_collection>
         </test>
     </tests>

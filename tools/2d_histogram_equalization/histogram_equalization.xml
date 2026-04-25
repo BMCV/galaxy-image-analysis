@@ -3,7 +3,7 @@
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
-        <token name="@TOOL_VERSION@">0.18.1</token>
+        <token name="@TOOL_VERSION@">0.25.2</token>
         <token name="@VERSION_SUFFIX@">0</token>
     </macros>
     <creator>
@@ -18,9 +18,9 @@
     </xrefs>
     <requirements>
         <requirement type="package" version="@TOOL_VERSION@">scikit-image</requirement>
-        <requirement type="package" version="1.23.3">numpy</requirement>
-        <requirement type="package" version="2020.10.1">tifffile</requirement>
-        <requirement type="package" version="0.1">giatools</requirement>
+        <requirement type="package" version="2.3.5">numpy</requirement>
+        <requirement type="package" version="2025.5.10">tifffile</requirement>
+        <requirement type="package" version="0.1.2">giatools</requirement>
     </requirements>
     <command detect_errors="aggressive">
     <![CDATA[
@@ -42,6 +42,11 @@
             <param name="input" value="sample.tiff"/>
             <param name="h_type" value="default"/>
             <expand macro="tests/intensity_image_diff" name="output" value="out.tiff" ftype="tiff"/>
+        </test>
+        <test>
+            <param name="input" value="sample.tiff"/>
+            <param name="h_type" value="clahe"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="out_clahe.tiff" ftype="tiff"/>
         </test>
     </tests>
     <help>

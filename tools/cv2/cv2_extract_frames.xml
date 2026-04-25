@@ -1,0 +1,142 @@
+<tool id="cv2_extract_frames" name="Extract video frames" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="21.05">
+    <description>with cv2</description>
+    <macros>
+        <token name="@TOOL_VERSION@">4.13.0</token>
+        <token name="@VERSION_SUFFIX@">0</token>
+        <token name="@HELP_SECONDS@">Use a negative value to specify the time from the end of the video (e.g., a value of -1 corresponds to "1 second before the end of the video").</token>
+        <import>tests.xml</import>
+        <import>creators.xml</import>
+    </macros>
+    <creator>
+        <expand macro="creators/rmassei"/>
+    </creator>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="biii">opencv</xref>
+    </xrefs>
+    <requirements>
+        <requirement type="package" version="4.13.0">opencv</requirement>
+    </requirements>
+    <required_files>
+        <include type="literal" path="cv2_extract_frames.py"/>
+    </required_files>
+    <command detect_errors="aggressive">
+        <![CDATA[
+        mkdir ./output_frames &&
+
+        python '$__tool_directory__/cv2_extract_frames.py' output_frames
+        -v '$video_path' 
+        -s '$start_time' 
+        #if str($end_time) != ""
+            -e '$end_time' 
+        #end if
+        -c '$convert_to_grey'
+
+        && ls -l ./output_frames
+        ]]>
+    </command>
+    <inputs>
+        <param name="video_path" type="data" optional="False" format="mp4,avi" label="Input video to convert"/>
+        <param name="start_time" type="float" value="0" optional="false" label="Start time"
+               help="Start time in seconds. @HELP_SECONDS@"/>
+        <param name="end_time" type="float" optional="true" label="End time"
+               help="End time in seconds (optional). Leave empty to extract the sequence until the end of the video. @HELP_SECONDS@"/>
+        <param name="convert_to_grey" type="boolean" label="Convert output to single-channel grayscale?"
+               help="Convert the file to grayscale (will be RGB otherwise)."/>
+    </inputs>
+     <outputs>
+        <collection name="frames" type="list" label="Output frames">
+            <discover_datasets directory="output_frames" format="tiff" pattern="__name__"/>
+        </collection>
+    </outputs>
+        <tests>
+        <test>
+            <!-- test MP4 w/o grayscale conversion -->
+            <param name="video_path" value="input1.mp4"/>
+            <param name="start_time" value="0"/>
+            <param name="end_time" value="0.1"/>
+            <param name="convert_to_grey" value="False"/>
+            <output_collection name="frames" type="list">
+                <expand macro="tests/intensity_image_diff/element" name="frame_0.tiff" value="frame_0.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="frame_1.tiff" value="frame_1.tiff" ftype="tiff"/>
+            </output_collection>
+        </test>
+        <test>
+            <!-- test MP4 w grayscale conversion -->
+            <param name="video_path" value="input1.mp4"/>
+            <param name="start_time" value="0"/>
+            <param name="end_time" value="0.1"/>
+            <param name="convert_to_grey" value="True"/>
+            <output_collection name="frames" type="list">
+                <expand macro="tests/intensity_image_diff/element" name="frame_2.tiff" value="frame_2.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="frame_3.tiff" value="frame_3.tiff" ftype="tiff"/>
+            </output_collection>
+        </test>
+        <test>
+            <!-- test AVI w/o grayscale conversion -->
+            <param name="video_path" value="input2.avi"/>
+            <param name="start_time" value="0"/>
+            <param name="end_time" value="1"/>
+            <param name="convert_to_grey" value="False"/>
+            <output_collection name="frames" type="list">
+                <expand macro="tests/intensity_image_diff/element" name="frame_4.tiff" value="frame_4.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="frame_5.tiff" value="frame_5.tiff" ftype="tiff"/>
+            </output_collection>
+        </test>
+        <test>
+            <!-- test AVI w grayscale conversion -->
+            <param name="video_path" value="input2.avi"/>
+            <param name="start_time" value="0"/>
+            <param name="end_time" value="1"/>
+            <param name="convert_to_grey" value="True"/>
+            <output_collection name="frames" type="list">
+                <expand macro="tests/intensity_image_diff/element" name="frame_6.tiff" value="frame_6.tiff" ftype="tiff"/>
+                <expand macro="tests/intensity_image_diff/element" name="frame_7.tiff" value="frame_7.tiff" ftype="tiff"/>
+            </output_collection>
+        </test>
+        <test>
+            <!-- test AVI with endtime 0 -->
+            <param name="video_path" value="input2.avi"/>
+            <param name="start_time" value="0"/>
+            <param name="end_time" value="0"/>
+            <param name="convert_to_grey" value="True"/>
+            <output_collection name="frames" type="list" count="1"/>
+        </test>
+        <test>
+            <!-- test MP4 with endtime negative-->
+            <param name="video_path" value="input1.mp4"/>
+            <param name="start_time" value="0"/>
+            <param name="end_time" value="-1"/>
+            <param name="convert_to_grey" value="True"/>
+            <output_collection name="frames" type="list" count="238"/>
+        </test>
+    </tests>
+    <help>
+
+        **Extract a sequence of image frames as TIFFs from MP4 and AVI files.**
+
+        Frames captured within a specified time interval (in seconds) will be extracted from the video file as individual TIFF images. 
+        Optionally, the extracted frames can be converted to grayscale. 
+
+        **Codecs Support:** 
+        The tool was tested with H.264 and H.265 (HEVC) video codecs.
+        The tool may support other codecs, though this has not been tested yet. 
+        If you have successfully converted files using alternative video formats or codecs, we would be grateful for your feedback at https://github.com/BMCV/galaxy-image-analysis.
+
+    </help>
+    <citations>
+            <citation type="bibtex">@article{opencv_library,
+            author = {Bradski, G.},
+            citeulike-article-id = {2236121},
+            journal = {Dr. Dobb's Journal of Software Tools},
+            keywords = {bibtex-import},
+            posted-at = {2008-01-15 19:21:54},
+            priority = {4},
+            title = {{The OpenCV Library}},
+            year = {2000}
+            }</citation>
+    </citations>
+</tool>
+
