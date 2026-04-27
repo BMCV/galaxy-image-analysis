@@ -96,9 +96,12 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 
 - [Compute image features](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/mahotas_features/ip_mahotas_features) with Mahotas
 - [Extract top view](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/wsi_extract_top_view/ip_wsi_extract_top_view) with OpenSlide
+- [Parse value from image metadata](https://usegalaxy.eu/?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/parse_image_metadata/param_image_metadata)*
 - [Perform curve fitting](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/curve_fitting/ip_curve_fitting)
 - [Show image info](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/image_info/ip_imageinfo) with Bioformats
 - [Unzip](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/unzip/unzip)
+
+<sub>*) This is an expression tool. Expression tools are auxiliary tools that are only usable in workflows.</sub>
 
 ## Acknowledgment
 
