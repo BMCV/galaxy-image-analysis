@@ -1,10 +1,7 @@
 owner: imgteam
-
 suite:
   name: suite_pycytominer
-
   description: Suite of tools for wrapping the pycytominer python module
-
   long_description: |
     Pycytominer is a toolkit for processing high dimensional readouts from high-throughput image-based profiling experiments. 
     It has five major processing functions: Aggregate, which averages single-cell profiles based on metadata information (most often "well"); 
@@ -14,20 +11,13 @@ suite:
     to form a "consensus signature."
 
     This tool suite provides wrappers for the pycytominer Python package enabling processing cell-profiling results in Galaxy using Pycytominer.
- 
-
 auto_tool_repositories:
   name_template: "{{ tool_id }}"
   description_template: "{{ tool_name }}"
-
 long_description: |
   Enables processing cell-profiling results in Galaxy using Pycytominer. Based on the pycytominer Python package.
-  
-
 type: unrestricted
-
 categories:
   - Imaging
-
 homepage_url: https://github.com/cytomining/pycytominer
 remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tools/pycytominer
