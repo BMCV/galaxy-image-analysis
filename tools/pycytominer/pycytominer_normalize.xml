@@ -1,4 +1,4 @@
-<tool id="pycytominer_normalize" name="Normalize readouts" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="23.0">
+<tool id="pycytominer_normalize" name="Normalize readouts X" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="23.0">
     <description>with Pycytominer</description>
     <macros>
         <import>macros.xml</import>
