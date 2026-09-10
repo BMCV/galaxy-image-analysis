@@ -207,7 +207,7 @@
     
     **Conversion option:**
 
-    - **Extract series, timepoint, channel and z-slices:**All series/timepoints/channels/z-slices in the input file are converted by default. To convert only one series, add a specific index value to the command.
+    - **Extract series, timepoint, channel and z-slices:** All series/timepoints/channels/z-slices in the input file are converted by default. To convert only one series, add a specific index value to the command.
 
     - **Extract range:** All image planes are extracted by default. Select a lower and upper value to just convert a subset of the image planes.
 
