@@ -203,14 +203,29 @@
         </test>
     </tests>    
     <help>
+    The bfconvert tool can be used to convert image file format between supported formats.
+    
+    **Conversion option:**
 
-        **Converts image format.**
+    - **Extract series, timepoint, channel and z-slices:**All series/timepoints/channels/z-slices in the input file are converted by default. To convert only one series, add a specific index value to the command.
 
-        Universial image converter using bioformats.
+    - **Extract range:** All image planes are extracted by default. Select a lower and upper value to just convert a subset of the image planes.
+
+    - **Extract crop:** For very large images, you may want to convert only a small tile from the image. Use this option to set the coordinates and dimensions of the tile.
+
+    - **Tile image:** Images larger than 4096×4096 will be saved as a set of tiles if the output format supports it. The default tile size is determined by the input format; you can override it with this option.
+    
+    - **No Flatten:** Do not flatten resolutions into individual series. Images with sub-resolutions (e.g., images with pyramidal levels) need this option to be correctly processed. Only the OME-TIFF output format currently supports this option.
+
+    - **Pyramid image:** When using *No Flattern* option is true, each series of the converted file will contain the same number of resolutions as in the input file. Use this option to set a specific number of resolutions for each series. If the target number is greater than the actual number of sub-resolutions, additional levels are calculated using the specified downsampling factor.
+
+    - **Big TIFF:** Write images as a BigTiff file. This is useful for very large files that cannot be processed in a traditional TIFF format.
+
+    - **Compression:** Select a specific compression type for the output
 
     </help>
     <citations>
-        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
+        <citation type="doi">10.1083/jcb.201004104</citation>
     </citations>
 </tool>
 
