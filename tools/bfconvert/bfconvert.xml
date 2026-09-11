@@ -157,7 +157,7 @@
             <when value="False" />
         </conditional>
         <param name="bigtiff" label="Big TIFF" type="boolean" checked="false" truevalue="-bigtiff" falsevalue=""/>
-        <param name="noflat" label="No Flatten" type="boolean" checked="true" truevalue="-noflat" falsevalue=""/>
+        <param name="noflat" label="Do not flatten" type="boolean" checked="true" truevalue="-noflat" falsevalue=""/>
         <param label="Compression" name="compression" type="select">
             <option selected="True" value="False">No Compression</option>
             <option value="LZW">LZW</option>
@@ -203,25 +203,25 @@
         </test>
     </tests>    
     <help>
-    The bfconvert tool can be used to convert image file format between supported formats.
+    This tool performs conversion of image file formats.
     
     **Conversion option:**
 
-    - **Extract series, timepoint, channel and z-slices:** All series/timepoints/channels/z-slices in the input file are converted by default. To convert only one series, add a specific index value to the command.
+    - **Extract series, timepoint, channel and z-slices:** All series/timepoints/channels/z-slices in the input image dataset are converted by default. Use the corresponding options to convert only a subset thereof (e.g., individual series).
 
-    - **Extract range:** All image planes are extracted by default. Select a lower and upper value to just convert a subset of the image planes.
+    - **Extract range:** All images of the input image dataset (i.e. image planes) are extracted by default. You may choose to convert only a subset of those images (image planes) by specifying the positions of the first and last image planes that are to be converted.
 
-    - **Extract crop:** For very large images, you may want to convert only a small tile from the image. Use this option to set the coordinates and dimensions of the tile.
+    - **Extract crop:** For very large images, you may want to convert only a small image section. Use this option to set specify a rectangular image section.
 
     - **Tile image:** Images larger than 4096×4096 will be saved as a set of tiles if the output format supports it. The default tile size is determined by the input format; you can override it with this option.
     
-    - **No Flatten:** Do not flatten resolutions into individual series. Images with sub-resolutions (e.g., images with pyramidal levels) need this option to be correctly processed. Only the OME-TIFF output format currently supports this option.
+    - **Do not flatten:** Do not flatten resolutions into individual series. Images with sub-resolutions (e.g., images with pyramidal levels) need this option to be correctly processed. Only the OME-TIFF output format currently supports this option.
 
-    - **Pyramid image:** When using *No Flattern* option is true, each series of the converted file will contain the same number of resolutions as in the input file. Use this option to set a specific number of resolutions for each series. If the target number is greater than the actual number of sub-resolutions, additional levels are calculated using the specified downsampling factor.
+    - **Pyramid image:** When using the *Do not flatten* option is set to "Yes" (the default), each series of the converted image dataset will contain the same number of resolutions as the input image dataset. Use this option to set a specific number of resolutions for each series. If the target number is greater than the actual number of sub-resolutions, additional levels are computed using the specified downsampling factor.
 
-    - **Big TIFF:** Write images as a BigTiff file. This is useful for very large files that cannot be processed in a traditional TIFF format.
+    - **Big TIFF:** Write images as a BigTIFF file. This is useful for very large files that cannot be processed in a traditional TIFF format.
 
-    - **Compression:** Select a specific compression type for the output
+    - **Compression:** Select a specific compression type for the output.
 
     </help>
     <citations>
