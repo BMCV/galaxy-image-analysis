@@ -215,9 +215,7 @@
 
     - **Tile image:** Images larger than 4096×4096 will be saved as a set of tiles if the output format supports it. The default tile size is determined by the input format; you can override it with this option.
     
-    - **Do not flatten:** Do not flatten resolutions into individual series. Images with sub-resolutions (e.g., images with pyramidal levels) need this option to be correctly processed. Only the OME-TIFF output format currently supports this option.
-
-    - **Pyramid image:** When using the *Do not flatten* option is set to "Yes" (the default), each series of the converted image dataset will contain the same number of resolutions as the input image dataset. Use this option to set a specific number of resolutions for each series. If the target number is greater than the actual number of sub-resolutions, additional levels are computed using the specified downsampling factor.
+    - **Do not flatten, Pyramid image:** When the *Do not flatten* option is set to "Yes" (the default), each series of the converted image dataset will contain the same number of resolutions as the input image dataset. Use the *Pyramid image* option to set a specific number of resolutions for each series. If the target number is greater than the actual number of sub-resolutions, additional levels are computed using the specified downsampling factor.
 
     - **Big TIFF:** Write images as a BigTIFF file. This is useful for very large files that cannot be processed in a traditional TIFF format.
 
