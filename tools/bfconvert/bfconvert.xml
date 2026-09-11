@@ -3,8 +3,8 @@
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
-        <token name="@TOOL_VERSION@">6.7.0</token>
-        <token name="@VERSION_SUFFIX@">4</token>
+        <token name="@TOOL_VERSION@">8.0.0</token>
+        <token name="@VERSION_SUFFIX@">0</token>
     </macros>
     <creator>
         <expand macro="creators/alliecreason"/>
@@ -77,7 +77,7 @@
             </param>
             <when value="False"> </when>
             <when value="True">
-                <param name="series" type="integer" value="0" label="Series id" />
+                <param name="series" type="integer" value="0" label="Series position" help="0 corresponds to the first series of the input image dataset."/>
             </when>
         </conditional>
         <conditional name="timepoint_options">
@@ -87,7 +87,7 @@
             </param>
             <when value="False"></when>
             <when value="True">
-                <param name="timepoint" type="integer" value="0" label="Timepoint ID" />
+                <param name="timepoint" type="integer" value="0" label="Timepoint position" help="0 corresponds to the first timepoint of the input image dataset."/>
             </when>
         </conditional>
         <conditional name="channel_options">
@@ -97,7 +97,7 @@
             </param>
             <when value="False"> </when>
             <when value="True">
-                <param name="channel" type="integer" value="0" label="Channel id" />
+                <param name="channel" type="integer" value="0" label="Channel position" help="0 corresponds to the first channel of the input image dataset."/>
             </when>
         </conditional>
         <conditional name="z_options">
@@ -107,7 +107,7 @@
             </param>
             <when value="False"> </when>
             <when value="True">
-                <param name="z" type="integer" value="0" label="Z-slice id" />
+                <param name="z" type="integer" value="0" label="Z-slice position" help="0 corresponds to the first z-slice of the input image dataset."/>
             </when>
         </conditional>
         <conditional name="range_options">
@@ -117,8 +117,8 @@
             </param>
             <when value="False"> </when>
             <when value="True">
-                <param name="range_lower" type="integer" value="0" label="Lower image id" />
-                <param name="range_upper" type="integer" value="1" label="Upper image id" />
+                <param name="range_lower" type="integer" value="0" label="First image position" help="0 corresponds to the first image of the input image dataset."/>
+                <param name="range_upper" type="integer" value="1" label="Last image position" />
             </when>
         </conditional>
         <conditional name="crop_options">
@@ -128,10 +128,10 @@
             </param>
             <when value="False"> </when>
             <when value="True">
-                <param name="crop_x" type="integer" value="0" label="X" />
-                <param name="crop_y" type="integer" value="0" label="Y" />
+                <param name="crop_x" type="integer" value="0" label="X" help="Horizontal position of the crop. 0 corresponds to the left-most position."/>
+                <param name="crop_y" type="integer" value="0" label="Y" help="Vertical position of the crop. 0 corresponds to the top-most position."/>
                 <param name="crop_width" type="integer" value="512" label="Width" />
-                <param name="crop_height" type="integer" value="512" label="height" />
+                <param name="crop_height" type="integer" value="512" label="Height" />
             </when>
         </conditional>
         <conditional name="tile_options">
@@ -147,17 +147,17 @@
         </conditional>
         <conditional name="pyramid_options">
             <param label="Pyramid image" name="generate" type="select" help="Pyramids will be generated only if the selected output format supports pyramids (OME TIFF, JPEG 2000)."><!-- see: https://docs.openmicroscopy.org/bio-formats/6.7.0/supported-formats.html -->
-                <option selected="True" value="True">Generate Pyramid</option>
-                <option value="False">No Pyramid</option>
+                <option selected="True" value="True">Generate pyramid (if supported)</option>
+                <option value="False">No pyramid</option>
             </param>
             <when value="True">
-                <param name="pyramid_resolutions" type="integer" value="4" label="Pyramid Resolutions"/>
-                <param name="pyramid_scale" type="integer" value="2" label="Pyramid Scale" />
+                <param name="pyramid_resolutions" type="integer" value="4" label="Pyramid resolutions"/>
+                <param name="pyramid_scale" type="integer" value="2" label="Pyramid scale" />
             </when>
             <when value="False" />
         </conditional>
         <param name="bigtiff" label="Big TIFF" type="boolean" checked="false" truevalue="-bigtiff" falsevalue=""/>
-        <param name="noflat" label="No Flatten" type="boolean" checked="true" truevalue="-noflat" falsevalue=""/>
+        <param name="noflat" label="Do not flatten" type="boolean" checked="true" truevalue="-noflat" falsevalue=""/>
         <param label="Compression" name="compression" type="select">
             <option selected="True" value="False">No Compression</option>
             <option value="LZW">LZW</option>
@@ -203,14 +203,27 @@
         </test>
     </tests>    
     <help>
+    This tool performs conversion of image file formats.
+    
+    **Conversion option:**
 
-        **Converts image format.**
+    - **Extract series, timepoint, channel and z-slices:** All series/timepoints/channels/z-slices in the input image dataset are converted by default. Use the corresponding options to convert only a subset thereof (e.g., individual series).
 
-        Universial image converter using bioformats.
+    - **Extract range:** All images of the input image dataset (i.e. image planes) are extracted by default. You may choose to convert only a subset of those images (image planes) by specifying the positions of the first and last image planes that are to be converted.
+
+    - **Extract crop:** For very large images, you may want to convert only a small image section. Use this option to set specify a rectangular image section.
+
+    - **Tile image:** If used, the output image is created using tiles (rectangular chunks of specific size) that can be read and processed separately, if the output format supports it.
+    
+    - **Do not flatten, Pyramid image:** When the *Do not flatten* option is set to "Yes" (the default), each series of the converted image dataset will contain the same number of resolutions as the input image dataset. Use the *Pyramid image* option to set a specific number of resolutions for each series. If the target number is greater than the actual number of sub-resolutions, additional levels are computed using the specified downsampling factor.
+
+    - **Big TIFF:** Write images as a BigTIFF file. This is useful for very large files that cannot be processed in a traditional TIFF format.
+
+    - **Compression:** Select a specific compression type for the output.
 
     </help>
     <citations>
-        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
+        <citation type="doi">10.1083/jcb.201004104</citation>
     </citations>
 </tool>
 
