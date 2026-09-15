@@ -67,7 +67,7 @@
         </section>
     </inputs>
     <outputs>
-        <data name="output_image" format="png" from_work_dir="output.png" label="${tool.name} &quot;${label}&quot; on ${on_string}"/>
+        <data name="output_image" format="png" from_work_dir="output.png" label="${tool.name} &quot;${label_text}&quot; on ${on_string}"/>
     </outputs>
     <tests>
         <test>
@@ -77,7 +77,7 @@
                 <param name="vertical" value="below"/>
                 <param name="horizontal" value="left"/>
             </section>
-            <expand macro="tests/intensity_image_diff" name="output_image" value="output/input5_below_left" ftype="png"/>
+            <expand macro="tests/intensity_image_diff" name="output_image" value="output/input5_below_left.png" ftype="png"/>
         </test>
     </tests>
     <help><![CDATA[
