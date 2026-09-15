@@ -73,8 +73,11 @@ if __name__ == "__main__":
         # TODO: expose as tool parameters
         fp_lower = 'min'
         fp_upper = 'max'
-        label_text_color = '#000000ff'
-        label_background_color = '#ffffffff'
+        label_text_color = tool.args.params['label_text_color'] + 'ff'
+        label_background_color = (
+            tool.args.params['label_background_color'] +  # RGB in hex
+            '{:02x}'.format(round(tool.args.params['label_background_opacity'] * 0xff))  # opacity in hex
+        )
         fontsize = tool.args.params['fontsize']
         position_v = tool.args.params['position_v']
         position_h = tool.args.params['position_h']

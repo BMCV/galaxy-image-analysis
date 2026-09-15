@@ -47,8 +47,11 @@
                 "label_text": "$label_text",
                 "position_h": "$position.horizontal",
                 "position_v": "$position.vertical",
-                "padding": $padding,
-                "fontsize": $fontsize
+                "padding": $position.padding,
+                "fontsize": $style.fontsize,
+                "label_text_color": "$style.text_color",
+                "label_background_color": "$style.background_color",
+                "label_background_opacity": $style.background_opacity
             }
         ]]></configfile>
     </configfiles>
@@ -71,9 +74,15 @@
                 <option value="center">Center of the image</option>
                 <option value="right" selected="True">Right of the image</option>
             </param>
-            <param name="padding" type="integer" value="3" min="0" label="Padding (in pixels)" />
+            <param name="padding" type="integer" value="3" min="0" label="Padding (in pixels)"
+                help="Governs the offset of the label from the above-configured position."/>
         </section>
-        <param name="fontsize" type="integer" value="12" min="1" label="Font size" />
+        <section name="style" title="Label appearance" expanded="true">
+            <param name="fontsize" type="integer" value="12" min="1" label="Font size" />
+            <param name="text_color" type="color" value="#000000" label="Text color"/>
+            <param name="background_color" type="color" value="#ffffff" label="Background color"/>
+            <param name="background_opacity" type="float" min="0" max="1" value="1" label="Background opacity" help="Set to 0 to fully suppress the label background."/>
+        </section>
     </inputs>
     <outputs>
         <data name="output_image" format="png" from_work_dir="output.png" label="${tool.name} &quot;${label_text}&quot; on ${on_string}"/>
@@ -86,7 +95,9 @@
                 <param name="vertical" value="below"/>
                 <param name="horizontal" value="left"/>
             </section>
-            <param name="fontsize" value="4"/>
+            <section name="style">
+                <param name="fontsize" value="4"/>
+            </section>
             <expand macro="tests/intensity_image_diff" name="output_image" value="output/input5_below_left.png" ftype="png"/>
         </test>
         <test>
@@ -96,6 +107,11 @@
                 <param name="vertical" value="top"/>
                 <param name="horizontal" value="center"/>
                 <param name="padding" value="20"/>
+            </section>
+            <section name="style">
+                <param name="text_color" value="#ff0000"/>
+                <param name="background_color" value="#00ffff"/>
+                <param name="background_opacity" value="0.5"/>
             </section>
             <expand macro="tests/intensity_image_diff" name="output_image" value="output/input6_top_center.png" ftype="png"/>
         </test>
