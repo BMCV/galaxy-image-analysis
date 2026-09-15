@@ -2,6 +2,7 @@
     <description></description>
     <macros>
         <import>creators.xml</import>
+        <import>fp_conversion.xml</import>
         <import>validators.xml</import>
         <import>tests.xml</import>
         <token name="@TOOL_VERSION@">0.1</token>
@@ -44,6 +45,7 @@
     <configfiles>
         <configfile name="params"><![CDATA[
             {
+                @DEFAULT_FP_CONVERSION_JSON@,
                 "label_text": "$label_text",
                 "position_h": "$position.horizontal",
                 "position_v": "$position.vertical",
@@ -64,6 +66,7 @@
             <expand macro="validators/is_single_frame"/>
             <expand macro="validators/is_2d"/>
         </param>
+        <expand macro="fp_conversion/section"/>
         <param name="label_text" type="text" label="Label text" optional="false"/>
         <section name="position" title="Label position" expanded="true">
             <param name="vertical" type="select" label="Vertical position">
@@ -118,7 +121,23 @@
                 <param name="background_color" value="#00ffff"/>
                 <param name="background_opacity" value="0.5"/>
             </section>
-            <expand macro="tests/intensity_image_diff" name="output_image" value="output/input6_top_center.png" ftype="png"/>
+            <expand macro="tests/intensity_image_diff"
+                name="output_image" value="output/input6_top_center_fp-0-1.png" ftype="png"/>
+        </test>
+        <test>
+            <param name="input_image" value="input/input6_yx.zarr"/>
+            <section name="fp_conversion">
+                <param name="lower" value="min"/>
+                <param name="upper" value="max"/>
+            </section>
+            <param name="label_text" value="The label"/>
+            <section name="position">
+                <param name="vertical" value="top"/>
+                <param name="horizontal" value="right"/>
+                <param name="padding" value="20"/>
+            </section>
+            <expand macro="tests/intensity_image_diff"
+                name="output_image" value="output/input6_top_right_fp-min-max.png" ftype="png"/>
         </test>
     </tests>
     <help><![CDATA[

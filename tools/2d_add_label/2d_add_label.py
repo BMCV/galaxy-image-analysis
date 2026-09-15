@@ -67,12 +67,7 @@ if __name__ == "__main__":
         if (n_channels := input_image.shape[input_image.axes.index('C')]) not in (1, 3, 4):
             raise ValueError(f'This tool is not applicable to images with {n_channels} channels.')
 
-        # Extract the image features
-        #for section in tool.run('XYC'):  # the validation code above guarantees that we will have only a single iteration
-
-        # TODO: expose as tool parameters
-        fp_lower = 'min'
-        fp_upper = 'max'
+        # Pre-process tool parameters
         label_text_color = tool.args.params['label_text_color'] + 'ff'
         label_background_color = (
             tool.args.params['label_background_color'] +  # RGB in hex
@@ -85,8 +80,7 @@ if __name__ == "__main__":
         # Create RGBA8 working copy of the input image
         img = get_rgba8_copy(
             tool.args.input_images['input_image'].normalize_axes_like('XYC').data,
-            fp_lower,
-            fp_upper,
+            **tool.args.params['fp_conversion'],
         )
 
         # Determine the label height in pixels
