@@ -104,6 +104,7 @@
             </section>
             <section name="style">
                 <param name="fontsize" value="4"/>
+                <param name="background_color" value="#ffff00"/>
             </section>
             <expand macro="tests/intensity_image_diff" name="output_image" value="output/input5_below_left.png" ftype="png"/>
         </test>
