@@ -78,7 +78,6 @@ if __name__ == "__main__":
             tool.args.params['label_background_color'] +  # RGB in hex
             '{:02x}'.format(round(tool.args.params['label_background_opacity'] * 0xff))  # opacity in hex
         )
-        fontsize = tool.args.params['fontsize']
         position_v = tool.args.params['position_v']
         position_h = tool.args.params['position_h']
         padding = tool.args.params['padding']
@@ -91,7 +90,7 @@ if __name__ == "__main__":
         )
 
         # Determine the label height in pixels
-        label_height = (fontsize * 100) // 72
+        label_height = (tool.args.params['text_params']['fontsize'] * 100) // 72
 
         # Extend the image above/below, if required
         if position_v in ('above', 'below'):
@@ -138,7 +137,7 @@ if __name__ == "__main__":
             backgroundcolor=label_background_color,
             ha=position_h,
             va=position_v,
-            fontsize=fontsize,
+            **tool.args.params['text_params'],
         )
 
         # Write the result image

@@ -48,10 +48,13 @@
                 "position_h": "$position.horizontal",
                 "position_v": "$position.vertical",
                 "padding": $position.padding,
-                "fontsize": $style.fontsize,
                 "label_text_color": "$style.text_color",
                 "label_background_color": "$style.background_color",
-                "label_background_opacity": $style.background_opacity
+                "label_background_opacity": $style.background_opacity,
+                "text_params": {
+                    "fontsize": $style.fontsize,
+                    "fontweight": "$style.fontweight"
+                }
             }
         ]]></configfile>
     </configfiles>
@@ -79,6 +82,7 @@
         </section>
         <section name="style" title="Label appearance" expanded="true">
             <param name="fontsize" type="integer" value="12" min="1" label="Font size" />
+            <param name="fontweight" type="boolean" truevalue="bold" falsevalue="normal" value="false" label="Bold"/>
             <param name="text_color" type="color" value="#000000" label="Text color"/>
             <param name="background_color" type="color" value="#ffffff" label="Background color"/>
             <param name="background_opacity" type="float" min="0" max="1" value="1" label="Background opacity" help="Set to 0 to fully suppress the label background."/>
@@ -109,6 +113,7 @@
                 <param name="padding" value="20"/>
             </section>
             <section name="style">
+                <param name="fontweight" value="bold"/>
                 <param name="text_color" value="#ff0000"/>
                 <param name="background_color" value="#00ffff"/>
                 <param name="background_opacity" value="0.5"/>
