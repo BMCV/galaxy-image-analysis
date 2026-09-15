@@ -132,12 +132,25 @@
             </section>
             <param name="label_text" value="The label"/>
             <section name="position">
-                <param name="vertical" value="top"/>
+                <param name="vertical" value="bottom"/>
                 <param name="horizontal" value="right"/>
                 <param name="padding" value="20"/>
             </section>
             <expand macro="tests/intensity_image_diff"
-                name="output_image" value="output/input6_top_right_fp-min-max.png" ftype="png"/>
+                name="output_image" value="output/input6_bottom_right_fp-min-max.png" ftype="png"/>
+        </test>
+        <test>
+            <param name="input_image" value="input/input11.tiff"/>
+            <param name="label_text" value="The label"/>
+            <section name="position">
+                <param name="vertical" value="above"/>
+                <param name="horizontal" value="center"/>
+            </section>
+            <section name="style">
+                <param name="text_color" value="#0000ff"/>
+                <param name="background_opacity" value="0"/>
+            </section>
+            <expand macro="tests/intensity_image_diff" name="output_image" value="output/input11_above_center.png" ftype="png"/>
         </test>
     </tests>
     <help><![CDATA[
