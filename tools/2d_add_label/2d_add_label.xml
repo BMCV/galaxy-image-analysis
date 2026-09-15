@@ -17,7 +17,6 @@
         <xref type="bio.tools">galaxy_image_analysis</xref>
     </xrefs>
     <requirements>
-        <requirement type="package" version="0.26.0">scikit-image</requirement>
         <requirement type="package" version="3.11.1">matplotlib</requirement>
         <requirement type="package" version="2.5.3">numpy</requirement>
         <requirement type="package" version="0.7.3">giatools</requirement>
@@ -40,7 +39,7 @@
     <configfiles>
         <configfile name="params"><![CDATA[
             {
-                "label": "$label",
+                "label_text": "$label_text",
                 "position_h": "$position.horizontal",
                 "position_v": "$position.vertical"
             }
@@ -52,7 +51,7 @@
             <expand macro="validators/is_single_frame"/>
             <expand macro="validators/is_2d"/>
         </param>
-        <param name="label" type="text" label="Label text" optional="false"/>
+        <param name="label_text" type="text" label="Label text" optional="false"/>
         <section name="position" title="Label position" expanded="true">
             <param name="vertical" type="select" label="Vertical position">
                 <option value="above">Above the image</option>
@@ -68,17 +67,17 @@
         </section>
     </inputs>
     <outputs>
-        <data name="output" format="png" from_work_dir="output.png" label="${tool.name} &quot;${label}&quot; on ${on_string}"/>
+        <data name="output_image" format="png" from_work_dir="output.png" label="${tool.name} &quot;${label}&quot; on ${on_string}"/>
     </outputs>
     <tests>
         <test>
             <param name="input_image" value="input/input5.jpg"/>
-            <param name="label" value="The label"/>
+            <param name="label_text" value="The label"/>
             <section name="position">
                 <param name="vertical" value="below"/>
                 <param name="horizontal" value="left"/>
             </section>
-            <expand macro="tests/intensity_image_diff" name="output" value="output/input5_below_left" ftype="png"/>
+            <expand macro="tests/intensity_image_diff" name="output_image" value="output/input5_below_left" ftype="png"/>
         </test>
     </tests>
     <help><![CDATA[

@@ -2,7 +2,6 @@ import giatools
 import matplotlib.colors
 import matplotlib.pyplot as plt
 import numpy as np
-import skimage.color
 
 # Fail early if an optional backend is not available
 giatools.require_backend('omezarr')
@@ -54,6 +53,17 @@ def get_rgba8_copy(img, fp_lower, fp_upper):
     return result
 
 
+#def hex_rgba_to_uint8(hex_str):
+#    hex_str = hex_str.lstrip('#')
+#
+#    r = int(hex_str[0:2], 16)
+#    g = int(hex_str[2:4], 16)
+#    b = int(hex_str[4:6], 16)
+#    a = int(hex_str[6:8], 16)
+#
+#    return (r, g, b, a)
+
+
 if __name__ == "__main__":
     tool = giatools.ToolBaseplate()
     tool.add_input_image('input_image')
@@ -72,10 +82,70 @@ if __name__ == "__main__":
         for section in tool.run('XYC'):  # the validation code above guarantees that we will have only a single iteration
 
             # Create RGBA8 working copy of the input image
-            img_rgba8 = get_rgba8_copy(section['input_image'].data)
+            img = get_rgba8_copy(section['input_image'].data)
+
+            # TODO: expose as tool parameters
+            label_text_color = '#000000ff'
+            label_background_color = '#ffffffff'
+            fontsize = 12
+            position_v = tool.args.params['position_v']
+            position_h = tool.args.params['position_h']
+
+            # Determine the label height in pixels
+            label_height = (fontsize / 72) * 100
+
+            # Extend the image above/below, if required
+            if position_v in ('above', 'below'):
+                label_bg_color = np.multiply(255, matplotlib.colors.to_rgba(label_background_color)).astype(np.uint8)
+                label_bg = np.full((label_height, img.shape[1]), 1, dtype=np.uint8) * label_bg_color
+                blocks = (img, label_bg)
+                if position_v == 'above':
+                    blocks = blocks[::-1]
+                img = np.concatenate(blocks, axis=0)
+                label_background_color = '#00000000'
+
+            # Determine the vertical text alignment and coordinate
+            match position_v:
+                case 'above':
+                    position_v = 'top'
+                    text_y = 0
+                case 'below':
+                    position_v = 'bottom'
+                    text_y = img.shape[0] + label_height - 1
+                case 'top':
+                    text_y = 0
+                case 'bottom':
+                    text_y = img.shape[0] - 1
+
+            # Determine the horizontal text coordinate
+            match position_h:
+                case 'left':
+                    text_x = 0
+                case 'right':
+                    text_x = img.shape[1] - 1
+                case 'center':
+                    text_x = (img.shape[1] - 1) / 2
+
+            # Create figure
+            fig = plt.figure(figsize=np.divide(img.shape[:2][::-1], 100), dpi=100)
+            ax = fig.add_axes([0, 0, 1, 1])
+            ax.axis('off')
+            ax.imshow(img)
+
+            # Paint text
+            ax.text(
+                text_x,
+                text_y,
+                str(tool.args.params['label_text']),
+                color=label_text_color,
+                backgroundcolor=label_background_color,
+                ha=position_h,
+                va=position_v,
+            )
 
             # Determine the result image
-            section['output_image'] = img_rgba8
+            img = np.array(fig.canvas.renderer._renderer)
+            section['output_image'] = img
 
     except ValueError as err:
         exit(err.args[0])
