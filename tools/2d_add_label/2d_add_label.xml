@@ -41,7 +41,9 @@
             {
                 "label_text": "$label_text",
                 "position_h": "$position.horizontal",
-                "position_v": "$position.vertical"
+                "position_v": "$position.vertical",
+                "padding": $padding,
+                "fontsize": $fontsize
             }
         ]]></configfile>
     </configfiles>
@@ -64,7 +66,9 @@
                 <option value="center">Center of the image</option>
                 <option value="right" selected="True">Right of the image</option>
             </param>
+            <param name="padding" type="integer" value="3" min="0" label="Padding (in pixels)" />
         </section>
+        <param name="fontsize" type="integer" value="12" min="1" label="Font size" />
     </inputs>
     <outputs>
         <data name="output_image" format="png" from_work_dir="output.png" label="${tool.name} &quot;${label_text}&quot; on ${on_string}"/>
@@ -77,6 +81,7 @@
                 <param name="vertical" value="below"/>
                 <param name="horizontal" value="left"/>
             </section>
+            <param name="fontsize" value="4"/>
             <expand macro="tests/intensity_image_diff" name="output_image" value="output/input5_below_left.png" ftype="png"/>
         </test>
     </tests>

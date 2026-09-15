@@ -86,12 +86,12 @@ if __name__ == "__main__":
         fp_upper = 'max'
         label_text_color = '#000000ff'
         label_background_color = '#ffffffff'
-        fontsize = 12
+        fontsize = tool.args.params['fontsize']
         position_v = tool.args.params['position_v']
         position_h = tool.args.params['position_h']
+        padding = tool.args.params['padding']
 
         # Create RGBA8 working copy of the input image
-        #img = get_rgba8_copy(section['input_image'].data, fp_lower, fp_upper)
         img = get_rgba8_copy(
             tool.args.input_images['input_image'].normalize_axes_like('XYC').data,
             fp_lower,
@@ -104,34 +104,32 @@ if __name__ == "__main__":
         # Extend the image above/below, if required
         if position_v in ('above', 'below'):
             label_bg_color = np.multiply(255, matplotlib.colors.to_rgba(label_background_color)).astype(np.uint8)
-            label_bg = np.full((label_height, img.shape[1], 4), 1, dtype=np.uint8) * label_bg_color
+            label_bg = np.full((label_height + padding, img.shape[1], 4), 1, dtype=np.uint8) * label_bg_color
             blocks = (img, label_bg)
             if position_v == 'above':
                 blocks = blocks[::-1]
+                position_v = 'top'
+            else:
+                position_v = 'bottom'
             img = np.concatenate(blocks, axis=0)
-            label_background_color = '#00000000'
+            label_background_color = '#00000000'  # background color is already accounted for
+            padding = 0  # padding is already accounted for
 
         # Determine the vertical text alignment and coordinate
         match position_v:
-            case 'above':
-                position_v = 'top'
-                text_y = 0
-            case 'below':
-                position_v = 'bottom'
-                text_y = img.shape[0] + label_height - 1
             case 'top':
-                text_y = 0
+                text_y = padding
             case 'bottom':
-                text_y = img.shape[0] - 1
+                text_y = img.shape[0] - padding
 
         # Determine the horizontal text coordinate
         match position_h:
             case 'left':
-                text_x = 0
+                text_x = padding
             case 'right':
-                text_x = img.shape[1] - 1
+                text_x = img.shape[1] - padding
             case 'center':
-                text_x = (img.shape[1] - 1) / 2
+                text_x = img.shape[1] / 2
 
         # Create figure
         fig = plt.figure(figsize=np.divide(img.shape[:2][::-1], 100), dpi=100)
@@ -148,16 +146,11 @@ if __name__ == "__main__":
             backgroundcolor=label_background_color,
             ha=position_h,
             va=position_v,
+            fontsize=fontsize,
         )
-        #fig.canvas.draw()
-
-        # Determine the result image
-        #img = np.array(fig.canvas.renderer._renderer)
-        #section['output_image'] = img
 
         # Write the result image
         fig.canvas.print_png(tool.args.raw_args.output_image)
 
     except ValueError as err:
-        #exit(err.args[0])
-        raise
+        exit(err.args[0])
