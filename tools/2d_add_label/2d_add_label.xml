@@ -29,7 +29,12 @@
 
         python '$__tool_directory__/2d_add_label.py'
 
-        --input_image '$input_image'
+        #if $input_image.extension == "zarr"
+            --input_image '$input_image.extra_files_path/$input_image.metadata.store_root'
+        #else
+            --input_image '$input_image'
+        #end if
+
         --output_image '$output_image'
         --params '$params'
         --verbose
@@ -48,7 +53,7 @@
         ]]></configfile>
     </configfiles>
     <inputs>
-        <param name="input_image" type="data" format="tiff,png,jpg" label="Input image">
+        <param name="input_image" type="data" format="zarr,tiff,png,jpg" label="Input image">
             <expand macro="validators/has_number_of_channels" allowed_numbers="0,1,3,4"/><!-- single-channel (0, 1), RGB (3), RGBA (4) -->
             <expand macro="validators/is_single_frame"/>
             <expand macro="validators/is_2d"/>
@@ -83,6 +88,16 @@
             </section>
             <param name="fontsize" value="4"/>
             <expand macro="tests/intensity_image_diff" name="output_image" value="output/input5_below_left.png" ftype="png"/>
+        </test>
+        <test>
+            <param name="input_image" value="input/input6_yx.zarr"/>
+            <param name="label_text" value="The label"/>
+            <section name="position">
+                <param name="vertical" value="top"/>
+                <param name="horizontal" value="center"/>
+                <param name="padding" value="20"/>
+            </section>
+            <expand macro="tests/intensity_image_diff" name="output_image" value="output/input6_top_center.png" ftype="png"/>
         </test>
     </tests>
     <help><![CDATA[

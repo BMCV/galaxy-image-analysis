@@ -43,25 +43,14 @@ def get_rgba8_copy(img, fp_lower, fp_upper):
         raise ValueError(f'unknown dtype: {img.dtype}')
 
     if img.ndim == 2:  # single-channel –> RGB (propagate along C-axis)
-        result = np.dstack([img] * 3)  # no copy required here, forcefully performed below
+        img = np.dstack([img] * 3)  # no copy required here, forcefully performed below
     if img.shape[2] == 3:  # 3-channel –> RGBA (append alpha channel)
         a = np.full(img.shape[:2], 0xff, dtype=np.uint8)
-        result = np.concatenate([img, a[:, :, None]], axis=2).copy()
+        img = np.concatenate([img, a[:, :, None]], axis=2).copy()
     else:  # 4-channel –> RGBA (just copy)
-        result = img[:, :, :4].copy()
-    assert result.dtype == np.uint8, result.dtype  # sanity check
-    return result
-
-
-#def hex_rgba_to_uint8(hex_str):
-#    hex_str = hex_str.lstrip('#')
-#
-#    r = int(hex_str[0:2], 16)
-#    g = int(hex_str[2:4], 16)
-#    b = int(hex_str[4:6], 16)
-#    a = int(hex_str[6:8], 16)
-#
-#    return (r, g, b, a)
+        img = img[:, :, :4].copy()
+    assert img.dtype == np.uint8, img.dtype  # sanity check
+    return img
 
 
 if __name__ == "__main__":
