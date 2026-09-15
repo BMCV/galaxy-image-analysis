@@ -117,9 +117,14 @@ if __name__ == "__main__":
                 text_x = img.shape[1] / 2
 
         # Create figure
-        fig = plt.figure(figsize=np.divide(img.shape[:2][::-1], 100), dpi=100)
+        fig = plt.figure(
+            figsize=np.divide(img.shape[:2][::-1], 100),
+            dpi=100,
+            facecolor='none',
+        )
         ax = fig.add_axes([0, 0, 1, 1])
         ax.axis('off')
+        ax.set_facecolor('none')
         ax.imshow(img)
 
         # Paint text
