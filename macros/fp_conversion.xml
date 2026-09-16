@@ -1,0 +1,33 @@
+<macros>
+
+    <xml name="fp_conversion/section"
+        tokens="name,input_image,output_image"
+        token_name="fp_conversion"
+        token_input_image="input image"
+        token_output_image="output image">
+
+        <section name="@NAME@" title="Floating point conversion (@INPUT_IMAGE@)" expanded="false" help="This is only used if the values of the @INPUT_IMAGE@ have a floating point format. The @OUTPUT_IMAGE@ is created in PNG format, that does not support floating point values (but only integer values between 0 and 255). Conversion of floating point intensity values to integer values via linear mapping is generally ambiguous and can be adapted here.">
+
+            <param name="lower" type="select" label="Lower bound conversion" help="Choose which floating point intensity value will be mapped to 0 (i.e. black if grayscale).">
+                <option value="0" selected="true">0</option>
+                <option value="-1">-1</option>
+                <option value="min">Minimum value of the image</option>
+            </param>
+
+            <param name="upper" type="select" label="Upper bound conversion" help="Choose which floating point intensity value will be mapped to 255 (i.e. white if grayscale).">
+                <option value="1" selected="true">1</option>
+                <option value="max">Maximum value of the image</option>
+            </param>
+
+        </section>
+
+    </xml>
+
+    <token name="@DEFAULT_FP_CONVERSION_JSON@">
+        "fp_conversion": {
+            "fp_lower": "$fp_conversion.lower",
+            "fp_upper": "$fp_conversion.upper"
+        }
+    </token>
+
+</macros>

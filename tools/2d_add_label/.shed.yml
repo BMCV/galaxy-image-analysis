@@ -1,0 +1,17 @@
+name: 2d_add_label
+
+owner: imgteam
+
+categories:
+  - Imaging
+
+description: Adds a label text to a 2-D image.
+
+long_description: |
+  **Adds a label text to a 2-D image.**
+
+  The input image can be single-channel or multi-channel. For a multi-channel image, it is required that the image channels are either RGB or RGBA.
+
+homepage_url: https://github.com/BMCV/galaxy-image-analysis
+
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tree/master/tools/2d_add_label/

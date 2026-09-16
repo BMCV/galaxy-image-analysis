@@ -12,6 +12,16 @@
             ><![CDATA[getattr(value.metadata, "channels", None) in (None, '') or int(value.metadata.channels) < 2]]></validator>
     </xml>
 
+    <xml name="validators/has_number_of_channels" tokens="allowed_numbers">
+        <!--
+        The OME-Zarr datatype in Galaxy is currently not derived from the Image datatype, and it does
+        hence not inherit the metadata fields like `channels`. To cope with that, we allow all datasets
+        except those where we *know* that the number of channels is *not* in `allowed_numbers_set`.
+        -->
+        <validator type="expression" message="Dataset has an incompatible number of channels"
+            ><![CDATA[getattr(value.metadata, "channels", None) in (None, '') or int(value.metadata.channels) in {@ALLOWED_NUMBERS@}]]></validator>
+    </xml>
+
     <xml name="validators/is_single_frame">
         <!--
         The OME-Zarr datatype in Galaxy is currently not derived from the Image datatype, and it does
