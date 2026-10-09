@@ -9,19 +9,6 @@ from torchstain.base.normalizers import MacenkoNormalizer, ReinhardNormalizer
 # Fail early if an optional backend is not available
 giatools.require_backend('omezarr')
 
-OME_NAMESPACE = 'http://www.openmicroscopy.org/Schemas/OME/2016-06'
-
-# Maps the units of `giatools` to the units of the OME schema
-OME_UNITS = {
-    'nm': 'nm',
-    'um': 'µm',
-    'mm': 'mm',
-    'cm': 'cm',
-    'm': 'm',
-    'km': 'km',
-    'inch': 'in',
-}
-
 # Display names of the methods
 METHOD_NAMES = {
     'macenko': 'Macenko',
@@ -92,22 +79,38 @@ def macenko(name, image, Io, beta, func):
         fail_macenko(name, image, Io, beta)
 
 
-def write_pixel_size_to_ome_xml(filepath, metadata, verbose):
+def write_pixel_size_to_ome_xml(filepath, metadata):
     """
     Add the pixel size to the OME-XML of an OME-TIFF file, because `giatools` does not write it.
-    """
-    if metadata.resolution is None or metadata.unit is None:
-        if verbose:
-            print(f'No pixel size (with unit) available, not writing it to {os.path.basename(filepath)}.')
-        return
 
-    ET.register_namespace('', OME_NAMESPACE)
+    This is a self-contained workaround. To remove it, delete this function, its call below (as well as the `ET` and
+    `tifffile` imports), and the corresponding assertions in the tests.
+    """
+    ome_namespace = 'http://www.openmicroscopy.org/Schemas/OME/2016-06'
+
+    # Maps the units of `giatools` to the units of the OME schema
+    ome_units = {
+        'nm': 'nm',
+        'um': 'µm',
+        'mm': 'mm',
+        'cm': 'cm',
+        'm': 'm',
+        'km': 'km',
+        'inch': 'in',
+    }
+
+    if metadata.resolution is None or metadata.unit is None:
+        print('No pixel size (with unit) available, not writing it to the OME-XML')
+        return
+    print(f'Writing pixel size {metadata.pixel_size} with unit {metadata.unit!r} to the OME-XML')
+
+    ET.register_namespace('', ome_namespace)
     ET.register_namespace('xsi', 'http://www.w3.org/2001/XMLSchema-instance')
     ome_xml = ET.fromstring(tifffile.tiffcomment(filepath))
-    pixels = ome_xml.find(f'.//{{{OME_NAMESPACE}}}Pixels')
+    pixels = ome_xml.find(f'.//{{{ome_namespace}}}Pixels')
     for axis, size in zip('XY', metadata.pixel_size):
         pixels.set(f'PhysicalSize{axis}', repr(float(size)))
-        pixels.set(f'PhysicalSize{axis}Unit', OME_UNITS[metadata.unit])
+        pixels.set(f'PhysicalSize{axis}Unit', ome_units[metadata.unit])
     # TIFF strings must be 7-bit ASCII, so non-ASCII characters (like the "micro" in "µm") are written as XML entities
     tifffile.tiffcomment(filepath, comment=ET.tostring(ome_xml, encoding='us-ascii', xml_declaration=False).decode('ascii'))
 
@@ -187,8 +190,8 @@ if __name__ == "__main__":
         else:
             section['output'] = normalizer.normalize(image)
 
-    # Complete the OME-TIFF files (the pixel size is not written by `giatools`), and move them to the expected location
+    # Move the OME-TIFF files to the expected location
     if params['output_format'] == 'ome.tiff':
         for key, final_filepath in final_filepaths.items():
-            write_pixel_size_to_ome_xml(args.output_filepaths[key], tool.processor.outputs[key].metadata, args.verbose)
+            write_pixel_size_to_ome_xml(args.output_filepaths[key], tool.processor.outputs[key].metadata)  # workaround
             os.replace(args.output_filepaths[key], final_filepath)
