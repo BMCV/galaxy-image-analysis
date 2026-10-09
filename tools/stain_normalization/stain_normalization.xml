@@ -5,14 +5,24 @@
         <import>tests.xml</import>
         <import>validators.xml</import>
         <token name="@TOOL_VERSION@">1.4.1</token>
-        <token name="@GIATOOLS_VERSION@">0.7.3</token>
         <token name="@VERSION_SUFFIX@">0</token>
+        <xml name="image_validators">
+            <expand macro="validators/has_number_of_channels" allowed_numbers="3,4"/><!-- RGB (3), RGBA (4) -->
+            <expand macro="validators/is_single_frame"/>
+            <expand macro="validators/is_2d"/>
+        </xml>
+        <xml name="reference" tokens="optional,help">
+            <param name="reference" type="data" format="tiff,zarr,png,jpg" optional="@OPTIONAL@" label="Reference image" help="@HELP@">
+                <expand macro="image_validators"/>
+            </param>
+        </xml>
     </macros>
     <creator>
         <expand macro="creators/bmcv"/>
+        <expand macro="creators/dianichj"/>
     </creator>
     <edam_operations>
-        <edam_operation>operation_3435</edam_operation>
+        <edam_operation>operation_3443</edam_operation>
     </edam_operations>
     <xrefs>
         <xref type="bio.tools">galaxy_image_analysis</xref>
@@ -21,7 +31,7 @@
     </xrefs>
     <requirements>
         <requirement type="package" version="@TOOL_VERSION@">torchstain</requirement>
-        <requirement type="package" version="@GIATOOLS_VERSION@">giatools</requirement>
+        <requirement type="package" version="0.7.3">giatools</requirement>
         <requirement type="package" version="0.12.2">ome-zarr</requirement>
     </requirements>
     <required_files>
@@ -37,7 +47,21 @@
             --input '$input'
         #end if
 
+        #if $method_cond.reference
+            #if $method_cond.reference.extension == "zarr"
+                --reference '$method_cond.reference.extra_files_path/$method_cond.reference.metadata.store_root'
+            #else
+                --reference '$method_cond.reference'
+            #end if
+        #end if
+
         --output 'output.tiff'
+
+        #if $method_cond.method == "macenko" and $method_cond.output_stains
+            --output_h 'output_h.tiff'
+            --output_e 'output_e.tiff'
+        #end if
+
         --params '$params'
         --verbose
 
@@ -45,23 +69,83 @@
     <configfiles>
         <configfile name="params"><![CDATA[
             {
+                "method": "$method_cond.method",
+                "output_format": "$output_format",
+
+            #if $method_cond.method == "macenko"
+                "Io": $method_cond.advanced.Io,
+                "alpha": $method_cond.advanced.alpha,
+                "beta": $method_cond.advanced.beta,
+            #end if
+
                 "": null
             }
         ]]></configfile>
     </configfiles>
     <inputs>
         <param name="input" type="data" format="tiff,zarr,png,jpg" label="H&amp;E image">
-            <expand macro="validators/has_number_of_channels" allowed_numbers="3"/>
-            <expand macro="validators/is_2d"/>
-            <expand macro="validators/is_single_frame"/>
+            <expand macro="image_validators"/>
+        </param>
+        <conditional name="method_cond">
+            <param name="method" type="select" label="Method">
+                <option value="macenko" selected="true">Macenko</option>
+                <option value="reinhard">Reinhard</option>
+                <option value="modified_reinhard">Modified Reinhard</option>
+            </param>
+            <when value="macenko">
+                <expand macro="reference" optional="true"
+                        help="If no reference image is provided, a built-in H&amp;E reference is used."/>
+                <param name="output_stains" type="boolean" checked="false" label="Output hematoxylin and eosin images"
+                       help="Additionally output the separated hematoxylin (H) and eosin (E) stain images."/>
+                <section name="advanced" title="Advanced options" expanded="false">
+                    <param name="Io" type="float" value="240" min="1" label="Transmitted light intensity (Io)"
+                           help="Intensity of the light transmitted through the specimen, used to convert pixel values to optical density."/>
+                    <param name="alpha" type="float" value="1" min="0" max="50" label="Percentile for stain vector estimation (alpha)"
+                           help="The stain vectors are estimated from the alpha-th and (100-alpha)-th percentiles of the angular distribution of the optical density."/>
+                    <param name="beta" type="float" value="0.15" min="0" label="Optical density threshold (beta)"
+                           help="Pixels with an optical density below this threshold in any channel (e.g., background) are ignored when estimating the stain vectors."/>
+                </section>
+            </when>
+            <when value="reinhard">
+                <expand macro="reference" optional="false"
+                        help="The colors of the H&amp;E image are matched to those of this image."/>
+            </when>
+            <when value="modified_reinhard">
+                <expand macro="reference" optional="false"
+                        help="The colors of the H&amp;E image are matched to those of this image."/>
+            </when>
+        </conditional>
+        <param name="output_format" type="select" label="Output format">
+            <option value="tiff" selected="true">TIFF</option>
+            <option value="ome.tiff">OME-TIFF</option>
         </param>
     </inputs>
     <outputs>
-        <data format="tiff" name="output" from_work_dir="output.tiff" label="${tool.name} on ${on_string}"/>
+        <data format="tiff" name="output" from_work_dir="output.tiff" label="${tool.name} on ${on_string}">
+            <change_format>
+                <when input="output_format" value="ome.tiff" format="ome.tiff"/>
+            </change_format>
+        </data>
+        <data format="tiff" name="output_h" from_work_dir="output_h.tiff" label="${tool.name} on ${on_string}: Hematoxylin">
+            <filter>method_cond['method'] == 'macenko' and method_cond['output_stains']</filter>
+            <change_format>
+                <when input="output_format" value="ome.tiff" format="ome.tiff"/>
+            </change_format>
+        </data>
+        <data format="tiff" name="output_e" from_work_dir="output_e.tiff" label="${tool.name} on ${on_string}: Eosin">
+            <filter>method_cond['method'] == 'macenko' and method_cond['output_stains']</filter>
+            <change_format>
+                <when input="output_format" value="ome.tiff" format="ome.tiff"/>
+            </change_format>
+        </data>
     </outputs>
     <help>
 
 **Normalizes the stain appearance of H&amp;E images.**
+
+Supports the Macenko, Reinhard, and modified Reinhard methods (implemented by torchstain), which map the colors of an image to those of a reference image (or, for Macenko, to a built-in H&amp;E reference).
+
+Supports 2-D RGB and RGBA images (the alpha channel is ignored). The output is an RGB image with 8-bit pixel values.
 
     </help>
     <citations>
