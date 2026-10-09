@@ -1,0 +1,15 @@
+name: stain_normalization
+description: Normalizes the stain appearance of H&E images.
+long_description: |
+  Normalizes the stain appearance of H&E images.
+
+  Supports the Macenko, Reinhard, and modified Reinhard methods (implemented by torchstain), which map the colors of an image to those of a reference image (or, for Macenko, to a built-in H&E reference).
+
+  Supports 2-D RGB and RGBA images (the alpha channel is ignored). The output is an RGB image with 8-bit pixel values.
+
+owner: imgteam
+homepage_url: https://github.com/bmcv
+remote_repository_url: https://github.com/BMCV/galaxy-image-analysis/tree/master/tools/stain_normalization/
+
+categories:
+  - Imaging

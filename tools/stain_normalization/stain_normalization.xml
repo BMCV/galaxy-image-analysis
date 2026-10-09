@@ -1,0 +1,70 @@
+<tool id="stain_normalization" name="Normalize H&amp;E stain" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="25.1">
+    <description>with torchstain</description>
+    <macros>
+        <import>creators.xml</import>
+        <import>tests.xml</import>
+        <import>validators.xml</import>
+        <token name="@TOOL_VERSION@">1.4.1</token>
+        <token name="@GIATOOLS_VERSION@">0.7.3</token>
+        <token name="@VERSION_SUFFIX@">0</token>
+    </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+    </creator>
+    <edam_operations>
+        <edam_operation>operation_3435</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="bio.tools">galaxy_image_analysis</xref>
+        <xref type="bio.tools">giatools</xref>
+        <xref type="bio.tools">numpy</xref>
+    </xrefs>
+    <requirements>
+        <requirement type="package" version="@TOOL_VERSION@">torchstain</requirement>
+        <requirement type="package" version="@GIATOOLS_VERSION@">giatools</requirement>
+        <requirement type="package" version="0.12.2">ome-zarr</requirement>
+    </requirements>
+    <required_files>
+        <include type="literal" path="stain_normalization.py"/>
+    </required_files>
+    <command detect_errors="aggressive"><![CDATA[
+
+        python '$__tool_directory__/stain_normalization.py'
+
+        #if $input.extension == "zarr"
+            --input '$input.extra_files_path/$input.metadata.store_root'
+        #else
+            --input '$input'
+        #end if
+
+        --output 'output.tiff'
+        --params '$params'
+        --verbose
+
+    ]]></command>
+    <configfiles>
+        <configfile name="params"><![CDATA[
+            {
+                "": null
+            }
+        ]]></configfile>
+    </configfiles>
+    <inputs>
+        <param name="input" type="data" format="tiff,zarr,png,jpg" label="H&amp;E image">
+            <expand macro="validators/has_number_of_channels" allowed_numbers="3"/>
+            <expand macro="validators/is_2d"/>
+            <expand macro="validators/is_single_frame"/>
+        </param>
+    </inputs>
+    <outputs>
+        <data format="tiff" name="output" from_work_dir="output.tiff" label="${tool.name} on ${on_string}"/>
+    </outputs>
+    <help>
+
+**Normalizes the stain appearance of H&amp;E images.**
+
+    </help>
+    <citations>
+        <citation type="doi">10.1016/j.jbiotec.2017.07.019</citation>
+    </citations>
+</tool>
