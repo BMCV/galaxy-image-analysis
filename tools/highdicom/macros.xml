@@ -1,6 +1,6 @@
 <macros>
-    <token name="@TOOL_VERSION@">0.27.0</token>
-    <token name="@VERSION_SUFFIX@">1</token>
+    <token name="@TOOL_VERSION@">0.28.2</token>
+    <token name="@VERSION_SUFFIX@">0</token>
     <xml name="description">
         <description>with highdicom</description>
     </xml>
@@ -13,9 +13,11 @@
     <xml name="requirements">
         <requirements>
             <requirement type="package" version="@TOOL_VERSION@">highdicom</requirement>
-            <requirement type="package" version="3.0.1">pydicom</requirement>
+            <requirement type="package" version="3.0.2">pydicom</requirement>
             <requirement type="package" version="0.5.2">giatools</requirement>
             <requirement type="package" version="6.0.3">pyyaml</requirement>
+            <requirement type="package" version="2.1.0">pylibjpeg</requirement>
+            <requirement type="package" version="3.2.4">gdcm</requirement>
         </requirements>
     </xml>
     <token name="@DICOM_INTRO@">
