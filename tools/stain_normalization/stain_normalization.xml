@@ -1,0 +1,324 @@
+<tool id="stain_normalization" name="Normalize H&amp;E stain" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@" profile="25.1">
+    <description>with torchstain</description>
+    <macros>
+        <import>creators.xml</import>
+        <import>tests.xml</import>
+        <import>validators.xml</import>
+        <token name="@TOOL_VERSION@">1.4.1</token>
+        <token name="@VERSION_SUFFIX@">0</token>
+        <xml name="image_validators">
+            <expand macro="validators/has_number_of_channels" allowed_numbers="3,4"/><!-- RGB (3), RGBA (4) -->
+            <expand macro="validators/is_single_frame"/>
+            <expand macro="validators/is_2d"/>
+        </xml>
+        <xml name="reference" tokens="optional,help">
+            <param name="reference" type="data" format="tiff,zarr,png,jpg" optional="@OPTIONAL@" label="Reference image" help="@HELP@">
+                <expand macro="image_validators"/>
+            </param>
+        </xml>
+    </macros>
+    <creator>
+        <expand macro="creators/bmcv"/>
+        <expand macro="creators/dianichj"/>
+    </creator>
+    <edam_operations>
+        <edam_operation>operation_3443</edam_operation>
+    </edam_operations>
+    <xrefs>
+        <xref type="bio.tools">galaxy_image_analysis</xref>
+        <xref type="bio.tools">giatools</xref>
+        <xref type="bio.tools">numpy</xref>
+    </xrefs>
+    <requirements>
+        <requirement type="package" version="@TOOL_VERSION@">torchstain</requirement>
+        <requirement type="package" version="0.7.3">giatools</requirement>
+        <requirement type="package" version="0.12.2">ome-zarr</requirement>
+    </requirements>
+    <required_files>
+        <include type="literal" path="stain_normalization.py"/>
+    </required_files>
+    <command detect_errors="aggressive"><![CDATA[
+
+        python '$__tool_directory__/stain_normalization.py'
+
+        #if $input.extension == "zarr"
+            --input '$input.extra_files_path/$input.metadata.store_root'
+        #else
+            --input '$input'
+        #end if
+
+        #if $method_cond.reference
+            #if $method_cond.reference.extension == "zarr"
+                --reference '$method_cond.reference.extra_files_path/$method_cond.reference.metadata.store_root'
+            #else
+                --reference '$method_cond.reference'
+            #end if
+        #end if
+
+        --output 'output.tiff'
+
+        #if $method_cond.method == "macenko" and $method_cond.output_stains
+            --output_h 'output_h.tiff'
+            --output_e 'output_e.tiff'
+        #end if
+
+        --params '$params'
+        --verbose
+
+    ]]></command>
+    <configfiles>
+        <configfile name="params"><![CDATA[
+            {
+                "method": "$method_cond.method",
+                "output_format": "$output_format",
+
+            #if $method_cond.method == "macenko"
+                "Io": $method_cond.advanced.Io,
+                "alpha": $method_cond.advanced.alpha,
+                "beta": $method_cond.advanced.beta,
+            #end if
+
+                "": null
+            }
+        ]]></configfile>
+    </configfiles>
+    <inputs>
+        <param name="input" type="data" format="tiff,zarr,png,jpg" label="H&amp;E image"
+               help="The H&amp;E-stained image to normalize. Must be a 2-D RGB or RGBA image with 8-bit pixel values (0-255, as in most PNG, JPEG and TIFF files). 16-bit images are not supported.">
+            <expand macro="image_validators"/>
+        </param>
+        <conditional name="method_cond">
+            <param name="method" type="select" label="Method"
+                   help="Macenko separates the two stains and is usually the best choice. Reinhard and modified Reinhard match the overall color statistics and require a reference image.">
+                <option value="macenko" selected="true">Macenko</option>
+                <option value="reinhard">Reinhard</option>
+                <option value="modified_reinhard">Modified Reinhard</option>
+            </param>
+            <when value="macenko">
+                <expand macro="reference" optional="true"
+                        help="If no reference image is provided, a built-in H&amp;E reference is used."/>
+                <param name="output_stains" type="boolean" checked="false" label="Output hematoxylin and eosin images"
+                       help="Additionally output the separated hematoxylin (H) and eosin (E) stain images."/>
+                <section name="advanced" title="Advanced options" expanded="false">
+                    <param name="Io" type="float" value="240" min="1" label="Transmitted light intensity (Io)"
+                           help="Intensity of the light transmitted through the specimen, used to convert pixel values to optical density."/>
+                    <param name="alpha" type="float" value="1" min="0" max="50" label="Percentile for stain vector estimation (alpha)"
+                           help="The stain vectors are estimated from the alpha-th and (100-alpha)-th percentiles of the angular distribution of the optical density."/>
+                    <param name="beta" type="float" value="0.15" min="0" label="Optical density threshold (beta)"
+                           help="Pixels with an optical density below this threshold in any channel (e.g., background) are ignored when estimating the stain vectors."/>
+                </section>
+            </when>
+            <when value="reinhard">
+                <expand macro="reference" optional="false"
+                        help="The colors of the H&amp;E image are matched to those of this image."/>
+            </when>
+            <when value="modified_reinhard">
+                <expand macro="reference" optional="false"
+                        help="The colors of the H&amp;E image are matched to those of this image."/>
+            </when>
+        </conditional>
+        <param name="output_format" type="select" label="Output format"
+               help="OME-TIFF additionally stores the pixel size of the H&amp;E image in the OME metadata.">
+            <option value="tiff" selected="true">TIFF</option>
+            <option value="ome.tiff">OME-TIFF</option>
+        </param>
+    </inputs>
+    <outputs>
+        <data format="tiff" name="output" from_work_dir="output.tiff" label="${tool.name} on ${on_string}">
+            <change_format>
+                <when input="output_format" value="ome.tiff" format="ome.tiff"/>
+            </change_format>
+        </data>
+        <data format="tiff" name="output_h" from_work_dir="output_h.tiff" label="${tool.name} on ${on_string}: Hematoxylin">
+            <filter>method_cond['method'] == 'macenko' and method_cond['output_stains']</filter>
+            <change_format>
+                <when input="output_format" value="ome.tiff" format="ome.tiff"/>
+            </change_format>
+        </data>
+        <data format="tiff" name="output_e" from_work_dir="output_e.tiff" label="${tool.name} on ${on_string}: Eosin">
+            <filter>method_cond['method'] == 'macenko' and method_cond['output_stains']</filter>
+            <change_format>
+                <when input="output_format" value="ome.tiff" format="ome.tiff"/>
+            </change_format>
+        </data>
+    </outputs>
+    <tests>
+        <test expect_num_outputs="1"><!-- Macenko with the built-in reference -->
+            <param name="input" value="input/source_crop.png"/>
+            <conditional name="method_cond">
+                <param name="method" value="macenko"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/macenko_default.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="[input] Input image axes: YXC"/>
+                <has_line line="[input] Input image shape: (128, 128, 3)"/>
+                <has_line line="[input] Input image dtype: uint8"/>
+                <has_line line="Using the built-in H&amp;E reference of the Macenko normalizer"/>
+                <has_line line="Applying Macenko normalization"/>
+                <has_line line="[output] Output image axes: YXC"/>
+                <has_line line="[output] Output image shape: (128, 128, 3)"/>
+                <has_line line="[output] Output image dtype: uint8"/>
+            </assert_stdout>
+        </test>
+        <test expect_num_outputs="3"><!-- Macenko with a reference image of a different size, and with the H and E images -->
+            <param name="input" value="input/source_crop.png"/>
+            <conditional name="method_cond">
+                <param name="method" value="macenko"/>
+                <param name="reference" value="input/target_crop.png"/>
+                <param name="output_stains" value="true"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/macenko_reference.tiff" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output_h" value="output/macenko_reference_h.tiff" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output_e" value="output/macenko_reference_e.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="[reference] Input image axes: YXC"/>
+                <has_line line="[reference] Input image shape: (112, 144, 3)"/>
+                <has_line line="Fitting the Macenko normalizer to the reference image"/>
+                <has_line line="[output] Output image shape: (128, 128, 3)"/>
+                <has_line line="[output_h] Output image shape: (128, 128, 3)"/>
+                <has_line line="[output_e] Output image shape: (128, 128, 3)"/>
+            </assert_stdout>
+        </test>
+        <test expect_num_outputs="1"><!-- Macenko with an RGBA image (the alpha channel is ignored) and advanced parameters -->
+            <param name="input" value="input/source_crop_rgba.png"/>
+            <conditional name="method_cond">
+                <param name="method" value="macenko"/>
+                <section name="advanced">
+                    <param name="Io" value="250"/>
+                    <param name="alpha" value="2"/>
+                    <param name="beta" value="0.2"/>
+                </section>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/macenko_rgba_advanced.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="[input] Input image shape: (128, 128, 4)"/>
+                <has_line line="[output] Output image shape: (128, 128, 3)"/>
+            </assert_stdout>
+        </test>
+        <test expect_num_outputs="1"><!-- Reinhard with a JPEG reference image -->
+            <param name="input" value="input/source_crop.png"/>
+            <conditional name="method_cond">
+                <param name="method" value="reinhard"/>
+                <param name="reference" value="input/target_crop.jpg"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/reinhard.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="[reference] Input image shape: (112, 144, 3)"/>
+                <has_line line="Fitting the Reinhard normalizer to the reference image"/>
+                <has_line line="Applying Reinhard normalization"/>
+            </assert_stdout>
+        </test>
+        <test expect_num_outputs="1"><!-- Modified Reinhard with an OME-Zarr input image (axes CYX) -->
+            <param name="input" value="input/source_crop.zarr"/>
+            <conditional name="method_cond">
+                <param name="method" value="modified_reinhard"/>
+                <param name="reference" value="input/target_crop.png"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/modified_reinhard.tiff" ftype="tiff"/>
+            <assert_stdout>
+                <has_line line="[input] Input image axes: CYX"/>
+                <has_line line="[input] Input image shape: (3, 128, 128)"/>
+                <has_line line="[input] Input image resolution=(2.0, 2.0), unit='um'"/>
+                <has_line line="Fitting the modified Reinhard normalizer to the reference image"/>
+                <has_line line="Applying modified Reinhard normalization"/>
+                <has_line line="[output] Output image axes: CYX"/>
+                <has_line line="[output] Output image resolution=(2.0, 2.0), unit='um'"/>
+            </assert_stdout>
+        </test>
+        <test expect_num_outputs="1"><!-- Reinhard with an OME-Zarr reference image (axes CYX) -->
+            <param name="input" value="input/source_crop.png"/>
+            <conditional name="method_cond">
+                <param name="method" value="reinhard"/>
+                <param name="reference" value="input/source_crop.zarr"/>
+            </conditional>
+            <assert_stdout>
+                <has_line line="[reference] Input image axes: CYX"/>
+                <has_line line="[reference] Input image shape: (3, 128, 128)"/>
+                <has_line line="[reference] Input image resolution=(2.0, 2.0), unit='um'"/>
+                <has_line line="Fitting the Reinhard normalizer to the reference image"/>
+                <has_line line="[output] Output image shape: (128, 128, 3)"/>
+            </assert_stdout>
+        </test>
+        <test expect_num_outputs="1"><!-- OME-TIFF output, with the pixel size written to the OME-XML -->
+            <param name="input" value="input/source_crop_um.tiff"/>
+            <conditional name="method_cond">
+                <param name="method" value="macenko"/>
+                <param name="reference" value="input/target_crop.png"/>
+            </conditional>
+            <param name="output_format" value="ome.tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/macenko_ome.ome.tiff" ftype="ome.tiff"/>
+            <assert_stdout>
+                <has_line line="[input] Input image resolution=(2.0, 4.0), unit='um'"/>
+                <has_line line="[output] Output image resolution=(2.0, 4.0), unit='um'"/>
+                <has_line line="Writing pixel size (0.5, 0.25) with unit 'um' to the OME-XML"/>
+            </assert_stdout>
+        </test>
+        <test expect_failure="true"><!-- Macenko fails if the image is mostly background -->
+            <param name="input" value="input/blank.png"/>
+            <conditional name="method_cond">
+                <param name="method" value="macenko"/>
+            </conditional>
+            <assert_stderr>
+                <has_text text="Macenko normalization failed for the H&amp;E image: Only 0 of 4096 pixels (0.0%) have an optical density of at least beta=0.15"/>
+                <has_text text="Use an image with more tissue, or lower the advanced parameter beta."/>
+            </assert_stderr>
+        </test>
+        <test expect_failure="true"><!-- Macenko fails if the reference image is mostly background -->
+            <param name="input" value="input/source_crop.png"/>
+            <conditional name="method_cond">
+                <param name="method" value="macenko"/>
+                <param name="reference" value="input/blank.png"/>
+            </conditional>
+            <assert_stderr>
+                <has_text text="Macenko normalization failed for the reference image"/>
+            </assert_stderr>
+        </test>
+    </tests>
+    <help>
+
+**Normalizes the stain appearance of H&amp;E images.**
+
+Supports the Macenko, Reinhard, and modified Reinhard methods (implemented by torchstain), which map the colors of an image to those of a reference image (or, for Macenko, to a built-in H&amp;E reference).
+
+Supports 2-D RGB and RGBA images (the alpha channel is ignored). The output is an RGB image with 8-bit pixel values.
+
+**What is stain normalization?**
+
+The color of H&amp;E-stained tissue sections varies between laboratories, staining protocols, batches of dye and slide scanners. This variation is unrelated to the biology, but it can degrade the results of subsequent analyses, such as segmentation or classification. Stain normalization reduces it by transforming the colors of an image, so that they resemble those of a reference image, while the tissue structures are preserved.
+
+**Methods**
+
+- **Macenko** estimates the colors of the hematoxylin and eosin stains of the image (the "stain vectors"), and how much of each stain is present at every pixel. It then recombines these amounts with the stain vectors of the reference. A reference image is optional: If none is provided, a built-in H&amp;E reference is used. This method can additionally output the separated hematoxylin (H) and eosin (E) images.
+- **Reinhard** matches the mean and the standard deviation of each color channel (in the Lab color space) to those of the reference image. A reference image is required. The method is simple and fast, but it does not distinguish between the stains and treats the whole image alike, including the background.
+- **Modified Reinhard** shifts the mean of the two color channels (a, b of the Lab color space) to that of the reference image, and stretches the contrast of the luminance based on the reference. The mean luminance of the image and the spread of the color channels are preserved. A reference image is required.
+
+**How to choose a reference image?**
+
+The result depends on the reference image, so it is worth choosing it carefully:
+
+- Choose an image which looks the way you want all of your images to look: well stained (neither too pale nor oversaturated), in focus, and free of artifacts like folds, pen marks or air bubbles.
+- Choose an image of the same tissue type, stained with the same protocol, as the images you want to normalize.
+- Make sure the reference contains enough tissue, with both stains clearly visible. A reference which consists mostly of background (white) can lead to poor results, or to an error. This is especially important for Reinhard and modified Reinhard, which derive the colors from all pixels, including the background. A reference with a similar proportion of background as your images works best.
+- The reference image can have a different size than the H&amp;E image. A representative tile of a slide is often sufficient.
+- Use the same reference image for all images of a dataset, in order to make them comparable to each other.
+
+**Advanced options of the Macenko method**
+
+- *Transmitted light intensity (Io)*: The intensity of the light which is transmitted through an empty slide. It is used to convert the pixel values to optical densities (the default of 240 suits 8-bit images with a bright background).
+- *Percentile for stain vector estimation (alpha)*: The stain vectors are determined from the extreme angles (the alpha-th and the (100-alpha)-th percentile) of the optical densities of the pixels. Larger values make the estimate more robust against outliers.
+- *Optical density threshold (beta)*: Pixels with an optical density below this threshold in any channel are considered to be background, and are ignored when estimating the stain vectors. Lower this value if the tool reports that too few pixels remain.
+
+The Macenko method fails, if almost all pixels of the image are background. In this case, the tool reports how many pixels were used. Use an image which contains more tissue, lower the optical density threshold, or choose another method.
+
+**Inputs and outputs**
+
+The H&amp;E image and the reference image can be provided as TIFF (including OME-TIFF), OME-Zarr, PNG or JPEG, and must have 8-bit pixel values. The output is a TIFF file by default, and can optionally be written as OME-TIFF. The pixel size of the H&amp;E image is preserved, and for OME-TIFF it is also written to the OME metadata.
+
+    </help>
+    <citations>
+        <citation type="doi">10.1109/ISBI.2009.5193250</citation>
+        <citation type="doi">10.1109/38.946629</citation>
+        <citation type="doi">10.23919/EUSIPCO54536.2021.9616117</citation>
+        <citation type="doi">10.5281/zenodo.6979540</citation>
+    </citations>
+</tool>

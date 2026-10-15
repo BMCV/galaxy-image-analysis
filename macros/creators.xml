@@ -40,4 +40,9 @@
         <yield/>
     </xml>
 
+    <xml name="creators/dianichj">
+        <person givenName="Diana" familyName="Chiang Jurado"/>
+        <yield/>
+    </xml>
+
 </macros>
