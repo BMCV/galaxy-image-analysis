@@ -83,11 +83,13 @@
         ]]></configfile>
     </configfiles>
     <inputs>
-        <param name="input" type="data" format="tiff,zarr,png,jpg" label="H&amp;E image">
+        <param name="input" type="data" format="tiff,zarr,png,jpg" label="H&amp;E image"
+               help="The H&amp;E-stained image to normalize. Must be a 2-D RGB or RGBA image with 8-bit pixel values (0-255, as in most PNG, JPEG and TIFF files). 16-bit images are not supported.">
             <expand macro="image_validators"/>
         </param>
         <conditional name="method_cond">
-            <param name="method" type="select" label="Method">
+            <param name="method" type="select" label="Method"
+                   help="Macenko separates the two stains and is usually the best choice. Reinhard and modified Reinhard match the overall color statistics and require a reference image.">
                 <option value="macenko" selected="true">Macenko</option>
                 <option value="reinhard">Reinhard</option>
                 <option value="modified_reinhard">Modified Reinhard</option>
@@ -115,7 +117,8 @@
                         help="The colors of the H&amp;E image are matched to those of this image."/>
             </when>
         </conditional>
-        <param name="output_format" type="select" label="Output format">
+        <param name="output_format" type="select" label="Output format"
+               help="OME-TIFF additionally stores the pixel size of the H&amp;E image in the OME metadata.">
             <option value="tiff" selected="true">TIFF</option>
             <option value="ome.tiff">OME-TIFF</option>
         </param>
@@ -273,7 +276,7 @@ The color of H&amp;E-stained tissue sections varies between laboratories, staini
 
 - **Macenko** estimates the colors of the hematoxylin and eosin stains of the image (the "stain vectors"), and how much of each stain is present at every pixel. It then recombines these amounts with the stain vectors of the reference. A reference image is optional: If none is provided, a built-in H&amp;E reference is used. This method can additionally output the separated hematoxylin (H) and eosin (E) images.
 - **Reinhard** matches the mean and the standard deviation of each color channel (in the Lab color space) to those of the reference image. A reference image is required. The method is simple and fast, but it does not distinguish between the stains and treats the whole image alike, including the background.
-- **Modified Reinhard** matches the mean color of the reference image, and adjusts the contrast of the luminance based on the reference. In contrast to Reinhard, the spread of the color channels is not matched. A reference image is required.
+- **Modified Reinhard** shifts the mean of the two color channels (a, b of the Lab color space) to that of the reference image, and stretches the contrast of the luminance based on the reference. The mean luminance of the image and the spread of the color channels are preserved. A reference image is required.
 
 **How to choose a reference image?**
 

@@ -28,6 +28,7 @@ If Galaxy Image Analysis helped with the analysis of your data, please do not fo
 - [Apply standard image filter](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/2d_simple_filter/ip_filter_standard) with SciPy
 - [Clip image intensities](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/clip_image/clip_image) with giatools
 - [Crop image](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/crop_image/ip_crop_image) with giatools
+- [Normalize H&E stain](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/stain_normalization/stain_normalization) with torchstain
 - [Perform histogram equalization](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/2d_histogram_equalization/ip_histogram_equalization) with scikit-image
 - [Process images using arithmetic expressions](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/image_math/image_math) with NumPy
 - [Remove image background](https://usegalaxy.eu/root?tool_id=toolshed.g2.bx.psu.edu/repos/imgteam/background_removal/background_removal/0.24.0+galaxy0) with scikit-image
