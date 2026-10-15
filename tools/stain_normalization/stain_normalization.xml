@@ -225,6 +225,20 @@
                 <has_line line="[output] Output image resolution=(2.0, 2.0), unit='um'"/>
             </assert_stdout>
         </test>
+        <test expect_num_outputs="1"><!-- Reinhard with an OME-Zarr reference image (axes CYX) -->
+            <param name="input" value="input/source_crop.png"/>
+            <conditional name="method_cond">
+                <param name="method" value="reinhard"/>
+                <param name="reference" value="input/source_crop.zarr"/>
+            </conditional>
+            <assert_stdout>
+                <has_line line="[reference] Input image axes: CYX"/>
+                <has_line line="[reference] Input image shape: (3, 128, 128)"/>
+                <has_line line="[reference] Input image resolution=(2.0, 2.0), unit='um'"/>
+                <has_line line="Fitting the Reinhard normalizer to the reference image"/>
+                <has_line line="[output] Output image shape: (128, 128, 3)"/>
+            </assert_stdout>
+        </test>
         <test expect_num_outputs="1"><!-- OME-TIFF output, with the pixel size written to the OME-XML -->
             <param name="input" value="input/source_crop_um.tiff"/>
             <conditional name="method_cond">
