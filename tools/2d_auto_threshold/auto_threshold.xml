@@ -4,7 +4,7 @@
         <import>creators.xml</import>
         <import>tests.xml</import>
         <token name="@TOOL_VERSION@">0.25.2</token>
-        <token name="@VERSION_SUFFIX@">0</token>
+        <token name="@VERSION_SUFFIX@">1</token>
         <xml name="inputs/offset">
             <param name="offset" type="float" value="0" label="Offset"
                    help="Offset to be added to the automatically determined threshold value. Positive values will increase the threshold (and thus reduce the amount of values above the threshold)."/>
@@ -191,7 +191,7 @@
             <expand macro="tests/binary_image_diff" name="output" value="output/input5_li.tiff" ftype="tiff"/>
         </test>
         <test>
-            <param name="input" value="input/input8_zyx.zarr"/>
+            <param name="input" value="input/ome-zarr-examples/image-03.zarr"/>
             <conditional name="th_method">
                 <param name="method_id" value="yen"/>
             </conditional>
