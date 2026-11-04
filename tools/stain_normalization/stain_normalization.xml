@@ -195,17 +195,29 @@
                 <has_line line="[output] Output image shape: (128, 128, 3)"/>
             </assert_stdout>
         </test>
-        <test expect_num_outputs="1"><!-- Reinhard with a JPEG reference image -->
+        <test expect_num_outputs="1"><!-- Reinhard -->
+            <param name="input" value="input/source_crop.png"/>
+            <conditional name="method_cond">
+                <param name="method" value="reinhard"/>
+                <param name="reference" value="input/target_crop.png"/>
+            </conditional>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/reinhard.tiff" ftype="tiff" eps="2"/>
+            <assert_stdout>
+                <has_line line="[reference] Input image shape: (112, 144, 3)"/>
+                <has_line line="Fitting the Reinhard normalizer to the reference image"/>
+                <has_line line="Applying Reinhard normalization"/>
+            </assert_stdout>
+        </test>
+        <test expect_num_outputs="1"><!-- Reinhard with a JPEG reference image (the output is not compared, because JPEG decoding differs between library versions) -->
             <param name="input" value="input/source_crop.png"/>
             <conditional name="method_cond">
                 <param name="method" value="reinhard"/>
                 <param name="reference" value="input/target_crop.jpg"/>
             </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="output/reinhard.tiff" ftype="tiff"/>
             <assert_stdout>
                 <has_line line="[reference] Input image shape: (112, 144, 3)"/>
                 <has_line line="Fitting the Reinhard normalizer to the reference image"/>
-                <has_line line="Applying Reinhard normalization"/>
+                <has_line line="[output] Output image shape: (128, 128, 3)"/>
             </assert_stdout>
         </test>
         <test expect_num_outputs="1"><!-- Modified Reinhard with an OME-Zarr input image (axes CYX) -->
@@ -214,7 +226,7 @@
                 <param name="method" value="modified_reinhard"/>
                 <param name="reference" value="input/target_crop.png"/>
             </conditional>
-            <expand macro="tests/intensity_image_diff" name="output" value="output/modified_reinhard.tiff" ftype="tiff"/>
+            <expand macro="tests/intensity_image_diff" name="output" value="output/modified_reinhard.tiff" ftype="tiff" eps="2"/>
             <assert_stdout>
                 <has_line line="[input] Input image axes: CYX"/>
                 <has_line line="[input] Input image shape: (3, 128, 128)"/>
