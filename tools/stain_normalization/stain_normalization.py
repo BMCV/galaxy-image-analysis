@@ -134,13 +134,9 @@ if __name__ == "__main__":
     # Drop the alpha channel, if any (the output image is allocated like the input image, so this must happen upfront)
     image = args.input_images['input']
     channel_axis = image.axes.index('C')
-    if image.data.shape[channel_axis] == 4:
-        args.input_images['input'] = giatools.Image(
-            data=image.data[(slice(None),) * channel_axis + (slice(0, 3),)],
-            axes=image.axes,
-            metadata=image.metadata,
-            original_axes=image.original_axes,
-        )
+    image.data = np.moveaxis(
+        np.moveaxis(image.data, channel_axis, 0)[:3], 0, channel_axis,
+    )
     require_8bit('H&E image', args.input_images['input'].data)
 
     # Load the reference image and set up the normalizer
