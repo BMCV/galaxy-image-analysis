@@ -145,7 +145,7 @@ if __name__ == "__main__":
 
     # Load the reference image and set up the normalizer
     reference = None
-    if (reference_filepath := tool.args.raw_args.reference) is not None:
+    if (reference_filepath := args.raw_args.reference) is not None:
         reference = np.asarray(load_reference(reference_filepath, args.verbose))
         require_8bit('reference image', reference)
 
