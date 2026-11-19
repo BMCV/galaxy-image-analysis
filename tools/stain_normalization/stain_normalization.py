@@ -1,9 +1,5 @@
-import os
-import xml.etree.ElementTree as ET
-
 import giatools
 import numpy as np
-import tifffile
 from torchstain.base.normalizers import MacenkoNormalizer, ReinhardNormalizer
 
 # Fail early if an optional backend is not available
@@ -79,42 +75,6 @@ def macenko(name, image, Io, beta, func):
         fail_macenko(name, image, Io, beta)
 
 
-def write_pixel_size_to_ome_xml(filepath, metadata):
-    """
-    Add the pixel size to the OME-XML of an OME-TIFF file, because `giatools` does not write it.
-
-    This is a self-contained workaround. To remove it, delete this function, its call below (as well as the `ET` and
-    `tifffile` imports), and the corresponding assertions in the tests.
-    """
-    ome_namespace = 'http://www.openmicroscopy.org/Schemas/OME/2016-06'
-
-    # Maps the units of `giatools` to the units of the OME schema
-    ome_units = {
-        'nm': 'nm',
-        'um': 'µm',
-        'mm': 'mm',
-        'cm': 'cm',
-        'm': 'm',
-        'km': 'km',
-        'inch': 'in',
-    }
-
-    if metadata.resolution is None or metadata.unit is None:
-        print('No pixel size (with unit) available, not writing it to the OME-XML')
-        return
-    print(f'Writing pixel size {metadata.pixel_size} with unit {metadata.unit!r} to the OME-XML')
-
-    ET.register_namespace('', ome_namespace)
-    ET.register_namespace('xsi', 'http://www.w3.org/2001/XMLSchema-instance')
-    ome_xml = ET.fromstring(tifffile.tiffcomment(filepath))
-    pixels = ome_xml.find(f'.//{{{ome_namespace}}}Pixels')
-    for axis, size in zip('XY', metadata.pixel_size):
-        pixels.set(f'PhysicalSize{axis}', repr(float(size)))
-        pixels.set(f'PhysicalSize{axis}Unit', ome_units[metadata.unit])
-    # TIFF strings must be 7-bit ASCII, so non-ASCII characters (like the "micro" in "µm") are written as XML entities
-    tifffile.tiffcomment(filepath, comment=ET.tostring(ome_xml, encoding='us-ascii', xml_declaration=False).decode('ascii'))
-
-
 if __name__ == "__main__":
     tool = giatools.ToolBaseplate()
     tool.add_input_image('input')
@@ -160,12 +120,6 @@ if __name__ == "__main__":
         print(f'Fitting the {METHOD_NAMES[method]} normalizer to the reference image')
         normalizer.fit(reference)
 
-    # Let `giatools` write OME-TIFF files (which it does if the filename ends with `.ome.tiff`)
-    final_filepaths = dict(args.output_filepaths)
-    if params['output_format'] == 'ome.tiff':
-        for key, filepath in final_filepaths.items():
-            args.output_filepaths[key] = os.path.splitext(filepath)[0] + '.ome.tiff'
-
     for section in tool.run(
         'YXC',  # process the RGB image as a whole
         output_dtype_hint='preserve',
@@ -178,16 +132,10 @@ if __name__ == "__main__":
         if method == 'macenko':
             section['output'], h, e = macenko(
                 'H&E image', image, Io, beta,
-                lambda: normalizer.normalize(image, Io=Io, alpha=alpha, beta=beta, stains='output_h' in final_filepaths),
+                lambda: normalizer.normalize(image, Io=Io, alpha=alpha, beta=beta, stains='output_h' in args.output_filepaths),
             )
-            if 'output_h' in final_filepaths:
+            if 'output_h' in args.output_filepaths:
                 section['output_h'] = h
                 section['output_e'] = e
         else:
             section['output'] = normalizer.normalize(image)
-
-    # Move the OME-TIFF files to the expected location
-    if params['output_format'] == 'ome.tiff':
-        for key, final_filepath in final_filepaths.items():
-            write_pixel_size_to_ome_xml(args.output_filepaths[key], tool.processor.outputs[key].metadata)  # workaround
-            os.replace(args.output_filepaths[key], final_filepath)

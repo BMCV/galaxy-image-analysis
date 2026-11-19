@@ -70,7 +70,6 @@
         <configfile name="params"><![CDATA[
             {
                 "method": "$method_cond.method",
-                "output_format": "$output_format",
 
             #if $method_cond.method == "macenko"
                 "Io": $method_cond.advanced.Io,
@@ -117,29 +116,14 @@
                         help="The colors of the H&amp;E image are matched to those of this image."/>
             </when>
         </conditional>
-        <param name="output_format" type="select" label="Output format"
-               help="OME-TIFF additionally stores the pixel size of the H&amp;E image in the OME metadata.">
-            <option value="tiff" selected="true">TIFF</option>
-            <option value="ome.tiff">OME-TIFF</option>
-        </param>
     </inputs>
     <outputs>
-        <data format="tiff" name="output" from_work_dir="output.tiff" label="${tool.name} on ${on_string}">
-            <change_format>
-                <when input="output_format" value="ome.tiff" format="ome.tiff"/>
-            </change_format>
-        </data>
+        <data format="tiff" name="output" from_work_dir="output.tiff" label="${tool.name} on ${on_string}"/>
         <data format="tiff" name="output_h" from_work_dir="output_h.tiff" label="${tool.name} on ${on_string}: Hematoxylin">
             <filter>method_cond['method'] == 'macenko' and method_cond['output_stains']</filter>
-            <change_format>
-                <when input="output_format" value="ome.tiff" format="ome.tiff"/>
-            </change_format>
         </data>
         <data format="tiff" name="output_e" from_work_dir="output_e.tiff" label="${tool.name} on ${on_string}: Eosin">
             <filter>method_cond['method'] == 'macenko' and method_cond['output_stains']</filter>
-            <change_format>
-                <when input="output_format" value="ome.tiff" format="ome.tiff"/>
-            </change_format>
         </data>
     </outputs>
     <tests>
@@ -251,20 +235,6 @@
                 <has_line line="[output] Output image shape: (128, 128, 3)"/>
             </assert_stdout>
         </test>
-        <test expect_num_outputs="1"><!-- OME-TIFF output, with the pixel size written to the OME-XML -->
-            <param name="input" value="input/source_crop_um.tiff"/>
-            <conditional name="method_cond">
-                <param name="method" value="macenko"/>
-                <param name="reference" value="input/target_crop.png"/>
-            </conditional>
-            <param name="output_format" value="ome.tiff"/>
-            <expand macro="tests/intensity_image_diff" name="output" value="output/macenko_ome.ome.tiff" ftype="ome.tiff"/>
-            <assert_stdout>
-                <has_line line="[input] Input image resolution=(2.0, 4.0), unit='um'"/>
-                <has_line line="[output] Output image resolution=(2.0, 4.0), unit='um'"/>
-                <has_line line="Writing pixel size (0.5, 0.25) with unit 'um' to the OME-XML"/>
-            </assert_stdout>
-        </test>
         <test expect_failure="true"><!-- Macenko fails if the image is mostly background -->
             <param name="input" value="input/blank.png"/>
             <conditional name="method_cond">
@@ -324,7 +294,7 @@ The Macenko method fails, if almost all pixels of the image are background. In t
 
 **Inputs and outputs**
 
-The H&amp;E image and the reference image can be provided as TIFF (including OME-TIFF), OME-Zarr, PNG or JPEG, and must have 8-bit pixel values. The output is a TIFF file by default, and can optionally be written as OME-TIFF. The pixel size of the H&amp;E image is preserved, and for OME-TIFF it is also written to the OME metadata.
+The H&amp;E image and the reference image can be provided as TIFF (including OME-TIFF), OME-Zarr, PNG or JPEG, and must have 8-bit pixel values. The output is a TIFF file, and the pixel size of the H&amp;E image is preserved.
 
     </help>
     <citations>
