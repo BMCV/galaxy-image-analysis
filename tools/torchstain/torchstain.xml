@@ -35,11 +35,11 @@
         <requirement type="package" version="0.12.2">ome-zarr</requirement>
     </requirements>
     <required_files>
-        <include type="literal" path="torchstain.py"/>
+        <include type="literal" path="stain_normalization.py"/>
     </required_files>
     <command detect_errors="aggressive"><![CDATA[
 
-        python '$__tool_directory__/torchstain.py'
+        python '$__tool_directory__/stain_normalization.py'
 
         #if $input.extension == "zarr"
             --input '$input.extra_files_path/$input.metadata.store_root'
