@@ -3,7 +3,7 @@
     <macros>
         <import>creators.xml</import>
         <import>tests.xml</import>
-        <token name="@TOOL_VERSION@">0.5.0</token>
+        <token name="@TOOL_VERSION@">0.6.0</token>
     </macros>
     <creator>
         <expand macro="creators/bmcv" />
@@ -24,11 +24,14 @@
     <command detect_errors="aggressive"><![CDATA[
 
         python '$__tool_directory__/points2label.py'
+
         '$input.file_ext'
         '$input'
         '$output'
+
         $shapex
         $shapey
+
         $has_header
         $swap_xy
         $binary
@@ -36,11 +39,14 @@
     ]]></command>
     <inputs>
         <param name="input" type="data" format="tabular,geojson" label="Shapes to be rasterized"/>
-        <param name="shapex" type="integer" value="500" min="1" label="Width of the output image" />
-        <param name="shapey" type="integer" value="500" min="1" label="Height of the output image" />
-        <param name="has_header" type="boolean" checked="true" truevalue="--has_header True" falsevalue="" optional="true" label="Tabular list of shapes has header" help="Only used if the input is a tabular file (ignored for GeoJSON). Turning this off will interpret the tabular file as a list of points, where the X and Y coordinates correspond to the first and second column, respectively." />
-        <param name="swap_xy" type="boolean" checked="false" falsevalue="" truevalue="--swap_xy True" optional="true" label="Swap X and Y coordinates" help="Swap the X and Y coordinates before rasterization. The width and height of the output image is not affected." />
-        <param name="binary" type="boolean" checked="false" truevalue="--binary True" falsevalue="" optional="true" label="Produce binary image" help="Use the same label for all shapes (65535)." />
+        <param name="shapex" type="integer" value="500" min="1" label="Width of the output image"/>
+        <param name="shapey" type="integer" value="500" min="1" label="Height of the output image"/>
+        <param name="has_header" type="boolean" checked="true" truevalue="--has_header" falsevalue="" label="Tabular list of shapes has header"
+               help="Only used if the input is a tabular file (ignored for GeoJSON). Turning this off will interpret the tabular file as a list of points, where the X and Y coordinates correspond to the first and second column, respectively."/>
+        <param name="swap_xy" type="boolean" checked="false" falsevalue="" truevalue="--swap_xy" label="Swap X and Y coordinates"
+               help="Swap the X and Y coordinates before rasterization. The width and height of the output image is not affected."/>
+        <param name="binary" type="boolean" checked="false" truevalue="--binary" falsevalue="" label="Produce binary image(s)"
+               help="Use the same label for all shapes (65535)."/>
     </inputs>
     <outputs>
         <data name="output" format="tiff" />
